@@ -1,0 +1,59 @@
+\section{Conclusions and Future Work}
+\label{conclusions}
+
+We have presented an approach for providing access to streaming data based on ontologies, by extending the \rtwoo\ mapping definition language, the ODEMapster processor and the C-SPARQL language.\ %We have provided details about the underlying technologies that we use as a basis: SPARQL, SNEEql, \rtwoo\ and ODEMapster.
+We have presented the \sparqlstr\ extensions to C-SPARQL for RDF streams and the \stwoo\ extensions to \rtwoo\ for
+stream mappings. Then we have shown the semantics of the proposed extensions and the mechanism to generate data source
+queries from the original ontological queries using the mappings. The case presented here generated SNEEql queries but
+the techniques are independent of the target stream query language. Finally the prototype implementation has shown the
+feasibility of the approach. This work constitutes a first effort towards ontology-based streaming data integration,
+relevant for supporting the increasing number of sensor network applications being developed and deployed in the latest
+years. The extensions presented in this paper can be summarised in Table \ref{tab:tabla}.
+
+\begin{table}
+\vspace{-10pt}
+%\scriptsize
+\tiny
+\begin{tabular}{|c|c|c|c|}
+\hline
+Basis & Extension & Syntax & Semantics \\
+\hline
+\multirow{2}{*}{C-SPARQL} & Window variable upper boundary & \texttt{RANGE} $t_i$ \texttt{TO} $t_f$& $k \centerdot \delta + t_i<\tau $ \\
+& Syntax for current timestamp & \texttt{NOW} & $\leq k \centerdot \delta +t_f$ \\
+& & & $\tau = now$ \\
+\hline
+\multirow{4}{*}{\rtwoo} & Stream definitions in mapping & \texttt{streamschema-desc} & Streaming data types \\
+& & \texttt{has-stream} & \texttt{StreamOf [Data]} \\
+& & \texttt{timestam-desc} & \texttt{TaggedTuple, Window}\\
+& Virtual RDF Stream IRIs & \texttt{virtualStream <IRI>} & \\
+\hline
+\multirow{3}{*}{ODEMapster} & Window translation & - & $\lambda(\Phi_{S_i}(\vec{x})[t_i,t_f,\delta])$\\
+&in the processor, classes,  & - & $\omega_{t_i,t_f,\delta}S_i$ \\
+&object and dataype attributes & - &    \\
+\hline
+\end{tabular}
+\vspace{10pt}
+\caption{Extensions and additions to \rtwoo , ODEMapster and C-SPARQL}
+\label{tab:tabla}
+\vspace{-20pt}
+\end{table}
+
+
+
+%\section{Future Work}
+%\label{future}
+
+Although we have shown initial results querying the underlying SNEE engine with basic queries, we expect to consider in
+the near future more complex query expressions including aggregates, combination of time and tuple windows and joins
+between streams. We also plan to adapt our query rewriting approach to more recent and promising works such as
+\cite{PerezUrbina_09}. We are also aware of the need of optimising the generated queries using techniques from sensor
+networks and continuous data approaches \cite{Abadi_2005,Arasu_06a,Galpin_09}. It is also our goal to provide a
+characterisation of our algorithms. In the scope of a larger streaming and sensor networks integration framework, we
+intend to achieve the following goals: i) integrating streaming and stored data sources through an ontological unified
+view; ii) combining data from event-based streams and/or sensor networks acquisitional streams considering time and
+triple windows; iii) considering quality-of-service requirements for query optimisation and source selection during the
+integration.
+
+The present work can be just considered as a first step to our goal of providing an ontology-based integration platform
+for continuous heterogeneous data sources. Therefore we will address the problems of heterogeneity, distributed query
+processing and integration as part of this research track.

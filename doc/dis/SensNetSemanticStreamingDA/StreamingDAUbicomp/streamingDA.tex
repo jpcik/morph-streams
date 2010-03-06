@@ -1,0 +1,121 @@
+\documentclass{ubicomp2010}
+\usepackage{times}
+%\usepackage{url}
+%\usepackage{graphics}
+\usepackage{color}
+
+
+\usepackage{amssymb}
+\setcounter{tocdepth}{3}
+\usepackage{graphicx}
+
+%\usepackage[section]{placeins}
+\usepackage{colortbl}
+\usepackage{longtable}
+
+
+\usepackage{multirow}
+\usepackage{fancybox}
+\usepackage[ansinew]{inputenc}
+\usepackage{url}
+\usepackage[normalem]{ulem}
+\usepackage{latexsym}
+\usepackage{fixme}
+\usepackage{verbatim}
+\usepackage{listings}
+\usepackage{amsmath}
+%\usepackage[notref]{showkeys}
+
+\usepackage{array} % and/or
+\usepackage{hyperref}
+%\usepackage[pdftex]{hyperref}
+
+
+\hypersetup{%
+pdftitle={Your Title}, pdfauthor={Your Authors}, pdfkeywords={your
+keywords}, bookmarksnumbered, pdfstartview={FitH}, colorlinks,
+citecolor=black, filecolor=black, linkcolor=black, urlcolor=black,
+breaklinks=true, }
+
+%\newcommand{\keywords}[1]{\par\addvspace\baselineskip
+%\noindent\keywordname\enspace\ignorespaces#1}
+\newcommand{\LJoin}{\includegraphics[scale=1.0]{img/ljoin}}
+
+\newcommand{\superscript}[1]{\ensuremath{^{\textrm{#1}}}}
+\newcommand{\subscript}[1]{\ensuremath{_{\textrm{#1}}}}
+
+\newcommand{\rtwoo}{\textsf{R\subscript{2}O}}
+\newcommand{\stwoo}{\textsf{S\subscript{2}O}}
+\newcommand{\sparqlstr}{SPARQL\subscript{STR}}
+
+
+%\newcommand{\comment}[1]{}
+\definecolor{Orange}{rgb}{1,0.5,0}
+\newcommand{\todo}[1]{\textsf{\textbf{\textcolor{Orange}{[[#1]]}}}}
+
+
+%\pagenumbering{arabic}  % Arabic page numbers for submission.  Remove this line to eliminate page numbers for the camera ready copy
+
+\begin{document}
+% to make various LaTeX processors do the right thing with page size
+\special{papersize=8.5in,11in}
+\setlength{\paperheight}{11in}
+\setlength{\paperwidth}{8.5in}
+\setlength{\pdfpageheight}{\paperheight}
+\setlength{\pdfpagewidth}{\paperwidth}
+
+% use this command to override the default ACM copyright statement
+% (e.g. for preprints). Remove for camera ready copy.
+%\toappear{Submitted for review to UbiComp 2010.}
+
+
+
+\title{Enabling Ontology-based Access to Streaming Data Sources}
+\numberofauthors{3}
+\author{
+  \alignauthor First Author Name (Blank for Blind Review)\\
+    \affaddr{Affiliation  (Blank for Blind Review)}\\
+    \affaddr{Address  (Blank for Blind Review)}\\
+    \email{e-mail address (Blank for Blind Review)}
+ \alignauthor Second Author Name (Blank for Blind Review)\\
+    \affaddr{Affiliation  (Blank for Blind Review)}\\
+    \affaddr{Address  (Blank for Blind Review)}\\
+    \email{e-mail address (Blank for Blind Review)}  
+ \alignauthor Third Author Name (Blank for Blind Review)\\
+    \affaddr{Affiliation  (Blank for Blind Review)}\\
+    \affaddr{Address  (Blank for Blind Review)}\\
+    \email{e-mail address (Blank for Blind Review)}  }
+\maketitle
+
+\begin{abstract}
+The availability of streaming data sources is progressively increasing thanks to the development of ubiquitous data capturing technologies such as sensor networks. The heterogeneity of these sources introduces the requirement of providing data access in a unified and coherent manner. In this paper we describe an ontology-based streaming data access service, based on extensions to the \rtwoo\ mapping language and its query processor ODEMapster, and to the C-SPARQL RDF stream query language. A preliminary implementation of the approach is also presented. With this proposal we expect to set the basis for future efforts in ontology-based streaming data integration.
+\end{abstract}
+
+\keywords{Streaming data access, Ontology-based data access, Query transformation.}
+
+\category{H.3.3}{Information Search and Retrieval}{Miscellaneous}.\\
+{H.2.3}{ Languages}
+\generalterms{Design, Experimentation, Theory.}
+
+
+\input{introduction}
+
+\input{relatedwork}
+%\input{obdi}
+\input{approach}
+\input{syntax}
+\input{semantics}
+\input{execution}
+\input{futurework}
+
+\section{Acknowledgements}
+This work has been supported by the (Change for Blind Review)%European Commission project SemSorGrid4Env (FP7-223913).% 
+We also thank (Change for Blind Review)%Alvaro A A Fernandes, Ixent Galpin, and Norman W Paton, from the University of Manchester, 
+for their valuable ideas and suggestions.
+
+%\nocite{example-journal,example-abstracts,example-conference2}
+
+\bibliographystyle{abbrv}
+\bibliography{re}
+
+\end{document}

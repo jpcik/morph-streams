@@ -1,0 +1,141 @@
+\begin{thebibliography}{10}
+
+\bibitem{Abadi_2005}
+D.~J. Abadi, Y.~Ahmad, M.~Balazinska, U.~Cetintemel, M.~Cherniack, J.-H. Hwang,
+  W.~Lindner, A.~S. Maskey, A.~Rasin, E.~Ryvkina, N.~Tatbul, Y.~Xing, and
+  S.~Zdonik.
+\newblock {The Design of the Borealis Stream Processing Engine}.
+\newblock In {\em {CIDR} 2005}, 2005.
+
+\bibitem{Arasu_06a}
+A.~Arasu, B.~Babcock, S.~Babu, J.~Cieslewicz, M.~Datar, K.~Ito, R.~Motwani,
+  U.~Srivastava, and J.~Widom.
+\newblock Stream: The stanford data stream management system.
+\newblock In M.~Garofalakis, J.~Gehrke, and R.~Rastogi, editors, {\em Data
+  Stream Management}. 2006.
+
+\bibitem{Arasu_2006}
+A.~Arasu, S.~Babu, and J.~Widom.
+\newblock The cql continuous query language: semantic foundations and query
+  execution.
+\newblock {\em The VLDB Journal}, 15(2):121--142, June 2006.
+
+\bibitem{Barbieri_2010}
+D.~F. Barbieri, D.~Braga, S.~Ceri, E.~{Della Valle}, and M.~Grossniklaus.
+\newblock C-sparql: A continuous query language for rdf data streams (to
+  appear).
+\newblock In {\em (IJSC)}, 2010.
+
+\bibitem{Barrasa_04}
+J.~Barrasa, Óscar Corcho, and A.~Gómez-Pérez.
+\newblock {R2O}, an extensible and semantically based database-to-ontology
+  mapping language.
+\newblock In {\em {SWDB2004}}, pages 1069--1070, 2004.
+
+\bibitem{Bolles_08}
+A.~Bolles, M.~Grawunder, and J.~Jacobi.
+\newblock Streaming {SPARQL} - extending {SPARQL} to process data streams.
+\newblock In {\em ESWC 08}, pages 448--462, 2008.
+
+\bibitem{Brenninkmeijer_08}
+C.~Y. Brenninkmeijer, I.~Galpin, A.~A. Fernandes, and N.~W. Paton.
+\newblock A semantics for a query language over sensors, streams and relations.
+\newblock In {\em BNCOD '08}, pages 87--99, 2008.
+
+\bibitem{Calvanese_05}
+D.~Calvanese, G.~De~Giacomo, D.~Lembo, M.~Lenzerini, and R.~Rosati.
+\newblock {DL}-{L}ite: Tractable description logics for ontologies.
+\newblock In {\em AAAI 2005}, pages 602--607, 2005.
+
+\bibitem{Chandrasekaran_03}
+S.~Chandrasekaran, O.~Cooper, A.~Deshpande, M.~J. Franklin, J.~M. Hellerstein,
+  W.~Hong, S.~Krishnamurthy, S.~R. Madden, F.~Reiss, and M.~A. Shah.
+\newblock {TelegraphCQ}: continuous dataflow processing.
+\newblock In {\em SIGMOD '03}, pages 668--668, 2003.
+
+\bibitem{DellaValle_09}
+E.~{Della Valle}, S.~Ceri, D.~Braga, I.~Celino, D.~Fensel, F.~van Harmelen, and
+  G.~Unel.
+\newblock Research chapters in the area of stream reasoning.
+\newblock In {\em SR2009}, pages 1--9, 2009.
+
+\bibitem{Galpin_09}
+I.~Galpin, C.~Y. Brenninkmeijer, F.~Jabeen, A.~A. Fernandes, and N.~W. Paton.
+\newblock Comprehensive optimization of declarative sensor network queries.
+\newblock In {\em SSDBM 2009}, pages 339--360, 2009.
+
+\bibitem{Kossmann_00}
+D.~Kossmann.
+\newblock The state of the art in distributed query processing.
+\newblock {\em ACM Comput. Surv.}, 32(4):422--469, 2000.
+
+\bibitem{LePhuoc_09}
+D.~Le-Phuoc and M.~Hauswirth.
+\newblock Linked open data in sensor data mashups.
+\newblock In {\em SSN09}, pages 1--16, 2009.
+
+\bibitem{Lenzerini_02}
+M.~Lenzerini.
+\newblock Data integration: a theoretical perspective.
+\newblock In {\em PODS '02}, pages 233--246, 2002.
+
+\bibitem{Lubyte_09}
+L.~Lubyte and S.~Tessaris.
+\newblock Supporting the development of data wrapping ontologies.
+\newblock In {\em 4th Asian Semantic Web Conference}, December 2009.
+
+\bibitem{Madden_05}
+S.~R. Madden, M.~J. Franklin, J.~M. Hellerstein, and W.~Hong.
+\newblock Tiny{DB}: an acquisitional query processing system for sensor
+  networks.
+\newblock {\em ACM Trans. Database Syst.}, 30(1):122--173, 2005.
+
+\bibitem{Page_09}
+K.~Page, D.~D. Roure, K.~Martinez, J.~Sadler, and O.~Kit.
+\newblock {L}inked sensor data: {REST}fully serving {RDF} and {GML}.
+\newblock In {\em SSN09}, pages 49--63, 2009.
+
+\bibitem{Perez_09}
+J.~P\'{e}rez, M.~Arenas, and C.~Gutierrez.
+\newblock Semantics and complexity of sparql.
+\newblock {\em ACM Trans. Database Syst.}, 34(3):1--45, 2009.
+
+\bibitem{PerezUrbina_09}
+H.~P{\'e}rez-Urbina, I.~Horrocks, and B.~Motik.
+\newblock Efficient query answering for owl 2.
+\newblock In {\em ISWC 2009}, pages 489--504, 2009.
+
+\bibitem{Poggi_08}
+A.~Poggi, D.~Lembo, D.~Calvanese, G.~D. Giacomo, M.~Lenzerini, and R.~Rosati.
+\newblock Linking data to ontologies.
+\newblock {\em J. Data Semantics}, 10:133--173, 2008.
+
+\bibitem{Prudhommeaux_2008}
+E.~Prud'hommeaux and A.~Seaborne.
+\newblock {SPARQL} query language for {RDF,} {W3C} recommendation.
+\newblock Technical report, World Wide Web Consortium, January 2008.
+
+\bibitem{Sahoo_09}
+S.~S. Sahoo, W.~Halb, S.~Hellmann, K.~Idehen, T.~T. Jr, S.~Auer, J.~Sequeda,
+  and A.~Ezzat.
+\newblock A survey of current approaches for mapping of relational databases to
+  {RDF}.
+\newblock W3C, January 2009.
+
+\bibitem{Sequeda_09}
+J.~Sequeda and O.~Corcho.
+\newblock Linked stream data: A position paper.
+\newblock In {\em SSN09}, pages 148--157, 2009.
+
+\bibitem{Terry_92}
+D.~Terry, D.~Goldberg, D.~Nichols, and B.~Oki.
+\newblock Continuous queries over append-only databases.
+\newblock In {\em SIGMOD '92}, pages 321--330. ACM, 1992.
+
+\bibitem{Yao_02}
+Y.~Yao and J.~Gehrke.
+\newblock The cougar approach to in-network query processing in sensor
+  networks.
+\newblock {\em SIGMOD Rec.}, 31(3):9--18, 2002.
+
+\end{thebibliography}

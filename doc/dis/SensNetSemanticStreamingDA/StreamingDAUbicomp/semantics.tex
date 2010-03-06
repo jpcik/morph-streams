@@ -1,0 +1,216 @@
+\section{Semantics of the Streaming Extensions}
+\label{semanticsstreaming}
+
+Now that the syntactic streaming extensions to SPARQL \linebreak (\sparqlstr) and \rtwoo (\stwoo) have been presented, we
+introduce their semantics.
+
+\subsection{\sparqlstr Semantics}
+\label{sparqlstrsemantics}
+
+The SPARQL extensions presented here are based on the formalisation of  C-SPARQL \cite{Barbieri_2010}, which are in turn based on the work described in \cite{Perez_09}.
+%
+%RDF triples $(s,p,o) \in (I \cup B) \times I \times (I \cup B \cup L)$, where $I, B$ and $L$ are sets of IRIs, blank nodes and literals. In a triple, $s, p$ and $o$ are the subject, predicate and object respectively.
+%SPARQL graph pattern expressions semantics require the introduction of the concept of a mapping function $\mu: V \rightarrow T$, where $V$ is a set of variables and $T$ is defined as $I \cup B \cup L$. The function $\mu(t)$, for a triple pattern $t$, denotes the triple obtained by replacing all the variables in $t$ as defined by $\mu$. Then the domain of $\mu$ is $dom(\mu)$, the subset of $V$ where $\mu$ is defined. Two mappings $\mu'$ and $\mu''$ are said to be compatible if for all $x \in dom(\mu') \cap dom(\mu'')$, then $\mu'(x) = \mu''(x)$.
+%Basic operators for composition of mappings are join, union and difference ($\mathrm{\Omega_1}$ and $\mathrm{\Omega_2}$ are sets of mappings):
+
+%\begin{align*}
+%\mathrm{\Omega_{1} \Join \Omega_{2}} & =
+%\mathrm{\{\mu _{1} \cup \mu_{2} \mid \mu_{1} \in \Omega_{1}, \mu_{2} \in %\Omega_{2} \text{ are compatible} \}} \\
+%
+%\mathrm{\Omega_{1} \cup \Omega_{2}} & =
+%\mathrm{\{\mu \mid \mu \in \Omega_{1} \text{ or } \mu \in \Omega_{2} \}} \\
+%
+%\mathrm{\Omega_{1} \backslash \Omega_{2}}  & =
+%\mathrm{\{\mu \in \Omega_{1} \mid \forall \mu' \in \Omega_{2}, \mu \text{ and } \mu' \text{ are not compatible} \} }
+%\end{align*}
+
+%The left outer-join operator can be derived from above:
+%\begin{align*}
+%\mathrm{\Omega_{1} \LJoin \Omega_{2}} & =
+%\mathrm{(\Omega_{1} \Join \Omega_{2}) \cup (\Omega_{1} \setminus \Omega_{2} )}
+%\end{align*}
+
+%With the operators and data types above, the semantics of graph pattern expressions is defined as a function $[[\cdot]]_{D}$ that takes a pattern expression and returns a set of mappings, for an RDF dataset $D$. The evaluation of $[[\cdot]]_{D}$ is defined recursively below. Let $t$ be a triple pattern, $var(t)$ the set of variables occurring in $t$, $P_{1},P_{2}$ graph patterns and $D$ an RDF dataset over $T$:
+
+%\begin{align*}
+%&(1) \quad [[t]]_{D} = {\mu \mid dom(\mu) = var(t) \wedge \mu(t) \in D} \\
+%
+%&(2) \quad [[(P_{1} \texttt{AND} P_{2})]]_{D} = [[P_{1}]]_{D} \Join [[P_{2}]]_{D}  \\
+%
+%&(3) \quad [[(P_{1} \texttt{OPT} P_{2})]]_{D} = [[P_{1}]]_{D} \LJoin [[P_{2}]]_{D}  \\
+%
+%&(4) \quad [[(P_{1} \texttt{UNION} P_{2})]]_{D} = [[P_{1}]]_{D} \cup [[P_{2}]]_{D}  \\
+%\end{align*}
+
+%For the FILTER operator, we need to introduce the notion of condition satisfiability. A mapping $\mu$ satisfies the condition $R$, denoted as $\mu \vDash R$, if:
+
+%\begin{align*}
+%&(1) \quad R \text{ is bound} (X) \text{ and } X \in \mathrm{dom(\mu)}; \\
+%&(2) \quad R \text{ is } ?X=c, ?X \in \mathrm{dom(\mu)} \text{ and } \mu(?X)=c;\\
+%&(3) \quad R \text{ is } ?X=?Y, ?X \in \mathrm{dom(\mu)}, ?Y \in \mathrm{dom(\mu)} \text{ and } \mu(?X)=\mu(?Y);\\
+%&(4) \quad R \text{ is } (\neg R_{1}), R_{1} \text{ is a built-in condition, and it is not the case that } \mu \vDash R_{1}; \\
+%&(5) \quad R \text { is} (R_{1} \vee R_{2}), R_{1} \text{ and } R_{2} \text{ are built-in conditions, and $\mu \vDash R_{1}$ or $\mu \vDash R_{2}$};\\
+%&(6) \quad R \text { is} (R_{1} \wedge R_{2}), R_{1} \text{ and } R_{2} \text{ are built-in conditions, $\mu \vDash R_{1}$ and $\mu \vDash R_{2}$.}
+%\end{align*}
+%
+%Then the evaluation of the expression ($P$ \texttt{FILTER} $R$) is given by:
+%\begin{align*}
+%[[(P \texttt{ FILTER } R )]]_{D} = \{\mu \in [[P]]_{D} \mid \mu \vDash R \}.
+%\end{align*}
+%
+%put aggregates here
+%
+RDF streams can be defined as sequences of pairs $(T,\tau)$ where T is a triple  $\langle s,p,o \rangle$ and $\tau$ is a timestamp in the infinite set of timestamps $\mathbb{T}$:
+\begin{align*}
+R = \{ & ( \langle s,p,o \rangle, \tau) \mid \\ 
+& \langle s,p,o \rangle \in ((I \cup B) \times I \times (I \cup B \cup L)  ), \tau \in \mathbb{T}\}
+\end{align*}
+where $I, B$ and $L$ are sets of IRIs, blank nodes and literals. Each of these pairs can be called a tagged triple. We can now define a time-based window as:
+\begin{align*}
+\omega_{time}(R,t_{i},t_{f},\delta)=\{ & (\langle s,p,o \rangle,\tau) \in R \mid \\
+& \delta \cdotp k + t_{i}<\tau \leq \delta\cdotp k + t_{f} , k \in \mathbb{N}\}
+\end{align*}
+%
+where $t_i, t_f$ defines the window time range and $\delta$ is the time slide parameter. A window $\omega_{time}$ as defined above, is a set of tagged triples whose timestamp is between the initial and final time boundaries. Notice that a new window (i.e. bounded subset of triples) is created every $\delta$ time units. 
+
+%missing definitions for slide parameters!!!!
+
+For the triple-based window, we need to define first the function $c$ that counts the items in $R$ in a certain time range $(t_{i},t_{f})$:
+\begin{align*}
+c(R,t_{i},t_{f})=|\{(\langle s,p,o \rangle,\tau) \in R \mid t_{i} < \tau \leq t_{f}\}|
+\end{align*}
+
+A triple-based window, with $n$ being the \textsf{ROWS} parameter, can be defined as:
+\begin{align*}
+\omega_{tuple}(R,n)=\{ & (\langle s,p,o \rangle,\tau) \in \omega_{time}(R,t_{i},t_{f}) \mid \\
+& c(R,t_{i},t_{f})=n \}
+\end{align*}
+
+We have provided a brief explanation of the semantics of \sparqlstr. This is particularly useful in the sense that users may know what to expect when they issue a query using these new operators. However, as the actual data source is not an RDF stream but a sensor network or an event-based stream, exposed as a SNEEql endpoint, we need to transform the \sparqlstr\ queries into SNEEql queries. The formal semantics of SNEEql can be found in \cite{Brenninkmeijer_08}.
+%we need to transform the \sparqlstr\ queries into a language able to deal with those sources, such as SNEEql.
+The next section describes the mapping from \sparqlstr\ to SNEEql.
+
+%Here I explain semantics of SPARQL extensions, based on c-sparql mainlz, include reference to guiterrez. semantics explanations of rdf stream, window, some operators?
+
+
+
+\subsection{Extended \textbf{\rtwoo (\stwoo)} Semantics}
+\label{mappingsemantics}
+
+%The semantics of \sparqlstr\ have been described in the previous section so that we have a formalisation of what to expect from queries written in that languages. However in the context of our work
+We are particularly interested in answering unions of conjunctive queries (a subset of \sparqlstr) over an ontological
+schema, and accessing the underlying data sources \linebreak  through mappings. In this section we will present how we can use the
+mapping definitions to transform the set of conjunctive queries into the internal query language SNEEql that is used to
+access the sources. This work is based on extensions to the ODEMapster processor \cite{Barrasa_04} and the
+formalisation work of \cite{Calvanese_05,Poggi_08}.
+
+A conjunctive query $q$ over an ontology $\mathcal{O}$ can be expressed as:
+\begin{align*}
+&q(\vec{x}) \leftarrow \varphi(\vec{x},\vec{y}) \\
+%
+\varphi(\vec{x},\vec{y}):\underset{i=1...k}{\bigwedge} & P_i \mbox{, with } P_i \begin{cases} C_i(x),   C \mbox{ is an atomic class. } \\
+  R_i(x,y),   R_i \mbox{ an atomic property.}\\ x=y
+\end{cases}
+\\& x,y \mbox{ are variables either in $\vec{x}, \vec{y}$ or constants.}
+\end{align*}
+%
+where $\vec{x}$ is a tuple of distinct distinguished variables, $\vec{y}$ a tuple of non distinguished existentially
+quantified variables. The answer to this query consists in the instantiation of the distinguished variables
+\cite{Calvanese_05}. For instance consider the following conjunctive query $q_1$:
+\begin{align*}
+q_1(x) \leftarrow & WindSpeedMeasurement(x) \\
+& \wedge measuredBy(x,y)\wedge SeaSensor(y)
+\end{align*}
+It requires all instances $x$ that are wind speed measurements captured by sea sensors. In this example $x$ is a distinguished variable and $y$ a non-distinguished one. The query has three atoms: $WindSpeedMeasurement(x)$, $measuredBy(x,y)$ and $SeaSensor(y)$.
+
+Concerning the formal definition of the query answering, let $\mathcal{I}=(\Delta^\mathcal{I} ,\centerdot^\mathcal{I})$ be an interpretation, where $\Delta^\mathcal{I}$ is the interpretation domain and $\centerdot^\mathcal{I}$ the interpretation function that assigns an element of $\Delta^\mathcal{I}$ to each constant, a subset of $\Delta^\mathcal{I}$ to each class and a subset of $\Delta^\mathcal{I} \times \Delta^\mathcal{I}$ to each property of the ontology.
+%comment this?
+Given a query $q(\vec{x})\leftarrow \varphi(\vec{x},\vec{y})$ the answer to $q$ is the set of tuples $q^{\mathcal{I}}_{\vec{x}} \in \Delta^\mathcal{I} \times \dots \times \Delta^\mathcal{I}$ that substituted to $\vec{x}$, make the formula $\exists\vec{y}.\varphi(\vec{x},\vec{y})$ true in $\mathcal{I}$ \cite{Poggi_08,Lubyte_09}.
+Now we can introduce the definition of the mappings. Let $\mathcal{M}$ be a set of mapping assertions of the form:
+\begin{equation*}
+\Psi \leadsto \Phi
+\end{equation*}
+where $\Psi$ is a conjunctive query over the global ontology $\mathcal{O}$, formed by terms of the form $C(x), R(x,y),
+A(x,z)$, with C, R and A being classes, object properties and datatype properties respectively in $\mathcal{O}$; $x, y
+$ being object instance variables and $z$ being a datatype variable. $\Phi$ is a set of expressions that can be
+translated to queries in the target continuous language (e.g. SNEEql) over the sources.
+\\
+
+A $C(f_C^{Id}(\vec{x})) \leadsto \Phi_{S_1,\ldots,S_n}(\vec{x})$ mapping assertion describes how to construct the concept $C$ from the source streams (or relations) $S_1,\ldots,S_n$. The $f_C^{Id}$ function creates an instance of the class $C$, given the tuple $\vec{x}$ of variables returned by the $\Phi$ expression. In concrete this function will construct the instance identifier (URI) from a set of attributes from the streams and relations.
+In this case the $\Phi$ expression has a declarative representation of the form:
+\begin{align*}
+\Phi_{S_1,\ldots,S_n}(\vec{x})= \exists\vec{y}.p^{Proj}_{S_1,\ldots,S_n}(\vec{x}) \wedge p^{Join}_{S_1,\ldots,S_n}(\vec{v}) \wedge p_{S_1,\ldots,S_n}^{Sel}(\vec{v})
+%\mathcal{E}_C=\{f_C^{Id}(x.A_1,\dots,x.A_n,y.B_1,\dots ,y.B_m)\mid & S_1(x) \wedge S_2(y) \wedge e_C^{Join}(x,y) \\ & \wedge e_C^{Cond}(x) \wedge e_C^{Cond}(y)\}
+\end{align*}
+where $\vec{v}$ is a tuple of variables in either $\vec{x},\vec{y}$. The $p^{Join}$ term denotes a set of join conditions over the $S_i$ streams and relations. Similarly the $p^{Sel}$ term represents a set of condition predicates over the $\vec{v}$ variables in the $S_i$ streams (e.g. conditions using $<,\leq,\geq,$ operators).
+\\
+%For instance a class $C_1$ that is mapped to a stream $S_1$ joined to a relation $S_2$, has a mapping assertion $C_1(f_{C_1}^Id(x,w)) \leadsto \Phi_{S_1,S_2}(x,w) = \exists y,z.S_1(x,y)\wedge S_2(z,w) \wedge y=z$. In this case the tuples of distinguished ($\vec{x}$) and non-distinguished variables ($\vec{y}$) are $(x,w)$ and $(y,z)$ respectively. The set of predicates $p^{Join}$ is ${y=z}$ and denotes a join between $S_1$ and $S_2$. Notice that in order to create instances of $C_1$ a function $f_{C_1}^{Id}(x,w)$ will be applied.
+%
+
+A $R(f_{C_1}^{Id}(\vec{x_1}),f_{C_2}^{Id}(\vec{x_2})) \leadsto \Phi_{S_1,\ldots,S_n}(\vec{x_1},\vec{x_2})$ mapping assertion describes how to construct instances of the object property $R$ from the source streams and relations $S_i$. The declarative form of $\Phi$ is:
+\begin{align*}
+\Phi_{S_1,\ldots,S_n}(\vec{x_1},\vec{x_2})= &\exists\vec{y}.\Phi_{S_1,\ldots,S_k}(\vec{x_1}) \wedge \Phi_{S_{k+1},\ldots,S_n}(\vec{x_2}) \\ & \wedge p_{S_1,\ldots,S_n}^{Join}(\vec{v})
+%
+%(x.A_1,\dots,x.A_n,y.B_1,\dots ,y.B_m) \mid & \mathcal{E}_{C_1}(x) \wedge \mathcal{E}_{C_2}(y) \wedge \\ & \exists z_1,\dots ,z_p(AUX_1(z_1) \wedge \dots \wedge AUX_p(z_p) \\ & \wedge e_R^{Join}(x,y,z_1,\dots,z_p) \\ & \wedge e_R^{Cond}(x,y,z_1,\dots,z_p)) \}
+\end{align*}
+%where  $\vec{x},\vec{y}$ are the tuples of distinguished and non distinguished variables respectively. $\vec{v}$ is a tuple of variables in either $\vec{x}$ or $\vec{y}$.
+$\Phi_{S_1,\ldots,S_k}, \Phi_{S_{k+1},\ldots,S_n}$ describe how to extract instances of $C_1$ and $C_2$ from the streams $S_1,\ldots,S_k$ and $S_{k+1},\ldots,S_n$ respectively. The $p^{Join}$ term is the set of predicates that denotes the join between the streams and relations $S_1,\ldots,S_n$.
+\\
+
+Finally a $A(f_C^{Id}(\vec{x}),f_A^{Trf}(\vec{z})) \leadsto \Phi_{S_1,\ldots,S_n}(\vec{x},\vec{z})$ expression describes how to construct instances of the datatype property $A$ from the source streams and relations $S_1,\ldots,S_n$. The $f_A^{Trf}$ function executes any transformation over the tuple of variables $\vec{z}$ to obtain the property value (e.g. arithmetic operations, string operations, etc). The declarative form of $\Phi$ in this case is:
+\begin{align*}
+\Phi_{S_1,\ldots,S_n}(\vec{x},\vec{z})= & \exists\vec{y}.\Phi_{S_1,\ldots,S_k}(\vec{x})  \wedge \Phi_{S_{k+1},\ldots,S_n}(\vec{z}) \\ &\wedge p_{S_1,\ldots,S_n}^{Join}(\vec{v})
+%
+%\{E}_A=\{f_C^{Id}f_A^{Trf}(x.A_1,\dots,x.A_n,x.b_1,\dots,x.b_m)\mid \mathcal{E}_C(x)  \wedge e_A^{Cond}(x) \}
+\end{align*}
+The definition follows the same idea as the previous one. The variables of $\vec{z}$ will contain the actual values
+that will be used to construct the datatype property value using the function $f_A^{Trf}$.
+%
+%The extended R2O document represents all these mappings in a XML serialised format.
+
+When a conjunctive query is issued against the global ontology, the processor first parses it and transforms it into an
+abstract syntax tree and then uses the expansion algorithm described in \cite{Barrasa_04} (that is based on the
+\textsf{PerfectRef} algorithm of \cite{Calvanese_05}) to produce an expanded conjunctive query based on the TBox of the
+ontology. Afterwards the rewritten query can be translated to an extended relational algebra.
+
+A query $Q_{\mathcal{O}}(\vec{x})[t_i,t_f,\delta]$ is a conjunctive query with a window operator (where $t_i,t_f$ is
+the time range and $\delta$ is the slide) in order to narrow the data set according to a given criteria. For a query
+$Q_{\mathcal{O}}$ of the form:
+\begin{equation*}
+C_1(x) \wedge R(x,y) \wedge A(x,z) [t_i,t_f,\delta]
+\end{equation*}
+the translation is given by $\lambda(\Phi)$, following the mapping definition:
+\begin{align*}
+\lambda(\Phi_{S_1,\ldots,S_n}(\vec{x})[t_i,t_f,\delta])=\pi_{p^{Proj}}(& \Join_{p^{Join}}
+(\sigma_{p^{Sel}}(\omega_{t_i,t_f,\delta}S_1) \\ 
+& ,\dots,\sigma_{p^{Sel}}(\omega_{t_i,t_f,\delta}S_n)))
+\end{align*}
+The expression denotes first a window operation $\omega_{t_i,t_f,\delta}$ over the relations or streams $S_1,\dots
+,S_n$, with $t_i,t_f$ and $\delta$ being the range and slide. A selection $\sigma_{p^{Sel}}$ is applied over the
+result, according the conditions defined in the mapping.  A multiple join $\Join_{p^{Join}}$ is then applied to the
+selection, also based on the corresponding mapping definition. Finally a projection $\pi_{p^{Proj}}$ is applied over
+the results. For any conjunctive query with more atoms, the construction of the algebra expression will follow the same
+direct translation using the \textit{GaV} approach.
+%
+%For a query $Q_O$ of the form $C(f_C^{Id}(\vec{x}))[t_i,t_f,\delta]$ the translation is given by $\lambda(\Phi)$, following the mapping definition:
+%\begin{align*}
+%\lambda(\Phi_{S_1,\ldots,S_n}(\vec{x})[t_i,t_f,\delta])=\pi_{p^{Proj}}(\Join_{p^{Join}}
+%(&\sigma_{p^{Sel}}(\omega_{t_i,t_f,\delta}S_1),\dots \\ %&,\sigma_{p^{Sel}}(\omega_{t_i,t_f,\delta}S_n)))
+%\end{align*}
+%The expression denotes first a window operation $\omega_{t_i,t_f,\delta}$ over the relations or streams $S_1,\dots ,S_n$, with $t_i..t_f$ and $\delta$ being the range and slide. A selection $\sigma_{p^{Sel}}$ is applied over the result, with the conditions defined in the mapping.  A multiple join $\Join_{p^{Join}}$ is then applied to the selection, also based on the corresponding mapping definition. Finally a projection $\pi_{p^{Proj}}$ is applied over the results.
+%\\
+%For a query $Q_O$ of the form $C(f_C^{Id}(\vec{x}) \wedge A(f_C^{Id}(\vec{x}),f_A^{Trf}(\vec{z})) [t_i,t_f,\delta]$ the translation is given by:
+%\begin{align*}
+%\lambda(\Phi_{S_1,\ldots,S_n}(\vec{x},\vec{z})[t_i,t_f,\delta])=\pi_{p^{Proj}}(\Join_{p^{Join}}
+%&(\sigma_{p^{Sel}}(\omega_{t_i,t_f,\delta}S_1),\dots \\ %&,\sigma_{p^{Sel}}(\omega_{t_i,t_f,\delta}S_n)))
+%\end{align*}
+%Similarly to the previous case, the window, selection, join and projection operations are applied to the source relations and streams according to the mapping definition. Additionally, the $f_A^{Trf}$ is applied over the resulting attributes in case of any necessary transformations.\\
+%For a query $Q_O$ of the form $C_1(f_{C_1}^{Id}(\vec{x})) \wedge R(f_{C_1}^{Id}(\vec{x}),f_{C_2}^{Id}(\vec{x})) \wedge C_2(f_{C_2}^{Id}(\vec{y}))$ the translation is given by:
+%\begin{align*}
+%\lambda(\Phi_{S_1,\ldots,S_n}(\vec{x_1},\vec{x_2})[t_i,t_f,\delta])=\pi_{p^{Proj}}( \Join_{p^{Join}}
+%&(  \sigma_{p^{Sel}} (\omega_{t_i,t_f,\delta}S_1),\dots ,\\
+%&\sigma_{p^{Sel}} (\omega_{t_i,t_f,\delta}S_n)))
+%\end{align*}
+%As in the previous cases, the logical operators are applied following the mapping definition $\mathcal{M}$.
+
+%Then I explain semantics of mappings. based on barrasa thesis. try to align in some way to odba. put emphasis on the additions to mappings semantics exlpain perfect reform algorithm, explain translation to sneeql
