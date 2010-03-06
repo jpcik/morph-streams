@@ -1,0 +1,755 @@
+This is pdfTeX, Version 3.1415926-1.40.9 (MiKTeX 2.7) (preloaded format=pdflatex 2009.7.31)  24 FEB 2010 13:22
+entering extended mode
+**rere.tex
+(rere.tex
+LaTeX2e <2005/12/01>
+Babel <v3.8l> and hyphenation patterns for english, dumylang, nohyphenation, ge
+rman, ngerman, german-x-2008-06-18, ngerman-x-2008-06-18, french, loaded.
+(llncs.cls
+Document Class: llncs 2004/08/17 v2.14 
+ LaTeX document class for Lecture Notes in Computer Science
+("C:\Archivos de programa\MikTex\tex\latex\base\article.cls"
+Document Class: article 2005/09/16 v1.4f Standard LaTeX document class
+("C:\Archivos de programa\MikTex\tex\latex\base\size10.clo"
+File: size10.clo 2005/09/16 v1.4f Standard LaTeX file (size option)
+)
+\c@part=\count79
+\c@section=\count80
+\c@subsection=\count81
+\c@subsubsection=\count82
+\c@paragraph=\count83
+\c@subparagraph=\count84
+\c@figure=\count85
+\c@table=\count86
+\abovecaptionskip=\skip41
+\belowcaptionskip=\skip42
+\bibindent=\dimen102
+)
+("C:\Archivos de programa\MikTex\tex\latex\tools\multicol.sty"
+Package: multicol 2006/05/18 v1.6g multicolumn formatting (FMi)
+\c@tracingmulticols=\count87
+\mult@box=\box26
+\multicol@leftmargin=\dimen103
+\c@unbalance=\count88
+\c@collectmore=\count89
+\doublecol@number=\count90
+\multicoltolerance=\count91
+\multicolpretolerance=\count92
+\full@width=\dimen104
+\page@free=\dimen105
+\premulticols=\dimen106
+\postmulticols=\dimen107
+\multicolsep=\skip43
+\multicolbaselineskip=\skip44
+\partial@page=\box27
+\last@line=\box28
+\mult@rightbox=\box29
+\mult@grightbox=\box30
+\mult@gfirstbox=\box31
+\mult@firstbox=\box32
+\@tempa=\box33
+\@tempa=\box34
+\@tempa=\box35
+\@tempa=\box36
+\@tempa=\box37
+\@tempa=\box38
+\@tempa=\box39
+\@tempa=\box40
+\@tempa=\box41
+\@tempa=\box42
+\@tempa=\box43
+\@tempa=\box44
+\@tempa=\box45
+\@tempa=\box46
+\@tempa=\box47
+\@tempa=\box48
+\@tempa=\box49
+\c@columnbadness=\count93
+\c@finalcolumnbadness=\count94
+\last@try=\dimen108
+\multicolovershoot=\dimen109
+\multicolundershoot=\dimen110
+\mult@nat@firstbox=\box50
+\colbreak@box=\box51
+)
+\c@chapter=\count95
+LaTeX Font Info:    Redeclaring math symbol \Gamma on input line 360.
+LaTeX Font Info:    Redeclaring math symbol \Delta on input line 361.
+LaTeX Font Info:    Redeclaring math symbol \Theta on input line 362.
+LaTeX Font Info:    Redeclaring math symbol \Lambda on input line 363.
+LaTeX Font Info:    Redeclaring math symbol \Xi on input line 364.
+LaTeX Font Info:    Redeclaring math symbol \Pi on input line 365.
+LaTeX Font Info:    Redeclaring math symbol \Sigma on input line 366.
+LaTeX Font Info:    Redeclaring math symbol \Upsilon on input line 367.
+LaTeX Font Info:    Redeclaring math symbol \Phi on input line 368.
+LaTeX Font Info:    Redeclaring math symbol \Psi on input line 369.
+LaTeX Font Info:    Redeclaring math symbol \Omega on input line 370.
+\tocchpnum=\dimen111
+\tocsecnum=\dimen112
+\tocsectotal=\dimen113
+\tocsubsecnum=\dimen114
+\tocsubsectotal=\dimen115
+\tocsubsubsecnum=\dimen116
+\tocsubsubsectotal=\dimen117
+\tocparanum=\dimen118
+\tocparatotal=\dimen119
+\tocsubparanum=\dimen120
+\@tempcntc=\count96
+\fnindent=\dimen121
+\c@@inst=\count97
+\c@@auth=\count98
+\c@auco=\count99
+\instindent=\dimen122
+\authrun=\box52
+\authorrunning=\toks14
+\tocauthor=\toks15
+\titrun=\box53
+\titlerunning=\toks16
+\toctitle=\toks17
+\c@theorem=\count100
+\c@case=\count101
+\c@conjecture=\count102
+\c@corollary=\count103
+\c@definition=\count104
+\c@example=\count105
+\c@exercise=\count106
+\c@lemma=\count107
+\c@note=\count108
+\c@problem=\count109
+\c@property=\count110
+\c@proposition=\count111
+\c@question=\count112
+\c@solution=\count113
+\c@remark=\count114
+\headlineindent=\dimen123
+)
+("C:\Archivos de programa\MikTex\tex\latex\amsfonts\amssymb.sty"
+Package: amssymb 2002/01/22 v2.2d
+
+("C:\Archivos de programa\MikTex\tex\latex\amsfonts\amsfonts.sty"
+Package: amsfonts 2001/10/25 v2.2f
+\@emptytoks=\toks18
+\symAMSa=\mathgroup4
+\symAMSb=\mathgroup5
+LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
+(Font)                  U/euf/m/n --> U/euf/b/n on input line 132.
+))
+("C:\Archivos de programa\MikTex\tex\latex\graphics\graphicx.sty"
+Package: graphicx 1999/02/16 v1.0f Enhanced LaTeX Graphics (DPC,SPQR)
+
+("C:\Archivos de programa\MikTex\tex\latex\graphics\keyval.sty"
+Package: keyval 1999/03/16 v1.13 key=value parser (DPC)
+\KV@toks@=\toks19
+)
+("C:\Archivos de programa\MikTex\tex\latex\graphics\graphics.sty"
+Package: graphics 2006/02/20 v1.0o Standard LaTeX Graphics (DPC,SPQR)
+
+("C:\Archivos de programa\MikTex\tex\latex\graphics\trig.sty"
+Package: trig 1999/03/16 v1.09 sin cos tan (DPC)
+)
+("C:\Archivos de programa\MikTex\tex\latex\00miktex\graphics.cfg"
+File: graphics.cfg 2007/01/18 v1.5 graphics configuration of teTeX/TeXLive
+)
+Package graphics Info: Driver file: pdftex.def on input line 90.
+
+("C:\Archivos de programa\MikTex\tex\latex\pdftex-def\pdftex.def"
+File: pdftex.def 2008/09/08 v0.04l Graphics/color for pdfTeX
+\Gread@gobject=\count115
+))
+\Gin@req@height=\dimen124
+\Gin@req@width=\dimen125
+)
+("C:\Archivos de programa\MikTex\tex\latex\placeins\placeins.sty"
+Package: placeins 2005/04/18  v 2.2
+)
+("C:\Archivos de programa\MikTex\tex\latex\colortbl\colortbl.sty"
+Package: colortbl 2001/02/13 v0.1j Color table columns (DPC)
+
+("C:\Archivos de programa\MikTex\tex\latex\tools\array.sty"
+Package: array 2005/08/23 v2.4b Tabular extension package (FMi)
+\col@sep=\dimen126
+\extrarowheight=\dimen127
+\NC@list=\toks20
+\extratabsurround=\skip45
+\backup@length=\skip46
+)
+("C:\Archivos de programa\MikTex\tex\latex\graphics\color.sty"
+Package: color 2005/11/14 v1.0j Standard LaTeX Color (DPC)
+
+("C:\Archivos de programa\MikTex\tex\latex\00miktex\color.cfg"
+File: color.cfg 2007/01/18 v1.5 color configuration of teTeX/TeXLive
+)
+Package color Info: Driver file: pdftex.def on input line 130.
+)
+\everycr=\toks21
+\minrowclearance=\skip47
+)
+("C:\Archivos de programa\MikTex\tex\latex\tools\longtable.sty"
+Package: longtable 2004/02/01 v4.11 Multi-page Table package (DPC)
+\LTleft=\skip48
+\LTright=\skip49
+\LTpre=\skip50
+\LTpost=\skip51
+\LTchunksize=\count116
+\LTcapwidth=\dimen128
+\LT@head=\box54
+\LT@firsthead=\box55
+\LT@foot=\box56
+\LT@lastfoot=\box57
+\LT@cols=\count117
+\LT@rows=\count118
+\c@LT@tables=\count119
+\c@LT@chunks=\count120
+\LT@p@ftn=\toks22
+)
+("C:\Archivos de programa\MikTex\tex\latex\multirow\multirow.sty"
+\bigstrutjot=\dimen129
+)
+("C:\Archivos de programa\MikTex\tex\latex\fancybox\fancybox.sty"
+Package: fancybox 2000/09/19 1.3
+
+Style option: `fancybox' v1.3 <2000/09/19> (tvz)
+\@fancybox=\box58
+\shadowsize=\dimen130
+\@Sbox=\box59
+\do@VerbBox=\toks23
+\the@fancyput=\toks24
+\this@fancyput=\toks25
+\EndVerbatimTokens=\toks26
+\Verbatim@Outfile=\write3
+\Verbatim@Infile=\read1
+) ("C:\Archivos de programa\MikTex\tex\latex\base\inputenc.sty"
+Package: inputenc 2006/05/05 v1.1b Input encoding file
+\inpenc@prehook=\toks27
+\inpenc@posthook=\toks28
+
+("C:\Archivos de programa\MikTex\tex\latex\base\ansinew.def"
+File: ansinew.def 2006/05/05 v1.1b Input encoding file
+))
+("C:\Archivos de programa\MikTex\tex\latex\ltxmisc\url.sty"
+\Urlmuskip=\muskip10
+Package: url 2006/04/12  ver 3.3  Verb mode for urls, etc.
+)
+("C:\Archivos de programa\MikTex\tex\latex\ltxmisc\ulem.sty"
+\UL@box=\box60
+\UL@hyphenbox=\box61
+\UL@skip=\skip52
+\UL@hook=\toks29
+\UL@pe=\count121
+\UL@pixel=\dimen131
+\ULC@box=\box62
+Package: ulem 2000/05/26
+\ULdepth=\dimen132
+)
+("C:\Archivos de programa\MikTex\tex\latex\base\latexsym.sty"
+Package: latexsym 1998/08/17 v2.2e Standard LaTeX package (lasy symbols)
+\symlasy=\mathgroup6
+LaTeX Font Info:    Overwriting symbol font `lasy' in version `bold'
+(Font)                  U/lasy/m/n --> U/lasy/b/n on input line 47.
+)
+("C:\Archivos de programa\MikTex\tex\latex\fixme\fixme.sty"
+Package: fixme 2007/11/28 v3.3 Insert fixme notes in your documents
+
+("C:\Archivos de programa\MikTex\tex\latex\base\ifthen.sty"
+Package: ifthen 2001/05/26 v1.1c Standard LaTeX ifthen package (DPC)
+)
+("C:\Archivos de programa\MikTex\tex\latex\tools\verbatim.sty"
+Package: verbatim 2003/08/22 v1.5q LaTeX2e package for verbatim enhancements
+\every@verbatim=\toks30
+\verbatim@line=\toks31
+\verbatim@in@stream=\read2
+)
+\c@fixmecount=\count122
+\c@fixmenotecount=\count123
+\c@fixmewarningcount=\count124
+\c@fixmeerrorcount=\count125
+\c@fixmefatalcount=\count126
+)
+("C:\Archivos de programa\MikTex\tex\latex\listings\listings.sty"
+\lst@mode=\count127
+\lst@gtempboxa=\box63
+\lst@token=\toks32
+\lst@length=\count128
+\lst@currlwidth=\dimen133
+\lst@column=\count129
+\lst@pos=\count130
+\lst@lostspace=\dimen134
+\lst@width=\dimen135
+\lst@newlines=\count131
+\lst@lineno=\count132
+\lst@maxwidth=\dimen136
+
+("C:\Archivos de programa\MikTex\tex\latex\listings\lstmisc.sty"
+File: lstmisc.sty 2007/02/22 1.4 (Carsten Heinz)
+\c@lstnumber=\count133
+\lst@skipnumbers=\count134
+\lst@framebox=\box64
+)
+("C:\Archivos de programa\MikTex\tex\latex\listings\listings.cfg"
+File: listings.cfg 2007/02/22 1.4 listings configuration
+))
+Package: listings 2007/02/22 1.4 (Carsten Heinz)
+
+("C:\Archivos de programa\MikTex\tex\latex\amsmath\amsmath.sty"
+Package: amsmath 2000/07/18 v2.13 AMS math features
+\@mathmargin=\skip53
+
+For additional information on amsmath, use the `?' option.
+("C:\Archivos de programa\MikTex\tex\latex\amsmath\amstext.sty"
+Package: amstext 2000/06/29 v2.01
+
+("C:\Archivos de programa\MikTex\tex\latex\amsmath\amsgen.sty"
+File: amsgen.sty 1999/11/30 v2.0
+\@emptytoks=\toks33
+\ex@=\dimen137
+))
+("C:\Archivos de programa\MikTex\tex\latex\amsmath\amsbsy.sty"
+Package: amsbsy 1999/11/29 v1.2d
+\pmbraise@=\dimen138
+)
+("C:\Archivos de programa\MikTex\tex\latex\amsmath\amsopn.sty"
+Package: amsopn 1999/12/14 v2.01 operator names
+)
+\inf@bad=\count135
+LaTeX Info: Redefining \frac on input line 211.
+\uproot@=\count136
+\leftroot@=\count137
+LaTeX Info: Redefining \overline on input line 307.
+\classnum@=\count138
+\DOTSCASE@=\count139
+LaTeX Info: Redefining \ldots on input line 379.
+LaTeX Info: Redefining \dots on input line 382.
+LaTeX Info: Redefining \cdots on input line 467.
+\Mathstrutbox@=\box65
+\strutbox@=\box66
+\big@size=\dimen139
+LaTeX Font Info:    Redeclaring font encoding OML on input line 567.
+LaTeX Font Info:    Redeclaring font encoding OMS on input line 568.
+
+
+Package amsmath Warning: Unable to redefine math accent \vec.
+
+\macc@depth=\count140
+\c@MaxMatrixCols=\count141
+\dotsspace@=\muskip11
+\c@parentequation=\count142
+\dspbrk@lvl=\count143
+\tag@help=\toks34
+\row@=\count144
+\column@=\count145
+\maxfields@=\count146
+\andhelp@=\toks35
+\eqnshift@=\dimen140
+\alignsep@=\dimen141
+\tagshift@=\dimen142
+\tagwidth@=\dimen143
+\totwidth@=\dimen144
+\lineht@=\dimen145
+\@envbody=\toks36
+\multlinegap=\skip54
+\multlinetaggap=\skip55
+\mathdisplay@stack=\toks37
+LaTeX Info: Redefining \[ on input line 2666.
+LaTeX Info: Redefining \] on input line 2667.
+) ("C:\Archivos de programa\MikTex\tex\latex\hyperref\hyperref.sty"
+Package: hyperref 2009/05/23 v6.78s Hypertext links for LaTeX
+
+("C:\Archivos de programa\MikTex\tex\generic\oberdiek\ifpdf.sty"
+Package: ifpdf 2009/04/10 v2.0 Provides the ifpdf switch (HO)
+Package ifpdf Info: pdfTeX in pdf mode detected.
+)
+("C:\Archivos de programa\MikTex\tex\generic\oberdiek\ifvtex.sty"
+Package: ifvtex 2008/11/04 v1.4 Switches for detecting VTeX and its modes (HO)
+Package ifvtex Info: VTeX not detected.
+)
+("C:\Archivos de programa\MikTex\tex\latex\ifxetex\ifxetex.sty"
+Package: ifxetex 2009/01/23 v0.5 Provides ifxetex conditional
+)
+("C:\Archivos de programa\MikTex\tex\latex\oberdiek\hycolor.sty"
+Package: hycolor 2008/09/08 v1.4 Code for color options of hyperref/bookmark (H
+O)
+
+("C:\Archivos de programa\MikTex\tex\latex\oberdiek\xcolor-patch.sty"
+Package: xcolor-patch 2008/09/08 xcolor patch
+))
+\@linkdim=\dimen146
+\Hy@linkcounter=\count147
+\Hy@pagecounter=\count148
+
+("C:\Archivos de programa\MikTex\tex\latex\hyperref\pd1enc.def"
+File: pd1enc.def 2009/05/23 v6.78s Hyperref: PDFDocEncoding definition (HO)
+)
+("C:\Archivos de programa\MikTex\tex\generic\oberdiek\etexcmds.sty"
+Package: etexcmds 2007/12/12 v1.2 Prefix for e-TeX command names (HO)
+
+("C:\Archivos de programa\MikTex\tex\generic\oberdiek\infwarerr.sty"
+Package: infwarerr 2007/09/09 v1.2 Providing info/warning/message (HO)
+)
+Package etexcmds Info: Could not find \expanded.
+(etexcmds)             That can mean that you are not using pdfTeX 1.50 or
+(etexcmds)             that some package has redefined \expanded.
+(etexcmds)             In the latter case, load this package earlier.
+)
+("C:\Archivos de programa\MikTex\tex\latex\00miktex\hyperref.cfg"
+File: hyperref.cfg 2002/06/06 v1.2 hyperref configuration of TeXLive
+)
+("C:\Archivos de programa\MikTex\tex\latex\oberdiek\kvoptions.sty"
+Package: kvoptions 2009/04/10 v3.1 Keyval support for LaTeX options (HO)
+)
+Package hyperref Info: Hyper figures OFF on input line 2953.
+Package hyperref Info: Link nesting OFF on input line 2958.
+Package hyperref Info: Hyper index ON on input line 2961.
+Package hyperref Info: Plain pages OFF on input line 2968.
+Package hyperref Info: Backreferencing OFF on input line 2973.
+
+Implicit mode ON; LaTeX internals redefined
+Package hyperref Info: Bookmarks ON on input line 3163.
+LaTeX Info: Redefining \url on input line 3400.
+("C:\Archivos de programa\MikTex\tex\generic\oberdiek\bitset.sty"
+Package: bitset 2007/09/28 v1.0 Data type bit set (HO)
+
+("C:\Archivos de programa\MikTex\tex\generic\oberdiek\intcalc.sty"
+Package: intcalc 2007/09/27 v1.1 Expandable integer calculations (HO)
+)
+("C:\Archivos de programa\MikTex\tex\generic\oberdiek\bigintcalc.sty"
+Package: bigintcalc 2007/11/11 v1.1 Expandable big integer calculations (HO)
+
+("C:\Archivos de programa\MikTex\tex\generic\oberdiek\pdftexcmds.sty"
+Package: pdftexcmds 2009/04/10 v0.4 LuaTeX support for pdfTeX utility functions
+ (HO)
+
+("C:\Archivos de programa\MikTex\tex\generic\oberdiek\ifluatex.sty"
+Package: ifluatex 2009/04/10 v1.1 Provides the ifluatex switch (HO)
+Package ifluatex Info: LuaTeX not detected.
+)
+Package pdftexcmds Info: LuaTeX not detected on input line 145.
+)))
+("C:\Archivos de programa\MikTex\tex\generic\oberdiek\kvsetkeys.sty"
+Package: kvsetkeys 2007/09/29 v1.3 Key value parser with default handler suppor
+t (HO)
+)
+\Fld@menulength=\count149
+\Field@Width=\dimen147
+\Fld@charsize=\dimen148
+\Field@toks=\toks38
+Package hyperref Info: Hyper figures OFF on input line 4317.
+Package hyperref Info: Link nesting OFF on input line 4322.
+Package hyperref Info: Hyper index ON on input line 4325.
+Package hyperref Info: backreferencing OFF on input line 4332.
+Package hyperref Info: Link coloring OFF on input line 4337.
+Package hyperref Info: Link coloring with OCG OFF on input line 4342.
+Package hyperref Info: PDF/A mode OFF on input line 4347.
+
+("C:\Archivos de programa\MikTex\tex\generic\oberdiek\atbegshi.sty"
+Package: atbegshi 2008/07/31 v1.9 At begin shipout hook (HO)
+)
+\Hy@abspage=\count150
+\c@Item=\count151
+\c@Hfootnote=\count152
+)
+*hyperref using default driver hpdftex*
+("C:\Archivos de programa\MikTex\tex\latex\hyperref\hpdftex.def"
+File: hpdftex.def 2009/05/23 v6.78s Hyperref driver for pdfTeX
+\Fld@listcount=\count153
+) (rere.aux)
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 60.
+LaTeX Font Info:    ... okay on input line 60.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 60.
+LaTeX Font Info:    ... okay on input line 60.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 60.
+LaTeX Font Info:    ... okay on input line 60.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 60.
+LaTeX Font Info:    ... okay on input line 60.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 60.
+LaTeX Font Info:    ... okay on input line 60.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 60.
+LaTeX Font Info:    ... okay on input line 60.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 60.
+LaTeX Font Info:    ... okay on input line 60.
+
+("C:\Archivos de programa\MikTex\tex\context\base\supp-pdf.tex"
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count154
+\scratchdimen=\dimen149
+\scratchbox=\box67
+\nofMPsegments=\count155
+\nofMParguments=\count156
+\everyMPshowfont=\toks39
+\MPscratchCnt=\count157
+\MPscratchDim=\dimen150
+\MPnumerator=\count158
+\everyMPtoPDFconversion=\toks40
+)
+\c@lstlisting=\count159
+Package hyperref Info: Link coloring OFF on input line 60.
+ ("C:\Archivos de programa\MikTex\tex\latex\hyperref\nameref.sty"
+Package: nameref 2007/05/29 v2.31 Cross-referencing by name of section
+
+("C:\Archivos de programa\MikTex\tex\latex\oberdiek\refcount.sty"
+Package: refcount 2008/08/11 v3.1 Data extraction from references (HO)
+)
+\c@section@level=\count160
+)
+LaTeX Info: Redefining \ref on input line 60.
+LaTeX Info: Redefining \pageref on input line 60.
+ (rere.out)
+(rere.out)
+\@outlinefile=\write4
+\AtBeginShipoutBox=\box68
+LaTeX Font Info:    Try loading font information for U+msa on input line 108.
+ ("C:\Archivos de programa\MikTex\tex\latex\amsfonts\umsa.fd"
+File: umsa.fd 2002/01/19 v2.2g AMS font definitions
+)
+LaTeX Font Info:    Try loading font information for U+msb on input line 108.
+
+("C:\Archivos de programa\MikTex\tex\latex\amsfonts\umsb.fd"
+File: umsb.fd 2002/01/19 v2.2g AMS font definitions
+)
+LaTeX Font Info:    Try loading font information for U+lasy on input line 108.
+
+("C:\Archivos de programa\MikTex\tex\latex\base\ulasy.fd"
+File: ulasy.fd 1998/08/17 v2.2e LaTeX symbol font definitions
+)
+
+Package hyperref Warning: The anchor of a bookmark and its parent's must not
+(hyperref)                be the same. Added a new anchor on input line 108.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `math shift' on input line 108.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `superscript' on input line 108.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `math shift' on input line 108.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `math shift' on input line 108.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `superscript' on input line 108.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `math shift' on input line 108.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `math shift' on input line 108.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `superscript' on input line 108.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `math shift' on input line 108.
+
+(introduction.tex [1
+
+{C:/Documents and Settings/All Users/Datos de programa/MiKTeX/2.7/pdftex/config
+/pdftex.map}]) (relatedwork.tex [2] [3]
+LaTeX Font Info:    Font shape `U/lasy/b/n' in size <7> not available
+(Font)              Font shape `U/lasy/m/n' tried instead on input line 176.
+LaTeX Font Info:    Font shape `U/lasy/b/n' in size <5> not available
+(Font)              Font shape `U/lasy/m/n' tried instead on input line 176.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `math shift' on input line 176.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `subscript' on input line 176.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `math shift' on input line 176.
+
+[4] ("C:\Archivos de programa\MikTex\tex\latex\listings\lstlang1.sty"
+File: lstlang1.sty 2004/09/05 1.3 listings language file
+)
+LaTeX Font Info:    Try loading font information for OML+cmss on input line 240
+.
+LaTeX Font Info:    No file OMLcmss.fd. on input line 240.
+
+
+LaTeX Font Warning: Font shape `OML/cmss/m/n' undefined
+(Font)              using `OML/cmm/m/it' instead
+(Font)              for symbol `textless' on input line 240.
+
+
+LaTeX Font Warning: Font shape `OT1/cmss/m/it' in size <7> not available
+(Font)              Font shape `OT1/cmss/m/sl' tried instead on input line 240.
+
+
+
+LaTeX Font Warning: Font shape `OML/cmss/m/it' undefined
+(Font)              using `OML/cmm/m/it' instead
+(Font)              for symbol `textgreater' on input line 240.
+
+LaTeX Font Info:    Try loading font information for OMS+cmss on input line 244
+.
+LaTeX Font Info:    No file OMScmss.fd. on input line 244.
+
+LaTeX Font Warning: Font shape `OMS/cmss/m/n' undefined
+(Font)              using `OMS/cmsy/m/n' instead
+(Font)              for symbol `textbraceleft' on input line 244.
+
+) (approach.tex [5] <img/approach.pdf, id=230, 925.4575pt x 533.995pt>
+File: img/approach.pdf Graphic file (type pdf)
+
+<use img/approach.pdf> [6 <img/approach.pdf>]) (syntax.tex
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `math shift' on input line 33.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `subscript' on input line 33.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `math shift' on input line 33.
+
+[7]) (semantics.tex
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `math shift' on input line 7.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `subscript' on input line 7.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `math shift' on input line 7.
+
+[8]
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `math shift' on input line 93.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `subscript' on input line 93.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `math shift' on input line 93.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `math shift' on input line 93.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `subscript' on input line 93.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `math shift' on input line 93.
+
+[9]
+Underfull \hbox (badness 10000) in paragraph at lines 127--133
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 139--144
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 150--154
+
+ []
+
+[10]) (execution.tex
+("C:\Archivos de programa\MikTex\tex\latex\listings\lstlang1.sty"
+File: lstlang1.sty 2004/09/05 1.3 listings language file
+)
+("C:\Archivos de programa\MikTex\tex\latex\listings\lstlang2.sty"
+File: lstlang2.sty 2004/09/05 1.3 listings language file
+) [11]
+Overfull \hbox (2.89973pt too wide) in paragraph at lines 91--94
+\OT1/cmr/m/n/10 The map-ping ex-tract here de-fines how to con-struct the $\OML
+/cmm/m/it/10 WindSpeedMeasurement$
+ []
+
+
+Overfull \hbox (9.88452pt too wide) in paragraph at lines 98--99
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
+ []
+
+[12]
+LaTeX Font Info:    Font shape `OT1/cmtt/bx/n' in size <7> not available
+(Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 117.
+
+Overfull \hbox (0.95932pt too wide) in paragraph at lines 117--118
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
+ []
+
+) (futurework.tex [13])
+
+Package hyperref Warning: Difference (2) between bookmark levels is greater 
+(hyperref)                than one, level fixed on input line 127.
+
+(rere.bbl [14])
+
+Package FiXme Summary: Number of notes: 0,
+(FiXme)                Number of warnings: 0,
+(FiXme)                Number of errors: 0,
+(FiXme)                Number of fatal errors: 0,
+(FiXme)                Total: 0.
+
+[15] (rere.aux)
+
+LaTeX Font Warning: Some font shapes were not available, defaults substituted.
+
+ ) 
+Here is how much of TeX's memory you used:
+ 8869 strings out of 95290
+ 116049 string characters out of 1182731
+ 253482 words of memory out of 1500000
+ 11764 multiletter control sequences out of 110000
+ 17290 words of font info for 69 fonts, out of 3000000 for 5000
+ 14 hyphenation exceptions out of 8191
+ 37i,16n,51p,933b,2316s stack positions out of 5000i,500n,10000p,200000b,50000s
+<C:/Archivos de programa/MikTex/fonts/type1/bluesky/cm/cmbx10.pfb><C:/Archivo
+s de programa/MikTex/fonts/type1/bluesky/cm/cmbx12.pfb><C:/Archivos de programa
+/MikTex/fonts/type1/bluesky/cm/cmbx7.pfb><C:/Archivos de programa/MikTex/fonts/
+type1/bluesky/cm/cmbx9.pfb><C:/Archivos de programa/MikTex/fonts/type1/bluesky/
+cm/cmex10.pfb><C:/Archivos de programa/MikTex/fonts/type1/bluesky/cm/cmmi10.pfb
+><C:/Archivos de programa/MikTex/fonts/type1/bluesky/cm/cmmi5.pfb><C:/Archivos 
+de programa/MikTex/fonts/type1/bluesky/cm/cmmi7.pfb><C:/Archivos de programa/Mi
+kTex/fonts/type1/bluesky/cm/cmmib10.pfb><C:/Archivos de programa/MikTex/fonts/t
+ype1/bluesky/ams/cmmib7.pfb><C:/Archivos de programa/MikTex/fonts/type1/bluesky
+/cm/cmr10.pfb><C:/Archivos de programa/MikTex/fonts/type1/bluesky/cm/cmr5.pfb><
+C:/Archivos de programa/MikTex/fonts/type1/bluesky/cm/cmr6.pfb><C:/Archivos de 
+programa/MikTex/fonts/type1/bluesky/cm/cmr7.pfb><C:/Archivos de programa/MikTex
+/fonts/type1/bluesky/cm/cmr9.pfb><C:/Archivos de programa/MikTex/fonts/type1/bl
+uesky/cm/cmss10.pfb><C:/Archivos de programa/MikTex/fonts/type1/bluesky/cm/cmss
+8.pfb><C:/Archivos de programa/MikTex/fonts/type1/bluesky/cm/cmss9.pfb><C:/Arch
+ivos de programa/MikTex/fonts/type1/bluesky/cm/cmssbx10.pfb><C:/Archivos de pro
+grama/MikTex/fonts/type1/bluesky/cm/cmssi8.pfb><C:/Archivos de programa/MikTex/
+fonts/type1/bluesky/cm/cmsy10.pfb><C:/Archivos de programa/MikTex/fonts/type1/b
+luesky/cm/cmsy7.pfb><C:/Archivos de programa/MikTex/fonts/type1/bluesky/cm/cmti
+10.pfb><C:/Archivos de programa/MikTex/fonts/type1/bluesky/cm/cmtt10.pfb><C:/Ar
+chivos de programa/MikTex/fonts/type1/bluesky/cm/cmtt8.pfb><C:/Archivos de prog
+rama/MikTex/fonts/type1/bluesky/cm/cmtt9.pfb><C:/Archivos de programa/MikTex/fo
+nts/type1/bluesky/latex-fonts/lasy10.pfb><C:/Archivos de programa/MikTex/fonts/
+type1/bluesky/ams/msam10.pfb><C:/Archivos de programa/MikTex/fonts/type1/bluesk
+y/ams/msam7.pfb><C:/Archivos de programa/MikTex/fonts/type1/bluesky/ams/msbm10.
+pfb>
+Output written on rere.pdf (15 pages, 785198 bytes).
+PDF statistics:
+ 541 PDF objects out of 1000 (max. 8388607)
+ 145 named destinations out of 1000 (max. 131072)
+ 186 words of extra memory for PDF output out of 10000 (max. 10000000)
+

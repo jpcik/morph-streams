@@ -1,0 +1,138 @@
+
+%%%%%%%%%%%%%%%%%%%%%%% file typeinst.tex %%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% This is the LaTeX source for the instructions to authors using
+% the LaTeX document class 'llncs.cls' for contributions to
+% the Lecture Notes in Computer Sciences series.
+% http://www.springer.com/lncs       Springer Heidelberg 2006/05/04
+%
+% It may be used as a template for your own input - copy it
+% to a new file with a new name and use it as the basis
+% for your article.
+%
+% NB: the document class 'llncs' has its own and detailed documentation, see
+% ftp://ftp.springer.de/data/pubftp/pub/tex/latex/llncs/latex2e/llncsdoc.pdf
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass{llncs}
+%\documentclass[runningheads]{llncs}
+
+\usepackage{amssymb}
+\setcounter{tocdepth}{3}
+\usepackage{graphicx}
+
+\usepackage[section]{placeins}
+\usepackage{colortbl}
+\usepackage{longtable}
+
+
+\usepackage{multirow}
+\usepackage{fancybox}
+%\usepackage[T1]{fontenc}
+\usepackage[ansinew]{inputenc}
+%\usepackage{a4wide, url}
+\usepackage{url}
+\usepackage[normalem]{ulem}
+%\newlength\wvtextpercent
+%\setlength\wvtextpercent{0.009\textwidth}
+\usepackage{latexsym}
+\usepackage{fixme}
+\usepackage{verbatim}
+\usepackage{listings}
+\usepackage{amsmath}
+
+\usepackage{array} % and/or
+\usepackage{hyperref}
+
+
+\newcommand{\keywords}[1]{\par\addvspace\baselineskip
+\noindent\keywordname\enspace\ignorespaces#1}
+\newcommand{\LJoin}{\includegraphics[scale=1.0]{img/ljoin}}
+
+\newcommand{\superscript}[1]{\ensuremath{^{\textrm{#1}}}}
+\newcommand{\subscript}[1]{\ensuremath{_{\textrm{#1}}}}
+
+\newcommand{\rtwoo}{\textsf{R\subscript{2}O}}
+\newcommand{\stwoo}{\textsf{S\subscript{2}O}}
+\newcommand{\sparqlstr}{SPARQL\subscript{STR}}
+%\setcounter{secnumdepth}{3}
+\begin{document}
+
+%\mainmatter  % start of an individual contribution
+\makeatletter
+\providecommand*{\toclevel@title}{0}
+\makeatother
+
+\makeatletter
+\providecommand*{\toclevel@author}{1}
+\makeatother
+
+
+% first the title is needed
+\title{Enabling Ontology-based Access to Streaming Data Sources}
+
+
+% a short form should be given in case it is too long for the running head
+\titlerunning{Ontology-based access to streaming data}
+
+% the name(s) of the author(s) follow(s) next
+%
+% NB: Chinese authors should write their first names(s) in front of
+% their surnames. This ensures that the names appear correctly in
+% the running heads and the author index.
+%
+\author{Jean-Paul Calbimonte$^1$, Oscar Corcho$^1$, and Alasdair J G Gray$^2$}
+%
+%\authorrunning{tu titulo}
+% (feature abused for this document to repeat the title also on left hand pages)
+
+% the affiliations are given next; don't give your e-mail address
+% unless you accept that it will be published
+\institute{$^1$Ontology Engineering Group, Departamento de Inteligencia Artificial, Facultad de Inform\'{a}tica, Universidad Polit\'{e}cnica de Madrid,\\ Campus de Montegancedo s/n 28660, Boadilla del Monte, Spain\\
+\email{jp.calbimonte@upm.es,ocorcho@fi.upm.es}\\
+$^2$School of Computer Science, The University of Manchester,\\
+Oxford Road, Machester M13 9PL, United Kingdom\\
+\email{a.gray@cs.man.ac.uk}\\}
+%\url{http://www.springer.com/lncs}}
+%
+% NB: a more complex sample for affiliations and the mapping to the
+% corresponding authors can be found in the file "llncs.dem"
+% (search for the string "\mainmatter" where a contribution starts).
+% "llncs.dem" accompanies the document class "llncs.cls".
+%
+
+%\toctitle{Some good title}
+%\tocauthor{jp}
+\maketitle
+
+\begin{abstract}
+The availability of streaming data sources is progressively increasing thanks to the development of ubiquitous data capturing technologies such as sensor networks. The heterogeneity of these sources introduces the requirement of providing data access in a unified and coherent manner. In this paper we describe an ontology-based streaming data access service, based on extensions to the \rtwoo\ mapping language and its query processor ODEMapster, and to the C-SPARQL RDF stream query language. A preliminary implementation of the approach is also presented. With this proposal we expect to set the basis for future efforts in ontology-based streaming data integration.
+
+%\keywords{Streaming data access, Ontology-based data access}
+\end{abstract}
+
+
+\input{introduction}
+
+\input{relatedwork}
+%\input{obdi}
+\input{approach}
+\input{syntax}
+\input{semantics}
+\input{execution}
+\input{futurework}
+
+\subsubsection{Acknowledgments}
+This work has been supported by the European Commission project SemSorGrid4Env (FP7-223913). We also thank Alvaro A A
+Fernandes, Ixent Galpin, and Norman W Paton, from the University of Manchester, for their valuable ideas and
+suggestions.
+
+\phantomsection
+\addcontentsline{toc}{section}{References}
+\bibliographystyle{splncs}
+\bibliography{re}
+
+
+
+\end{document}
