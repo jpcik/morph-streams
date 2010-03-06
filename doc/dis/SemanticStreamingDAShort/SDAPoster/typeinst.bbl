@@ -1,0 +1,45 @@
+\begin{thebibliography}{1}
+
+\bibitem{Madden_05}
+Madden, S.R., Franklin, M.J., Hellerstein, J.M., Hong, W.:
+\newblock Tiny{DB}: an acquisitional query processing system for sensor
+  networks.
+\newblock ACM Trans. Database Syst. \textbf{30}(1) (2005)  122--173
+
+\bibitem{Arasu_06a}
+Arasu, A., Babcock, B., Babu, S., Cieslewicz, J., Datar, M., Ito, K., Motwani,
+  R., Srivastava, U., Widom, J.:
+\newblock Stream: The stanford data stream management system.
+\newblock In Garofalakis, M., Gehrke, J., Rastogi, R., eds.: Data Stream
+  Management.
+\newblock (2006)
+
+\bibitem{Galpin_09}
+Galpin, I., Brenninkmeijer, C.Y., Jabeen, F., Fernandes, A.A., Paton, N.W.:
+\newblock Comprehensive optimization of declarative sensor network queries.
+\newblock In: SSDBM 2009. (2009)  339--360
+
+\bibitem{Sahoo_09}
+Sahoo, S.S., Halb, W., Hellmann, S., Idehen, K., Jr, T.T., Auer, S., Sequeda,
+  J., Ezzat, A.:
+\newblock A survey of current approaches for mapping of relational databases to
+  {RDF}.
+\newblock W3C (January 2009)
+
+\bibitem{Kossmann_00}
+Kossmann, D.:
+\newblock The state of the art in distributed query processing.
+\newblock ACM Comput. Surv. \textbf{32}(4) (2000)  422--469
+
+\bibitem{Barrasa_04}
+Barrasa, J., Óscar Corcho, Gómez-Pérez, A.:
+\newblock {R2O}, an extensible and semantically based database-to-ontology
+  mapping language.
+\newblock In: {SWDB2004}. (2004)  1069--1070
+
+\bibitem{Brenninkmeijer_08}
+Brenninkmeijer, C.Y., Galpin, I., Fernandes, A.A., Paton, N.W.:
+\newblock A semantics for a query language over sensors, streams and relations.
+\newblock In: BNCOD '08. (2008)  87--99
+
+\end{thebibliography}

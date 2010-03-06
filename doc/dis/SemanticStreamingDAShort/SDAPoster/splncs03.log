@@ -1,0 +1,35 @@
+This is pdfTeX, Version 3.1415926-1.40.9 (MiKTeX 2.7) (preloaded format=latex 2009.6.8)  3 MAR 2010 11:52
+entering extended mode
+**splncs03.bst
+(splncs03.bst
+LaTeX2e <2005/12/01>
+Babel <v3.8l> and hyphenation patterns for english, dumylang, nohyphenation, ge
+rman, ngerman, german-x-2008-06-18, ngerman-x-2008-06-18, french, loaded.
+
+! LaTeX Error: Missing \begin{document}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.71 E
+      NTRY
+? 
+! Emergency stop.
+ ...                                              
+                                                  
+l.71 E
+      NTRY
+You're in trouble here.  Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+ 
+Here is how much of TeX's memory you used:
+ 8 strings out of 95291
+ 228 string characters out of 1182759
+ 45021 words of memory out of 1500000
+ 3320 multiletter control sequences out of 110000
+ 3640 words of font info for 14 fonts, out of 3000000 for 5000
+ 14 hyphenation exceptions out of 8191
+ 6i,0n,4p,248b,14s stack positions out of 5000i,500n,10000p,200000b,50000s
+No pages of output.
