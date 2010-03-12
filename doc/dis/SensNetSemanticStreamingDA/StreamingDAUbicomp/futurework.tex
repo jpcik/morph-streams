@@ -11,31 +11,37 @@ relevant for supporting the increasing number of sensor network applications bei
 years. The extensions presented in this paper can be summarised in Table \ref{tab:tabla}.
 
 \begin{table}
-\vspace{-10pt}
+%\vspace{-10pt}
+\smally
 %\scriptsize
-\tiny
 \begin{tabular}{|c|c|c|c|}
 \hline
 Basis & Extension & Syntax & Semantics \\
 \hline
-\multirow{2}{*}{C-SPARQL} & Window variable upper boundary & \texttt{RANGE} $t_i$ \texttt{TO} $t_f$& $k \centerdot \delta + t_i<\tau $ \\
-& Syntax for current timestamp & \texttt{NOW} & $\leq k \centerdot \delta +t_f$ \\
-& & & $\tau = now$ \\
+\multirow{2}{*}{C-SPARQL} & Window variable %upper boundary 
+& \texttt{RANGE} $t_i$ \texttt{TO} $t_f$& $k \centerdot \delta + t_i<\tau $ \\
+& upper boundary & & $\leq k \centerdot \delta +t_f$ \\
+&&&\\
+& Syntax for current & \texttt{NOW} & $\tau = now$ \\
+& timestamp &&\\
 \hline
-\multirow{4}{*}{\rtwoo} & Stream definitions in mapping & \texttt{streamschema-desc} & Streaming data types \\
-& & \texttt{has-stream} & \texttt{StreamOf [Data]} \\
-& & \texttt{timestam-desc} & \texttt{TaggedTuple, Window}\\
-& Virtual RDF Stream IRIs & \texttt{virtualStream <IRI>} & \\
+\multirow{4}{*}{R\subscript{2}O} & Stream definitions & \texttt{streamschema-desc} & Streaming data types:\\
+& in mappings & \texttt{has-stream} & \texttt{StreamOf [Data]} \\
+& & \texttt{timestamp-desc} & \texttt{TaggedTuple,}\\
+& & & \texttt{Window.} \\
+& Virtual RDF  & \texttt{virtualStream} & \texttt{extentName}\\
+& Stream IRIs & \texttt{<IRI>} & \\
 \hline
 \multirow{3}{*}{ODEMapster} & Window translation & - & $\lambda(\Phi_{S_i}(\vec{x})[t_i,t_f,\delta])$\\
-&in the processor, classes,  & - & $\omega_{t_i,t_f,\delta}S_i$ \\
-&object and dataype attributes & - &    \\
+&in the processor, &  & $\omega_{t_i,t_f,\delta}S_i$ \\
+&classes, object and &  &    \\
+& dataype attributes &  &    \\
 \hline
 \end{tabular}
 \vspace{10pt}
 \caption{Extensions and additions to \rtwoo , ODEMapster and C-SPARQL}
 \label{tab:tabla}
-\vspace{-20pt}
+%\vspace{-20pt}
 \end{table}
 
 

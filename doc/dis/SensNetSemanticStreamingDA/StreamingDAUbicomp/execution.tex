@@ -41,7 +41,7 @@ in-network or out-of-network streaming query processor, whose SNEEql query langu
 
 %\subsection{Execution walkthrough}
 
-Consider the following example, a stream \texttt{windsamples} of wind sensor measurements  and a table \texttt{sensors}:
+Consider the following example, a stream \codiga{windsamples} of wind sensor measurements  and a table \codiga{sensors}:
 \begin{lstlisting}[style=HaskellSNEE,language=Haskell,frame=none]
 windsamples: (sensorid INT PK,ts DATETIME PK,speed FLOAT,
               direction FLOAT)
@@ -57,7 +57,7 @@ Measurement \sqsubseteq\ & \exists isProducedBy.Sensor \\
 Sensor \sqsubseteq\ & \exists hasName
 \end{align*}
 %
-Then we can define an \stwoo\ mapping that splits the \linebreak \texttt{windsamples} stream tuples into instances of two different concepts \textit{WindSpeedMeasurement} and \textit{WindDirectionMeasurement}. Here is an extract of the \stwoo\ mapping concerning the \textit{WindSpeedMeasurement}.
+Then we can define an \stwoo\ mapping that splits the \linebreak \codiga{windsamples} stream tuples into instances of two different concepts \textit{WindSpeedMeasurement} and \textit{WindDirectionMeasurement}. Here is an extract of the \stwoo\ mapping concerning the \textit{WindSpeedMeasurement}.
 
 \lstdefinestyle{R2O}{basicstyle=\sffamily\scriptsize,
                         %keywordstyle=\lstuppercase,
@@ -90,7 +90,7 @@ conceptmap-def Sensor
      has-column sensors.sensorid
 \end{lstlisting}
 %
-The mapping extract here defines how to construct the \textit{WindSpeedMeasurement} (\textit{WindSM}) and \textit{Sensor} class instances from the \texttt{windsamples} stream and the \texttt{sensors} table: \linebreak $\Psi_{WindSM}\leadsto \Phi_{\mathtt{windsamples}}$ and $\Psi_{Sensor}\leadsto \Phi_{\mathtt{sensors}}$. In the case of the \textit{WindSpeedMeasurement} the function $f_{WindSM}^{Id}$ produces the URI's of the instances by concatenating the \texttt{sensorid} and \texttt{ts} attributes.
+The mapping extract here defines how to construct the \textit{WindSpeedMeasurement} (\textit{WindSM}) and \textit{Sensor} class instances from the \codiga{windsamples} stream and the \codiga{sensors} table: \linebreak $\Psi_{WindSM}\leadsto \Phi_{\mathtt{windsamples}}$ and $\Psi_{Sensor}\leadsto \Phi_{\mathtt{sensors}}$. In the case of the \textit{WindSpeedMeasurement} the function $f_{WindSM}^{Id}$ produces the URI's of the instances by concatenating the \codiga{sensorid} and \codiga{ts} attributes.
 %explain the rest of the expression
 Now we can pose a query over the ontology using \sparqlstr\, for example to obtain the wind speed measurements taken in the last 10 minutes.
 \begin{lstlisting}[style=SPARQLSTRStyle,language=SPARQLSTR,frame=none]
@@ -105,16 +105,16 @@ fire:hasSpeed ?speed;
 }
 \end{lstlisting}
 
-A class query atom $WindSpeedMeasurement(x)$ and a datatype property atom $hasSpeed(x,z)$ can be extracted from the \sparqlstr\ query. The window specification $[t_i=now-10,t_f=now,\delta=1,unit=minutes]$ is also obtained. As it is defined in the \stwoo\ mapping the \textit{WindSpeedMeasurment} instances are generated based on the \texttt{sensorid} and \texttt{ts} attributes of the \texttt{windsamples} stream, using a concatenation function to generate each instance URI.
+A class query atom \textit{WindSpeedMeasurement(x)} and a datatype property atom \textit{hasSpeed(x,z)} can be extracted from the \linebreak \sparqlstr\ query. The window specification $[t_i=now-10,t_f=now,\delta=1,unit=minutes]$ is also obtained. As it is defined in the \stwoo\ mapping the \textit{WindSpeedMeasurment} instances are generated based on the \codiga{sensorid} and \codiga{ts} attributes of the \codiga{windsamples} stream, using a concatenation function to generate each instance URI.
 % Hence the processor will evaluate
 %\begin{align*}
 %\lambda(\Phi_{\mathtt{windsamples}}(x_{\mathtt{sensorid}},x_{\mathtt{ts}}))[now-10,now,1]) %= \\ \pi_{\mathtt{sensorid,ts}}(\omega_{now-10,now,1}\mathtt{windsamples})
 %\end{align*}
-Similarly the \stwoo\ mapping defines that $hasSpeed$ properties are generated from the values of the speed attribute of the \texttt{windsamples} stream. The processor will evaluate this as:
+Similarly the \stwoo\ mapping defines that \textit{hasSpeed} properties are generated from the values of the speed attribute of the \codiga{windsamples} stream. The processor will evaluate this as:
 \begin{align*}
 \lambda(\Phi_{\mathtt{windsamples}}(x_{\mathtt{sensorid}},x_{\mathtt{ts}},z_{\mathtt{speed}})[now-10,now,1]) = \\ \pi_{\mathtt{sensorid,ts,speed}}(\omega_{now-10,now,1} \mathtt{windsamples})
 \end{align*}
-In this case no joins and other selection conditions are needed, and only one stream has to be queried to produce the results. The query generated in the SNEEql language is the following\footnote {Although the current available implementation of the SNEE processor lacks the \texttt{concat} operator, we include the sample query in its complete form here.}:
+In this case no joins and other selection conditions are needed, and only one stream has to be queried to produce the results. The query generated in the SNEEql language is the following\footnote {Although the current available implementation of the SNEE processor lacks the \codiga{concat} operator, we include the sample query in its complete form here.}:
 
 \begin{lstlisting}[style=HaskellSNEE,language=SQL,frame=none]
 SELECT RSTREAM concat('http://ssg4env.eu#WindSM',
@@ -123,7 +123,7 @@ as  id ,( windsamples.speed ) as  speed
 FROM windsamples[FROM NOW - 10 MINUTE]
 \end{lstlisting}
 %
-The results will be transformed into tagged triples, instances of the class $WindSpeedMeasurement$.
+The results will be transformed into tagged triples, instances of the class \textit{WindSpeedMeasurement}.
 
 
 

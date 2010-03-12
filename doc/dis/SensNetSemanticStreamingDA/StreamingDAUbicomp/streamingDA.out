@@ -2,17 +2,17 @@
 \BOOKMARK [1][-]{section*.6}{Background}{}
 \BOOKMARK [2][-]{section*.7}{Streaming Data Access}{section*.6}
 \BOOKMARK [2][-]{section*.8}{Ontology-based Data Access}{section*.6}
-\BOOKMARK [3][-]{section*.9}{R2O and ODEMapster}{section*.8}
+\BOOKMARK [3][-]{section*.9}{1R2O and ODEMapster}{section*.8}
 \BOOKMARK [2][-]{section*.10}{Continuous Queries for RDF Streams}{section*.6}
-\BOOKMARK [3][-]{section*.11}{Streaming SPARQL.}{section*.10}
-\BOOKMARK [3][-]{section*.12}{C-SPARQL.}{section*.10}
+\BOOKMARK [3][-]{section*.11}{Streaming SPARQL}{section*.10}
+\BOOKMARK [3][-]{section*.12}{C-SPARQL}{section*.10}
 \BOOKMARK [1][-]{section*.13}{Ontology-based Streaming Data Access}{}
 \BOOKMARK [1][-]{section*.14}{Extensions Syntax}{}
 \BOOKMARK [2][-]{section*.15}{Streaming Extensions to SPARQL}{section*.14}
-\BOOKMARK [2][-]{section*.16}{Streaming Extensions to R2O}{section*.14}
+\BOOKMARK [2][-]{section*.16}{Streaming Extensions to 1R2O}{section*.14}
 \BOOKMARK [1][-]{section*.17}{Semantics of the Streaming Extensions}{}
 \BOOKMARK [2][-]{section*.18}{SPARQLSTRSemantics}{section*.17}
-\BOOKMARK [2][-]{section*.19}{Extended R2O\(S2O\) Semantics}{section*.17}
+\BOOKMARK [2][-]{section*.19}{Extended 1R2O\(1S2O\) Semantics}{section*.17}
 \BOOKMARK [1][-]{section*.20}{Implementation and Walkthrough}{}
 \BOOKMARK [1][-]{section*.21}{Conclusions and Future Work}{}
 \BOOKMARK [1][-]{section*.22}{Acknowledgements}{}

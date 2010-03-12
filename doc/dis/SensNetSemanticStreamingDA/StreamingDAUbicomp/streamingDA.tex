@@ -44,10 +44,14 @@ breaklinks=true, }
 \newcommand{\superscript}[1]{\ensuremath{^{\textrm{#1}}}}
 \newcommand{\subscript}[1]{\ensuremath{_{\textrm{#1}}}}
 
-\newcommand{\rtwoo}{\textsf{R\subscript{2}O}}
-\newcommand{\stwoo}{\textsf{S\subscript{2}O}}
+\newcommand{\gargantuan}{\fontsize{9}{10}\selectfont}
+\newcommand{\smally}{\fontsize{6}{7}\selectfont}
+%\newcommand{\serifa}[1]{\ensuremath{\mathsf{#1}}}
+\newcommand{\serifa}[1]{\textsf{\gargantuan{#1}}}
+\newcommand{\codiga}[1]{\texttt{\gargantuan{#1}}}
+\newcommand{\rtwoo}{\serifa{R\subscript{2}O}}
+\newcommand{\stwoo}{\serifa{S\subscript{2}O}}
 \newcommand{\sparqlstr}{SPARQL\subscript{STR}}
-
 
 %\newcommand{\comment}[1]{}
 \definecolor{Orange}{rgb}{1,0.5,0}
@@ -88,10 +92,10 @@ breaklinks=true, }
 \maketitle
 
 \begin{abstract}
-The availability of streaming data sources is progressively increasing thanks to the development of ubiquitous data capturing technologies such as sensor networks. The heterogeneity of these sources introduces the requirement of providing data access in a unified and coherent manner. In this paper we describe an ontology-based streaming data access service, based on extensions to the \rtwoo\ mapping language and its query processor ODEMapster, and to the C-SPARQL RDF stream query language. A preliminary implementation of the approach is also presented. With this proposal we expect to set the basis for future efforts in ontology-based streaming data integration.
+The availability of streaming data sources is progressively increasing thanks to the development of ubiquitous data capturing technologies such as sensor networks. The heterogeneity of these sources introduces the requirement of providing data access in a unified and coherent manner. In this paper we describe an ontology-based streaming data access service, based on extensions to the \rtwoo\ mapping language and its query processor ODEMapster, and to the C-SPARQL RDF stream query language. A preliminary implementation of the approach is also presented. With this proposal we expect to set the basis for future efforts in ontology-based integration of sensor networks streaming data sources.
 \end{abstract}
 
-\keywords{Streaming data access, Ontology-based data access, Query transformation.}
+\keywords{Streaming data access, Ontology-based data access, Sensor networks Querying.}
 
 \category{H.3.3}{Information Search and Retrieval}{Miscellaneous}
 \category{H.2.3}{Languages}{Query languages}.
@@ -109,9 +113,9 @@ The availability of streaming data sources is progressively increasing thanks to
 \input{futurework}
 
 \section{Acknowledgements}
-This work has been supported by the (Change for Blind Review)%European Commission project SemSorGrid4Env (FP7-223913).% 
+This work has been supported by (Change for Blind Review). %European Commission project SemSorGrid4Env (FP7-223913).% 
 We also thank (Change for Blind Review)%Alvaro A A Fernandes, Ixent Galpin, and Norman W Paton, from the University of Manchester, 
-for their valuable ideas and suggestions.
+, for their valuable ideas and suggestions.
 %\nocite{example-journal,example-abstracts,example-conference2}
 
 \bibliographystyle{abbrv}

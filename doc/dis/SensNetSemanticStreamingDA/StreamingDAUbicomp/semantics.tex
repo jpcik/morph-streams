@@ -80,7 +80,7 @@ For the triple-based window, we need to define first the function $c$ that count
 c(R,t_{i},t_{f})=|\{(\langle s,p,o \rangle,\tau) \in R \mid t_{i} < \tau \leq t_{f}\}|
 \end{align*}
 
-A triple-based window, with $n$ being the \textsf{ROWS} parameter, can be defined as:
+A triple-based window, with $n$ being the \serifa{ROWS} parameter, can be defined as:
 \begin{align*}
 \omega_{tuple}(R,n)=\{ & (\langle s,p,o \rangle,\tau) \in \omega_{time}(R,t_{i},t_{f}) \mid \\
 & c(R,t_{i},t_{f})=n \}
@@ -170,7 +170,7 @@ that will be used to construct the datatype property value using the function $f
 
 When a conjunctive query is issued against the global ontology, the processor first parses it and transforms it into an
 abstract syntax tree and then uses the expansion algorithm described in \cite{Barrasa_04} (that is based on the
-\textsf{PerfectRef} algorithm of \cite{Calvanese_05}) to produce an expanded conjunctive query based on the TBox of the
+\serifa{PerfectRef} algorithm of \cite{Calvanese_05}) to produce an expanded conjunctive query based on the TBox of the
 ontology. Afterwards the rewritten query can be translated to an extended relational algebra.
 
 A query $Q_{\mathcal{O}}(\vec{x})[t_i,t_f,\delta]$ is a conjunctive query with a window operator (where $t_i,t_f$ is

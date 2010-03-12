@@ -19,9 +19,11 @@ queries over ontology models.
 %\end{itemize}
 
 \begin{figure}[here]
-\vspace{-20pt} \hspace{20pt}
+%\vspace{-20pt} \hspace{20pt}
 \includegraphics[width=8 cm]{img/approach}
-\vspace{-10pt} \caption{Ontology-based Streaming Data Access service} \label{fig:SemanticIntegrator} \vspace{-10pt}
+%\vspace{-10pt} 
+\caption{Ontology-based Streaming Data Access service} \label{fig:SemanticIntegrator} 
+%\vspace{-10pt}
 \end{figure}
 
 Our approach consists in creating an Ontology-based Streaming Data Access service, depicted in Fig~\ref{fig:SemanticIntegrator}.\ %  that can receive requests over an ontological view and transforms them into queries for acquisitional or event-based stream sources or stored sources. The results of these queries can be integrated following a query plan and returned as RDF triples in terms of the global ontology. The approach is depicted in Fig ~\ref{fig:SemanticIntegrator}.
@@ -39,4 +41,4 @@ After the continuous query has been generated, the query processing phase starts
 %
 Note that the execution in sources such as sensor networks may include in-network query processing, pull or push based data delivery and other data source specific settings. The result of the query processing will be a set of tuples that will be passed to a \textit{data decanonisation} process, which will transform these tuples to ontology instances.
 
-As it can be seen, this approach requires several contributions and extensions to the existing technologies for continuous data querying, ontology-based data access and SPARQL query processing. This paper focuses on a first stage that includes the process of transforming the SPARQL extended queries into queries over the streaming data sources using a language such as SNEEql as the target. In the next sections a description of the query and mapping extensions syntax and semantics will be detailed, and afterwards we will provide results of an implementation of this approach.
+As it can be seen, this approach requires several contributions and extensions to the existing technologies for continuous data querying, ontology-based data access and SPARQL query processing. This work focuses on a first stage that includes the process of transforming the SPARQL extended queries into queries over the streaming data sources using a language such as SNEEql as the target. In the next sections a description of the query and mapping extensions syntax and semantics will be detailed, and afterwards we will provide details of an implementation of this approach.
