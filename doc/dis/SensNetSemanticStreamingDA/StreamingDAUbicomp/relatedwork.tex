@@ -11,12 +11,11 @@
 The following sections describe the state of the art in streaming data access and continuous queries (Streaming Data Access section), % \ref{datastreams}), ontology-based data access and mappings (Ontology-based Data Access section),%\ref{obda})
  and query languages for RDF streams (Continuous Queries for RDF Streams section). %\ref{rdfstreams}).
 % We focus on the works and technologies that we used, extended and integrated for our approach: R\subscript{2}O, ODEMapster and SNEEql.
-
 %The following sections describe the state of the art in the areas we base our work on. First in Section \ref{datastreams} we introduce the fundamentals of streaming data access and continuous queries. Then in Section \ref{obda} we provide a short overview of the research and available solutions for ontology-based data access.
 %Next in Section \ref{obdi} we present the challenges of data integration and the relevant works on the subject that consider the problem of semantic interoperability and mappings with relational sources.
 %In Section \ref{rdfstreams} we review other works dealing with semantic queries over streams and the specific extensions to currently available query languages.
-
-
+%
+%
 \subsection{Streaming Data Access}
 \label{datastreams}
 
@@ -67,7 +66,7 @@ In order to exemplify these query language features we will use the syntax of on
 %In streaming data models the basic compound tuple type is defined as a set of typed attributes. A tagged tuple in a stream is a tuple that includes a named timestamp attribute.
 
 The first concept to be considered in stream data models is that of a \textit{tagged tuple}, which is a tuple that
-includes a named \textit{timestamp} attribute. This special attribute indicates when the tuple entered the stream and
+includes a named \textit{timestamp} attribute. This special attribute indicates when the tuple entered the stream, and
 is essential to define the semantics of stream operators in these languages: two tuples having the same timestamp are
 considered to have entered the stream at the same time instant. A stream is a potentially infinite sequence of tagged
 tuples.
@@ -128,7 +127,7 @@ The goal of Ontology-based Data Access (OBDA) is to \linebreak generate semantic
 %Most of the approaches attempt to provide some kind of mapping from a relational concept to a concept in an ontological model.
 %
 %Many problems arise when dealing with model mismatch issues, query interpretation, semantic reasoning, etc.
-As aforementioned, most of the existing approaches are based on the exploitation of mappings between the relational
+As mentioned above, most of the existing approaches are based on the exploitation of mappings between the relational
 (rows and columns) and the ontological (concepts and roles) models. Some of them use their own languages to define
 these mappings, while others use SPARQL extensions or SQL expressions.
 %OBDA systems use these kinds of mappings between an ontology and the different data sources.
@@ -172,7 +171,7 @@ In the GaV approach, the global schema elements are represented as views over th
 We will now describe in detail one of these ODBA \linebreak approaches (\rtwoo\ and ODEMapster), which is the one that we will
 extend in this paper.
 
-\subsubsection{\rtwoo\ and ODEMapster}
+\subsubsection{\textit{\rtwoo} and ODEMapster}
 \label{R2O}
 \rtwoo(Relational-to-Ontology)\cite{Barrasa_04} is a GaV mapping definition language that defines relationships between a set of ontologies and relational schemas. The \rtwoo\ language is XML-based, independent of any specific DBMS and allows complex mapping expressions between ontology and relational elements, %. \rtwoo\ mapping assertions can be created either manually or with the help of a mapping tool. %The mapping definition could also be used to perform validation of the database integrity by checking it against the ontology restrictions and axioms.
 %It is important to notice that R2O does not define mappings in both senses, i.e. it does not provide a mapping definition from the ontology to the relational schema. The mapping assertions are designed to be used by applications and middleware systems, not by end users.
@@ -195,7 +194,7 @@ Mapping tables and columns to concepts and attributes often requires performing 
 \item \textit{Projection}. Sometimes not all the columns are required for the mapping. The unnecessary columns can simply be ignored. In order to do so, a projection on the needed columns can be performed. % (e.g. a SELECT).
 \item \textit{Selection}. In some situations not all the records of a table correspond to instances of the mapped ontology class. Then a subset of the records must be extracted. To do so, selection conditions can be applied to choose the desired subset for the mapping.
 \end{itemize}
-It is of course possible to combine joins, unions, projections and selections for more complex mapping definitions.
+It is off course possible to combine joins, unions, projections and selections for more complex mapping definitions.
 Values from the database can be copied as-is to the properties of instances in the ontology. However in many situations
 it is necessary to perform some transformations on the values using some function. \rtwoo\ allows the use of defined
 functions for this purpose, e.g. concatenation, sub-strings, arithmetic functions, etc.
@@ -215,7 +214,7 @@ is a subset of SPARQL for conjunctive queries.
 
 SPARQL \cite{Prudhommeaux_2008} is the W3C Recommendation for a query language over RDF. Even though  SPARQL has been used to query RDF triples annotated with time constructs \cite{Barbieri_2010,Bolles_08} and can be used to represent data coming from streaming sources, it currently lacks the necessary operators to effectively query streaming data.\
 There are two main approaches in the literature for extending SPARQL with stream-based operators: Streaming SPARQL and C-SPARQL.
-\subsubsection{Streaming SPARQL.}
+\subsubsection{Streaming SPARQL}
 In \cite{Bolles_08} extensions for SPARQL are provided, so that the resulting language is able to handle RDF based data streams. The semantics of these extensions are also provided as well as the algorithm to map the language additions to the extended algebra. The grammar of Streaming SPARQL basically consists in adding the capability of defining time and tuple-based windows over streams which are defined in the \textsf{FROM} clause. % which are explicitly stated using the \textsf{STREAM} keyword. The windows are defined in the \textsf{FROM} section, using the \textsf{WINDOW} keyword. Both time-based and tuple based windows are supported. For time-based windows the \textsf{RANGE} keyword allows specifying the window size in time units. A \textsf{SLIDE} parameter can be specified to indicate the frequency of the window creation.
 %For tuple-base windows the ELEMS keyword is used instead of RANGE.
 This proposal also allows specifying windows on graph patterns, which complicates its evaluation semantics. %It doesn't provide aggregate functions.
@@ -252,7 +251,7 @@ different to the current timestamp $now$, aggregates, projection functions, and 
 In addition, Streaming SPARQL allows windows in group graph patterns and redefines the language semantics due to the
 introduction of timestamps.
 
-\subsubsection{C-SPARQL.} C-SPARQL (Continuous SPARQL) \cite{Barbieri_2010} also works over RDF streams, sequences of triples annotated with non-decreasing timestamps. As in Streaming SPARQL, it defines both time or tuple-based sliding windows. C-SPARQL offers aggregates, such as \textsf{COUNT, SUM, AVG, MIN} and \textsf{MAX}. It also allows combining stored and streaming knowledge and also combining multiple streams. Here is an example of a C-SPARQL query, it obtains the temperature average of the values sensed in the last 10 minutes, every minute:
+\subsubsection{C-SPARQL} C-SPARQL (Continuous SPARQL) \cite{Barbieri_2010} also works over RDF streams, sequences of triples annotated with non-decreasing timestamps. As in Streaming SPARQL, it defines both time or tuple-based sliding windows. C-SPARQL offers aggregates, such as \textsf{COUNT, SUM, AVG, MIN} and \textsf{MAX}. It also allows combining stored and streaming knowledge and also combining multiple streams. Here is an example of a C-SPARQL query, it obtains the temperature average of the values sensed in the last 10 minutes, every minute:
 
 \begin{lstlisting}[style=SPARQLSTRStyle,language=SPARQLSTR,frame=none]
 REGISTER QUERY AvergaeTemperature AS
