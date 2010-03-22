@@ -87,7 +87,9 @@ $^2$School of Computer Science, The University of Manchester, United Kingdom\\
 
 \vspace{-10pt}
 \begin{abstract}
-The availability of streaming data sources is progressively increasing thanks to the development of ubiquitous data capturing technologies such as sensor networks. The heterogeneity of these sources introduces the requirement of providing data access in a unified and coherent manner. We present an ontology-based streaming data access service, based on extensions to the \rtwoo\ mapping language and its query processor ODEMapster, and to the C-SPARQL RDF stream query language. A preliminary implementation of the approach is also presented. With this proposal we expect to set the basis for future efforts in ontology-based streaming data integration.
+The availability of streaming data sources is progressively increasing thanks to the deployment of ubiquitous data capturing technologies such as sensor networks. %The heterogeneity of these sources introduces the requirement of providing data access in a unified and coherent manner. 
+%In the context of the Semantic Web vision, several initiatives that aim at providing semantic access to stored data sources have been launched in the past years. Most of the existing approaches attempt to provide mappings between the elements in the relational and ontological models \cite{Sahoo_09}.
+We present an ontology-based streaming data access service, based on extensions to the \rtwoo\ mapping language and its query processor ODEMapster, and to the C-SPARQL RDF stream query language. A preliminary implementation of the approach is also presented. With this proposal we expect to set the basis for future efforts in ontology-based streaming data integration.
 
 %\keywords{Streaming data access, Ontology-based data access}
 \end{abstract}
@@ -131,8 +133,8 @@ morestring=[b]',%
                         tabsize=2,
                         }
 
-\section{Introduction}
-\label{intro}
+%\section{Introduction}
+%\label{intro}
 
 %Recent advances in wireless communications and sensor technologies have opened the way for deploying networks of interconnected sensing devices capable of ubiquitous data capture, processing and delivery. 
 %Sensor network deployments are expected to increase significantly in the upcoming years because of their advantages and unique features. Tiny sensors can be installed virtually anywhere and still be reachable thanks to wireless communications. 
@@ -140,10 +142,10 @@ morestring=[b]',%
 %One of the means to access streaming data sources coming from sensor networks is through query processors~\cite{Madden_05},\cite{Arasu_06a},\cite{Galpin_09} that handle streaming data %(which differs significantly from classical stored data, as it is potentially infinite and transient, with tuples being constantly added) 
 %and support declarative continuous query languages. %(for which query results are updated regularly as time passes~\cite{Terry_92}).
 
-In the context of the Semantic Web vision, several initiatives that aim at providing semantic access to traditional
-(stored) data sources have been launched in the past years. Most of the existing approaches attempt to provide mappings
-between the elements in the relational and ontological models \cite{Sahoo_09}.%, as we will describe in Section \ref{previousworks}. 
-However, similar solutions for streaming data mapping and querying using ontology-based approaches have not been explored yet in depth. This has become especially relevant due to the emergence of sources such as sensor networks, capable of ubiquitous data capture, processing and delivery.
+%In the context of the Semantic Web vision, several initiatives that aim at providing semantic access to traditional
+%(stored) data sources have been launched in the past years. Most of the existing approaches attempt to provide mappings
+%between the elements in the relational and ontological models \cite{Sahoo_09}.
+%However, similar solutions for streaming data mapping and querying using ontology-based approaches have not been explored yet in depth. This has become especially relevant due to the emergence of sources such as sensor networks, capable of ubiquitous data capture, processing and delivery.
 
 %In this paper we focus on providing ontology-based access to streaming data sources. Our apporach answers the requirements of i) establishing mappings between ontological models and streaming data source schemas, and ii) accessing streaming data sources through declarative continuous queries over ontology models. This constitutes a first step towards a framework for the integration of distributed heterogeneous streaming and stored data sources through ontological models. %and to the provision of Linked Data for streams~\cite{LePhuoc_09,Page_09,Sequeda_09}. 
 
@@ -165,20 +167,25 @@ However, similar solutions for streaming data mapping and querying using ontolog
 %\item considering quality-of-service requirements for query optimisation and source selection during the integration.
 %\end{itemize}
 
+
+%However, similar solutions for streaming data mapping and querying using ontology-based approaches have not been explored yet in depth. This has become especially relevant due to the emergence of sources such as sensor networks, capable of ubiquitous data capture, processing and delivery.
+
+
 Our approach consists in creating an Ontology-based Streaming Data Access service, depicted in Fig~\ref{fig:SemanticIntegrator}.\ %  that can receive requests over an ontological view and transforms them into queries for acquisitional or event-based stream sources or stored sources. The results of these queries can be integrated following a query plan and returned as RDF triples in terms of the global ontology. The approach is depicted in Fig ~\ref{fig:SemanticIntegrator}.
-The service receives \sparqlstr queries specified in terms of 
+The service receives \sparqlstr\ queries specified in terms of 
 %the classes and properties
 %\footnote{We use the OWL nomenclature of classes and object and datatype properties for naming ontology elements.} 
-of an ontology.
+an ontology.
 % using extensions of SPARQL that support operators over RDF streams and windows (\sparqlstr). 
 Then the original query is transformed into queries in terms of the sources (\textit{query canonisation}), using 
 %in order to transform the query in terms of the ontology into queries in terms of the sources, 
-a set of \stwoo mappings. These are based on the \rtwoo\ mapping language, which has been extended to support  streaming queries and data, most notably window and stream operators. 
+a set of \stwoo\ mappings. These are based on the \rtwoo\ mapping language, which has been extended to support  streaming queries and data, most notably window and stream operators. 
 %This transformation process is called \textit{query canonisation}, and 
-The transformed queires are written in a continuous query language (e.g. SNEEql), that is expressive enough to deal with both streaming and stored sources, and to apply window, aggregates and window-to-stream operations.
+The transformed queries are written in a continuous query language (e.g. SNEEql), that is expressive enough to deal with both streaming and stored sources, and to apply window, aggregates and window-to-stream operations.
 
 %After the continuous query has been generated, 
-Afterwards, the query processing phase starts, and the processor will deploy distributed query processing techniques~\cite{Kossmann_00} to extract the relevant data from the sources and perform the required operations.
+Afterwards, the query processing phase starts %, and the processor will deploy distributed query processing techniques~\cite{Kossmann_00} 
+to extract the relevant data from the sources and perform the required operations.
 %creating a query plan that indicates how the sources will be accessed and how the data will be joined and combined using the available operators\cite{Kossmann_00}.
 %
 %Note that the execution in sources such as sensor networks may include in-network query processing, pull or push based data delivery and other data source specific settings. 
@@ -199,10 +206,10 @@ The result of the query processing will be a set of tuples that will be passed t
 
 
 
-\section{Implementation and Walkthrough}
+\section{Implementation}
 \label{execution}
 
-The presented approach of providing ontology-based access to streaming data has been implemented as an extension to the
+This approach has been implemented as an extension to the
 ODEMapster processor \cite{Barrasa_04}. This implementation generates queries that can be executed by the SNEE streaming query processor using the SNEEql query language \cite{Brenninkmeijer_08}.
 
 In the example, consider a stream \texttt{windsamples} and a table \texttt{sensors}, and the \stwoo mapping to a \textit{WindSpeedMeasurement} concept:
@@ -210,7 +217,7 @@ In the example, consider a stream \texttt{windsamples} and a table \texttt{senso
 
 \begin{figure}[here]
 \vspace{-20pt} \hspace{20pt}
-\includegraphics[width=10 cm]{img/mapping}
+\includegraphics[width=12 cm]{img/mapping}
 \vspace{-10pt} \caption{\stwoo\ mapping from stream to ontologies} \label{fig:Mappings} \vspace{-10pt}
 \end{figure}
 
@@ -226,7 +233,8 @@ FROM STREAM <www.ssg4env.eu/SensorReadings.srdf> [RANGE 10 MINUTE STEP 1 MINUTE]
 WHERE { ?WindSpeed a fire:WindSpeedMeasurement; fire:hasSpeed ?speed;}
 \end{lstlisting}
 %
-A class query atom $WindSpeedMeasurement(x)$ and a datatype property atom $hasSpeed(x,z)$ can be extracted from the \sparqlstr\ query. The window specification $[t_i=now-10,t_f=now,\delta=1,unit=minutes]$ is also obtained. As it is defined in the \stwoo\ mapping the $WindSpeedMeasurment$ instances are generated based on the \texttt{sensorid} and \texttt{ts} attributes of the \texttt{windsamples} stream.
+The query atoms $WindSpeedMeasurement(x)$ and $hasSpeed(x,z)$ can be extracted from the \sparqlstr\ query. The window specification %$[t_i=now-10,t_f=now,\delta=1,unit=minutes]$ 
+is also obtained. As it is defined in the \stwoo\ mapping the $WindSpeedMeasurement$ instances are generated based on the \texttt{sensorid} and \texttt{ts} attributes of the \texttt{windsamples} stream.
 %, using a concatenation function to generate each instance URI.
 % Hence the processor will evaluate
 %\begin{align*}
@@ -247,8 +255,9 @@ as  id ,( windsamples.speed ) as  speed
 FROM windsamples[FROM NOW - 10 MINUTE]
 \end{lstlisting}
 %
-The results will be transformed into tagged triples, instances of the class \\ $WindSpeedMeasurement$.
+%The results will be transformed into tagged triples, instances of the class %\\ $WindSpeedMeasurement$.
 
+\vspace{-10pt}
 
 %\begin{lstlisting}[style=HaskellSNEE,language=Haskell,frame=none]
 %windsamples: (sensorid INT PK,ts DATETIME PK,speed FLOAT,direction FLOAT)

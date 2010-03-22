@@ -10,19 +10,19 @@ Bookmark#6=0
 Bookmark#7=0
 Bookmark#8=0
 Bookmark#9=0
-CaretPos.X=12
-CaretPos.Y=195
+CaretPos.X=57
+CaretPos.Y=229
 CharSet=def
 FileName=typeinst.tex
 FoldedLines=
 IsMainFile=yes
 Opened=yes
 ScrollPos.X=0
-ScrollPos.Y=242
+ScrollPos.Y=312
 SearchListCount=0
 ShowSyntax=yes
 SpellChecking=yes
-TabOrder=8
+TabOrder=0
 UseThesaurus=yes
 WrapLine=yes
 
@@ -430,19 +430,19 @@ Bookmark#6=0
 Bookmark#7=0
 Bookmark#8=0
 Bookmark#9=0
-CaretPos.X=0
-CaretPos.Y=0
+CaretPos.X=18
+CaretPos.Y=187
 CharSet=def
 FileName=re.bib
 FoldedLines=
 IsMainFile=no
-Opened=no
+Opened=yes
 ScrollPos.X=0
-ScrollPos.Y=0
+ScrollPos.Y=206
 SearchListCount=0
 ShowSyntax=yes
 SpellChecking=yes
-TabOrder=-1
+TabOrder=1
 UseThesaurus=yes
 WrapLine=yes
 
@@ -453,7 +453,7 @@ Count=16
 ActiveFilters=
 
 [Project\Archive]
-AutoArchive=no
+AutoArchive=No
 AutoSet=1
 Components=as*.gpr;*.lpr:as*.tex;*.sty;*.cls;*.bib;*.mp;*.undo:as*.eps
 Compression=1
@@ -548,6 +548,9 @@ Size=1
 
 [Project\Dictionaries\2057]
 Active=Yes
+
+[Project]
+MainDictionary=2057
 
 [Template]
 Id=1
