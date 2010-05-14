@@ -1,17 +1,15 @@
 \begin{thebibliography}{1}
 
-\bibitem{Sahoo_09}
-Sahoo, S.S., Halb, W., Hellmann, S., Idehen, K., Jr, T.T., Auer, S., Sequeda,
-  J., Ezzat, A.:
-\newblock A survey of current approaches for mapping of relational databases to
-  {RDF}.
-\newblock W3C (January 2009)
-
 \bibitem{Barrasa_04}
-Barrasa, J., \'{O}scar Corcho, G\'{o}mez-P\'{e}rez, A.:
+Barrasa, J., Corcho, O., G\'{o}mez-P\'{e}rez, A.:
 \newblock {R2O}, an extensible and semantically based database-to-ontology
   mapping language.
 \newblock In: {SWDB2004}. (2004)  1069--1070
+
+\bibitem{Barbieri_09}
+Barbieri, D.F., Braga, D., Ceri, S., Della~Valle, E., Grossniklaus, M.:
+\newblock {C-SPARQL}: {SPARQL} for continuous querying.
+\newblock In: WWW '09. (2009)  1061--1062
 
 \bibitem{Brenninkmeijer_08}
 Brenninkmeijer, C.Y., Galpin, I., Fernandes, A.A., Paton, N.W.:
