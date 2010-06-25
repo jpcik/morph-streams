@@ -1,120 +1,143 @@
 \relax 
-\ifx\hyper@anchor\@undefined
-\global \let \oldcontentsline\contentsline
-\gdef \contentsline#1#2#3#4{\oldcontentsline{#1}{#2}{#3}}
-\global \let \oldnewlabel\newlabel
-\gdef \newlabel#1#2{\newlabelxx{#1}#2}
-\gdef \newlabelxx#1#2#3#4#5#6{\oldnewlabel{#1}{{#2}{#3}}}
-\AtEndDocument{\let \contentsline\oldcontentsline
-\let \newlabel\oldnewlabel}
-\else
-\global \let \hyper@last\relax 
-\fi
-
-\citation{Madden_05,Arasu_06a,Galpin_09}
-\citation{Terry_92}
-\citation{Sahoo_09}
+\providecommand\HyperFirstAtBeginDocument{\AtBeginDocument}
+\HyperFirstAtBeginDocument{\ifx\hyper@anchor\@undefined
+\global\let\oldcontentsline\contentsline
+\gdef\contentsline#1#2#3#4{\oldcontentsline{#1}{#2}{#3}}
+\global\let\oldnewlabel\newlabel
+\gdef\newlabel#1#2{\newlabelxx{#1}#2}
+\gdef\newlabelxx#1#2#3#4#5#6{\oldnewlabel{#1}{{#2}{#3}}}
+\AtEndDocument{\ifx\hyper@anchor\@undefined
+\let\contentsline\oldcontentsline
+\let\newlabel\oldnewlabel
+\fi}
+\fi}
+\global\let\hyper@last\relax 
+\gdef\HyperFirstAtBeginDocument#1{#1}
+\providecommand\HyField@AuxAddToFields[1]{}
 \@writefile{toc}{\contentsline {title}{Enabling Ontology-based Access to Streaming Data Sources}{1}{chapter.1}}
 \@writefile{toc}{\authcount {1}}
 \@writefile{toc}{\contentsline {author}{Jean-Paul Calbimonte$^1$, Oscar Corcho$^1$, and Alasdair J G Gray$^2$}{1}{section*.1}}
 \@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1.1}}
 \newlabel{intro}{{1}{1}{Introduction\relax }{section.1.1}{}}
+\citation{Barrasa_04}
+\citation{Bizer_07}
+\citation{Sahoo_09}
+\citation{Arasu_06a}
+\citation{Abadi_2005}
+\citation{Galpin_09}
+\citation{Madden_05}
+\citation{Bolles_08,Barbieri2010An-Execution-En}
 \citation{LePhuoc_09,Page_09,Sequeda_09}
-\citation{Arasu_2006,Brenninkmeijer_08}
+\@writefile{lox}{\contentsline {fixme}{Note: AG: Can we drop the last clause of the sentence to do with Linked Data? I'm not convinced it adds to our argument.}{2}{section.1.1}}
+\citation{Sahoo_09}
+\citation{Barrasa_04}
+\citation{Barrasa_04}
+\citation{Lenzerini_02}
+\citation{Golab2003Issues-in-data-}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Background}{3}{section.1.2}}
+\newlabel{sec:background}{{2}{3}{Background\relax }{section.1.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Ontology-based Access to Stored Relational Data}{3}{subsection.1.2.1}}
+\newlabel{sec:ontol-based-access-stored}{{2.1}{3}{Ontology-based Access to Stored Relational Data\relax }{subsection.1.2.1}{}}
+\citation{Brenninkmeijer_08,Arasu_2006}
+\citation{Arasu_06a,Abadi_2005,Galpin_09,Madden_05}
+\citation{Brenninkmeijer_08}
+\citation{Galpin_09}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Querying Relational Data Streams}{4}{subsection.1.2.2}}
+\newlabel{sec:query-relat-streams}{{2.2}{4}{Querying Relational Data Streams\relax }{subsection.1.2.2}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3}Ontology-based Streaming Data Access}{4}{section.1.3}}
+\newlabel{approach}{{3}{4}{Ontology-based Streaming Data Access\relax }{section.1.3}{}}
+\citation{Kossmann_00}
+\citation{Barbieri2010An-Execution-En}
+\citation{Brenninkmeijer_08}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Ontology-based streaming data access service}}{5}{figure.1.1}}
+\newlabel{fig:SemanticIntegrator}{{1}{5}{Ontology-based streaming data access service\relax }{figure.1.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Query and Mapping Syntax}{5}{section.1.4}}
+\newlabel{syntax}{{4}{5}{Query and Mapping Syntax\relax }{section.1.4}{}}
+\newlabel{q:sparqlstr}{{1}{6}{An example \sparqlstr query which every minute computes the average wind speed measurement for each sensor over the last 10 minutes}{lstlisting.1}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {1}An example \textsc  {sparql}\ensuremath  {_{\textrm  {Stream}}}\xspace  query which every minute computes the average wind speed measurement for each sensor over the last 10 minutes.}{6}{lstlisting.1}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}SPARQL\ensuremath  {_{\textrm  {Stream}}}}{6}{subsection.1.4.1}}
+\newlabel{streamingsparqlsyntax}{{4.1}{6}{SPARQL\subscript {Stream}\relax }{subsection.1.4.1}{}}
+\citation{Barrasa_04}
+\newlabel{list:s2o}{{2}{7}{An example \stwoo declaration of a data stream schema and mapping from a stream schema to an ontology concept}{lstlisting.2}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {2}An example \textsf  {S\ensuremath  {_{\textrm  {2}}}O}\xspace  declaration of a data stream schema and mapping from a stream schema to an ontology concept.}{7}{lstlisting.2}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}\textsf  {S\ensuremath  {_{\textrm  {2}}}O}\xspace  : Expressing Stream-to-Ontology Mappings}{7}{subsection.1.4.2}}
+\newlabel{streamingr2osyntax}{{4.2}{7}{\stwoo : Expressing Stream-to-Ontology Mappings\relax }{subsection.1.4.2}{}}
+\citation{Perez_09}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Semantics of the Streaming Extensions}{8}{section.1.5}}
+\newlabel{semanticsstreaming}{{5}{8}{Semantics of the Streaming Extensions\relax }{section.1.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}SPARQL\ensuremath  {_{\textrm  {Stream}}} Semantics}{8}{subsection.1.5.1}}
+\newlabel{sparqlstrsemantics}{{5.1}{8}{SPARQL\subscript {Stream} Semantics\relax }{subsection.1.5.1}{}}
+\@writefile{lox}{\contentsline {fixme}{Fatal: I have changed the lower bound on the window to be inclusive. This is the normal interpretation in relational stream languages.}{8}{subsection.1.5.1}}
+\citation{Barrasa_04}
+\citation{Calvanese_05}
+\citation{Poggi_08}
+\citation{Calvanese_05}
+\citation{Poggi_08,Lubyte_09}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}\textsf  {S\ensuremath  {_{\textrm  {2}}}O}\xspace  Semantics}{9}{subsection.1.5.2}}
+\newlabel{mappingsemantics}{{5.2}{9}{\stwoo Semantics\relax }{subsection.1.5.2}{}}
+\citation{Barrasa_04}
+\citation{Calvanese_05}
+\citation{Barrasa_04}
+\@writefile{toc}{\contentsline {section}{\numberline {6}Implementation and Walkthrough}{11}{section.1.6}}
+\newlabel{execution}{{6}{11}{Implementation and Walkthrough\relax }{section.1.6}{}}
+\newlabel{list:schema}{{3}{11}{Relational schema of the data source}{lstlisting.3}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3}Relational schema of the data source.}{11}{lstlisting.3}}
+\newlabel{list:s2o-wind-ex}{{4}{12}{\stwoo mapping from the data stream \textsf {windsamples} to the ontology concepts $WindSpeedMeasurement$}{lstlisting.4}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {4}\textsf  {S\ensuremath  {_{\textrm  {2}}}O}\xspace  mapping from the data stream \textsf  {windsamples} to the ontology concepts $WindSpeedMeasurement$.}{12}{lstlisting.4}}
+\newlabel{list:query-example}{{5}{12}{\sparqlstr query which every minute returns the wind speed for the last ten minutes}{lstlisting.5}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {5}\textsc  {sparql}\ensuremath  {_{\textrm  {Stream}}}\xspace  query which every minute returns the wind speed for the last ten minutes.}{12}{lstlisting.5}}
+\citation{Sahoo_09}
+\citation{Lubyte_09}
+\citation{Erling_07}
+\citation{Bizer_07}
 \citation{Abadi_2005}
 \citation{Arasu_06a}
 \citation{Chandrasekaran_03}
 \citation{Madden_05}
 \citation{Galpin_09}
 \citation{Yao_02}
-\citation{Brenninkmeijer_08}
-\@writefile{toc}{\contentsline {section}{\numberline {2}Background}{2}{section.1.2}}
-\newlabel{previousworks}{{2}{2}{Background\relax }{section.1.2}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Streaming Data Access}{2}{subsection.1.2.1}}
-\newlabel{datastreams}{{2.1}{2}{Streaming Data Access\relax }{subsection.1.2.1}{}}
-\citation{Arasu_2006,Brenninkmeijer_08}
 \citation{Arasu_2006}
-\citation{Galpin_09}
-\citation{Sahoo_09}
-\citation{Lenzerini_02}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Ontology-based Data Access}{3}{subsection.1.2.2}}
-\newlabel{obda}{{2.2}{3}{Ontology-based Data Access\relax }{subsection.1.2.2}{}}
-\citation{Barrasa_04}
-\citation{Barrasa_04}
-\citation{Prudhommeaux_2008}
-\citation{Barbieri_2010,Bolles_08}
-\newlabel{R2O}{{2.2}{4}{\rtwoo \ and ODEMapster\relax }{section*.2}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\textsf  {R\ensuremath  {_{\textrm  {2}}}O}\ and ODEMapster}{4}{section*.2}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Continuous Queries for RDF Streams}{4}{subsection.1.2.3}}
-\newlabel{rdfstreams}{{2.3}{4}{Continuous Queries for RDF Streams\relax }{subsection.1.2.3}{}}
-\citation{Bolles_08}
-\citation{Barbieri_2010}
-\@writefile{toc}{\contentsline {subsubsection}{Streaming SPARQL.}{5}{section*.3}}
-\@writefile{toc}{\contentsline {subsubsection}{C-SPARQL.}{5}{section*.4}}
-\citation{Kossmann_00}
-\@writefile{toc}{\contentsline {section}{\numberline {3}Ontology-based Streaming Data Access}{6}{section.1.3}}
-\newlabel{approach}{{3}{6}{Ontology-based Streaming Data Access\relax }{section.1.3}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Ontology-based Streaming Data Access service}}{6}{figure.1.1}}
-\newlabel{fig:SemanticIntegrator}{{1}{6}{Ontology-based Streaming Data Access service\relax }{figure.1.1}{}}
-\citation{DellaValle_09}
-\citation{Barbieri_2010}
-\citation{Barrasa_04}
-\@writefile{toc}{\contentsline {section}{\numberline {4}Extensions Syntax}{7}{section.1.4}}
-\newlabel{syntax}{{4}{7}{Extensions Syntax\relax }{section.1.4}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Streaming Extensions to SPARQL}{7}{subsection.1.4.1}}
-\newlabel{streamingsparqlsyntax}{{4.1}{7}{Streaming Extensions to SPARQL\relax }{subsection.1.4.1}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Streaming Extensions to \textsf  {R\ensuremath  {_{\textrm  {2}}}O}}{7}{subsection.1.4.2}}
-\newlabel{streamingr2osyntax}{{4.2}{7}{Streaming Extensions to \rtwoo \relax }{subsection.1.4.2}{}}
-\citation{Barbieri_2010}
-\citation{Perez_09}
-\@writefile{toc}{\contentsline {section}{\numberline {5}Semantics of the Streaming Extensions}{8}{section.1.5}}
-\newlabel{semanticsstreaming}{{5}{8}{Semantics of the Streaming Extensions\relax }{section.1.5}{}}
-\citation{Barrasa_04}
-\citation{Calvanese_05,Poggi_08}
-\citation{Calvanese_05}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}SPARQL\ensuremath  {_{\textrm  {STR}}}\ Semantics}{9}{subsection.1.5.1}}
-\newlabel{sparqlstrsemantics}{{5.1}{9}{\sparqlstr \ Semantics\relax }{subsection.1.5.1}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Extended \textsf  {R\ensuremath  {_{\textrm  {2}}}O}(\textsf  {S\ensuremath  {_{\textrm  {2}}}O}) Semantics}{9}{subsection.1.5.2}}
-\newlabel{mappingsemantics}{{5.2}{9}{Extended \rtwoo (\stwoo ) Semantics\relax }{subsection.1.5.2}{}}
-\citation{Poggi_08,Lubyte_09}
-\citation{Barrasa_04}
-\citation{Calvanese_05}
-\citation{Barrasa_04}
 \citation{Brenninkmeijer_08}
-\@writefile{toc}{\contentsline {section}{\numberline {6}Implementation and Walkthrough}{11}{section.1.6}}
-\newlabel{execution}{{6}{11}{Implementation and Walkthrough\relax }{section.1.6}{}}
-\citation{PerezUrbina_09}
-\citation{Abadi_2005,Arasu_06a,Galpin_09}
-\@writefile{toc}{\contentsline {section}{\numberline {7}Conclusions and Future Work}{13}{section.1.7}}
-\newlabel{conclusions}{{7}{13}{Conclusions and Future Work\relax }{section.1.7}{}}
+\newlabel{list:query-ex-sneeql}{{6}{13}{The \sneeql query that is generated for the input query in Listing~\ref {list:query-example}}{lstlisting.6}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {6}The \textsc  {snee}ql\xspace  query that is generated for the input query in Listing\nobreakspace  {}\ref  {list:query-example}.}{13}{lstlisting.6}}
+\@writefile{toc}{\contentsline {section}{\numberline {7}Related Work}{13}{section.1.7}}
+\newlabel{sec:related-work}{{7}{13}{Related Work\relax }{section.1.7}{}}
+\citation{Bolles_08}
+\citation{Barbieri2010An-Execution-En}
+\citation{Harris2010SPARQL-1.1-Quer}
+\citation{Kossmann_00}
+\citation{Abadi_2005,Galpin_09}
+\@writefile{toc}{\contentsline {section}{\numberline {8}Conclusions and Future Work}{14}{section.1.8}}
+\newlabel{conclusions}{{8}{14}{Conclusions and Future Work\relax }{section.1.8}{}}
 \bibstyle{splncs}
 \bibdata{re}
-\bibcite{Madden_05}{1}
-\bibcite{Arasu_06a}{2}
-\bibcite{Galpin_09}{3}
-\bibcite{Terry_92}{4}
-\bibcite{Sahoo_09}{5}
-\bibcite{LePhuoc_09}{6}
-\bibcite{Page_09}{7}
-\bibcite{Sequeda_09}{8}
-\bibcite{Arasu_2006}{9}
-\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Extensions and additions to \textsf  {R\ensuremath  {_{\textrm  {2}}}O}, ODEMapster and C-SPARQL}}{14}{table.1.1}}
-\newlabel{tab:tabla}{{1}{14}{Extensions and additions to \rtwoo , ODEMapster and C-SPARQL\relax }{table.1.1}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Acknowledgments}{14}{section*.5}}
-\@writefile{toc}{\contentsline {section}{References}{14}{section*.6}}
-\bibcite{Brenninkmeijer_08}{10}
-\bibcite{Abadi_2005}{11}
-\bibcite{Chandrasekaran_03}{12}
-\bibcite{Yao_02}{13}
-\bibcite{Lenzerini_02}{14}
-\bibcite{Barrasa_04}{15}
-\bibcite{Prudhommeaux_2008}{16}
-\bibcite{Barbieri_2010}{17}
-\bibcite{Bolles_08}{18}
-\bibcite{Kossmann_00}{19}
-\bibcite{DellaValle_09}{20}
-\bibcite{Perez_09}{21}
-\bibcite{Calvanese_05}{22}
-\bibcite{Poggi_08}{23}
-\bibcite{Lubyte_09}{24}
-\bibcite{PerezUrbina_09}{25}
+\bibcite{Barrasa_04}{1}
+\bibcite{Bizer_07}{2}
+\bibcite{Sahoo_09}{3}
+\bibcite{Arasu_06a}{4}
+\bibcite{Abadi_2005}{5}
+\bibcite{Galpin_09}{6}
+\bibcite{Madden_05}{7}
+\bibcite{Bolles_08}{8}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Summary of key contributions.}}{15}{table.1.1}}
+\newlabel{tab:tabla}{{1}{15}{Summary of key contributions}{table.1.1}{}}
+\@writefile{lox}{\contentsline {fixme}{Fatal: This seems like a long future work list :/}{15}{table.1.1}}
+\@writefile{toc}{\contentsline {subsubsection}{Acknowledgments}{15}{section*.2}}
+\@writefile{toc}{\contentsline {section}{References}{15}{section*.3}}
+\bibcite{Barbieri2010An-Execution-En}{9}
+\bibcite{LePhuoc_09}{10}
+\bibcite{Page_09}{11}
+\bibcite{Sequeda_09}{12}
+\bibcite{Lenzerini_02}{13}
+\bibcite{Golab2003Issues-in-data-}{14}
+\bibcite{Brenninkmeijer_08}{15}
+\bibcite{Arasu_2006}{16}
+\bibcite{Kossmann_00}{17}
+\bibcite{Perez_09}{18}
+\bibcite{Calvanese_05}{19}
+\bibcite{Poggi_08}{20}
+\bibcite{Lubyte_09}{21}
+\bibcite{Erling_07}{22}
+\bibcite{Chandrasekaran_03}{23}
+\bibcite{Yao_02}{24}
+\bibcite{Harris2010SPARQL-1.1-Quer}{25}

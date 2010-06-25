@@ -1,92 +1,156 @@
-\section{Extensions Syntax}
+\section{Query and Mapping Syntax}
 \label{syntax}
 
-In this section we introduce the language extensions to SPARQL, for RDF stream management, and to \rtwoo\, for the
-definition of stream-to-ontology mappings.
+In this section we introduce the \sparqlstr query language, an extension to \sparql for streaming  \rdf data, which has been inspired by \csparql \cite{Barbieri2010An-Execution-En} and \sneeql \cite{Brenninkmeijer_08}.
+However, we have made some significant deviations from \csparql: %
+(i)~we only support windows defined in time, %
+(ii)~the result of a window operation is a window of triples, not a stream, over which traditional operators can be applied, as such we have added window-to-stream operators, and %
+(iii)~we have adopted the \sparql1.1 definition for aggregates.
+We also present \stwoo for the definition of stream-to-ontology mappings.
 
-\subsection{Streaming Extensions to SPARQL}
+\subsection{SPARQL\subscript{Stream}}
 \label{streamingsparqlsyntax}
 
-As shown in Section \ref{rdfstreams}, C-SPARQL introduces extensions for the support of RDF streams.\ %, mainly time and tuple based windows and registration of queries and streams \cite{Barbieri_2010}.
-The language is expressive enough to support most of the constructs we require, including time and tuple windows,
-aggregates, query and stream registration, and joins between streaming and stored data. Moreover, as in C-SPARQL, we
-follow the approach of applying windows to streaming data and afterwards applying standard operators over the resulting
-non-streaming output \cite{DellaValle_09}. This slightly extended C-SPARQL variation is named \sparqlstr\ in the rest
-of the paper.
+Just as in \csparql we define an \emph{\rdf stream} as a sequence of pairs $(T_i,\tau_i)$ where $T_i$ is an \rdf triple $\langle s_i,p_i,o_i \rangle$ and $\tau_i$ is a timestamp which comes from a monotonically non-decreasing sequence.
+An \rdf stream is identified by an \iri, which provides the location of the data source\footnote{Note in our work the \iri 's identify virtual \rdf streams since they are derived from the streaming data sources.}.
 
-Just as in \cite{Barbieri_2010} we define an RDF Stream as a sequence of pairs $(T_i,\tau_i)$ where $T_i$ is an RDF
-triple $\langle s_i,p_i,o_i \rangle$ and $\tau_i$ is a timestamp.
-%A Stream is specified using the \textsf{STREAM} clause in the \textsf{FROM} part of the query. The stream itself is identified with an \textit{IRI} (Internationalized Resource Identifier) that uniquely identifies it. Windows are specified using square brackets \textsf{[ ]} and the \textsf{RANGE} keyword for specifying the time based window width.For instance the expression \textsf{[RANGE 10 h]} applied to a stream will take the triples registered in the last 10 hours.
-In addition to the time width specified with the \textsf{RANGE} keyword, we introduce the possibility of specifying initial and final time boundaries for windows, using the \textsf{TO} keyword. We also add the \textsf{NOW} keyword, used to denote the current timestamp. Using these additions it is possible to specify more complex time ranges such as intervals in the past. The general form of the window range is \textsf{[RANGE $t_i$ TO $t_f$]}, where $t_i$ and $t_f$ are the lower and higher time boundaries respectively. Both boundaries are of the form \textsf{NOW-}$t$, where $t$ is a number of time units. For example the window \textsf{[RANGE NOW-2 d TO NOW-1 d]} will take all triples registered between one and two days ago. %The higher boundary can be ignored if we want it to be the current timestamp (i.e. TO NOW-0).
-A slide parameter can be specified using the \textsf{STEP} keyword and the time interval for the sliding window creation.\ %, e.g. [RANGE 30 m STEP 5m] will take triples registered 30 minutes ago, every 5 minutes.
-Triple based windows are of the form \textsf{[ROWS N]} where \textsf{N} is the number of triples to be taken.
+Window definitions are of the form `\textsf{FROM} \textit{Start} \textsf{TO} \textit{End}  [\textsf{STEP}] [\textit{Literal}]', where the \textit{Start} and \textit{End} are of the form \textsf{NOW} or \textsf{NOW} – \textit{Literal}, and \textit{Literal} represents some number of time unit (\textsf{DAYS}, \textsf{HOURS}, \textsf{MINUTES}, or \textsf{SECONDS})\footnote{Note that the parser will also accept the non-plural form of the time units and is not case sensitive.}. 
+The optional \textsf{STEP} indicates the gap between each successive window evaluation.
+Note, if the size of the step is smaller than the range of the window, then the windows will overlap, if it coincides with the size of the window then every triple will appear in one and only one window, and if the step is larger than the range then the windows \emph{sample} the stream.
+Also note that the definition of a window can be completely in the past.
+This is useful for correlating current values on a stream with values that have previously occurred.
 
-%add query registration
-%add stream registration
-%add agregates
+The result of applying a window over a stream is a timestamped bag of triples over which conjunctions between triple patterns, and other \quotes{classical} operators can be evaluated.
+Windows can be converted back into a stream of triples by applying one of the window-to-stream operators in the \textsf{SELECT} clause: \textsf{ISTREAM} for returning all newly inserted answers since the last window, \textsf{DSTREAM} for returning all deleted answers since the last window, and \textsf{RSTREAM} for returning all answers in the window.
+
+% The additional grammar rules for expressing windows and window-to-stream operators can be found in Figure~\ref{fig:sparql-str-syntax}\footnote{Note that the parser will also accept the non-plural form of the time units and is not case sensitive.}.
+
+% \begin{lstlisting}[style=R2OStyle,language=R2O,frame=none]%[upquote=true]
+% SelectStrClause \longrightarrow 'SELECT' [WindowToStream] VariableList
+% \end{lstlisting}
+
+% \begin{figure}[t]
+%   \centering
+%   \scriptsize
+%   \begin{align*}
+%     {SelectStrClause} \longrightarrow&\ `\textsf{SELECT}'\ [{WindowToStream}]\ {VariableList}\\
+%     {WindowToStream} \longrightarrow&\ \textsf{`RSTREAM'} \mid \textsf{`ISTREAM'} \mid \textsf{`DSTREAM'}\\
+%     \\
+%     {FromStrClause} \longrightarrow&\ `\textsf{FROM}'\ [`\textsf{NAMED}']\ `\textsf{STREAM}'\ {StreamIRI} [{Window}]\\
+%     {Window} \longrightarrow&\ `[\textsf{FROM'}\ {TimeExp}\ {TimeUnit}\ `\textsf{TO'}\ {TimeEx}\ [{TimeUnit}]\ [`\textsf{STEP'}\ {Number}\ [{TimeUnit}]]`]'  \mid\\
+%     & `[\textsf{NOW}\ [`\textsf{STEP'}\ {Number}\ [{TimeUnit}]]`]']'\\
+%     {TimeExp} \longrightarrow&\ `\textsf{NOW'}\ [`-'\ {Number}]\\
+%     {TimeUnit} \longrightarrow & \textsf{`SECONDS'} \mid \textsf{`MINUTES'} \mid \textsf{`HOURS'} \mid \textsf{`DAYS'} 
+%   \end{align*}
+%   \caption{Additional grammar rules for window and window-to-stream constructs of \sparqlstr.}
+%   \label{fig:sparql-str-syntax}
+% \end{figure}
+
+\begin{lstlisting}[style=SPARQLSTRStyle,language=SPARQLSTR,frame=none,float=t,label=q:sparqlstr,caption=An example \sparqlstr query which every minute computes the average wind speed measurement for each sensor over the last 10 minutes.,captionpos=b]
+PREFIX fire: <http://www.ssg4env.eu#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+SELECT RSTREAM AVG(?speed)
+FROM STREAM <www.ssg4env.eu/SensorReadings.srdf> [FROM NOW - 10 MINUTES TO NOW STEP 1 MINUTE]
+WHERE {
+	?WindSpeed a fire:WindSpeedMeasurement;
+		fire:hasSpeed ?speed;
+}
+GROUP BY ?WindSpeed
+\end{lstlisting}
+
+Listing~\ref{q:sparqlstr} shows a complete \sparqlstr query which, every minute, returns the average of the last 10 minutes of wind speed measurements for each sensor. 
+
+Note, \sparqlstr only supports time-based windows. 
+\csparql also has the notion of a triple-based window. 
+However, such windows are problematic since the number of triples required to generate an answer may be greater than the size of the triple window.
+For example, consider a window size of 1~triple and the graph pattern from the example query in Listing~\ref{q:sparqlstr}.
+Only one of the triples that form the graph pattern would be kept by the window, and hence it would not be possible to compute the query answer.
 
 
-%First we introduce the extensions to SPARQL for RDF streams. Although we already introduced
-
-%Here i explain first the extensions to SPARQL. Based on C-SPARQL. mention the additions necessary, any time window definition, rstream operator. Aggregates for the future. here i put some syntax samples and explicative description of what it means
-
-\subsection{Streaming Extensions to \rtwoo}
+\subsection{\stwoo: Expressing Stream-to-Ontology Mappings}
 \label{streamingr2osyntax}
 
-The mapping document that describes how to transform the data source elements to ontology elements is written in the
-\stwoo\ mapping language, an extended version of \rtwoo. As it is explained in \cite{Barrasa_04}, \rtwoo\ includes a
-section in the mapping document that describes the database tables and columns, \textsf{dbscehma-desc}. In order to
-support streams, \rtwoo\ has been extended to also describe the data stream schema. A new component called
-\textsf{streamschema-desc} has been created, as in the following example:
+The mapping document that describes how to transform the data source elements to ontology elements is written in the \stwoo mapping language, an extended version of \rtwoo \cite{Barrasa_04}. 
+An \rtwoo mapping document includes a section that describes the database relations, \textsf{dbscehma-desc}. 
+In order to support data streams, \rtwoo has been extended to also describe the data stream schema. 
+A new component called \textsf{streamschema-desc} has been created, as shown in the top part of  Listing~\ref{list:s2o}.
+%\fixme{Change example to fire use case to make consistent with the rest of the paper.}
 
-\lstdefinelanguage{R2O}{
-morekeywords={streamschema,desc,name,has,stream,streamType,documentation,timestamp, keycol,nonkeycol,columnType,conceptmap,def,uri,as,virtualStream,described,by,
-attributemap,has,column,applies,if,operation,dbrelationmap,toConcept,joins,via,condition},
-sensitive=true,%
-morecomment=[l]\#,%
-morestring=[b]',%
-}
-\lstdefinestyle{R2OStyle}{basicstyle=\sffamily\scriptsize,
-                        %keywordstyle=\lstuppercase,
-                        emphstyle=\itshape,
-                        showstringspaces=false,
-                        tabsize=2,
-                        }
-\begin{lstlisting}[style=R2OStyle,language=R2O,frame=none]
+% \begin{lstlisting}[style=R2OStyle,language=R2O,frame=none,float=t,label=list:s2o,caption=An example \stwoo declaration of a data stream schema.,captionpos=b]
+% streamschema-desc
+% 	name CoastalSensors
+% 	has-stream SensorWaves
+% 		streamType pushed
+% 		documentation "Wave measurements"
+% 		keycol-desc measurementid
+% 			columnType integer
+% 		timestamp-desc  measuretime
+% 			columnType datetime
+% 		nonkeycol-desc  measureheight
+% 			columnType float
+% 		nonkeycol-desc measuretemperature
+% 			columnType float
+% \end{lstlisting}
+
+\begin{lstlisting}[style=R2OStyle,language=R2O,frame=none,float=t,label=list:s2o,caption=An example \stwoo declaration of a data stream schema and mapping from a stream schema to an ontology concept.,captionpos=b]
 streamschema-desc
-    name CoastalSensors
-    has-stream SensorWaves
-        streamType pushed
-        documentation "Wave measurements"
-        keycol-desc measurementid
-            columnType integer
-        timestamp-desc  measuretime
-            columnType datetime
-        nonkeycol-desc  measureheight
-            columnType float
-        nonkeycol-desc measuretemperature
-            columnType float
+	name MeteoSensors
+	has-stream SensorWind
+		streamType pushed
+		documentation "Wind measurements"
+		keycol-desc measurementid
+			columnType integer
+		timestamp-desc  measuretime
+			columnType datetime
+		nonkeycol-desc  measurespeed
+			columnType float
+		nonkeycol-desc measuredirection
+			columnType float
+...
+conceptmap-def Wind
+	virtualStream <http://virtualStreamIRI>
+	uri-as
+		concat(SensorWind.measurementID)
+	applies-if
+		<cond-expr>
+	described-by
+		attributemap-def hasSpeed
+			virtualStream <http://virtualStreamIRI>
+			operation constant
+				has-column SensorWind.measurespeed
 \end{lstlisting}
-The description of the stream is similar to a table. An additional attribute \textsf{streamType} has been added, it denotes the kind of stream in terms of data acquisition. It can be a sensed stream, i.e. pull based arriving at some acquisition rate. Or it can be pushed, arriving at some potentially variable and/or unknown rate. Relations can also be specified just like tables in \stwoo. In the same way as key and non key attributes are defined, a new \textsf{timestamp-desc} element has been added to provide support for declaring the stream timestamp attribute.
-For the class and property mappings, the \rtwoo\ existent definitions can be used for stream schemas just as it was for relational schemas. This is specified in the \textsf{conceptmap-def} element:
-\begin{lstlisting}[style=R2OStyle,language=R2O,frame=none]
-conceptmap-def Wave
-    virtualStream <http://virtualStreamIRI>
-    uri-as
-        concat(SensorWaves.measurementID)
-    applies-if
-        <cond-expr>
-    described-by
-        attributemap-def hasHeight
-            virtualStream <http://virtualStreamIRI>
-            operation constant
-                has-column SensorWaves.measureheight
-\end{lstlisting}
-In addition, although they are not explicitly mapped, the timestamp attribute of stream tuples could be used in some of the mapping definitions, for instance in the URI construction (\textsf{uri-as} element).
-Finally, it has been seen that at the moment of generating a SPARQL streaming query, an RDF Stream IRI is expected along with the window parameters. In this case the RDF Stream is virtual and its IRI can be specified in the \stwoo\ mapping using the \textsf{virtualStream} element. It can be specified at the \textsf{conceptmap-def} level or at the \textsf{attributemap-def} level.
-
-%As it has been seen, R2O requires some changes to support creating mapping documents for stream schemas. It is expected that common and simple mappings in the R2O language can be defined using the ODEMapster tool, enhanced with streaming data support.
 
 
+The description of the stream is similar to a relation.
+An additional attribute \textsf{streamType} has been added, it denotes the kind of stream in terms of data acquisition, \ie event-stream or acquisition-stream.
+In the same way as key and non-key attributes are defined, a new \textsf{timestamp-desc} element has been added to provide support for declaring the stream timestamp attribute.
+Since \stwoo extends \rtwoo, relations can also be specified using the existing mechanism.
+For the class and property mappings, the existing \rtwoo definitions can be used for stream schemas just as it was for relational schemas. 
+This is specified in the \textsf{conceptmap-def} element as shown in the bottom part of Listing~\ref{list:s2o}.
+%\fixme{Change example to fire use case to make consistent with the rest of the paper.}
 
-%Then I describe the extensions to R2O, how i specify a stream, with keys, i explain that no time windows needed in the mapping definitions. but taken into account during execution and transformation. Some example of mapping. Base somehow on the odba italians stuff
+
+% \begin{lstlisting}[style=R2OStyle,language=R2O,frame=none,float=t,label=list:r2o-concept-map,caption=An example \stwoo mapping from a data stream schema to an ontology concept.,captionpos=b]
+% conceptmap-def Wave
+% 	virtualStream <http://virtualStreamIRI>
+% 	uri-as
+% 		concat(SensorWaves.measurementID)
+% 	applies-if
+% 		<cond-expr>
+% 	described-by
+% 		attributemap-def hasHeight
+% 			virtualStream <http://virtualStreamIRI>
+% 			operation constant
+% 				has-column SensorWaves.measureheight
+% \end{lstlisting}
+
+In addition, although they are not explicitly mapped, the timestamp attribute of stream tuples could be used in some of the mapping definitions, for instance in the \uri construction (\textsf{uri-as} element).
+Finally, a \sparqlstr streaming query requires an \rdf stream to have an \iri identifier. 
+\stwoo creates a \emph{virtual} \rdf stream and its \iri is specified in the \stwoo mapping using the \textsf{virtualStream} element.
+It can be specified at the \textsf{conceptmap-def} level or at the \textsf{attributemap-def} level.
+
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "rere"
+%%% End: 

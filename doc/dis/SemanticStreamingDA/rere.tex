@@ -37,25 +37,109 @@
 %\newlength\wvtextpercent
 %\setlength\wvtextpercent{0.009\textwidth}
 \usepackage{latexsym}
-\usepackage{fixme}
+\usepackage[draft]{fixme}
 \usepackage{verbatim}
 \usepackage{listings}
 \usepackage{amsmath}
 
 \usepackage{array} % and/or
 \usepackage{hyperref}
+\usepackage{xspace}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \newcommand{\keywords}[1]{\par\addvspace\baselineskip
 \noindent\keywordname\enspace\ignorespaces#1}
-\newcommand{\LJoin}{\includegraphics[scale=1.0]{img/ljoin}}
+%\newcommand{\LJoin}{\includegraphics[scale=1.0]{img/ljoin}}
+
+\newcommand{\eg}{e\@.g\@.~}                     % e.g.
+\newcommand{\ie}{i\@.e\@.~}                     % i.e.
+\newcommand{\cf}[1]{{\it cf.~#1}}
+\newcommand{\etal}{\textit{et al.}\xspace}
+\newcommand{\viz}{\textit{viz.}\xspace}
+\newcommand{\quotes}[1]{``#1''}
+\newcommand{\apriori}{\textit{a priori}\xspace}
+\newcommand{\adhoc}{\textit{ad hoc}\xspace}
+\newcommand{\eat}[1]{}
 
 \newcommand{\superscript}[1]{\ensuremath{^{\textrm{#1}}}}
 \newcommand{\subscript}[1]{\ensuremath{_{\textrm{#1}}}}
+\newcommand{\Time}{\mathbb{T}}
 
-\newcommand{\rtwoo}{\textsf{R\subscript{2}O}}
-\newcommand{\stwoo}{\textsf{S\subscript{2}O}}
-\newcommand{\sparqlstr}{SPARQL\subscript{STR}}
+\newcommand{\iri}{\textsc{iri}\xspace}
+\newcommand{\dtwor}{\textsc{d2r}\xspace}
+\newcommand{\rtwoo}{\textsf{R\subscript{2}O}\xspace}
+\newcommand{\stwoo}{\textsf{S\subscript{2}O}\xspace}
+\newcommand{\odemapster}{\textsf{ODEMapster}\xspace}
+\newcommand{\owl}{\textsc{owl}\xspace}
+\newcommand{\rdf}{\textsc{rdf}\xspace}
+\newcommand{\csparql}{\textsc{c-sparql}\xspace}
+\newcommand{\sparql}{\textsc{sparql}\xspace}
+\newcommand{\sparqlstr}{\textsc{sparql}\subscript{Stream}\xspace}
+\newcommand{\sql}{\textsc{sql}\xspace}
+\newcommand{\stream}{\textsc{stream}\xspace}
+\newcommand{\snee}{\textsc{snee}\xspace}
+\newcommand{\sneeql}{\textsc{snee}ql\xspace}
+\newcommand{\uri}{\textsc{uri}\xspace}
+\newcommand{\xml}{\textsc{xml}\xspace}
+
+\newcommand{\streamingsparql}{\textsc{s}treaming\textsc{sparql}\xspace}
+\newcommand{\cql}{\textsc{cql}\xspace}
+\newcommand{\dtworq}{\textsc{d2rq}\xspace}
+
+\newcommand{\gav}{GAV\xspace}
+\newcommand{\lav}{LAV\xspace}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% Listing styles
+
+\lstset{numberbychapter=false}
+\lstset{captionpos=b}
+\lstset{frame=none}
+\lstset{breaklines=true}
+
+% R2O
+\lstdefinelanguage{R2O}{
+morekeywords={streamschema,desc,name,has,stream,streamType,documentation,timestamp, keycol,nonkeycol,columnType,conceptmap,def,uri,as,virtualStream,described,by,
+attributemap,has,column,applies,if,operation,dbrelationmap,toConcept,joins,via,condition},
+sensitive=true,%
+morecomment=[l]\#,%
+morestring=[b]',%
+}
+\lstdefinestyle{R2OStyle}{basicstyle=\sffamily\scriptsize,
+                        %keywordstyle=\lstuppercase,
+                        emphstyle=\itshape,
+                        showstringspaces=false,
+                        tabsize=2,
+                        }
+
+% SNEEql
+\lstdefinelanguage{SNEEql}[]{SQL}{
+                        morekeywords={RSTREAM,ISTREAM,DSTREAM,TO,SLIDE}
+}
+\lstdefinestyle{SNEEqlStyle}{basicstyle=\ttfamily\scriptsize,
+                        %keywordstyle=\lstuppercase,
+                        emphstyle=\itshape,
+                        showstringspaces=false,
+                        }
+
+%SPARQL_Stream
+\lstdefinelanguage{SPARQLSTR}[]{SQL}{
+morekeywords={STREAM, PREFIX, WINDOW, RANGE, SLIDE, AGGREGATE, AVG,
+  STEP, REGISTER, QUERY, MINUTES, TO, NOW, RSTREAM, ISTREAM, DSTREAM},
+sensitive=true,%
+morecomment=[l]\#,%
+morestring=[b]',%
+}
+
+\lstdefinestyle{SPARQLSTRStyle}{basicstyle=\sffamily\scriptsize,
+                        %keywordstyle=\lstuppercase,
+                        emphstyle=\itshape,
+                        showstringspaces=false,
+                        tabsize=4,
+                        }
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 %\setcounter{secnumdepth}{3}
 \begin{document}
 
@@ -104,29 +188,30 @@ Oxford Road, Machester M13 9PL, United Kingdom\\
 
 %\toctitle{Some good title}
 %\tocauthor{jp}
+
+\pagestyle{plain}
+
 \maketitle
 
 \begin{abstract}
-The availability of streaming data sources is progressively increasing thanks to the development of ubiquitous data capturing technologies such as sensor networks. The heterogeneity of these sources introduces the requirement of providing data access in a unified and coherent manner. In this paper we describe an ontology-based streaming data access service, based on extensions to the \rtwoo\ mapping language and its query processor ODEMapster, and to the C-SPARQL RDF stream query language. A preliminary implementation of the approach is also presented. With this proposal we expect to set the basis for future efforts in ontology-based streaming data integration.
+The availability of streaming data sources is progressively increasing thanks to the development of ubiquitous data capturing technologies such as sensor networks. The heterogeneity of these sources introduces the requirement of providing data access in a unified and coherent manner, whilst allowing the user to express their needs at an ontological level. In this paper we describe an ontology-based streaming data access service. Sources link their data content to the ontology through \stwoo mappings. Users can query the ontology using \sparqlstr, an extension of \sparql for streaming data. A preliminary implementation of the approach is also presented. With this proposal we expect to set the basis for future efforts in ontology-based streaming data integration.
 
 %\keywords{Streaming data access, Ontology-based data access}
 \end{abstract}
 
 
 \input{introduction}
-
-\input{relatedwork}
+\input{background}
 %\input{obdi}
 \input{approach}
 \input{syntax}
 \input{semantics}
 \input{execution}
+\input{relatedwork}
 \input{futurework}
 
 \subsubsection{Acknowledgments}
-This work has been supported by the European Commission project SemSorGrid4Env (FP7-223913). We also thank Alvaro A A
-Fernandes, Ixent Galpin, and Norman W Paton, from the University of Manchester, for their valuable ideas and
-suggestions.
+This work has been supported by the European Commission project SemSorGrid4Env (FP7-223913). We also thank Alvaro A. A. Fernandes, Ixent Galpin, and Norman W. Paton, from the University of Manchester, for their valuable ideas and  suggestions.
 
 \phantomsection
 \addcontentsline{toc}{section}{References}
