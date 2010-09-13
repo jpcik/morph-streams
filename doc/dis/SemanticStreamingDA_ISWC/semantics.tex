@@ -75,7 +75,7 @@ In this example $x$ is a distinguished variable and $y$ a non-distinguished one.
 The query has three atoms: $WindSpeedMeasurement(x)$, $measuredBy(x,y)$, and $WindSensor(y)$.
 
 Concerning the formal definition of the query answering, let $\mathcal{I}=(\Delta^\mathcal{I} ,\centerdot^\mathcal{I})$ be an interpretation, where $\Delta^\mathcal{I}$ is the interpretation domain and $\centerdot^\mathcal{I}$ the interpretation function that assigns an element of $\Delta^\mathcal{I}$ to each constant, a subset of $\Delta^\mathcal{I}$ to each class and a subset of $\Delta^\mathcal{I} \times \Delta^\mathcal{I}$ to each property of the ontology.
-Given a query $q(\vec{x})\leftarrow \varphi(\vec{x},\vec{y})$ the answer to $q$ is the set of tuples $q^{\mathcal{I}}_{\vec{x}} \in \Delta^\mathcal{I} \times \dots \times \Delta^\mathcal{I}$ that substituted to $\vec{x}$, make the formula $\exists\vec{y}.\varphi(\vec{x},\vec{y})$ true in $\mathcal{I}$ \cite{Poggi_08,Lubyte_09}.
+Given a query $q(\vec{x})\leftarrow \varphi(\vec{x},\vec{y})$ the answer to $q$ is the set $q^{\mathcal{I}}_{\vec{x}}$ of tuples $\vec{c} \in \Delta^\mathcal{I} \times \dots \times \Delta^\mathcal{I}$ that substituted to $\vec{x}$, make the formula $\exists\vec{y}.\varphi(\vec{x},\vec{y})$ true in $\mathcal{I}$ \cite{Calvanese_05,Poggi_08,Lubyte_09}.
 Now we can introduce the definition of the mappings. 
 Let $\mathcal{M}$ be a set of mapping assertions of the form:
 \begin{equation*}

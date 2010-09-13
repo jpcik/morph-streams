@@ -52,7 +52,8 @@ The additional constructs are explained below.
 
 \item[Window-to-Stream.] Window-to-stream operators are used to convert a stream of windows into a stream of tuples. \sneeql supports three such operators: \textsf{RSTREAM} for all tuples appearing in the window, \textsf{ISTREAM} for tuples that have been added since the last window evaluation, and \textsf{DSTREAM} for tuples that have been deleted since the last window evaluation.
 \end{description}
-Queries expressed in the \sneeql language are optimised for evaluation within a sensor network over acquisitional-streams by the \snee compiler\cite{Galpin_09}. \snee has recently been extended to enable query evaluation over event-streams out-with the sensor network.
+Queries expressed in the \sneeql language are optimised for evaluation within a sensor network over acquisitional-streams by the \snee compiler\cite{Galpin_09}. \snee has recently been extended to enable query evaluation over event-streams either within the sensor network (in-network query processing) or on computational hardware outside of the sensor network.
+
 
 
 %%% Local Variables: 
