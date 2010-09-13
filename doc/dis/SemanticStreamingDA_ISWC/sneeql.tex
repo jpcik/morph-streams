@@ -1,0 +1,83 @@
+The SNEEql [BGF+08] language for querying streaming data sources is based on the widely known CQL [ABW06], but it provides greater expressiveness in queries, including streams and relations, time and tuple windows, blocking and non-blocking operators, and pull and pushed based streams. 
+In the SNEEql data model the basic compound tuple type is defined as a set of typed attributes. A tagged tuple in a stream is a tuple that includes a named attributes called tick. The tick attribute is a timestamp that indicates when the tuple entered the stream. This attribute is essential to define the semantics of stream operators in these languages, two tuples having the same tick are considered to have entered the stream at the same instant.
+SNEEql defines a window as a pair consisting of a bag of tuples and a tick that indicates when the window was created. A stream is a potentially infinite sequence of tagged tuples or windows.
+
+SNEEql queries over streams are of the form:
+\textsf{SELECT a1 . . . an FROM s WHERE p} where \textsf{a1 . . . an} is a project list, s denotes a stream of tagged tuples, and p is a predicate [BGF+08]. The result of the execution of a stream query is a stream of tagged tuples.
+
+Stream systems require operators to limit streams to finite bounded structures in order to process only a smaller subset of data. Consider for example that we want to obtain the latest temperature values measured at the sea level. This is a subset of data that must be obtained from a stream of continuously appended temperature measurements. Windows are widely used to perform such transformations from streams to a bounded extents such relations [BGF+08]. The most common stream-to-relation operators are time windows. A time window usually takes a time interval as parameter and returns a relation containing tuples of the stream whose timestamp falls in that specified time interval. It can be said that a time window returns a finite snapshot of the stream in the window interval.
+
+Window queries are of the form:
+\textsf{SELECT a1 . . .an FROM w1 . . . wm WHERE p}
+where \textsf{a1 . . . an} is a projection list of attributes of the stream, \textsf{w1 . . .wm} is a list of window definitions, and p is a predicate. [BGF+08]
+The result of the execution of a window query is a stream of windows. A window on as stream can be specified as follows:
+\textsf{s [FROM t1 TO t2 SLIDE int unit]}
+
+where \textsf{FROM t1 TO t2} indicates a time interval. The slide parameter indicates the frequency of the window creation in time units or rows.
+A window on a table can be specified as follows:
+\textsf{t [SCAN int timeUnit]}
+where t is a table. The scan parameter indicates the frequency of the table scan and its corresponding windows creation.
+The SNEEql stream-to-window operator previously described follows the ideas of CQL, and other languages have similar constructs as well, mainly regarding windows. Notice that windows are not only time dependant, but also may be tuple (row) dependant.
+Window-to-stream operators are also required for stream query languages. Based on the CQL [ABW06] operators, SNEEql provides the ISTREAM, DSTREAM and RSTREAM operators. The ISTREAM operator appends tuples that were not on the previous window, to the output stream. DSTREAM appends tuples that were deleted form the previous window. RSTREAM appends all tuples from the previous window to the output stream.
+Queries over streams usually require aggregation functions. Querying for sums, averages, maximums and minimums is quite common. Streaming query languages such as CQL and SNEEql provide support for this kind of operators, for either streams or relations.
+Another feature of some query languages is the possibility of specifying quality of service requirements. SNEEql allows for instance specifying the desired acquisition rate and delivery time:
+\textsf{ACQUISITION RATE = 3s ; DELIVERY TIME = 5s}
+These parameters can be used by the query engine to optimise the query plans and these can be extremely useful in the context of sensor networks because of the limited processing and power resources.
+
+
+\subsection{SNEEql Semantics}
+\label{sneeqlsemantics}
+
+The operational semantics of the SNEEql query language are detailed in [SNEEql] using an approach that consists on translating the logical algebraic operators into the Haskell functional programming language. 
+The main data types are first defined( all complete definitions are available in [Brennik]):
+
+
+\begin{lstlisting}[style=HaskellSNEE,language=Haskell,frame=none]
+data Data
+ =	Tuple ([Attribute],[RawData])
+ |	TaggedTuple Tick Tuple
+ |	IndexedTuple Index Tick Tuple
+ |	BagOf [Tuple]
+ |	StreamOf [Data]
+ |	Window Tick BagOfTuples
+\end{lstlisting}
+
+As we can see we have streams of data defined as lists of \texttt{Data} elements, which can in turn be of type \texttt{TaggedTuple} or even \texttt{Window}. As Haskell is a lazy evaluation language, we can use lists for representing unbounded streams. As it can be seen windows are composed on a \texttt{Tick} and a bag of \texttt{Tuple}. Notice that a relation can be seen as a list of \texttt{Tuple}.
+Creating a window in SNEEql involves two steps, first determine when to create the window taking into account the slide parameter. Then the set of tuples to be included in the window must be determined using the time range of the window.
+Time-based window creation is performed by the \texttt{createTimeWindow} function that takes as parameters the time range \texttt{WindowScopeDef} the slide, a tick representing the current timestamp (\texttt{NOW}) and a list of tagged tuples. A \texttt{Window} tagged with \texttt{NOW} tick is created, taking all tuples tagged before or at most at the current tick. Then the function is called recursively for \texttt{NOW + timeSlide}:
+ 
+\begin{lstlisting}[style=HaskellSNEE,language=Haskell,frame=none]
+createTimeWindow :: WindowScopeDef -> Tick -> Tick -> [IndexedTuple] -> [Window] 
+createTimeWindow windowScopeDef timeSlide now indexedTuples
+ =	let input = takeWhile (lessEqualsTick now) indexedTuples
+ in [Window now (getWindowTuples windowScopeDef now input)]
+	++ createTimeWindow windowScopeDef timeSlide (now+timeSlide) taggedTuples
+\end{lstlisting}
+
+The \texttt{getWindowTuples} function filters the stream data according to the time range specified in the \texttt{TimeScopeDef}:
+
+\begin{lstlisting}[style=HaskellSNEE,language=Haskell,frame=none]
+getWindowTuples windowScope@(TimeScopeDef from to) now input
+ =	let passedFrom = dropWhile (lessThanTick (now - from)) input
+ in let window = filter (lessEqualsTick (now - to)) passedFrom
+ in BagOf (map stripTags window)
+\end{lstlisting}
+
+These functions are similarly defined for the case of tuple-based windows. In order to transform streams of windows to streams of tagged tuples, the \texttt{doRStream} function is defined:
+
+\begin{lstlisting}[style=HaskellSNEE,language=Haskell,frame=none]
+doRStream :: StreamOfWindows -> StreamOfTaggedTuples
+doRStream (StreamOf windows)
+ =	let taggedTuples = toRStream windows
+ in (StreamOf taggedTuples)
+
+toRStream :: [Window] -> [TaggedTuple]
+toRStream [] = []
+toRStream ((Window tick (BagOf tuples)):moreWindows)
+ =	let taggedTuples = map (tagTuple tick) tuples
+ in taggedTuples ++ (toRStream moreWindows)
+\end{lstlisting}
+
+In the previous definition \texttt{tagTuple} simply tags a \texttt{Tuple} element with a tick. Projection, selection, cross product and other operators are also defined in this way using operational semantics.  
+
+%then i exmplain snee semantics, based on crhistian thesis. put some haskell definition, explain. 

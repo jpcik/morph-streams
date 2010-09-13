@@ -1,0 +1,61 @@
+
+\section{Background}
+\label{sec:background}
+
+The following sections describe the existing work upon which our approach for enabling ontology-based access to streaming data sources is based, \viz \rtwoo which enables ontology-based access to stored relational data, and \snee a query processing engine over relational data streams.
+A full discussion of related work can be found in Section~\ref{sec:related-work}.
+
+
+\subsection{Ontology-based Access to Stored Relational Data}
+\label{sec:ontol-based-access-stored}
+
+The goal of ontology-based data access is to generate semantic web content from existing relational data sources available on the web \cite{Sahoo_09}.
+The objective of these systems is to allow users to construct queries over an ontology (\eg in \sparql), which are then rewritten into a set of queries expressed in the query language of the data source (typically \sql), according to the specified mappings. 
+The query results are then converted back from the relational format into \rdf, which is returned to the user.
+\odemapster is one such system which uses \rtwoo (Relational-to-Ontology) to express the mappings between the relational data source and the ontology \cite{Barrasa_04}.
+
+The mapping definition language \rtwoo defines relationships between a set of ontologies and relational schemas \cite{Barrasa_04}. 
+The mappings are expressed in terms of selections and transformations over database relations following a Global-as-View (\gav) approach \cite{Lenzerini_02}, and can be created either manually or with the help of a mapping tool.
+The resulting mappings are saved as \xml which enables them to be independent of any specific DBMS or ontology language.
+
+Mapping relations to ontologies often requires performing operations on the relational sources. 
+Several cases are handled by \rtwoo and detailed below.
+\begin{description}
+\item[Direct Mapping.] A single relation maps to an ontology class and the attributes of the relation are used to fill the property values of the ontology instances. Each row in the relation will generate a class instance in the ontology.
+\item[Join/Union.] A single relation does not correspond alone to a class, but it has to be combined with other relations. The result of the join or union of the relations will generate the corresponding ontology instances.
+\item[Projection.] Sometimes not all the attributes of a relation are required for the mapping. The unnecessary attributes can simply be ignored. In order to do so, a projection on the needed attributes can be performed.
+\item[Selection.] Not all rows of a relation correspond to instances of the mapped ontology class. A subset of the rows must be extracted. To do so, selection conditions can be applied to choose the desired subset for the mapping.
+\end{description}
+It is possible to combine joins, unions, projections and selections for more complex mapping definitions.
+\rtwoo also enables the application of functions, \eg concatenation, sub-string, or arithmetic functions, to transform the relational data into the appropriate form for the ontology.
+
+
+
+\subsection{Querying Relational Data Streams}
+\label{sec:query-relat-streams}
+
+A relational data stream is an append only, potentially infinite, sequence of timestamped tuples \cite{Golab2003Issues-in-data-}, examples of which include stock market tickers, heart rate monitors, and sensor networks deployed to monitor the environment.
+Data streams can be classified into two categories:
+\begin{description}
+\item[Event-streams.] A tuple is generated each time an event occurs, \eg the sale of shares, and can have variable, potentially very high, data rates.
+\item[Acquisitional-streams.] A tuple is measured at a predefined regular interval, \eg the readings made by a sensor network.
+\end{description}
+Users are typically interested in being informed continuously about the most recent stream values, with older tuples being less relevant.
+Classical database query processing is not adequate since data must first be stored and then queried with one-off evaluation.
+Hence, query languages \cite{Brenninkmeijer_08,Arasu_2006} and data stream management systems (DSMS) \cite{Arasu_06a,Abadi_2005,Galpin_09,Madden_05} have been developed to process continuous long-lived queries over data streams as tuples arrive.
+
+One existing approach is \sneeql, which has a well defined, unified semantics for declarative expressions of data needs over event-streams, acquisitional-streams, and stored data \cite{Brenninkmeijer_08}.
+\sneeql can be viewed as extending \sql for processing data streams.
+The additional constructs are explained below.
+\begin{description}
+\item[Window.] A window over a data stream transforms the infinite sequence of tuples into a bounded bag of tuples over which traditional relational operators can be applied. A window is specified as `$\textsf{FROM}\ {start}\ \textsf{TO}\ {end}\ [\textsf{SLIDE}\ {int}\ {unit}]$', where ${start}$ and ${end}$ are of the form `$\textsf{NOW} - {literal}$' and define the range of the window with respect to the evaluation time. The optional \textsf{SLIDE} parameter specifies how often windows are evaluated.
+
+\item[Window-to-Stream.] Window-to-stream operators are used to convert a stream of windows into a stream of tuples. \sneeql supports three such operators: \textsf{RSTREAM} for all tuples appearing in the window, \textsf{ISTREAM} for tuples that have been added since the last window evaluation, and \textsf{DSTREAM} for tuples that have been deleted since the last window evaluation.
+\end{description}
+Queries expressed in the \sneeql language are optimised for evaluation within a sensor network over acquisitional-streams by the \snee compiler\cite{Galpin_09}. \snee has recently been extended to enable query evaluation over event-streams out-with the sensor network.
+
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "rere"
+%%% End: 
