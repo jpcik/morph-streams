@@ -17,12 +17,12 @@ where \textsf{FROM t1 TO t2} indicates a time interval. The slide parameter indi
 A window on a table can be specified as follows:
 \textsf{t [SCAN int timeUnit]}
 where t is a table. The scan parameter indicates the frequency of the table scan and its corresponding windows creation.
-The SNEEql stream-to-window operator previously described follows the ideas of CQL, and other languages have similar constructs as well, mainly regarding windows. Notice that windows are not only time dependant, but also may be tuple (row) dependant.
+The SNEEql stream-to-window operator previously described follows the ideas of CQL, and other languages have similar constructs as well, mainly regarding windows. Notice that windows are not only time dependent, but also may be tuple (row) dependent.
 Window-to-stream operators are also required for stream query languages. Based on the CQL [ABW06] operators, SNEEql provides the ISTREAM, DSTREAM and RSTREAM operators. The ISTREAM operator appends tuples that were not on the previous window, to the output stream. DSTREAM appends tuples that were deleted form the previous window. RSTREAM appends all tuples from the previous window to the output stream.
 Queries over streams usually require aggregation functions. Querying for sums, averages, maximums and minimums is quite common. Streaming query languages such as CQL and SNEEql provide support for this kind of operators, for either streams or relations.
 Another feature of some query languages is the possibility of specifying quality of service requirements. SNEEql allows for instance specifying the desired acquisition rate and delivery time:
 \textsf{ACQUISITION RATE = 3s ; DELIVERY TIME = 5s}
-These parameters can be used by the query engine to optimise the query plans and these can be extremely useful in the context of sensor networks because of the limited processing and power resources.
+These parameters can be used by the query engine to optimize the query plans and these can be extremely useful in the context of sensor networks because of the limited processing and power resources.
 
 
 \subsection{SNEEql Semantics}

@@ -69,7 +69,7 @@ WHERE {
 
 
 A class query atom $WindSpeedMeasurement(x)$ and a datatype property atom $hasSpeed(x,z)$ can be extracted from the \sparqlstr query. 
-The window specification $[t_s=\textsf{NOW}-10,t_e=\textsf{NOW},\delta=1]$ is also obtained\footnote{For the simplicity of presentation, we assume that the system rewrites all time specifications to minutes.
+The window specification $[t_s=\textsf{\small{NOW}}-10,t_e=\textsf{\small{NOW}},\delta=1]$ is also obtained\footnote{For the simplicity of presentation, we assume that the system rewrites all time specifications to minutes.
 The implemented system uses milliseconds as the common time unit.}.
 The \stwoo mapping defines that $WindSpeedMeasurment$ instances are generated based on the \texttt{sensorId} and \texttt{ts} attributes of the \texttt{windsamples} stream, using a concatenation function to generate each instance \uri.
 % Hence the processor will evaluate

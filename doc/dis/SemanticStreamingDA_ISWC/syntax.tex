@@ -14,14 +14,14 @@ We also present \stwoo for the definition of stream-to-ontology mappings.
 Just as in \csparql we define an \emph{\rdf stream} as a sequence of pairs $(T_i,\tau_i)$ where $T_i$ is an \rdf triple $\langle s_i,p_i,o_i \rangle$ and $\tau_i$ is a timestamp which comes from a monotonically non-decreasing sequence.
 An \rdf stream is identified by an \iri, which provides the location of the data source\footnote{Note in our work the \iri 's identify virtual \rdf streams since they are derived from the streaming data sources.}.
 
-Window definitions are of the form `\textsf{FROM} \textit{Start} \textsf{TO} \textit{End}  [\textsf{STEP}] [\textit{Literal}]', where the \textit{Start} and \textit{End} are of the form \textsf{NOW} or \textsf{NOW} – \textit{Literal}, and \textit{Literal} represents some number of time unit (\textsf{DAYS}, \textsf{HOURS}, \textsf{MINUTES}, or \textsf{SECONDS})\footnote{Note that the parser will also accept the non-plural form of the time units and is not case sensitive.}. 
-The optional \textsf{STEP} indicates the gap between each successive window evaluation.
+Window definitions are of the form `\textsf{\small{FROM}} \textit{Start} \textsf{\small{TO}} \textit{End}  [\textsf{\small{STEP}}] [\textit{Literal}]', where the \textit{Start} and \textit{End} are of the form \textsf{\small{NOW}} or \textsf{\small{NOW}} – \textit{Literal}, and \textit{Literal} represents some number of time unit (\textsf{\small{DAYS}}, \textsf{\small{HOURS}}, \textsf{\small{MINUTES}}, or \textsf{\small{SECONDS}})\footnote{Note that the parser will also accept the non-plural form of the time units and is not case sensitive.}. 
+The optional \textsf{\small{STEP}} indicates the gap between each successive window evaluation.
 Note, if the size of the step is smaller than the range of the window, then the windows will overlap, if it coincides with the size of the window then every triple will appear in one and only one window, and if the step is larger than the range then the windows \emph{sample} the stream.
 Also note that the definition of a window can be completely in the past.
 This is useful for correlating current values on a stream with values that have previously occurred.
 
 The result of applying a window over a stream is a timestamped bag of triples over which conjunctions between triple patterns, and other \quotes{classical} operators can be evaluated.
-Windows can be converted back into a stream of triples by applying one of the window-to-stream operators in the \textsf{SELECT} clause: \textsf{ISTREAM} for returning all newly inserted answers since the last window, \textsf{DSTREAM} for returning all deleted answers since the last window, and \textsf{RSTREAM} for returning all answers in the window.
+Windows can be converted back into a stream of triples by applying one of the window-to-stream operators in the \textsf{\small{SELECT}} clause: \textsf{\small{ISTREAM}} for returning all newly inserted answers since the last window, \textsf{\small{DSTREAM}} for returning all deleted answers since the last window, and \textsf{\small{RSTREAM}} for returning all answers in the window.
 
 % The additional grammar rules for expressing windows and window-to-stream operators can be found in Figure~\ref{fig:sparql-str-syntax}\footnote{Note that the parser will also accept the non-plural form of the time units and is not case sensitive.}.
 
@@ -85,7 +85,7 @@ For example, consider a window size of 1~triple and the graph pattern from the e
 Only one of the triples that form the graph pattern would be kept by the window, and hence it would not be possible to compute the query answer.
 
 
-\subsection{\stwoo: Expressing Stream-to-Ontology Mappings}
+\subsection{\bigstwoo: Expressing Stream-to-Ontology Mappings}
 \label{streamingr2osyntax}
 
 The mapping document that describes how to transform the data source elements to ontology elements is written in the \stwoo mapping language, an extended version of \rtwoo \cite{Barrasa_04}. 

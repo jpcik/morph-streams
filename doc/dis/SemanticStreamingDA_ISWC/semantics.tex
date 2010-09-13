@@ -23,7 +23,7 @@ More formally, we define the triples that are contained in a time-based window e
 \end{align*}
 where $t_s$, $t_e$ define the start and end of the window time range respectively, and may be defined relative to the evaluation time $\tau$. 
 %\fixme{I have changed the lower bound on the window to be inclusive. This is the normal interpretation in relational stream languages.}
-Note that the rate at which windows get evaluated is controlled by the \textsf{STEP} defined in the query, which is denoted by $\delta$.% which in the following is captured by $\delta$ in the following expressions.
+Note that the rate at which windows get evaluated is controlled by the \textsf{\small{STEP}} defined in the query, which is denoted by $\delta$.% which in the following is captured by $\delta$ in the following expressions.
 
 We define the three window-to-stream operators as
 \begin{align*}
@@ -42,7 +42,7 @@ However, as the actual data source is not an \rdf stream but a sensor network or
 The next section describes the semantics of the transformation from \sparqlstr to \sneeql using the \stwoo mappings.
 
 
-\subsection{\stwoo Semantics}
+\subsection{\bigstwoo Semantics}
 \label{mappingsemantics}
 
 %We formalise the semantics of answering unions of conjunctive queries over an ontological schema, and accessing the underlying data sources through mappings. 

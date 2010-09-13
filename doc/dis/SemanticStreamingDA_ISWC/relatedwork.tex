@@ -13,8 +13,8 @@ The expressiveness of the queries supported by these systems is limited to conju
 However no existing approach takes into account streaming data and continuous queries.
 
 Several stream processing and querying engines have been built in the last decade and can be grouped in two main areas: event stream systems (e.g. Aurora/Borealis \cite{Abadi_2005}, \stream \cite{Arasu_06a}, TelegraphCQ \cite{Chandrasekaran_03}), and acquisitional stream systems (e.g. TinyDB \cite{Madden_05}, \snee \cite{Galpin_09}, Cougar \cite{Yao_02}). 
-For the first, the stream system does not have control over the data arrival rate, which is often potentially high and usually unknown and the query optimisation goal is to minimise latency. 
-For acquisitional streams, it is possible to control when data is obtained from the source, typically a sensor network, and the query optimisation goal is to maximise network lifetime. 
+For the first, the stream system does not have control over the data arrival rate, which is often potentially high and usually unknown and the query optimization goal is to minimize latency. 
+For acquisitional streams, it is possible to control when data is obtained from the source, typically a sensor network, and the query optimisation goal is to maximize network lifetime. 
 All these systems have their own continuous query language, generally based on \sql, although most of them share the same features. 
 \cql (Continuous Query Language) \cite{Arasu_2006} is the best known of these languages, but  there is still no common standard  language for stream queries. 
 The \sneeql\cite{Brenninkmeijer_08} language for querying streaming data sources is inspired by \cql, but it provides greater expressiveness in queries, including both event and acquisitional streams, and stored extents.
