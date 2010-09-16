@@ -1,16 +1,15 @@
 \section{Related Work}
 \label{sec:related-work}
 
-Several systems providing ontology-based access to stored data, mainly in the form of relational databases, have been proposed.
-A good survey is provided by \cite{Sahoo_09}.
+Several systems exist to provide ontology-based access to stored data, mainly in the form of relational databases, as described in \cite{Sahoo_09}. 
+
 A simple approach is to first generate a syntactical translation of the database schema to an ontological representation. 
 Although the resulting ontology has no real semantics, it may be argued that this is a first step through an ontology model and could later be mapped to a real domain ontology \cite{Lubyte_09}.
 Virtuoso \cite{Erling_07} and \dtworq  \cite{Bizer_07}, like \rtwoo, use mappings between the source relational schema to \rdf ontologies enabling users to issues queries over a semantically rich domain ontology.
 %MASTRO \cite{Poggi_07} is a OBDA system that works with ontologies whose data is accessed through mappings in an external source, i.e. using an OBDA-enabled reasoner. 
 %It works over the \textit{DL-Lite$_\mathcal{A}$} language, a fragment of OWL-DL. 
 %The mappings are specified through assertions that include \sql queries over the database.
-The expressiveness of the queries supported by these systems is limited to conjunctive queries. 
-However no existing approach takes into account streaming data and continuous queries.
+The expressiveness of the queries supported by these systems is limited to conjunctive queries, and none of the approaches takes into account streaming data and continuous queries.
 
 Several stream processing and querying engines have been built in the last decade and can be grouped in two main areas: event stream systems (e.g. Aurora/Borealis \cite{Abadi_2005}, \stream \cite{Arasu_06a}, TelegraphCQ \cite{Chandrasekaran_03}), and acquisitional stream systems (e.g. TinyDB \cite{Madden_05}, \snee \cite{Galpin_09}, Cougar \cite{Yao_02}). 
 For the first, the stream system does not have control over the data arrival rate, which is often potentially high and usually unknown and the query optimization goal is to minimize latency. 
@@ -20,8 +19,8 @@ All these systems have their own continuous query language, generally based on \
 The \sneeql\cite{Brenninkmeijer_08} language for querying streaming data sources is inspired by \cql, but it provides greater expressiveness in queries, including both event and acquisitional streams, and stored extents.
 Our work does not aim to improve on relational stream query processing, but to enable these systems to be accessible via ontology-based querying.
 
-There are two existing proposals for extending \sparql with stream-based operators: \streamingsparql \cite{Bolles_08} and \csparql \cite{Barbieri2010An-Execution-En}.
-Both languages introduce extensions for the support of \rdf streams, and both define time-based and triple-based window operators where the upper bound is fixed to the current evaluation time.
+Finally, there are two existing proposals for extending \sparql with stream-based operators: \streamingsparql \cite{Bolles_08} and \csparql \cite{Barbieri2010An-Execution-En}. 
+Both languages introduce extensions for the support of \rdf streams, and both define time-based and triple-based window operators where the upper bound is fixed to the current evaluation time. 
 The \sparqlstr windowing operator enables windows to be defined in the past so as to support correlation with historic data. 
 We have not included triple-based windows in \sparqlstr due to the problems with their semantics, discussed in Section~\ref{streamingsparqlsyntax}.
 Window-to-stream operators are also missing in both existing approaches, which provides ambiguous semantics for the language.

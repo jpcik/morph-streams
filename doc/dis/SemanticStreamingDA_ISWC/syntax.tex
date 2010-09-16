@@ -1,8 +1,8 @@
 \section{Query and Mapping Syntax}
 \label{syntax}
 
-In this section we introduce the \sparqlstr query language, an extension to \sparql for streaming  \rdf data, which has been inspired by previous proposals such as \csparql \cite{Barbieri2010An-Execution-En} and \sneeql \cite{Brenninkmeijer_08}.
-However, significant improvements have been made that correct the types supported and the semantics of windowing operations. These improvements can be summarised as: %
+In this section we introduce the \sparqlstr query language, an extension to \sparql for streaming \rdf data, which has been inspired by previous proposals such as \csparql \cite{Barbieri2010An-Execution-En} and \sneeql \cite{Brenninkmeijer_08}.
+However, significant improvements have been made that correct the types supported and the semantics of windowing operations, which can be summarised as: %
 (i)~we only support windows defined in time, %
 (ii)~the result of a window operation is a window of triples, not a stream, over which traditional operators can be applied, as such we have added window-to-stream operators, and %
 (iii)~we have adopted the \sparql1.1 definition for aggregates.
@@ -112,7 +112,8 @@ A new component called \textsf{streamschema-desc} has been created, as shown in 
 
 
 The description of the stream is similar to a relation.
-An additional attribute \textsf{streamType} has been added, it denotes the kind of stream in terms of data acquisition, \ie pushed or pulled.
+An additional attribute \textsf{streamType} has been added, it denotes
+the kind of stream in terms of data acquisition, \ie event or acquistional.
 In the same way as key and non-key attributes are defined, a new \textsf{timestamp-desc} element has been added to provide support for declaring the stream timestamp attribute.
 Since \stwoo extends \rtwoo, relations can also be specified using the existing \rtwoo mechanism.
 For the class and property mappings, the existing \rtwoo definitions can be used for stream schemas just as it was for relational schemas. 

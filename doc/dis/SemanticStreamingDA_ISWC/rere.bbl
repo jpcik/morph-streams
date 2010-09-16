@@ -54,21 +54,6 @@ Barbieri, D.F., Braga, D., Ceri, S., Grossniklaus, M.:
 \newblock An execution environment for {C-SPARQL} queries.
 \newblock In: EDBT 2010, Lausanne, Switzerland (March 2010)  441--452
 
-\bibitem{LePhuoc_09}
-Le-Phuoc, D., Hauswirth, M.:
-\newblock Linked open data in sensor data mashups.
-\newblock In: SSN09. (2009)  1--16
-
-\bibitem{Page_09}
-Page, K., Roure, D.D., Martinez, K., Sadler, J., Kit, O.:
-\newblock {L}inked sensor data: {REST}fully serving {RDF} and {GML}.
-\newblock In: SSN09. (2009)  49--63
-
-\bibitem{Sequeda_09}
-Sequeda, J., Corcho, O.:
-\newblock Linked stream data: A position paper.
-\newblock In: SSN09. (2009)  148--157
-
 \bibitem{Lenzerini_02}
 Lenzerini, M.:
 \newblock Data integration: a theoretical perspective.
@@ -129,7 +114,7 @@ Chandrasekaran, S., Cooper, O., Deshpande, A., Franklin, M.J., Hellerstein,
 
 \bibitem{Yao_02}
 Yao, Y., Gehrke, J.:
-\newblock The cougar approach to in-network query processing in sensor
+\newblock The {C}ougar approach to in-network query processing in sensor
   networks.
 \newblock SIGMOD Rec. \textbf{31}(3) (2002)  9--18
 
