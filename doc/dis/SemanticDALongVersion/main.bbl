@@ -1,0 +1,172 @@
+\begin{thebibliography}{10}
+\expandafter\ifx\csname url\endcsname\relax
+  \def\url#1{\texttt{#1}}\fi
+\expandafter\ifx\csname urlprefix\endcsname\relax\def\urlprefix{URL }\fi
+\expandafter\ifx\csname href\endcsname\relax
+  \def\href#1#2{#2} \def\path#1{#1}\fi
+
+\bibitem{Barrasa_04}
+J.~Barrasa, O.~Corcho, A.~G\'{o}mez-P\'{e}rez, {R2O}, an extensible and
+  semantically based database-to-ontology mapping language, in: {SWDB2004},
+  2004, pp. 1069--1070.
+
+\bibitem{Bizer_07}
+C.~Bizer, R.~Cyganiak, {D2RQ . Lessons Learned. W3C Workshop on RDF Access to
+  Relational Databases} (October 2007).
+
+\bibitem{Sahoo_09}
+S.~S. Sahoo, W.~Halb, S.~Hellmann, K.~Idehen, T.~T. Jr, S.~Auer, J.~Sequeda,
+  A.~Ezzat, \href{http://www.w3.org/2005/Incubator /rdb2rdf/
+  RDB2RDF_SurveyReport.pdf}{A survey of current approaches for mapping of
+  relational databases to {RDF}}, W3C (January 2009).
+\newline\urlprefix\url{http://www.w3.org/2005/Incubator /rdb2rdf/
+  RDB2RDF_SurveyReport.pdf}
+
+\bibitem{Arasu_06a}
+A.~Arasu, B.~Babcock, S.~Babu, J.~Cieslewicz, M.~Datar, K.~Ito, R.~Motwani,
+  U.~Srivastava, J.~Widom, Stream: The stanford data stream management system,
+  in: M.~Garofalakis, J.~Gehrke, R.~Rastogi (Eds.), Data Stream Management,
+  2006.
+
+\bibitem{Abadi_2005}
+D.~J. Abadi, Y.~Ahmad, M.~Balazinska, U.~Cetintemel, M.~Cherniack, J.-H. Hwang,
+  W.~Lindner, A.~S. Maskey, A.~Rasin, E.~Ryvkina, N.~Tatbul, Y.~Xing,
+  S.~Zdonik, {The Design of the Borealis Stream Processing Engine}, in: {CIDR}
+  2005, 2005.
+
+\bibitem{Galpin_09}
+I.~Galpin, C.~Y. Brenninkmeijer, F.~Jabeen, A.~A. Fernandes, N.~W. Paton,
+  Comprehensive optimization of declarative sensor network queries, in: SSDBM
+  2009, 2009,
+\newblock pp. 339--360.
+
+\bibitem{Madden_05}
+S.~R. Madden, M.~J. Franklin, J.~M. Hellerstein, W.~Hong, Tiny{DB}: an
+  acquisitional query processing system for sensor networks, ACM Trans.
+  Database Syst.
+\newblock  30~(1).
+
+\bibitem{Bolles_08}
+A.~Bolles, M.~Grawunder, J.~Jacobi,
+  \href{http://dx.doi.org/10.1007/978-3-540-68234-9_34}{Streaming {SPARQL} -
+  extending {SPARQL} to process data streams}, in: ESWC 08, 2008,
+\newblock pp. 448--462.
+
+\bibitem{Barbieri2010An-Execution-En}
+D.~F. Barbieri, D.~Braga, S.~Ceri, M.~Grossniklaus, An execution environment
+  for {C-SPARQL} queries, in: EDBT 2010, Lausanne, Switzerland, 2010, pp.
+  441--452.
+
+\bibitem{Lenzerini_02}
+M.~Lenzerini,
+  \href{http://portal.acm.org/ft_gateway.cfm?id=543644&type=pdf&coll=GUIDE&dl=%
+&CFID=63482645&CFTOKEN=96006137}{Data integration: a theoretical perspective},
+  in: PODS '02, 2002,
+\newblock pp. 233--246.
+
+\bibitem{Golab2003Issues-in-data-}
+L.~Golab, M.~T. {\"O}zsu, Issues in data stream management, SIGMOD Record
+  32~(2) (2003) 5--14.
+
+\bibitem{Brenninkmeijer_08}
+C.~Y. Brenninkmeijer, I.~Galpin, A.~A. Fernandes, N.~W. Paton, A semantics for
+  a query language over sensors, streams and relations, in: BNCOD '08, 2008,
+\newblock pp. 87--99.
+
+\bibitem{Arasu_2006}
+A.~Arasu, S.~Babu, J.~Widom,
+  \href{http://dx.doi.org/10.1007/s00778-004-0147-z}{The {CQL} continuous query
+  language: semantic foundations and query execution}, The VLDB Journal
+\newblock  15~(2).
+\newline\urlprefix\url{http://dx.doi.org/10.1007/s00778-004-0147-z}
+
+\bibitem{Kossmann_00}
+D.~Kossmann, The state of the art in distributed query processing, ACM Comput.
+  Surv.
+\newblock  32~(4).
+
+\bibitem{Perez_09}
+J.~P\'{e}rez, M.~Arenas, C.~Gutierrez, Semantics and complexity of {SPARQL},
+  ACM Trans. Database Syst.
+\newblock  34~(3).
+
+\bibitem{Calvanese_05}
+D.~Calvanese, G.~De~Giacomo, D.~Lembo, M.~Lenzerini, R.~Rosati, {DL}-{L}ite:
+  Tractable description logics for ontologies, in: AAAI 2005, 2005, pp.
+  602--607.
+
+\bibitem{Poggi_08}
+A.~Poggi, D.~Lembo, D.~Calvanese, G.~D. Giacomo, M.~Lenzerini, R.~Rosati,
+  Linking data to ontologies, J. Data Semantics 10 (2008) 133--173.
+
+\bibitem{Lubyte_09}
+L.~Lubyte, S.~Tessaris, Supporting the development of data wrapping ontologies,
+  in: 4th Asian Semantic Web Conference, 2009.
+
+\bibitem{Seaborne_07}
+A.~Seaborne, D.~Steer, S.~Williams, Sql-rdf (October 2007).
+
+\bibitem{Cerbah_08}
+F.~Cerbah, Learning highly structured semantic repositories from relational
+  databases the rdbtoonto tool, in: Proceedings of the 5th European Semantic
+  Web Conference (ESWC 2008), Springer, 2008, p. 777.
+
+\bibitem{Laborda_06}
+C.~P. de~Laborda, S.~Conrad, Database to semantic web mapping using rdf query
+  languages, in: D.~W. Embley, A.~Oliv{\'e}, S.~Ram (Eds.), ER, Vol. 4215 of
+  Lecture Notes in Computer Science, Springer, 2006, pp. 241--254.
+
+\bibitem{Prudhommeaux_07}
+E.~Prud'hommeaux, Spasql, \url{http://www.w3.org/2005/05/22-SPARQL-MySQL/XTech}
+  (2007).
+
+\bibitem{Squirrell_06}
+D.~Steer, \href{http://jena.sourceforge.net/SquirrelRDF}{Squirrell{RDF}}
+  (2006).
+\newline\urlprefix\url{http://jena.sourceforge.net/SquirrelRDF}
+
+\bibitem{Erling_07}
+O.~Erling, I.~Mikhailov,
+  \href{http://dblp.uni-trier.de/db/conf/cssw/cssw2007.html#ErlingM07}{{RDF}
+  support in the {V}irtuoso {DBMS}.}, in: Conference on Social Semantic Web,
+  Vol. 113 of LNI, GI, 2007, pp. 59--68.
+
+\bibitem{Poggi_07}
+A.~Poggi, M.~Ruzzi, Ontology-based data access with {MASTRO}, in: OWLED, Vol.
+  258 of CEUR Workshop Proceedings, CEUR-WS.org, 2007.
+
+\bibitem{Chandrasekaran_03}
+S.~Chandrasekaran, O.~Cooper, A.~Deshpande, M.~J. Franklin, J.~M. Hellerstein,
+  W.~Hong, S.~Krishnamurthy, S.~R. Madden, F.~Reiss, M.~A. Shah, {TelegraphCQ}:
+  continuous dataflow processing, in: SIGMOD '03, 2003,
+\newblock pp. 668--668.
+
+\bibitem{Yao_02}
+Y.~Yao, J.~Gehrke, The {C}ougar approach to in-network query processing in
+  sensor networks, SIGMOD Rec.
+\newblock  31~(3).
+
+\bibitem{DellaValle_09}
+E.~{Della Valle}, S.~Ceri, D.~Braga, I.~Celino, D.~Fensel, F.~van Harmelen,
+  G.~Unel, \href{http://ceur-ws.org/Vol-466/SR2009-intro.pdf}{Research chapters
+  in the area of stream reasoning}, in: SR2009, 2009, pp. 1--9.
+
+\bibitem{Groppe_07}
+S.~Groppe, J.~Groppe, D.~Kukulenz, V.~Linnemann, A sparql engine for streaming
+  rdf data, in: SITIS '07: Proceedings of the 2007 Third International IEEE
+  Conference on Signal-Image Technologies and Internet-Based System, IEEE
+  Computer Society, Washington, DC, USA, 2007,
+\newblock pp. 167--174.
+
+\bibitem{Prudhommeaux_2008}
+E.~Prud'hommeaux, A.~Seaborne,
+  \href{http://www.w3.org/TR/rdf-sparql-query/}{{SPARQL} query language for
+  {RDF,} {W3C} recommendation}, Tech. rep., World Wide Web Consortium (January
+  2008).
+\newline\urlprefix\url{http://www.w3.org/TR/rdf-sparql-query/}
+
+\bibitem{Harris2010SPARQL-1.1-Quer}
+S.~Harris, A.~{Seaborne (eds)}, {SPARQL} 1.1 query language, Working draft, W3C
+  (2010).
+
+\end{thebibliography}
