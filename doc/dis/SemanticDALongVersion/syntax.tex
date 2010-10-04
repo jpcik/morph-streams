@@ -60,7 +60,7 @@ WHERE {
  	WHERE
  	{
   		GRAPH <www.semsorgrid4env.eu/SensorReadings.srdf> {
-		?WindSpeed a fire:WindSpeedMeasurement;
+		?WindSpeed a fire:WindSpeedObservation;
 			fire:hasSpeed ?speed; }
  	} GROUP BY ?WindSpeed
   }
@@ -69,7 +69,7 @@ WHERE {
  	WHERE
  	{
 	  GRAPH <www.semsorgrid4env.eu/SensorArchiveReadings.srdf>  {
-		?ArchWindSpeed a fire:WindSpeedMeasurement;
+		?ArchWindSpeed a fire:WindSpeedObservation;
 		fire:hasSpeed ?archivedSpeed;  }
  	} GROUP BY ?ArchWindSpeed
   }

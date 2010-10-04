@@ -1,6 +1,28 @@
 \section{Conclusions and Future Work}
 \label{conclusions}
 
+
+\begin{table*}[]
+  \centering
+  \begin{tabular}{|c|c|p{.6\textwidth}|}
+    \hline
+    Extension & Base Approach & Summary \\
+    \hline
+    \sparqlstr & \sparql1.1 & Window definitions with variable upper boundary\newline
+    Window-to-stream operators\\
+    \hline
+    \stwoo & \rtwoo & Stream definitions in mapping \newline
+    Streaming data types \newline
+    Virtual \rdf stream \iri\!\!s\\
+    \hline
+    & \odemapster & Translation of \sparqlstr queries into \sneeql \\
+    \hline
+  \end{tabular}
+  \caption{Summary of key contributions.}
+  \label{tab:tabla}
+\end{table*}
+
+
 We have presented an approach for providing ontology-based access to streaming data, which is based on \sparqlstr, a
 \sparql extension for \rdf streams, and \stwoo, an extension to \rtwoo for expressing mappings from streaming sources
 to ontologies. We have shown the semantics of the proposed extensions and the mechanism to generate data source queries
@@ -35,23 +57,4 @@ iii)~considering quality-of-service requirements for query optimization and sour
 
 
 
-\begin{table}[]
-  \centering
-  \begin{tabular}{|c|c|p{.6\textwidth}|}
-    \hline
-    Extension & Base Approach & Summary \\
-    \hline
-    \sparqlstr & \sparql1.1 & Window definitions with variable upper boundary\newline
-    Window-to-stream operators\\
-    \hline
-    \stwoo & \rtwoo & Stream definitions in mapping \newline
-    Streaming data types \newline
-    Virtual \rdf stream \iri\!\!s\\
-    \hline
-    & \odemapster & Translation of \sparqlstr queries into \sneeql \\
-    \hline
-  \end{tabular}
-  \caption{Summary of key contributions.}
-  \label{tab:tabla}
-\end{table}
 %\vspace{-30pt}

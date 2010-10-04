@@ -17,7 +17,7 @@
 %% given in the file `manifest.txt'.
 %% 
 %%
-%% $Id: elsarticle-num.bst 19 2009-12-17 07:07:52Z rishi $
+%% $Id: elsarticle.cls,v 1.20 2008-10-13 04:24:12 cvr Exp $
 %%
 %%
 %% ----------------------------------------
@@ -45,7 +45,6 @@ ENTRY
     type
     volume
     year
-	 shorttitle 	
     eprint % urlbst
     doi % urlbst
     url % urlbst
@@ -959,7 +958,7 @@ FUNCTION {format.incoll.inproc.crossref}
   or
     { key empty$
         { booktitle empty$
-            { "need editor, key, or shorttitle for " cite$ * " to crossref " *
+            { "need editor, key, or booktitle for " cite$ * " to crossref " *
               crossref * warning$
               ""
             }
@@ -1076,7 +1075,7 @@ FUNCTION {format.eprint}
 FUNCTION {format.doi}
 { doi empty$
     { "" }
-  %  { doiprefix doi * doiurl doi * make.href }
+    { doiprefix doi * doiurl doi * make.href }
   if$
 }
 
@@ -1114,10 +1113,13 @@ FUNCTION {output.bibitem}
 }
 
 FUNCTION {fin.entry}
-{ output.web.refs  % urlbst
+{ 
+%  output.web.refs  % urlbst
   makeinlinelink       % ooops, it appears we didn't have a title for inlinelink
     { setup.inlinelink % add some artificial link text here, as a fallback
-      "[link]" output.nonnull }
+      %"[link]" output.nonnull 
+		"" output.nonnull 
+	}
     'skip$
   if$
   bracket.state close.brackets = % urlbst
@@ -1162,7 +1164,7 @@ FUNCTION {webpage}
 FUNCTION {article}
 { output.bibitem
   format.authors "author" output.check
-  title empty$ 'skip$ 'setup.inlinelink if$ % urlbst
+  %title empty$ 'skip$ 'setup.inlinelink if$ % urlbst
   format.title "title" output.check
   crossref missing$
     { journal
@@ -1178,7 +1180,7 @@ FUNCTION {article}
   format.journal.pages
   format.note output
   fin.entry
-  write.url
+  %write.url
 }
 
 FUNCTION {book}
@@ -1282,7 +1284,7 @@ FUNCTION {incollection}
 FUNCTION {inproceedings}
 { output.bibitem
   format.authors "author" output.check
-  title empty$ 'skip$ 'setup.inlinelink if$ % urlbst
+  %title empty$ 'skip$ 'setup.inlinelink if$ % urlbst
   format.title "title" output.check
   crossref missing$
     { format.in.ed.booktitle "booktitle" output.check
@@ -1302,7 +1304,7 @@ FUNCTION {inproceedings}
   format.pages "pages" output.check
   format.note output
   fin.entry
-%  write.url
+  %write.url
 }
 
 FUNCTION {conference} { inproceedings }
@@ -1358,7 +1360,7 @@ FUNCTION {mastersthesis}
 FUNCTION {misc}
 { output.bibitem
   format.authors output
-  title empty$ 'skip$ 'setup.inlinelink if$ % urlbst
+  %title empty$ 'skip$ 'setup.inlinelink if$ % urlbst
   format.title output
   howpublished output
   format.note output
@@ -1418,7 +1420,7 @@ FUNCTION {proceedings}
 FUNCTION {techreport}
 { output.bibitem
   format.authors "author" output.check
-  title empty$ 'skip$ 'setup.inlinelink if$ % urlbst
+  %title empty$ 'skip$ 'setup.inlinelink if$ % urlbst
   format.title "title" output.check
   format.tr.number output.nonnull
   institution "institution" output.check
@@ -1504,5 +1506,3 @@ EXECUTE {end.bib}
 %% End of customized bst file
 %%
 %% End of file `elsarticle-num.bst'.
-
-

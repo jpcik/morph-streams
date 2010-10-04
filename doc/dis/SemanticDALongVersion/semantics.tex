@@ -60,7 +60,7 @@ The next section describes the semantics of the transformation from \sparqlstr t
 %\fixme{One of the ESWC reviews did not like our explanation of this limitation to conjunctive queries. We should provide some support for this claim.}
 In this section we will present how we can use the \stwoo mapping definitions to transform a set of conjunctive queries over an ontological schema, into the streaming query language \sneeql that is used to access the sources. 
 This work is based on extensions to the \odemapster processor \cite{Barrasa_04} and the
-formalisation work of Calvanese \etal \cite{Calvanese_05} and Poggi \etal \cite{Poggi_08}.
+formalisation work of \citet{Calvanese_05} and \citet{Poggi_08}.
 
 A conjunctive query $q$ over an ontology $\mathcal{O}$ can be expressed as:
 \begin{align*}
@@ -79,13 +79,15 @@ where $\vec{x}$ is a tuple of distinct distinguished variables, and $\vec{y}$ a 
 The answer to this query consists in the instantiation of the distinguished variables
 \cite{Calvanese_05}. 
 For instance consider:
-\begin{equation*}
-q_1(x) \leftarrow WindSpeedMeasurement(x)\wedge measuredBy(x,y)\wedge WindSensor(y)
-\end{equation*}
+\begin{align*}
+q_1(x) \leftarrow & WindSpeedObservation(x)\wedge \\
+						& isProducedBy(x,y)\wedge\\
+						& WindSensor(y)
+\end{align*}
 %\fixme{Change example to fire use case to make consistent with the rest of the paper.}
 It requires all instances $x$ that are wind speed measurements captured by wind sensors.
 In this example $x$ is a distinguished variable and $y$ a non-distinguished one. 
-The query has three atoms: $WindSpeedMeasurement(x)$, $measuredBy(x,y)$, and $WindSensor(y)$.
+The query has three atoms: $WindSpeedObservation(x)$, $isProducedBy(x,y)$, and $WindSensor(y)$.
 
 Concerning the formal definition of the query answering, let $\mathcal{I}=(\Delta^\mathcal{I} ,\centerdot^\mathcal{I})$ be an interpretation, where $\Delta^\mathcal{I}$ is the interpretation domain and $\centerdot^\mathcal{I}$ the interpretation function that assigns an element of $\Delta^\mathcal{I}$ to each constant, a subset of $\Delta^\mathcal{I}$ to each class and a subset of $\Delta^\mathcal{I} \times \Delta^\mathcal{I}$ to each property of the ontology.
 Given a query $q(\vec{x})\leftarrow \varphi(\vec{x},\vec{y})$ the answer to $q$ is the set $q^{\mathcal{I}}_{\vec{x}}$ of tuples $\vec{c} \in \Delta^\mathcal{I} \times \dots \times \Delta^\mathcal{I}$ that substituted to $\vec{x}$, make the formula $\exists\vec{y}.\varphi(\vec{x},\vec{y})$ true in $\mathcal{I}$ \cite{Calvanese_05,Poggi_08,Lubyte_09}.
@@ -115,7 +117,8 @@ Similarly the term $p^{Sel}$ represents a set of condition predicates over the v
 A mapping assertion $R(f_{C_1}^{Id}(\vec{x_1}),f_{C_2}^{Id}(\vec{x_2})) \leadsto \Phi_{S_1,\ldots,S_n}(\vec{x_1},\vec{x_2})$ describes how to construct instances of the object property $R$ from the source streams and relations $S_i$. 
 The declarative form of $\Phi$ is:
 \begin{align*}
-\Phi_{S_1,\ldots,S_n}(\vec{x_1},\vec{x_2})= \exists\vec{y}.\Phi_{S_1,\ldots,S_k}(\vec{x_1}) \wedge \Phi_{S_{k+1},\ldots,S_n}(\vec{x_2}) \wedge p_{S_1,\ldots,S_n}^{Join}(\vec{v})
+\Phi_{S_1,\ldots,S_n}(\vec{x_1},\vec{x_2})= &\exists\vec{y}.\Phi_{S_1,\ldots,S_k}(\vec{x_1}) \\
+& \wedge \Phi_{S_{k+1},\ldots,S_n}(\vec{x_2}) \wedge p_{S_1,\ldots,S_n}^{Join}(\vec{v})
 %
 %(x.A_1,\dots,x.A_n,y.B_1,\dots ,y.B_m) \mid & \mathcal{E}_{C_1}(x) \wedge \mathcal{E}_{C_2}(y) \wedge \\ & \exists z_1,\dots ,z_p(AUX_1(z_1) \wedge \dots \wedge AUX_p(z_p) \\ & \wedge e_R^{Join}(x,y,z_1,\dots,z_p) \\ & \wedge e_R^{Cond}(x,y,z_1,\dots,z_p)) \}
 \end{align*}
@@ -127,7 +130,8 @@ Finally an expression $A(f_C^{Id}(\vec{x}),f_A^{Trf}(\vec{z})) \leadsto \Phi_{S_
 The function $f_A^{Trf}$ executes any transformation over the tuple of variables $\vec{z}$ to obtain the property value (\eg arithmetic operations, or string operations). 
 The declarative form of $\Phi$ in this case is:
 \begin{align*}
-\Phi_{S_1,\ldots,S_n}(\vec{x},\vec{z})= \exists\vec{y}.\Phi_{S_1,\ldots,S_k}(\vec{x})  \wedge \Phi_{S_{k+1},\ldots,S_n}(\vec{z}) \wedge p_{S_1,\ldots,S_n}^{Join}(\vec{v})
+\Phi_{S_1,\ldots,S_n}(\vec{x},\vec{z})= &\exists\vec{y}.\Phi_{S_1,\ldots,S_k}(\vec{x})  \\
+&\wedge \Phi_{S_{k+1},\ldots,S_n}(\vec{z}) \wedge p_{S_1,\ldots,S_n}^{Join}(\vec{v})
 %
 %\{E}_A=\{f_C^{Id}f_A^{Trf}(x.A_1,\dots,x.A_n,x.b_1,\dots,x.b_m)\mid \mathcal{E}_C(x)  \wedge e_A^{Cond}(x) \}
 \end{align*}
@@ -145,7 +149,8 @@ For a query:
 %\fixme{Should the window be applied to each of $C_1$, $R$, and $A$?}
 the translation is given by $\lambda(\Phi)$, following the mapping definition:
 \begin{align*}
-\lambda(\Phi_{S_1,\ldots,S_n}(\vec{x})[t_s,t_e,\delta])=\pi_{p^{Proj}}(\Join_{p^{Join}}
+\lambda(\Phi_{S_1,\ldots,S_n}(\vec{x}) {\scriptstyle [t_s,t_e,\delta]}
+)=\pi_{p^{Proj}}(\Join_{p^{Join}}
 (&\sigma_{p^{Sel}}(\omega_{t_s,t_e,\delta}S_1),\dots \\ &,\sigma_{p^{Sel}}(\omega_{t_s,t_e,\delta}S_n)))
 \end{align*}
 The expression denotes first a window operation $\omega_{t_s,t_e,\delta}$ over the relations or streams $S_1,\dots, S_n$, with $t_s$, $t_e$, and $\delta$ being the time range and slide. 
