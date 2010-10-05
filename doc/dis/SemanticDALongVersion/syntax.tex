@@ -23,28 +23,28 @@ This is useful for correlating current values on a stream with values that have 
 The result of applying a window over a stream is a timestamped bag of triples over which conjunctions between triple patterns, and other \quotes{classical} operators can be evaluated.
 Windows can be converted back into a stream of triples by applying one of the window-to-stream operators in the \textsf{\small{SELECT}} clause: \textsf{\small{ISTREAM}} for returning all newly inserted answers since the last window, \textsf{\small{DSTREAM}} for returning all deleted answers since the last window, and \textsf{\small{RSTREAM}} for returning all answers in the window.
 
-% The additional grammar rules for expressing windows and window-to-stream operators can be found in Figure~\ref{fig:sparql-str-syntax}\footnote{Note that the parser will also accept the non-plural form of the time units and is not case sensitive.}.
+The additional grammar rules for expressing windows and window-to-stream operators can be found in Figure~\ref{fig:sparql-str-syntax}\footnote{Note that the parser will also accept the non-plural form of the time units and is not case sensitive.}.
 
-% \begin{lstlisting}[style=R2OStyle,language=R2O,frame=none]%[upquote=true]
-% SelectStrClause \longrightarrow 'SELECT' [WindowToStream] VariableList
-% \end{lstlisting}
+ \begin{lstlisting}[style=R2OStyle,language=R2O,frame=none]%[upquote=true]
+ SelectStrClause \longrightarrow 'SELECT' [WindowToStream] VariableList
+ \end{lstlisting}
 
-% \begin{figure}[t]
-%   \centering
-%   \scriptsize
-%   \begin{align*}
-%     {SelectStrClause} \longrightarrow&\ `\textsf{SELECT}'\ [{WindowToStream}]\ {VariableList}\\
-%     {WindowToStream} \longrightarrow&\ \textsf{`RSTREAM'} \mid \textsf{`ISTREAM'} \mid \textsf{`DSTREAM'}\\
-%     \\
-%     {FromStrClause} \longrightarrow&\ `\textsf{FROM}'\ [`\textsf{NAMED}']\ `\textsf{STREAM}'\ {StreamIRI} [{Window}]\\
-%     {Window} \longrightarrow&\ `[\textsf{FROM'}\ {TimeExp}\ {TimeUnit}\ `\textsf{TO'}\ {TimeEx}\ [{TimeUnit}]\ [`\textsf{STEP'}\ {Number}\ [{TimeUnit}]]`]'  \mid\\
-%     & `[\textsf{NOW}\ [`\textsf{STEP'}\ {Number}\ [{TimeUnit}]]`]']'\\
-%     {TimeExp} \longrightarrow&\ `\textsf{NOW'}\ [`-'\ {Number}]\\
-%     {TimeUnit} \longrightarrow & \textsf{`SECONDS'} \mid \textsf{`MINUTES'} \mid \textsf{`HOURS'} \mid \textsf{`DAYS'} 
-%   \end{align*}
-%   \caption{Additional grammar rules for window and window-to-stream constructs of \sparqlstr.}
-%   \label{fig:sparql-str-syntax}
-% \end{figure}
+ \begin{figure}[t]
+   \centering
+   \scriptsize
+   \begin{align*}
+     {SelectStrClause} \longrightarrow&\ `\textsf{SELECT}'\ [{WindowToStream}]\ {VariableList}\\
+     {WindowToStream} \longrightarrow&\ \textsf{`RSTREAM'} \mid \textsf{`ISTREAM'} \mid \textsf{`DSTREAM'}\\
+     \\
+     {FromStrClause} \longrightarrow&\ `\textsf{FROM}'\ [`\textsf{NAMED}']\ `\textsf{STREAM}'\ {StreamIRI} [{Window}]\\
+     {Window} \longrightarrow&\ `[\textsf{FROM'}\ {TimeExp}\ {TimeUnit}\ `\textsf{TO'}\ {TimeEx}\ [{TimeUnit}]\ [`\textsf{STEP'}\ {Number}\ [{TimeUnit}]]`]'  \mid\\
+     & `[\textsf{NOW}\ [`\textsf{STEP'}\ {Number}\ [{TimeUnit}]]`]']'\\
+     {TimeExp} \longrightarrow&\ `\textsf{NOW'}\ [`-'\ {Number}]\\
+     {TimeUnit} \longrightarrow & \textsf{`SECONDS'} \mid \textsf{`MINUTES'} \mid \textsf{`HOURS'} \mid \textsf{`DAYS'} 
+   \end{align*}
+   \caption{Additional grammar rules for window and window-to-stream constructs of \sparqlstr.}
+   \label{fig:sparql-str-syntax}
+ \end{figure}
 Listing~\ref{q:sparqlstr} shows a complete \sparqlstr query which, every minute, returns the average of the last 10 minutes of wind speed measurements for each sensor, if it is higher than the average speed from 2 to 3 hours ago. 
 
 

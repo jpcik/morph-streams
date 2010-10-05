@@ -252,7 +252,7 @@ Facultad de Inform\'{a}tica, Universidad Polit\'{e}cnica de Madrid,\\ Campus de 
 Oxford Road, Manchester M13 9PL, United Kingdom}
 
 \begin{abstract}
-Ubiquitous and inexpensive networks of data capturing devices are being developed and deployed nowadays increasing the availability of streaming data sources for a number of applications and domains. 
+Ubiquitous and inexpensive networks of data capturing devices are being developed and deployed nowadays, increasing the availability of streaming data sources for a number of applications and domains. 
 %The availability of streaming data sources is progressively increasing thanks to the development of ubiquitous data capturing technologies such as sensor networks. 
 The heterogeneity of these sources introduces the requirement of providing data access and query capabilities in a unified and coherent manner, whilst allowing users to express their needs at a conceptual level, independent of implementation and language-specific details. In this paper we describe an ontology-based streaming data access approach for overcoming this problem. Sources link their data content to ontologies through \stwoo declarative mappings. Users can query over these ontologies using \sparqlstr, an extension of \sparql for streaming data, and the translation algorithms generate the necessary queries in the underlying streaming data source. An implementation of the approach is also presented. With this proposal we expect to set the basis for future efforts in ontology-based streaming data integration.
 
@@ -321,8 +321,65 @@ Streaming query processing\sep Ontology-based data access \sep Semantic query tr
 % \bibitem{}
 
 % \end{thebibliography}
+\appendix
+\section{\bigstwoo Grammar}
+\label{sec:appendixStwoo}
 
+\begin{lstlisting}[style=SNEEqlStyle,language=R2O,label=list:schema,caption=Relational schema of the stream data source.]
+BNF for \stwoo mapping descriptions
 
+s2o::= import? dschema-description+ stschema-description+ conceptmapping-definition+ ontology+
+	import::= import literal
+	ontology::= ontology literal
+	literal::= '<string literal>'
+BNF for R 2 O DB schema descriptions
+
+dschema-description::= dbschema-desc name documentation?
+		(has-table table-desc)+ 
+stschema-description::= streamschema-desc name documentation? (has-table table-desc)+ (has-stream stream-desc)+
+name::=name literal
+documentation::=documentation literal
+table-desc::=name tabletype? documentation? (column-description)+
+tabletype::=tableType literal
+stream-desc::=name streamtpe? documentation? (column-description)+
+streamtype::=streamType literal
+column-description::=(keycol-desc | forkeycol-desc | nonkeycol-desc | timestamp-desc) name columnType documentation? col-reference? implicit-col-reference?
+columnType::=columnType datatype
+col-reference::=refers-to literal
+implicit-col-reference ::= implicitlyrefers-to literal
+datatype::=string | boolean | decimal | float | double | date | integer ... (XML Schema Datatypes)
+
+BNF for concept mapping definitions in R 2 O
+conceptmapping-definition::= conceptmap-def name documentation identified-by+ (uri-as transformation)? (described-by propertymap-def)* (applies-if cond-expr)? (joins-via join-list)? (union union-def)?
+identified-by::=identified-by literal
+join-list::=documentation? (hasjoin joindesc)+ (overwrites literal)?
+joindesc::=(hasCol literal)+
+
+BNF for condition expressions in R2O
+cond-expr::=orcond-expr | AND andcond-expr orcond-expr
+orcond-expr::=notcond-expr | OR orcond-expr notcond-expr
+notcond-expr::=condition | NOT condition
+condition::=primitive-condition (arg-restriction arg-restriction)*
+primitive-condition::=lo_than | loorequal_than | lo_than_str | loorequal_than_str | hi_than | hiorequal_than | hi_than_str | hiorequal_than_str | equals | equals_str | in_keyword | in_set | in_set_str | between | between_str | date_before | date_after | date_equal
+arg-restriction::=parameter-selector restriction
+parameter-selector::=on-param literal
+restriction::=has-value constant-value | has-column literal | has-transform transformation 
+constant-value::=datatype literal
+
+BNF for transformations in R2O
+transformation::= 		primitive-transformation (arg-restriction arg-restriction)*
+primitive-transformation::= get_nth_char | get _delimited | get_substring | concat | add_type | Subtract_type | Multiply_type | divide_type | constant
+
+BNF for property mappings in R2O
+propertymap-def::=attributemap-def | relfromatt-def | relationmap-defattributemap-def::= attributemap-def name use-dbcol* selector* documentation
+relfromatt-def::=relfromatt-def name use-dbcol* selector* newobj-type? documentation?
+relationmap-def::=relationmap-def to-concept
+use-dbcol::=use-dbcol literal
+selector::=selector (applies-if cond-expr)? (aftertransform transformation)?
+newobj-type::=newobject-type literal
+to-concept::=to-concept literal}
+union-def::=name (has-stream literal)+
+\end{lstlisting}
 \end{document}
 
 %%
