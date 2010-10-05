@@ -52,6 +52,7 @@ The mapping extract defines how to construct the $WindSpeedObservation$ and $Sen
  \Psi_{Sensor}\leadsto 
 		&\Phi_{\mathtt{Sensors}}
 \end{align*} 
+It needs to perform a union operation over both streams, as specified in the mapping document, and assign an alias name to this union (\texttt{SensorWind}). 
 In the case of the $WindSpeedObservation$ the function $f_{WindSpeedObservation}^{Id}$ produces the \uri's of the instances by concatenating the \texttt{sensorId} and \texttt{timestamp} attributes.
 Now we can pose a query over the ontology using \sparqlstr, for example to obtain the wind speed measurements taken in the last 10 minutes (See the query in Listing~\ref{list:query-example}).
 
@@ -60,10 +61,10 @@ conceptmap-def WindSpeedObservation
 	virtualStream <http://semsorgrid4env.eu/SensorReadings.srdf>
 	uri-as
 			concat('http://semsorgrid4env.eu/WindSpeedObservation_', SensorWind.sensorId, 	SensorWind.timestamp)
-		union 
-			alias SensorWind
-			WindFolkestone
-			WindHernebay
+	union 
+		name SensorWind
+		has-stream WindFolkestone
+		has-stream WindHernebay
 	described-by
 		attributemap-def observationResult
 			operation constant

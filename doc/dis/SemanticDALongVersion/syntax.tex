@@ -78,12 +78,10 @@ WHERE {
 \end{lstlisting}
 
 
-Note, \sparqlstr only supports time-based windows. 
-\csparql also has the notion of a triple-based window. 
-However, such windows are problematic since the number of triples required to generate an answer may be greater than the size of the triple window.
+Note, \sparqlstr only supports time-based windows. Other similar languages, such as \csparql also have the notion of triple-based windows. 
+However, such windows are problematic to define in an approach where RDF triples are generated on the fly, since the number of triples required to generate an answer may be greater than the size of the triple window.
 For example, consider a window size of 1~triple and the graph pattern from the example query in Listing~\ref{q:sparqlstr}.
-Only one of the triples that form the graph pattern would be kept by the window, and hence it would not be possible to compute the query answer.
-
+Only one of the triples that form the graph pattern would be kept by the window, which provides insufficient information to compute the expected query answer.
 
 \subsection{\bigstwoo: Defining Stream-to-Ontology Mappings}
 \label{streamingr2osyntax}
@@ -113,7 +111,7 @@ A new component called \textsf{streamschema-desc} has been created, as shown in 
 
 The description of the stream is similar to a relation.
 An additional attribute \textsf{streamType} has been added, it denotes
-the kind of stream in terms of data acquisition, \ie event or acquisitional.
+the kind of stream in terms of data acquisition, \ie event or acquisitional, as this will have an impact on the underlying implementation.
 In the same way as key and non-key attributes are defined, a new \textsf{timestamp-desc} element has been added to provide support for declaring the stream timestamp attribute.
 Since \stwoo extends \rtwoo, relations can also be specified using the existing \rtwoo mechanism.
 For the class and property mappings, the existing \rtwoo definitions can be used for stream schemas just as it was for relational schemas. 
@@ -122,10 +120,10 @@ This is specified in the \textsf{conceptmap-def} element as shown in the bottom 
 
 In addition, although they are not explicitly mapped, the timestamp attribute of stream tuples could be used in some of the mapping definitions, for instance in the \uri construction (\textsf{uri-as} element).
 Finally, a \sparqlstr streaming query requires an \rdf stream to have an \iri identifier. 
-\stwoo creates a \emph{virtual} \rdf stream and its \iri is specified in the \stwoo mapping using the \textsf{virtualStream} element.
+For this, \stwoo creates a \emph{virtual} \rdf stream and its \iri is specified in the \stwoo mapping using the \textsf{virtualStream} element.
 It can be specified at the \textsf{conceptmap-def} level or at the \textsf{attributemap-def} level.
 
-
+The \stwoo grammar can be found in \ref{sec:appendixStwoo}.
 
 \begin{lstlisting}[style=R2OStyle,language=R2O,frame=none,label=list:s2o,caption=An example \stwoo declaration of a data stream schema and mapping from a stream schema to an ontology concept.,captionpos=b]
 streamschema-desc
@@ -146,8 +144,6 @@ conceptmap-def WindSpeedObservation
 	virtualStream <http://semsorgrid4env.eu/SensorReadings.srdf>
 	uri-as
 		concat(SensorWind.sensorId)
-	applies-if
-		<cond-expr>
 	described-by
 		attributemap-def observationResult
 			virtualStream http://semsorgrid4env.eu/SensorReadings.srdf>

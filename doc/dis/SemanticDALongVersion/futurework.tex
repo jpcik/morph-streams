@@ -31,14 +31,16 @@ techniques are independent of the target stream query language, although issues 
 evaluation semantics would need to be considered for each case. Finally the prototype implementation, which extends
 \odemapster, has shown the feasibility of the approach. This work constitutes a first effort towards ontology-based
 streaming data integration, relevant for supporting the increasing number of sensor network applications being
-developed and deployed in the recent years. The extensions presented in this paper can be summarised in Table
-\ref{tab:tabla}.
+developed and deployed in the recent years. The extensions presented in this paper can be summarised in Table \ref{tab:tabla}.
 
+This approach is beign used in the context of two applications that are beign developed in the SemSorGrid4Env\footnote{\url{http://www.semsorgrid4env.eu} accessed 29 September 2010.} (Semantic Sensor Grids for Rapid Application Development for Environmental Management) project. The first is the Flood Warning Use Case which incorporates a network of heterogeneous sensors run by the Channel Coastal Observatory which are already in operation, and datasets collected by this project from data already in existence. One of the aims of the Use Case is to utilize the CCO data, in order to produce real-time flood risk predictions for The Solent, Southern UK as well as possibly supporting longer term coastal planning through the development of scenarios. The outcomes of the project will also enable users to combine datasets from different sources, by creating mashups.
+
+We are also preparing, with those data sources, a benchmark that will allow us to evaluate our approach in both query language expressiveness and performance. We will use the Linear Road Benchmark\cite{Arasu2004} as a basis but we will need extensions to it. As our system delegates the query execution to the underlying stream engine, the focus of the evaluation is on the query and data translation.  
 
 %\section{Future Work}
 %\label{future}
 %\bigskip
-Although we have shown initial results querying the underlying \snee engine with basic queries, we expect to consider in the near future more complex query expressions including aggregates, and joins involving both streaming and stored data sources.
+Although we have shown initial results querying the underlying \snee engine with basic queries, we expect to consider in the near future joins involving both streaming and stored data sources.
 %We also plan to adapt our query rewriting approach to more recent and promising works such as \cite{PerezUrbina_09}.
 Another important strand of future work is the optimization of distributed query processing \cite{Kossmann_00} and the streaming queries \cite{Abadi_2005,Galpin_09}.
 It is also our goal to provide a characterization of our algorithms. 
