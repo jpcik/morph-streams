@@ -1115,17 +1115,17 @@ FUNCTION {output.bibitem}
 FUNCTION {fin.entry}
 { 
 %  output.web.refs  % urlbst
-  makeinlinelink       % ooops, it appears we didn't have a title for inlinelink
-    { setup.inlinelink % add some artificial link text here, as a fallback
+%  makeinlinelink       % ooops, it appears we didn't have a title for inlinelink
+%    { setup.inlinelink % add some artificial link text here, as a fallback
       %"[link]" output.nonnull 
-		"" output.nonnull 
-	}
-    'skip$
-  if$
-  bracket.state close.brackets = % urlbst
-    { "]" * }
-    'skip$
-  if$
+%		"" output.nonnull 
+%	}
+%    'skip$
+%  if$
+%  bracket.state close.brackets = % urlbst
+%    { "]" * }
+%    'skip$
+%  if$
   fin.entry.original
 }
 

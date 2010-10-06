@@ -24,7 +24,7 @@ Sensors: (sensorId INT PK,
 \end{lstlisting}
 
 The schemas are presented in Listing~\ref{list:schema}. Also consider the following ontological view:
-\vspace{-10pt}
+
 \small
 \begin{align*}%[style=SNEEqlStyle,language=Haskell,frame=none]
 SpeedObservation \sqsubseteq\ & Observation \\
@@ -152,7 +152,9 @@ x_{\mathtt{sensorId}}\\x_{\mathtt{timestamp}}\\z_{\mathtt{speed}}
 %\end{figure*}
 Similarly the evaluator will compute the $Sensor$ instances needed for the join that is produced in order to generate the $isProducedBy$ object property.
 %In this case no joins and other selection conditions are needed, and only one stream has to be queried to produce the results. 
-The query generated in the \sneeql language is shown in Listing~\ref{list:query-ex-sneeql}\footnote {Although the current available implementation of the SNEE processor lacks the \texttt{concat} operator, we include the sample query in its complete form here.}. The relational answer stream that results from evaluating the query in Listing~\ref{list:query-ex-sneeql} are transformed by the \textit{Data Transformation} module depicted in Figure~\ref{fig:SemanticIntegrator} according to the \stwoo mappings.
+The query generated in the \sneeql language is shown in Listing~\ref{list:query-ex-sneeql}.
+%\footnote {Although the current available implementation of the SNEE processor lacks the \texttt{concat} operator, we include the sample query in its complete form here.}
+The relational answer stream that results from evaluating the query in Listing~\ref{list:query-ex-sneeql} are transformed by the \textit{Data Transformation} module depicted in Figure~\ref{fig:SemanticIntegrator} according to the \stwoo mappings.
 This results in a stream of tagged triples which are instances of the class $WindSpeedObservation$. According to the select statement of the \sparqlstr query, the result in this case will be a set of bound variables.
 
 \begin{lstlisting}[style=SNEEqlStyle,language=SNEEql,frame=none,float,label=list:query-ex-sneeql,caption=The \sneeql query that is generated for the input query in Listing~\ref{list:query-example}.]

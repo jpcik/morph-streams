@@ -5,6 +5,11 @@
 \expandafter\ifx\csname href\endcsname\relax
   \def\href#1#2{#2} \def\path#1{#1}\fi
 
+\bibitem{Wache_01}
+H.~Wache, T.~Vögele, U.~Visser, H.~Stuckenschmidt, G.~Schuster, H.~Neumann,
+  S.~Hübner, Ontology-based integration of information - a survey of existing
+  approaches, 2001, pp. 108--117.
+
 \bibitem{Barrasa_04}
 J.~Barrasa, O.~Corcho, A.~G\'{o}mez-P\'{e}rez, {R2O}, an extensible and
   semantically based database-to-ontology mapping language, in: {SWDB2004},
@@ -17,8 +22,7 @@ C.~Bizer, R.~Cyganiak, {D2RQ . Lessons Learned. W3C Workshop on RDF Access to
 \bibitem{Sahoo_09}
 S.~S. Sahoo, W.~Halb, S.~Hellmann, K.~Idehen, T.~T. Jr, S.~Auer, J.~Sequeda,
   A.~Ezzat, A survey of current approaches for mapping of relational databases
-  to {RDF}, W3C (January 2009), \href{http://www.w3.org/2005/Incubator
-  /rdb2rdf/ RDB2RDF_SurveyReport.pdf}{}.
+  to {RDF}, W3C (January 2009).
 \newline\urlprefix\url{http://www.w3.org/2005/Incubator /rdb2rdf/
   RDB2RDF_SurveyReport.pdf}
 
@@ -46,8 +50,7 @@ S.~R. Madden, M.~J. Franklin, J.~M. Hellerstein, W.~Hong, Tiny{DB}: an
 
 \bibitem{Bolles_08}
 A.~Bolles, M.~Grawunder, J.~Jacobi, Streaming {SPARQL} - extending {SPARQL} to
-  process data streams, in: ESWC 08, 2008, pp. 448--462,
-  \href{http://dx.doi.org/10.1007/978-3-540-68234-9_34}{}.
+  process data streams, in: ESWC 08, 2008, pp. 448--462.
 
 \bibitem{Barbieri2010An-Execution-En}
 D.~F. Barbieri, D.~Braga, S.~Ceri, M.~Grossniklaus, An execution environment
@@ -56,9 +59,7 @@ D.~F. Barbieri, D.~Braga, S.~Ceri, M.~Grossniklaus, An execution environment
 
 \bibitem{Lenzerini_02}
 M.~Lenzerini, Data integration: a theoretical perspective, in: PODS '02, 2002,
-  pp. 233--246,
-  \href{http://portal.acm.org/ft_gateway.cfm?id=543644&type=pdf&coll=GUIDE&dl=%
-&CFID=63482645&CFTOKEN=96006137}{}.
+  pp. 233--246.
 
 \bibitem{Golab2003Issues-in-data-}
 L.~Golab, M.~T. {\"O}zsu, Issues in data stream management, SIGMOD Record
@@ -71,8 +72,7 @@ C.~Y. Brenninkmeijer, I.~Galpin, A.~A. Fernandes, N.~W. Paton, A semantics for
 
 \bibitem{Arasu_2006}
 A.~Arasu, S.~Babu, J.~Widom, The {CQL} continuous query language: semantic
-  foundations and query execution, The VLDB Journal 15~(2) (2006) 121--142,
-  \href{http://dx.doi.org/10.1007/s00778-004-0147-z}{}.
+  foundations and query execution, The VLDB Journal 15~(2) (2006) 121--142.
 
 \bibitem{Kossmann_00}
 D.~Kossmann, The state of the art in distributed query processing, ACM Comput.
@@ -113,14 +113,12 @@ E.~Prud'hommeaux, Spasql, \url{http://www.w3.org/2005/05/22-SPARQL-MySQL/XTech}
   (2007).
 
 \bibitem{Squirrell_06}
-D.~Steer, Squirrell{RDF} (2006),
-  \href{http://jena.sourceforge.net/SquirrelRDF}{}.
+D.~Steer, Squirrell{RDF} (2006).
 \newline\urlprefix\url{http://jena.sourceforge.net/SquirrelRDF}
 
 \bibitem{Erling_07}
 O.~Erling, I.~Mikhailov, {RDF} support in the {V}irtuoso {DBMS}., in:
-  Conference on Social Semantic Web, Vol. 113 of LNI, GI, 2007, pp. 59--68,
-  \href{http://dblp.uni-trier.de/db/conf/cssw/cssw2007.html#ErlingM07}{}.
+  Conference on Social Semantic Web, Vol. 113 of LNI, GI, 2007, pp. 59--68.
 
 \bibitem{Poggi_07}
 A.~Poggi, M.~Ruzzi, Ontology-based data access with {MASTRO}, in: OWLED, Vol.
@@ -138,7 +136,7 @@ Y.~Yao, J.~Gehrke, The {C}ougar approach to in-network query processing in
 \bibitem{DellaValle_09}
 E.~{Della Valle}, S.~Ceri, D.~Braga, I.~Celino, D.~Fensel, F.~van Harmelen,
   G.~Unel, Research chapters in the area of stream reasoning, in: SR2009, 2009,
-  pp. 1--9, \href{http://ceur-ws.org/Vol-466/SR2009-intro.pdf}{}.
+  pp. 1--9.
 
 \bibitem{Groppe_07}
 S.~Groppe, J.~Groppe, D.~Kukulenz, V.~Linnemann, A sparql engine for streaming
@@ -148,12 +146,27 @@ S.~Groppe, J.~Groppe, D.~Kukulenz, V.~Linnemann, A sparql engine for streaming
 
 \bibitem{Prudhommeaux_2008}
 E.~Prud'hommeaux, A.~Seaborne, {SPARQL} query language for {RDF,} {W3C}
-  recommendation, Tech. rep., World Wide Web Consortium (January 2008),
-  \href{http://www.w3.org/TR/rdf-sparql-query/}{}.
+  recommendation, Tech. rep., World Wide Web Consortium (January 2008).
 \newline\urlprefix\url{http://www.w3.org/TR/rdf-sparql-query/}
 
 \bibitem{Harris2010SPARQL-1.1-Quer}
 S.~Harris, A.~{Seaborne (eds)}, {SPARQL} 1.1 query language, Working draft, W3C
   (2010).
+
+\bibitem{Hutton_10}
+C.~Hutton, J.~Sadler, K.~Page, M.~Clark, R.~Newman, S.~Roe, Wt 7.1 flood user
+  requirements specification. deliverable d7.1v2, semsorgrid4env (September
+  2010).
+
+\bibitem{Guillen_10}
+D.~Guill\'{e}n, I.~Castanedo, I.~Li\'{e}bana, A.~Izquierdo, Wp 6.1 requirements
+  specification, version 2. deliverable d6.1v2, semsorgrid4env (September
+  2010).
+
+\bibitem{Arasu2004}
+A.~Arasu, M.~Cherniack, E.~Galvez, D.~Maier, A.~Maskey, E.~Ryvkina,
+  M.~Stonebraker, R.~Tibbetts, {Linear Road: A Stream Data Management
+  Benchmark}, in: VLDB '04: Proceedings of the 30th international conference on
+  Very large data bases, VLDB Endowment, 2004, pp. 480--491.
 
 \end{thebibliography}

@@ -32,6 +32,7 @@ Several cases are handled by \rtwoo and detailed below.
 \item[Projection.] Not all the attributes of a relation are always required for the mapping. The unnecessary attributes can simply be ignored. In order to do so, a projection on the needed attributes can be performed.
 \item[Selection.] Not all rows of a relation correspond to instances of the mapped ontology class. A subset of the rows must be extracted. To do so, selection conditions can be applied to choose the desired subset for the mapping.
 \end{description}
+
 It is possible to combine joins, unions, projections and selections for more complex mapping definitions.
 \rtwoo also enables the application of functions, \eg concatenation, sub-string, or arithmetic functions, to transform the relational data into the appropriate form for the ontology.
 
@@ -52,7 +53,7 @@ Hence, query languages \cite{Brenninkmeijer_08,Arasu_2006} and data stream manag
 
 One existing approach is \sneeql, which has a well defined, unified semantics for declarative expressions of data needs over event-streams, acquisitional-streams, and stored data \cite{Brenninkmeijer_08}.
 \sneeql can be viewed as extending \sql for processing data streams.
-The main additional constructs of relational streaming query languages are explained below. and we present them using the \sneeql syntax. 
+The main additional constructs of relational streaming query languages are explained below and we present them using the \sneeql syntax. 
 \begin{description}
 \item[Window.] A window over a data stream transforms the infinite sequence of tuples into a bounded bag of tuples over which traditional relational operators can be applied. A window is specified as: 
 \begin{align*}
