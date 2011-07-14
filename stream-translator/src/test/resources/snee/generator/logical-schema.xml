@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://snee.cs.man.ac.uk/namespace/logical-schema"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://snee.cs.man.ac.uk/namespace/logical-schema ../../schema/logical-schema.xsd">
+	
+ 
+     <!-- 
+     <stream name="PushStream" type="push">
+     	<column name="timestamp">
+     		<type class="timestamp"/>
+     	</column>
+         <column name="stream_name">
+          	<type class ="string"/>
+         </column>
+         <column name="floatAttr">
+          	<type class ="float"/>
+         </column>
+         <column name="intAttr">
+          	<type class ="integer"/>
+         </column>
+         <column name="boolAttr">
+          	<type class ="boolean"/>
+         </column>
+         <column name="decAttr">
+          	<type class ="decimal"/>
+         </column>
+     </stream> -->
+     <stream name="envdata_milford" type="push">
+        <column name="DateTime">
+     		<type class="timestamp"/>
+     	</column>
+     	<column name="timestamp">
+     		<type class="float"/>
+     	</column>
+         <column name="stream_name">
+          	<type class ="string"/>
+         </column>
+         <column name="Hs">
+          	<type class ="float"/>
+         </column>
+         <column name="Hmax">
+          	<type class ="float"/>
+         </column>
+         <column name="Lat">
+          	<type class ="float"/>
+         </column>
+         <column name="Lon">
+          	<type class ="float"/>
+         </column>
+     </stream>
+     <stream name="envdata_folkestone" type="push">
+     	<column name="DateTime">
+     		<type class="timestamp"/>
+     	</column>
+     	<column name="timestamp">
+     		<type class="float"/>
+     	</column>
+         <column name="stream_name">
+          	<type class ="string"/>
+         </column>
+         <column name="Hs">
+          	<type class ="float"/>
+         </column>
+         <column name="Lat">
+          	<type class ="float"/>
+         </column>
+         <column name="Lon">
+          	<type class ="float"/>
+         </column>
+     </stream>
+     <stream name="envdata_hernebay" type="push">
+        <column name="DateTime">
+     		<type class="timestamp"/>
+     	</column>
+     	<column name="timestamp">
+     		<type class="float"/>
+     	</column>
+         <column name="stream_name">
+          	<type class ="string"/>
+         </column>
+         <column name="Hs">
+          	<type class ="float"/>
+         </column>
+         <column name="Lat">
+          	<type class ="float"/>
+         </column>
+         <column name="Lon">
+          	<type class ="float"/>
+         </column>
+     </stream>
+
+     <stream name="envdata_boscombe_tide" type="push">
+        <column name="DateTime">
+     		<type class="timestamp"/>
+     	</column>
+     	<column name="timestamp">
+     		<type class="float"/>
+     	</column>
+         <column name="stream_name">
+          	<type class ="string"/>
+         </column>
+         <column name="Ts">
+          	<type class ="float"/>
+         </column>
+         <column name="Lat">
+          	<type class ="float"/>
+         </column>
+         <column name="Lon">
+          	<type class ="float"/>
+         </column>
+     </stream>
+     <table name="storm_threshold" >
+        <column name="pk">
+     		<type class="timestamp"/>
+     	</column>
+         <column name="stormValue">
+          	<type class ="float"/>
+         </column>
+     </table>
+     
+</schema>

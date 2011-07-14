@@ -1,0 +1,79 @@
+<?xml version="1.0"?>
+
+<units
+xmlns="http://snee.cs.manchester.ac.uk"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://snee.cs.manchester.ac.uk units.xsd">
+
+<time>
+	<base-unit>MILLISECONDS</base-unit>
+	<unit>
+		<name>SECONDS</name>
+		<scaling-factor>1000</scaling-factor>
+	</unit>
+	<unit>
+		<name>MINUTES</name>
+		<scaling-factor>60000</scaling-factor>
+	</unit>		
+	<unit>
+		<name>HOURS</name>
+		<scaling-factor>3600000</scaling-factor>
+	</unit>
+	<unit>
+		<name>DAYS</name>
+		<scaling-factor>86400000</scaling-factor>
+	</unit>
+	<unit>
+		<name>WEEKS</name>
+		<scaling-factor>604800000</scaling-factor>
+	</unit>
+	<unit>
+		<name>MONTHS</name>
+		<!-- assuming 30 days in a month -->
+		<scaling-factor>2592000000</scaling-factor>
+	</unit>                 
+	<unit>
+		<name>YEARS</name>
+		<!-- assuming 365 days in a month -->
+		<scaling-factor>31536000000</scaling-factor>
+	</unit>
+</time>
+
+
+<energy>
+	<base-unit>MILLIJOULES</base-unit>
+	<unit>
+		<name>JOULES</name>
+		<scaling-factor>1000</scaling-factor>
+	</unit>
+	<unit>
+		<name>KILOJOULES</name>
+		<scaling-factor>1000000</scaling-factor>
+	</unit>		
+	<unit>
+		<name>KILOJOULES</name>
+		<scaling-factor>1000000000</scaling-factor>
+	</unit>			
+	<unit>
+		<name>MEGAJOULES</name>
+		<scaling-factor>1000000000</scaling-factor>
+	</unit>
+
+</energy>
+
+<memory>
+	<base-unit>BYTES</base-unit>
+	<unit>
+		<name>KILOBYTES</name>
+		<scaling-factor>1024</scaling-factor>
+	</unit>
+	<unit>
+		<name>MEGABYTES</name>
+		<scaling-factor>1048576</scaling-factor>
+	</unit>		
+</memory>
+
+</units>
+
+
+  

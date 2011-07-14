@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<source xmlns="http://snee.cs.man.ac.uk/namespace/physicalschema"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://snee.cs.man.ac.uk/namespace/physicalschema ../schema/physicalSchema.xsd ">
+
+	<tuple_generator>
+		<extent name="TestStream">
+			<push_source>
+				<host>228.5.6.7</host>
+				<port>8080</port>
+			</push_source>
+		</extent>
+		<extent name="PushStream">
+			<push_source>
+				<host>228.5.6.8</host>
+				<port>8081</port>
+				<rate>0.0167</rate>
+			</push_source>
+		</extent>
+		<extent name="PushTest">
+			<push_source>
+				<host>localhost</host>
+				<port>8080</port>
+			</push_source>
+		</extent>
+	</tuple_generator>
+
+	<sensor_network name="wsn1">
+		<topology>src/test/resources/snee/wsn1-topology.xml</topology>
+		
+		<site-resources>src/test/resources/snee/tmotesky-site-resources.xml</site-resources><gateways>9</gateways><extents>
+			<extent name="PullStream">
+				<sites>4,5,7</sites>
+			</extent>
+		</extents></sensor_network>
+	
+
+</source>

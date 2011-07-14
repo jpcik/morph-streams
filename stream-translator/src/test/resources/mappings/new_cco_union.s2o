@@ -1,0 +1,477 @@
+<?xml version="1.0"?>
+<r2o xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xmlns:xsd="http://www.w3.org/2001/XMLSchema#" >
+<streamschema-desc name="sensor">
+
+<has-table name="raingauge">
+<keycol-desc name="id"/>
+<keycol-desc name="ts"/>
+<nonkeycol-desc name="level"/>
+</has-table>
+
+<has-table name="sensorlocation">
+<keycol-desc name="id"/>
+<nonkeycol-desc name="locx"/>
+<nonkeycol-desc name="locy"/>
+</has-table>
+
+<has-stream name="swanagepier_wave">
+<keycol-desc name="DateTime"/>
+<nonkeycol-desc name="Lat"/>
+<nonkeycol-desc name="Lon"/>
+<nonkeycol-desc name="Hmax"/>
+<nonkeycol-desc name="Tp"/>
+<nonkeycol-desc name="Dirp"/>
+<nonkeycol-desc name="Sprp"/>
+<nonkeycol-desc name="Tz"/>
+<nonkeycol-desc name="Hs"/>
+<nonkeycol-desc name="Tsea"/>
+</has-stream>
+
+<has-stream name="folkestone_wave">
+<keycol-desc name="DateTime"/>
+<nonkeycol-desc name="Lat"/>
+<nonkeycol-desc name="Lon"/>
+<nonkeycol-desc name="Hmax"/>
+<nonkeycol-desc name="Tp"/>
+<nonkeycol-desc name="Dirp"/>
+<nonkeycol-desc name="Sprp"/>
+<nonkeycol-desc name="Tz"/>
+<nonkeycol-desc name="Hs"/>
+<nonkeycol-desc name="Tsea"/>
+</has-stream>
+
+
+<has-stream name="swanagepier_tide">
+<keycol-desc name="DateTime"/>
+<nonkeycol-desc name="Observed"/>
+<nonkeycol-desc name="Tz"/>
+<nonkeycol-desc name="Hs"/>
+<nonkeycol-desc name="HMax"/>
+<nonkeycol-desc name="Tp"/>
+</has-stream>
+
+<has-stream name="sandownpier_tide">
+<keycol-desc name="DateTime"/>
+<nonkeycol-desc name="Observed"/>
+<nonkeycol-desc name="Tz"/>
+<nonkeycol-desc name="Hs"/>
+<nonkeycol-desc name="HMax"/>
+<nonkeycol-desc name="Tp"/>
+</has-stream>
+
+
+<has-stream name="westbaypier_tide">
+<keycol-desc name="DateTime"/>
+<nonkeycol-desc name="Observed"/>
+<nonkeycol-desc name="Tz"/>
+<nonkeycol-desc name="Hs"/>
+<nonkeycol-desc name="HMax"/>
+<nonkeycol-desc name="Tp"/>
+</has-stream>
+
+<has-stream name="swanagepier_met">
+<keycol-desc name="DateTime"/>
+<nonkeycol-desc name="AirPressure"/>
+<nonkeycol-desc name="WindSpeed"/>
+<nonkeycol-desc name="GustSpeed"/>
+<nonkeycol-desc name="WDir"/>
+<nonkeycol-desc name="TAir"/>
+</has-stream>
+
+<has-stream name="sandownpier_met">
+<keycol-desc name="DateTime"/>
+<nonkeycol-desc name="AirPressure"/>
+<nonkeycol-desc name="WindSpeed"/>
+<nonkeycol-desc name="GustSpeed"/>
+<nonkeycol-desc name="WDir"/>
+<nonkeycol-desc name="TAir"/>
+</has-stream>
+
+
+<has-stream name="tides" streamType="push">
+<nonkeycol-desc name="SensorName"/>
+<keycol-desc name="placeid"/>
+<keycol-desc name="ts"/>
+<nonkeycol-desc name="elevation"/>
+<nonkeycol-desc name="wavespeed"/>
+</has-stream>
+
+<has-table name="places">
+   <keycol-desc name="placeid"/>
+   <nonkeycol-desc name="placename"/>
+</has-table>
+
+<has-stream name="wavesamples">
+<keycol-desc name="id"/>
+<keycol-desc name="ts"/>
+<nonkeycol-desc name="height"/>
+<nonkeycol-desc name="temperature"/>
+</has-stream>
+
+<has-table name="waves"><keycol-desc name="mes_time"/><nonkeycol-desc name="mes_lat"/><nonkeycol-desc name="mes_lon"/><nonkeycol-desc name="mes_height"/><nonkeycol-desc name="mes_heightMax"/><nonkeycol-desc name="mes_tpeak"/><nonkeycol-desc name="mes_tz"/><nonkeycol-desc name="mes_meanDir"/><nonkeycol-desc name="mes_spread"/><nonkeycol-desc name="mes_temp"/><keycol-desc name="sensorid"/></has-table><has-table name="weather"><keycol-desc name="WeatherDateTime"/><keycol-desc name="SensorID"/><nonkeycol-desc name="AirPressure"/><nonkeycol-desc name="WindSpeed"/><nonkeycol-desc name="GustSpeed"/><nonkeycol-desc name="WindDirection"/><nonkeycol-desc name="AirTemperature"/></has-table>
+
+<has-stream name="windsamples" streamType="push">
+   <keycol-desc name="id"/>
+   <keycol-desc name="ts"/>
+   <timestamp-desc name="ts" />	
+   <nonkeycol-desc name="speed"/>
+   <nonkeycol-desc name="temperature"/>
+   <nonkeycol-desc name="direction"/>
+</has-stream>
+
+<has-table name="sensors">
+   <keycol-desc name="sensorid"/>
+   <nonkeycol-desc name="sensorname"/>
+</has-table>
+
+
+</streamschema-desc>
+
+<dataset uri="http://semsorgrid4env.eu/data/integration#CCOSouthEastEnglandWaveDataset">
+	<namedStreamGraph uri="http://semsorgrid4env.eu/data/integration#CCOSouthEastEnglandWaveStream" 
+	name="http://www.semsorgrid4env/ccometeo.srdf"/>
+	<vocabulary ontologyUri="http://www.semsorgrid4env.eu/ontologies/ObservationSource.owl"/>
+	<vocabulary ontologyUri="http://www.semsorgrid4env.eu/ontologies/CoastalDefences.owl"/>
+</dataset>
+
+<conceptmap-def id="Observation_wave_portsmouth"
+name="http://www.semsorgrid4env.eu/ontologies/CoastalDefences.owl#Observation" 
+virtualStream="http://www.semsorgrid4env/ccometeo.srdf">
+ <uri-as>
+  <operation oper-id="concat">
+       <arg-restriction on-param="string1">
+        <has-value>ObservationPortsmouthWave_</has-value>
+       </arg-restriction>
+       <arg-restriction on-param="string2">
+        <has-column>envdata_portsmouth_met.DateTime</has-column>
+       </arg-restriction>
+      </operation>
+    </uri-as>
+    <described-by/>
+</conceptmap-def>
+
+<conceptmap-def id="Observation_wave_folkestone"
+name="http://www.semsorgrid4env.eu/ontologies/CoastalDefences.owl#Observation" 
+virtualStream="http://www.semsorgrid4env/ccometeo.srdf">
+ <uri-as>
+  <operation oper-id="concat">
+       <arg-restriction on-param="string1">
+        <has-value>ObservationFolkestoneWave_</has-value>
+       </arg-restriction>
+       <arg-restriction on-param="string2">
+        <has-column>envdata_folkestone_met.DateTime</has-column>
+       </arg-restriction>
+      </operation>
+    </uri-as>
+    <described-by/>
+</conceptmap-def>
+
+<conceptmap-def id="WaveHeight_folkestone"
+name="http://www.semsorgrid4env.eu/ontologies/CoastalDefences.owl#WaveHeight" 
+virtualStream="http://www.semsorgrid4env/ccometeo.srdf">
+ <uri-as>
+
+  <operation oper-id="constant">
+       <arg-restriction on-param="const-val">
+        <has-value>WaveHeightInstancess</has-value>
+       </arg-restriction>
+      </operation>
+    </uri-as>
+    <described-by/>
+</conceptmap-def>
+
+
+<objectPropertyMapping name="http://www.semsorgrid4env.eu/ontologies/CoastalDefences.owl#observedProperty" 
+toConcept="http://www.semsorgrid4env.eu/ontologies/CoastalDefences.owl#WindSpeed" condition="true">
+ <uri-as>
+  <operation oper-id="concat">
+       <arg-restriction on-param="string1">
+        <has-value>ObservationFolkestoneWave_</has-value>
+       </arg-restriction>
+       <arg-restriction on-param="string2">
+        <has-column>envdata_folkestone_met.DateTime</has-column>
+       </arg-restriction>
+      </operation>
+    </uri-as>
+ <uri-as>
+  <operation oper-id="constant">
+       <arg-restriction on-param="const-val">
+        <has-value>http://www.semsorgrid4env.eu/ontologies/CoastalDefences.owl#WaveHeight</has-value>
+       </arg-restriction>
+      </operation>
+    </uri-as>
+</objectPropertyMapping>
+
+
+<objectPropertyMapping name="http://www.semsorgrid4env.eu/ontologies/CoastalDefences.owl#observedProperty" id ="hernebay_observedProperty" 
+toConcept="http://www.semsorgrid4env.eu/ontologies/CoastalDefences.owl#WindSpeed" condition="true">
+ <uri-as>
+  <operation oper-id="concat">
+       <arg-restriction on-param="string1">
+        <has-value>ObservationHernebayWave_</has-value>
+       </arg-restriction>
+       <arg-restriction on-param="string2">
+        <has-column>envdata_hernebay_met.DateTime</has-column>
+       </arg-restriction>
+      </operation>
+    </uri-as>
+ <uri-as>
+ <operation oper-id="constant">
+       <arg-restriction on-param="const-val">
+        <has-value>http://www.semsorgrid4env.eu/ontologies/CoastalDefences.owl#WaveHeight</has-value>
+       </arg-restriction>
+      </operation>
+    </uri-as>
+</objectPropertyMapping>
+
+
+<objectPropertyMapping name="http://www.semsorgrid4env.eu/ontologies/CoastalDefences.owl#observedProperty" id ="hernebay_tide_observedProperty" 
+toConcept="http://www.semsorgrid4env.eu/ontologies/CoastalDefences.owl#WindSpeed" condition="true">
+ <uri-as>
+  <operation oper-id="concat">
+       <arg-restriction on-param="string1">
+        <has-value>ObservationHernebayTide_</has-value>
+       </arg-restriction>
+       <arg-restriction on-param="string2">
+        <has-column>envdata_hernebay_tide.DateTime</has-column>
+       </arg-restriction>
+      </operation>
+    </uri-as>
+ <uri-as>
+ <operation oper-id="constant">
+       <arg-restriction on-param="const-val">
+        <has-value>http://www.semsorgrid4env.eu/ontologies/CoastalDefences.owl#TideHeight</has-value>
+       </arg-restriction>
+      </operation>
+    </uri-as>
+</objectPropertyMapping>
+
+
+<objectPropertyMapping name="http://www.semsorgrid4env.eu/ontologies/CoastalDefences.owl#observedProperty" id ="portsmouth_wave_observedProperty" 
+toConcept="http://www.semsorgrid4env.eu/ontologies/CoastalDefences.owl#WindSpeed" condition="true">
+ <uri-as>
+  <operation oper-id="concat">
+       <arg-restriction on-param="string1">
+        <has-value>ObservationPortsmouthWave_</has-value>
+       </arg-restriction>
+       <arg-restriction on-param="string2">
+        <has-column>envdata_portsmouth_met.DateTime</has-column>
+       </arg-restriction>
+      </operation>
+    </uri-as>
+ <uri-as>
+ <operation oper-id="constant">
+       <arg-restriction on-param="const-val">
+        <has-value>http://www.semsorgrid4env.eu/ontologies/CoastalDefences.owl#WaveHeight</has-value>
+       </arg-restriction>
+      </operation>
+    </uri-as>
+</objectPropertyMapping>
+
+
+<objectPropertyMapping name="http://www.semsorgrid4env.eu/ontologies/CoastalDefences.owl#featureOfInterest" id ="portsmouth_wave_featureofi">
+ <uri-as>
+  <operation oper-id="concat">
+       <arg-restriction on-param="string1">
+        <has-value>ObservationPortsmouthWave_</has-value>
+       </arg-restriction>
+       <arg-restriction on-param="string2">
+        <has-column>envdata_portsmouth_met.DateTime</has-column>
+       </arg-restriction>
+      </operation>
+    </uri-as>
+ <uri-as>
+ <operation oper-id="constant">
+       <arg-restriction on-param="const-val">
+        <has-value>FeatureBlank</has-value>
+       </arg-restriction>
+      </operation>
+    </uri-as>
+</objectPropertyMapping>
+
+
+<objectPropertyMapping name="http://www.semsorgrid4env.eu/ontologies/CoastalDefences.owl#locatedInRegion" id="portsmouth">
+ <uri-as>
+  <operation oper-id="constant">
+       <arg-restriction on-param="const-val">
+        <has-value>FeatureBlank</has-value>
+       </arg-restriction>
+      </operation>
+    </uri-as>
+ <uri-as>
+ <operation oper-id="constant">
+       <arg-restriction on-param="const-val">
+        <has-value>http://www.semsorgrid4env.eu/ontologies/CoastalDefences.owl#SouthEastEnglandCCO</has-value>
+       </arg-restriction>
+      </operation>
+    </uri-as>
+</objectPropertyMapping>
+
+
+<objectPropertyMapping name="http://www.semsorgrid4env.eu/ontologies/CoastalDefences.owl#locatedInRegion" id="portsmouth">
+ <uri-as>
+  <operation oper-id="constant">
+       <arg-restriction on-param="const-val">
+        <has-value>FeatureBlank2</has-value>
+       </arg-restriction>
+      </operation>
+    </uri-as>
+ <uri-as>
+ <operation oper-id="constant">
+       <arg-restriction on-param="const-val">
+        <has-value>http://www.semsorgrid4env.eu/ontologies/CoastalDefences.owl#NorthEastEnglandCCO</has-value>
+       </arg-restriction>
+      </operation>
+    </uri-as>
+</objectPropertyMapping>
+
+
+<datatypePropertyMapping name="http://www.semsorgrid4env.eu/ontologies/CoastalDefences.owl#observationResult" id ="portsmouth_wave_observationResult" 
+toConcept="http://www.semsorgrid4env.eu/ontologies/CoastalDefences.owl#WindSpeed" condition="true">
+ <uri-as>
+  <operation oper-id="concat">
+       <arg-restriction on-param="string1">
+        <has-value>ObservationPortsmouthWave_</has-value>
+       </arg-restriction>
+       <arg-restriction on-param="string2">
+        <has-column>envdata_portsmouth_met.DateTime</has-column>
+       </arg-restriction>
+      </operation>
+    </uri-as>
+ <uri-as>
+ <operation oper-id="value">
+       <arg-restriction on-param="value1">
+        <has-column>envdata_portsmouth_met.Hs</has-column>
+       </arg-restriction>
+      </operation>
+    </uri-as>
+</datatypePropertyMapping>
+
+<datatypePropertyMapping name="http://www.semsorgrid4env.eu/ontologies/CoastalDefences.owl#observationResult" 
+id ="portsmouth_wave_observationResult">
+ <uri-as>
+  <operation oper-id="concat">
+       <arg-restriction on-param="string1">
+        <has-value>ObservationFolkestoneWave_</has-value>
+       </arg-restriction>
+       <arg-restriction on-param="string2">
+        <has-column>envdata_folkestone_met.DateTime</has-column>
+       </arg-restriction>
+      </operation>
+    </uri-as>
+ <uri-as>
+ <operation oper-id="value">
+       <arg-restriction on-param="value1">
+        <has-column>envdata_folkestone_met.Hs</has-column>
+       </arg-restriction>
+      </operation>
+    </uri-as>
+</datatypePropertyMapping>
+
+
+<datatypePropertyMapping name="http://www.semsorgrid4env.eu/ontologies/CoastalDefences.owl#observationResultTime" id ="portsmouth_wave_observationResultTime" 
+toConcept="http://www.semsorgrid4env.eu/ontologies/CoastalDefences.owl#WindSpeed" condition="true">
+ <uri-as>
+  <operation oper-id="concat">
+       <arg-restriction on-param="string1">
+        <has-value>ObservationPortsmouthTime_</has-value>
+       </arg-restriction>
+       <arg-restriction on-param="string2">
+        <has-column>envdata_portsmouth_met.DateTime</has-column>
+       </arg-restriction>
+      </operation>
+    </uri-as>
+ <uri-as>
+ <operation oper-id="value">
+       <arg-restriction on-param="value1">
+        <has-column>envdata_portsmouth_met.Timestamp</has-column>
+       </arg-restriction>
+      </operation>
+    </uri-as>
+</datatypePropertyMapping>
+
+
+
+<conceptmap-def id="Observation_wave_hernbay"
+name="http://www.semsorgrid4env.eu/ontologies/CoastalDefences.owl#Observation" 
+virtualStream="http://www.semsorgrid4env/ccometeo.srdf">
+ <uri-as>
+  <operation oper-id="concat">
+       <arg-restriction on-param="string1">
+        <has-value>ObservationHernBayWave_</has-value>
+       </arg-restriction>
+       <arg-restriction on-param="string2">
+        <has-column>envdata_hernebay_met.DateTime</has-column>
+       </arg-restriction>
+      </operation>
+    </uri-as>
+
+
+
+<described-by>
+</described-by>
+</conceptmap-def>
+
+
+<conceptmap-def id="Observation_tide"
+ name="http://www.semsorgrid4env.eu/ontologies/CoastalDefences.owl#Observation" 
+ virtualStream="http://www.semsorgrid4env/ccometeo.srdf">
+ <uri-as>
+  <operation oper-id="concat">
+    <arg-restriction on-param="string1">
+     <has-transform>
+      <operation oper-id="extentname">
+       <arg-restriction on-param="value1">       
+       </arg-restriction>
+      </operation>
+     </has-transform>
+    </arg-restriction>
+    
+    <arg-restriction on-param="string2">
+        <has-column>envdata_hernebay_tide.DateTime</has-column>
+     <!--
+     <has-transform>
+      <operation oper-id="concat">
+       <arg-restriction on-param="string1">
+        <has-column>tidestream.DateTimetr</has-column>
+       </arg-restriction>
+       <arg-restriction on-param="string2">
+        <has-column>envdata_hernebay_tide.DateTime</has-column>
+       </arg-restriction>
+      </operation>
+     </has-transform>-->
+    </arg-restriction>
+
+  </operation>
+ </uri-as>
+
+
+<described-by>
+
+</described-by>
+
+</conceptmap-def>
+
+<conceptmap-def id="Feature_a0"
+name="http://www.semsorgrid4env.eu/ontologies/CoastalDefences.owl#Feature" >
+ <uri-as>
+<!--
+  <operation oper-id="extentname">
+    <arg-restriction on-param="value1">
+		<has-value>xxx</has-value>    
+    </arg-restriction>    
+  </operation>-->
+
+  <operation oper-id="constant">
+       <arg-restriction on-param="const-val">
+        <has-value>FeatureBlank</has-value>
+       </arg-restriction>
+      </operation>
+    </uri-as>
+
+<described-by>
+</described-by>
+</conceptmap-def>
+
+</r2o>

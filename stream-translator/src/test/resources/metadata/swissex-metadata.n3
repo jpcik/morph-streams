@@ -1,0 +1,164 @@
+# Saved by TopBraid on Fri Apr 15 14:58:58 CEST 2011
+# baseURI: http://swiss-experiment.ch/metadata
+# imports: http://www.qudt.org/qudt/owl/1.0.0/quantity.owl
+# imports: http://www.qudt.org/qudt/owl/1.0.0/dimension.owl
+# imports: http://purl.oclc.org/NET/ssnx/ssn
+# imports: http://www.semsorgrid4env.eu/ontologies/ServiceOntology.owl
+# imports: http://www.qudt.org/qudt/owl/1.0.0/unit.owl
+
+@prefix DUL:     <http://www.loa-cnr.it/ontologies/DUL.owl#> .
+@prefix ServiceOntology:  <http://www.semsorgrid4env.eu/ontologies/ServiceOntology.owl#> .
+@prefix SysML-QUDV-SI:  <http://www.example.org/SysML-QUDV-SI.owl#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix qudt:    <http://data.nasa.gov/qudt/owl/qudt#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix spin:    <http://spinrdf.org/spin> .
+@prefix ssn:     <http://purl.oclc.org/NET/ssnx/ssn#> .
+@prefix swissex:  <http://swiss-experiment.ch/metadata#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+
+qudt:QuantityKind
+      rdfs:subClassOf ssn:Property .
+
+qudt:QuantityValue
+      rdfs:subClassOf ssn:ObservationValue .
+
+<http://swiss-experiment.ch/metadata>
+      rdf:type owl:Ontology ;
+      owl:imports <http://purl.oclc.org/NET/ssnx/ssn> , <http://www.semsorgrid4env.eu/ontologies/ServiceOntology.owl> , <http://www.qudt.org/qudt/owl/1.0.0/quantity.owl> , <http://www.qudt.org/qudt/owl/1.0.0/unit.owl> , <http://www.qudt.org/qudt/owl/1.0.0/dimension.owl> ;
+      owl:versionInfo "Created with TopBraid Composer"^^xsd:string .
+
+swissex:AirAtWan5
+      rdf:type ssn:FeatureOfInterest .
+
+swissex:Location
+      rdf:type owl:Class ;
+      rdfs:subClassOf ssn:Property .
+
+swissex:PositionQty
+      rdf:type owl:Class ;
+      rdfs:subClassOf qudt:Quantity .
+
+swissex:RegionWannengrat
+      rdf:type DUL:SpaceRegion ;
+      rdfs:label "region wann"^^xsd:string ;
+      ssn:hasProperty swissex:WannengratLocation .
+
+swissex:SLF
+      rdf:type DUL:Organization ;
+      DUL:isParticipantIn swissex:WannengratDeployment .
+
+swissex:SensorSS1054
+      rdf:type ssn:SensingDevice ;
+      ssn:observes <http://data.nasa.gov/qudt/owl/quantity#ThermodynamicTemperature> .
+
+swissex:SensorScope1053Location
+      rdf:type swissex:Location .
+
+swissex:SensorScope1053Region
+      rdf:type DUL:SpaceRegion .
+
+swissex:SensorWan4Temp
+      rdf:type ssn:SensingDevice ;
+      ssn:observes <http://data.nasa.gov/qudt/owl/quantity#ThermodynamicTemperature> .
+
+swissex:SensorWan5Temp
+      rdf:type ssn:SensingDevice ;
+      ssn:observes <http://data.nasa.gov/qudt/owl/quantity#AbsoluteHumidity> , <http://data.nasa.gov/qudt/owl/quantity#ThermodynamicTemperature> .
+
+swissex:SensorWan5TempOutput1
+      rdf:type ssn:SensorOutput ;
+      ssn:hasValue swissex:Wan5-AirTempObs1Val ;
+      ssn:isProducedBy swissex:SensorWan5Temp .
+
+swissex:SensorWan5WindMonitor
+      rdf:type ssn:SensingDevice ;
+      ssn:observes <http://data.nasa.gov/qudt/owl/quantity#Speed> .
+
+swissex:Wan5
+      rdf:type ssn:System ;
+      ssn:hasDeployment swissex:WannengratDeployment ;
+      ssn:hasSubSystem swissex:SensorWan5WindMonitor , swissex:SensorWan5Temp ;
+      ssn:onPlatform swissex:Wan5Platform .
+
+swissex:Wan5-AirTempObs1
+      rdf:type ssn:Observation ;
+      ssn:featureOfInterest
+              swissex:AirAtWan5 ;
+      ssn:observationResult
+              swissex:SensorWan5TempOutput1 ;
+      ssn:observedBy swissex:SensorWan5Temp ;
+      ssn:observedProperty
+              <http://data.nasa.gov/qudt/owl/quantity#ThermodynamicTemperature> .
+
+swissex:Wan5-AirTempObs1Val
+      rdf:type qudt:QuantityValue ;
+      qudt:numericValue "23"^^xsd:double .
+
+swissex:Wan5LatitudeQtyVal
+      rdf:type qudt:QuantityValue ;
+      qudt:numericValue "46.805761"^^xsd:double ;
+      qudt:unit <http://data.nasa.gov/qudt/owl/unit#DegreeAngle> .
+
+swissex:Wan5Location
+      rdf:type swissex:Location ;
+      ssn:hasValue swissex:Wan5LongitudeQtyVal , swissex:Wan5LatitudeQtyVal .
+
+swissex:Wan5LongitudeQtyVal
+      rdf:type qudt:QuantityValue ;
+      qudt:numericValue "9.786242"^^xsd:double ;
+      qudt:unit <http://data.nasa.gov/qudt/owl/unit#DegreeAngle> .
+
+swissex:Wan5Platform
+      rdf:type ssn:Platform ;
+      DUL:hasLocation swissex:Wan5Region .
+
+swissex:Wan5Region
+      rdf:type DUL:SpaceRegion ;
+      ssn:hasProperty swissex:Wan5Location .
+
+swissex:WannDeployEndTime
+      rdf:type DUL:Amount .
+
+swissex:WannDeployStartTime
+      rdf:type DUL:Amount ;
+      DUL:hasDataValue "25.12.2006"^^xsd:string .
+
+swissex:WannengratDeployment
+      rdf:type ssn:Deployment ;
+      rdfs:label "Wannengrat deployment" ;
+      ssn:deployedSystem swissex:Wan5 ;
+      ssn:startTime swissex:WannDeployStartTime ;
+      DUL:hasLocation swissex:RegionWannengrat .
+
+swissex:WannengratLatitudeQtyVal
+      rdf:type qudt:QuantityValue ;
+      qudt:numericValue "46.8020766693"^^xsd:double ;
+      qudt:unit <http://data.nasa.gov/qudt/owl/unit#DegreeAngle> .
+
+swissex:WannengratLocation
+      rdf:type swissex:Location ;
+      ssn:hasValue swissex:WannengratLongitudeQtyVal , swissex:WannengratLatitudeQtyVal .
+
+swissex:WannengratLongitudeQtyVal
+      rdf:type qudt:QuantityValue ;
+      qudt:numericValue "9.77930259425"^^xsd:double ;
+      qudt:unit <http://data.nasa.gov/qudt/owl/unit#DegreeAngle> .
+
+swissex:WannengratPositionQty
+      rdf:type qudt:Quantity ;
+      qudt:quantityValue swissex:WannengratLongitudeQtyVal , swissex:WannengratLatitudeQtyVal .
+
+swissex:hasLatitudeValue
+      rdf:type owl:ObjectProperty ;
+      rdfs:subPropertyOf ssn:hasValue .
+
+swissex:hasLongitudeValue
+      rdf:type owl:ObjectProperty ;
+      rdfs:domain DUL:Entity ;
+      rdfs:subPropertyOf ssn:hasValue .
+
+swissex:hasQuantityValue
+      rdf:type owl:DatatypeProperty ;
+      rdfs:domain DUL:Entity .

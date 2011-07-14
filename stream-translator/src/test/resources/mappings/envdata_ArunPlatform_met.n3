@@ -1,0 +1,275 @@
+@prefix map: <file:/Users/user/Desktop/cco.n3#> .
+@prefix db: <> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix d2rq: <http://www.wiwiss.fu-berlin.de/suhl/bizer/D2RQ/0.1#> .
+@prefix jdbc: <http://d2rq.org/terms/jdbc/> .
+@prefix obs: <http://www.w3.org/2009/SSN-XG/Ontologies/SensorBasis.owl#> .
+@prefix time: <http://www.w3.org/2006/time#>.
+
+# ClassMap to build an observation, based on "Val1" column of "envdata_ArunPlatform_met" table
+map:ArunPlatform_Val1 a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:uriPattern "observation/Val1/@@envdata_ArunPlatform_met.timestamp@@";
+	d2rq:class obs:observation;
+	d2rq:classDefinitionLabel "observation";
+	.	
+map:ArunPlatform_Val1_observationResultTime a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:ArunPlatform_Val1;
+	d2rq:property obs:observationResultTime;
+	.
+map:ArunPlatform_Val1_timeInstant a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:ArunPlatform_Val1;
+	d2rq:property time:Instant;
+	d2rq:belongsToPropertyBridge map:ArunPlatform_Val1_observationResultTime;
+	.
+map:ArunPlatform_Val1_dateTime a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:ArunPlatform_Val1;
+	d2rq:property time:inXSDDateTime;
+	d2rq:belongsToPropertyBridge map:ArunPlatform_Val1_timeInstant;
+	d2rq:column "envdata_ArunPlatform_met.0";
+	.
+map:ArunPlatform_Val1_procedure a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:ArunPlatform_Val1;
+	d2rq:property obs:procedure;
+	d2rq:tableName "envdata_ArunPlatform_met";
+	.
+map:ArunPlatform_Val1_observedProperty a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:ArunPlatform_Val1;
+	d2rq:property obs:observedProperty;
+	d2rq:columnHeading "envdata_ArunPlatform_met.5";
+	.
+map:ArunPlatform_Val1_featureOfInterest a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:ArunPlatform_Val1;
+	d2rq:property obs:featureOfInterest;
+	d2rq:constantValue "Blah";
+	.
+map:ArunPlatform_Val1_observationResult a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:ArunPlatform_Val1;
+	d2rq:property obs:observationResult;
+	.
+map:ArunPlatform_Val1_uom a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:ArunPlatform_Val1;
+	d2rq:property obs:uom;
+	d2rq:constantValue "urn:ogc:def:uom:OGC:m";
+	d2rq:belongsToPropertyBridge map:ArunPlatform_Val1_observationResult;
+	.
+map:ArunPlatform_Val1_ValueThing a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:ArunPlatform_Val1;
+	d2rq:property obs:ValueThing;
+	d2rq:column "envdata_ArunPlatform_met.5";
+	d2rq:belongsToPropertyBridge map:ArunPlatform_Val1_observationResult;
+	.
+# ClassMap to build an observation, based on "Val2" column of "envdata_ArunPlatform_met" table
+map:ArunPlatform_Val2 a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:uriPattern "observation/Val2/@@envdata_ArunPlatform_met.timestamp@@";
+	d2rq:class obs:observation;
+	d2rq:classDefinitionLabel "observation";
+	.	
+map:ArunPlatform_Val2_observationResultTime a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:ArunPlatform_Val2;
+	d2rq:property obs:observationResultTime;
+	.
+map:ArunPlatform_Val2_timeInstant a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:ArunPlatform_Val2;
+	d2rq:property time:Instant;
+	d2rq:belongsToPropertyBridge map:ArunPlatform_Val2_observationResultTime;
+	.
+map:ArunPlatform_Val2_dateTime a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:ArunPlatform_Val2;
+	d2rq:property time:inXSDDateTime;
+	d2rq:belongsToPropertyBridge map:ArunPlatform_Val2_timeInstant;
+	d2rq:column "envdata_ArunPlatform_met.0";
+	.
+map:ArunPlatform_Val2_procedure a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:ArunPlatform_Val2;
+	d2rq:property obs:procedure;
+	d2rq:tableName "envdata_ArunPlatform_met";
+	.
+map:ArunPlatform_Val2_observedProperty a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:ArunPlatform_Val2;
+	d2rq:property obs:observedProperty;
+	d2rq:columnHeading "envdata_ArunPlatform_met.6";
+	.
+map:ArunPlatform_Val2_featureOfInterest a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:ArunPlatform_Val2;
+	d2rq:property obs:featureOfInterest;
+	d2rq:constantValue "Blah";
+	.
+map:ArunPlatform_Val2_observationResult a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:ArunPlatform_Val2;
+	d2rq:property obs:observationResult;
+	.
+map:ArunPlatform_Val2_uom a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:ArunPlatform_Val2;
+	d2rq:property obs:uom;
+	d2rq:constantValue "urn:ogc:def:uom:OGC:m";
+	d2rq:belongsToPropertyBridge map:ArunPlatform_Val2_observationResult;
+	.
+map:ArunPlatform_Val2_ValueThing a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:ArunPlatform_Val2;
+	d2rq:property obs:ValueThing;
+	d2rq:column "envdata_ArunPlatform_met.6";
+	d2rq:belongsToPropertyBridge map:ArunPlatform_Val2_observationResult;
+	.
+# ClassMap to build an observation, based on "Val3" column of "envdata_ArunPlatform_met" table
+map:ArunPlatform_Val3 a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:uriPattern "observation/Val3/@@envdata_ArunPlatform_met.timestamp@@";
+	d2rq:class obs:observation;
+	d2rq:classDefinitionLabel "observation";
+	.	
+map:ArunPlatform_Val3_observationResultTime a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:ArunPlatform_Val3;
+	d2rq:property obs:observationResultTime;
+	.
+map:ArunPlatform_Val3_timeInstant a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:ArunPlatform_Val3;
+	d2rq:property time:Instant;
+	d2rq:belongsToPropertyBridge map:ArunPlatform_Val3_observationResultTime;
+	.
+map:ArunPlatform_Val3_dateTime a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:ArunPlatform_Val3;
+	d2rq:property time:inXSDDateTime;
+	d2rq:belongsToPropertyBridge map:ArunPlatform_Val3_timeInstant;
+	d2rq:column "envdata_ArunPlatform_met.0";
+	.
+map:ArunPlatform_Val3_procedure a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:ArunPlatform_Val3;
+	d2rq:property obs:procedure;
+	d2rq:tableName "envdata_ArunPlatform_met";
+	.
+map:ArunPlatform_Val3_observedProperty a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:ArunPlatform_Val3;
+	d2rq:property obs:observedProperty;
+	d2rq:columnHeading "envdata_ArunPlatform_met.7";
+	.
+map:ArunPlatform_Val3_featureOfInterest a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:ArunPlatform_Val3;
+	d2rq:property obs:featureOfInterest;
+	d2rq:constantValue "Blah";
+	.
+map:ArunPlatform_Val3_observationResult a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:ArunPlatform_Val3;
+	d2rq:property obs:observationResult;
+	.
+map:ArunPlatform_Val3_uom a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:ArunPlatform_Val3;
+	d2rq:property obs:uom;
+	d2rq:constantValue "urn:ogc:def:uom:OGC:m";
+	d2rq:belongsToPropertyBridge map:ArunPlatform_Val3_observationResult;
+	.
+map:ArunPlatform_Val3_ValueThing a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:ArunPlatform_Val3;
+	d2rq:property obs:ValueThing;
+	d2rq:column "envdata_ArunPlatform_met.7";
+	d2rq:belongsToPropertyBridge map:ArunPlatform_Val3_observationResult;
+	.
+# ClassMap to build an observation, based on "Val4" column of "envdata_ArunPlatform_met" table
+map:ArunPlatform_Val4 a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:uriPattern "observation/Val4/@@envdata_ArunPlatform_met.timestamp@@";
+	d2rq:class obs:observation;
+	d2rq:classDefinitionLabel "observation";
+	.	
+map:ArunPlatform_Val4_observationResultTime a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:ArunPlatform_Val4;
+	d2rq:property obs:observationResultTime;
+	.
+map:ArunPlatform_Val4_timeInstant a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:ArunPlatform_Val4;
+	d2rq:property time:Instant;
+	d2rq:belongsToPropertyBridge map:ArunPlatform_Val4_observationResultTime;
+	.
+map:ArunPlatform_Val4_dateTime a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:ArunPlatform_Val4;
+	d2rq:property time:inXSDDateTime;
+	d2rq:belongsToPropertyBridge map:ArunPlatform_Val4_timeInstant;
+	d2rq:column "envdata_ArunPlatform_met.0";
+	.
+map:ArunPlatform_Val4_procedure a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:ArunPlatform_Val4;
+	d2rq:property obs:procedure;
+	d2rq:tableName "envdata_ArunPlatform_met";
+	.
+map:ArunPlatform_Val4_observedProperty a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:ArunPlatform_Val4;
+	d2rq:property obs:observedProperty;
+	d2rq:columnHeading "envdata_ArunPlatform_met.8";
+	.
+map:ArunPlatform_Val4_featureOfInterest a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:ArunPlatform_Val4;
+	d2rq:property obs:featureOfInterest;
+	d2rq:constantValue "Blah";
+	.
+map:ArunPlatform_Val4_observationResult a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:ArunPlatform_Val4;
+	d2rq:property obs:observationResult;
+	.
+map:ArunPlatform_Val4_uom a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:ArunPlatform_Val4;
+	d2rq:property obs:uom;
+	d2rq:constantValue "urn:ogc:def:uom:OGC:m";
+	d2rq:belongsToPropertyBridge map:ArunPlatform_Val4_observationResult;
+	.
+map:ArunPlatform_Val4_ValueThing a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:ArunPlatform_Val4;
+	d2rq:property obs:ValueThing;
+	d2rq:column "envdata_ArunPlatform_met.8";
+	d2rq:belongsToPropertyBridge map:ArunPlatform_Val4_observationResult;
+	.
+# ClassMap to build an observation, based on "Val5" column of "envdata_ArunPlatform_met" table
+map:ArunPlatform_Val5 a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:uriPattern "observation/Val5/@@envdata_ArunPlatform_met.timestamp@@";
+	d2rq:class obs:observation;
+	d2rq:classDefinitionLabel "observation";
+	.	
+map:ArunPlatform_Val5_observationResultTime a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:ArunPlatform_Val5;
+	d2rq:property obs:observationResultTime;
+	.
+map:ArunPlatform_Val5_timeInstant a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:ArunPlatform_Val5;
+	d2rq:property time:Instant;
+	d2rq:belongsToPropertyBridge map:ArunPlatform_Val5_observationResultTime;
+	.
+map:ArunPlatform_Val5_dateTime a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:ArunPlatform_Val5;
+	d2rq:property time:inXSDDateTime;
+	d2rq:belongsToPropertyBridge map:ArunPlatform_Val5_timeInstant;
+	d2rq:column "envdata_ArunPlatform_met.0";
+	.
+map:ArunPlatform_Val5_procedure a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:ArunPlatform_Val5;
+	d2rq:property obs:procedure;
+	d2rq:tableName "envdata_ArunPlatform_met";
+	.
+map:ArunPlatform_Val5_observedProperty a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:ArunPlatform_Val5;
+	d2rq:property obs:observedProperty;
+	d2rq:columnHeading "envdata_ArunPlatform_met.9";
+	.
+map:ArunPlatform_Val5_featureOfInterest a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:ArunPlatform_Val5;
+	d2rq:property obs:featureOfInterest;
+	d2rq:constantValue "Blah";
+	.
+map:ArunPlatform_Val5_observationResult a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:ArunPlatform_Val5;
+	d2rq:property obs:observationResult;
+	.
+map:ArunPlatform_Val5_uom a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:ArunPlatform_Val5;
+	d2rq:property obs:uom;
+	d2rq:constantValue "urn:ogc:def:uom:OGC:m";
+	d2rq:belongsToPropertyBridge map:ArunPlatform_Val5_observationResult;
+	.
+map:ArunPlatform_Val5_ValueThing a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:ArunPlatform_Val5;
+	d2rq:property obs:ValueThing;
+	d2rq:column "envdata_ArunPlatform_met.9";
+	d2rq:belongsToPropertyBridge map:ArunPlatform_Val5_observationResult;
+	.
