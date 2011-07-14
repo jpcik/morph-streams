@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Types>
+	<type name="integer" size="2" math="5" nesCName = "uint16_t"/>
+    <type name="float" size="16" math="5"/>
+    <type name="string" size="4" math="2"/>
+	<type name="boolean" size = "1" math = "1" nesCName="bool"/>
+    <!--	
+    <type name="real" size="8" math ="5"/>
+    <type name="double" size="16" math ="5"/>
+	<type name="numeric" size="8" math ="5"/>
+	<type name="decimal" size="8" math ="5"/>
+	<type name="smallint" size="2" math ="5"/>
+	<type name="bit" size="1" math ="5" nesCName = "uint8_t"/>
+	<type name="tinyint" size="1" math ="5" nesCName = "uint8_t"/>
+	<type name="date" size="8" math ="3"/>
+	<type name="time" size="4" math ="3" nesCName = "int32_t"/>
+	<type name="timestamp" size="8" math ="3" nesCName = "unint64_t"/>
+	<type name="varchar" size="1" factor="8" math ="1"/>
+	<type name="char" size="1" math ="2" nesCName = "char"/>
+	<type name="longvarchar" size="4" math ="2"/>
+    -->
+</Types>
+
+<!--
+	 * Math level. Describes what operations can be done on this variable.<br>
+	 * Level 0 = No operations at all
+	 * Level 1 = Equals within type only<br>
+	 * Level 2 = Comparisons within type only<br>
+	 * Level 3 = Standard Functions and Comparisons within type only<br>
+	 * Level 4 = All Functions and Comparisons with type only<br>
+	 * Level 5 = Convertible to a real so full math support<br>
+-->

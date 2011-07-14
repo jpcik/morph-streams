@@ -1,0 +1,34 @@
+PREFIX ssg: <http://semsorgrid4env.eu/ns#>							
+PREFIX ssn: <http://purl.oclc.org/NET/ssnx/ssn#> 
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+PREFIX cd:  <http://www.semsorgrid4env.eu/ontologies/CoastalDefences.owl#>
+PREFIX dul:	<http://www.loa-cnr.it/ontologies/DUL.owl#>
+PREFIX time: <http://www.w3.org/2006/time#>
+PREFIX regions: <http://www.semsorgrid4env.eu/ontologies/AdditionalRegions.owl#>
+PREFIX swissex: <http://swiss-experiment.ch/metadata#>  
+PREFIX quantity: <http://data.nasa.gov/qudt/owl/quantity#>
+PREFIX qudt: <http://data.nasa.gov/qudt/owl/qudt#>
+PREFIX omgeo: <http://www.ontotext.com/owlim/geo#> 
+PREFIX propPressure: <http://sweet.jpl.nasa.gov/2.1/propPressure.owl#> 
+PREFIX propTemperature: <http://sweet.jpl.nasa.gov/2.1/propTemperature.owl#> 
+PREFIX propSpeed: <http://sweet.jpl.nasa.gov/2.1/propSpeed.owl#> 
+SELECT ?pressure ?sensor ?timestamp 
+#FROM NAMED STREAM swissex:WannengratSensors.srdf [NOW - 90 DAY] 
+WHERE 
+{ 
+	?obs     	a ssn:Observation;
+				ssn:observationResult ?result;
+				ssn:observationResultTime [time:xsdDateTime ?timestamp];
+				ssn:observedBy ?sensor;
+				ssn:observedProperty ?prop.  		
+	?result		ssn:hasValue ?obsresult.
+	?obsresult  qudt:numericValue ?pressure.	
+	?prop       a propSpeed:Speed.	
+#	?sensor	    ssn:onPlatform ?platform.
+#	?platform dul:hasLocation ?region. 
+#	?region swissex:hasGeometry ?link. 
+#    ?link omgeo:within(46.735 9.597 46.885 10.083) . 	
+	FILTER ( ?pressure > 0 )
+#	FILTER ( ?pressure < -10 )
+}
+		

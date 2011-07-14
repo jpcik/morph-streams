@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+
+<site-resources
+xmlns="http://snee.cs.manchester.ac.uk"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://snee.cs.manchester.ac.uk site-resources.xsd">
+
+
+<units>
+	<energy>JOULES</energy>
+	<memory>KILOBYTES</memory>
+</units>
+
+<sites>
+	<default>
+		<energy-stock>31320</energy-stock>
+		<ram>10</ram>
+		<flash-memory>48</flash-memory>
+	</default>
+
+
+	<site id="0">
+		<energy-stock>9999</energy-stock>  <!-- assume a tethered gateway node -->
+		<ram>10</ram>
+		<flash-memory>48</flash-memory>
+	</site>
+
+</sites>	
+	
+</site-resources>

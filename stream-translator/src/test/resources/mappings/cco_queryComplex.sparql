@@ -1,0 +1,17 @@
+PREFIX cd: <http://www.semsorgrid4env.eu/ontologies/CoastalDefences.owl#>							
+PREFIX sb: <http://www.w3.org/2009/SSN-XG/Ontologies/SensorBasis.owl#> 
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+SELECT  ?observedValue ?observedTime 
+FROM STREAM <http://www.semsorgrid4env/ccometeo.srdf>   
+WHERE 
+{ 
+ ?WaveObs a cd:Observation; 
+    cd:observationResult ?observedValue; 
+    cd:observationResultTime ?observedTime;
+    cd:observedProperty ?waveProperty;
+    cd:featureOfInterest ?waveFeature.   
+ ?waveFeature a cd:Feature;
+    cd:locatedInRegion cd:SouthEastEnglandCCO.
+ ?waveProperty a cd:WaveHeight. 
+ }
+		

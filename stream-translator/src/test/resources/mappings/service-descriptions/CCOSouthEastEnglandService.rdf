@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<rdf:RDF
+    xmlns:sd="http://www.w3.org/ns/sparql-service-description#"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:ssg="http://semsorgrid4env.eu/data/integration#"
+    xmlns:scovo="http://purl.org/NET/scovo#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:ex="http://example/"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns:void="http://rdfs.org/ns/void#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xml:base="file:/D:/jpc/src/d4.3/ontologies/serviceDescription.rdf" > 
+  <rdf:Description rdf:about="file:/D:/jpc/src/d4.3/ontologies/serviceDescription.rdf">
+    <owl:imports rdf:resource="http://xmlns.com/foaf/0.1/20050603.rdf"/>
+    <owl:imports rdf:resource="http://purl.org/dc/elements/1.1/"/>
+    <owl:imports rdf:resource="http://purl.org/NET/c4dm/event.owl"/>
+    <owl:imports rdf:resource="http://purl.org/dc/dcmitype/"/>
+    <owl:imports rdf:resource="http://purl.org/vocab/vann/"/>
+    <owl:imports rdf:resource="http://purl.org/NET/scovo"/>
+    <owl:imports rdf:resource="http://rdfs.org/ns/void"/>
+    <owl:imports rdf:resource="http://www.w3.org/ns/sparql-service-description"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Ontology"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://semsorgrid4env.eu/data/integration#CCOSouthEastEnglandWaveStream">
+    <sd:named rdf:datatype="http://www.w3.org/2001/XMLSchema#string">http://www.semsorgrid4env/ccometeo.srdf</sd:named>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://semsorgrid4env.eu/data/integration#CCOSouthEastEnglandIntegratedService">
+    <sd:supportedLanguage rdf:resource="http://semsorgrid4env.eu/data/integration#SPARQLStream"/>
+    <sd:url rdf:resource="http://forgy.dia.fi.upm.es:8080/iqs-0.0.2/services/SPARQL"/>
+    <sd:feature rdf:resource="http://www.w3.org/ns/sparql-service-description#DereferencesURIs"/>
+    <sd:defaultDatasetDescription rdf:resource="http://semsorgrid4env.eu/data/integration#CCOSouthEastEnglandWaveDataset"/>
+    <rdf:type rdf:resource="http://www.w3.org/ns/sparql-service-description#Service"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://semsorgrid4env.eu/data/integration#CCOSouthEastEnglandWaveDataset">
+    <void:vocabulary rdf:datatype="http://www.w3.org/2001/XMLSchema#string">http://www.semsorgrid4env.eu/ontologies/CoastalDefences.owl</void:vocabulary>
+    <void:vocabulary rdf:datatype="http://www.w3.org/2001/XMLSchema#string">http://www.semsorgrid4env.eu/ontologies/ObservationSource.owl</void:vocabulary>
+    <sd:namedGraph rdf:resource="http://semsorgrid4env.eu/data/integration#CCOSouthEastEnglandWaveStream"/>
+    <sd:defaultGraph rdf:nodeID="A0"/>
+    <rdf:type rdf:resource="http://www.w3.org/ns/sparql-service-description#Dataset"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://semsorgrid4env.eu/data/integration#SPARQLStream">
+    <rdf:type rdf:resource="http://www.w3.org/ns/sparql-service-description#Language"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="java:com.ldodds.sparql.Distance">
+    <rdf:type rdf:resource="http://www.w3.org/ns/sparql-service-description#ScalarFunction"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A1">
+    <scovo:dimension rdf:resource="http://rdfs.org/ns/void#numberOfTriples"/>
+    <rdf:value rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">100</rdf:value>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="A0">
+    <void:statItem rdf:nodeID="A1"/>
+  </rdf:Description>
+</rdf:RDF>
+
+<!-- Created with TopBraid Composer -->
