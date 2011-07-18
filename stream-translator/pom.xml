@@ -141,7 +141,7 @@
 		<dependency>
 			<groupId>uk.ac.manchester.cs.snee</groupId>
 			<artifactId>data-source-wsdair</artifactId>
-			<version>1.5.0</version>
+			<version>${snee.version}</version>
 			<scope>compile</scope>			
 		</dependency>
 		<dependency>
@@ -230,7 +230,7 @@
 		<dependency>
 			<groupId>eu.semsorgrid4env.service.integration</groupId>
 			<artifactId>integration-wsdl</artifactId>
-			<version>0.2.0-SNAPSHOT</version>
+			<version>0.2.0</version>
 		</dependency> 
   		<dependency>
 			<groupId>eu.semsorgrid4env.service.sds</groupId>
@@ -436,28 +436,6 @@
 			</snapshots>
 			<url>http://aldebaran.dia.fi.upm.es/artifactory/sstreams-snapshots-local</url>
 		</repository> 
-	 	<repository>
-			<id>ssg4env.internal</id>
-			<name>SSG4Env archiva repository</name>
-			<releases>
-			<enabled>true</enabled>
-			</releases>
-			<snapshots>
-			<enabled>true</enabled>
-			</snapshots>
-			<url>http://ssg4env.techideas.net:8180/archiva/repository/internal</url>
-		</repository>
-		<repository>
-			<id>ssg4env.snapshot</id>
-			<name>Archiva Managed Snapshot Repository</name>
-			<url>http://ssg4env.techideas.net:8180/archiva/repository/snapshots</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
 	    <!--<repository>
 			<id>jpc.internal</id>
 			<name>JPC repository</name>
@@ -511,7 +489,7 @@
 	</distributionManagement> 
 	<properties>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<snee.version>1.6.2-SNAPSHOT</snee.version>
+		<snee.version>1.6.2</snee.version>
 		<wsdl.location>${project.build.directory}/wsdl</wsdl.location>	
 		<cxf.version>2.2.8</cxf.version>			
 	</properties>
