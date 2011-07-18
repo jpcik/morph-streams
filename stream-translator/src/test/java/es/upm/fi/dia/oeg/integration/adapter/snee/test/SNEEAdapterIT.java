@@ -86,7 +86,7 @@ public class SNEEAdapterIT
 		SNEEAdapter.printResults(list);
 	}
 	
-	@Test//@Ignore
+	@Test@Ignore
 	public void testQueryBoscombe() throws QueryException, MalformedURLException, InterruptedException, SNEEException, SQLException, ExtentDoesNotExistException, SchemaMetadataException, InvalidResourceNameFault, DataResourceUnavailableFault, NotAuthorizedFault, ServiceBusyFault, URISyntaxException, MaximumTuplesExceededFault, InvalidPositionFault, InvalidCountFault, InvalidDatasetFormatFault
 	{
 		
