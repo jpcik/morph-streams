@@ -46,7 +46,6 @@ import com.hp.hpl.jena.sparql.syntax.TemplateTriple;
 import es.upm.fi.dia.oeg.r2o.plan.Attribute;
 import es.upm.fi.dia.oeg.sparqlstream.StreamQuery;
 import es.upm.fi.dia.oeg.integration.SourceAdapter;
-import es.upm.fi.dia.oeg.integration.adapter.gsn.GsnAdapter;
 import es.upm.fi.dia.oeg.integration.adapter.snee.SNEEAdapter;
 import es.upm.fi.dia.oeg.integration.adapter.ssg4env.SSG4EnvAdapter;
 import es.upm.fi.dia.oeg.integration.metadata.SourceType;
@@ -104,12 +103,29 @@ public class QueryExecutor
 	
 	public void init(String adapterId,Properties props) throws StreamAdapterException
 	{
+	
 		if (adapterId.equals("snee"))
 			adapter = new SNEEAdapter();
 		else if (adapterId.equals("ssg4e"))
 			adapter = new SSG4EnvAdapter();
 		else if (adapterId.equals("gsn"))
-			adapter = new GsnAdapter();
+		{
+			@SuppressWarnings("rawtypes")
+			Class theClass;
+			try {
+				theClass = Class.forName("es.upm.fi.dia.oeg.integration.adapter.gsn.GsnAdapter");
+			} catch (ClassNotFoundException e) {
+				throw new StreamAdapterException("Unable to initialize adapter class", e);
+			}
+			try {
+				adapter = (SourceAdapter) theClass.newInstance();
+			} catch (InstantiationException e) {
+				throw new StreamAdapterException("Unable to instantiate adapter class", e);
+
+			} catch (IllegalAccessException e) {
+				throw new StreamAdapterException("Unable to instatiate adapter class", e);
+			}
+		}
 		adapter.init(props);		
 		
 	}

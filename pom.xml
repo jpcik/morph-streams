@@ -24,5 +24,6 @@
   </dependencies>
   <modules>
   	<module>stream-translator</module>
+  	<module>semantic-streams-core</module>
   </modules>
 </project>

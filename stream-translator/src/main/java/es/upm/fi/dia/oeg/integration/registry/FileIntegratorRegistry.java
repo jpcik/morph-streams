@@ -95,7 +95,12 @@ public class FileIntegratorRegistry extends XMLIntegratorRegistry
 			if (mappingDocument.getLanguage().equals(MappingLanguage.R2RML))
 			{
 				R2RMLAdapter adapter = new R2RMLAdapter();
-				adapter.loadMapping(mappingDocument.getMapping());			
+				try {
+					adapter.loadMapping(mappingDocument.getMapping());
+				} catch (MetadataException e) {
+					throw new IntegratorRegistryException("Mapping invalid.",e);
+
+				}			
 				adapter.write(newUri);
 			}
 			else
