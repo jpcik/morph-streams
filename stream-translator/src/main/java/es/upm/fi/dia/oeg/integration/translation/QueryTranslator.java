@@ -47,7 +47,6 @@ import com.hp.hpl.jena.sparql.syntax.TemplateGroup;
 import com.hp.hpl.jena.sparql.syntax.TemplateTriple;
 import com.hp.hpl.jena.vocabulary.RDF;
 
-import es.upm.fi.dia.oeg.integration.adapter.gsn.GsnUrlQuery;
 import es.upm.fi.dia.oeg.integration.adapter.snee.SNEEqlQuery;
 import es.upm.fi.dia.oeg.integration.algebra.OpInterface;
 import es.upm.fi.dia.oeg.integration.algebra.OpJoin;
@@ -137,11 +136,25 @@ public class QueryTranslator
 		return transform(opNew);
 	}
 
-	public SourceQuery transform(OpInterface algebra)
+	public SourceQuery transform(OpInterface algebra) throws QueryTranslationException
 	{
 		SourceQuery resquery = null;
 		if (props.getProperty(QueryExecutor.QUERY_EXECUTOR_ADAPTER).equals("gsn"))
-			resquery = new GsnUrlQuery();
+		{
+			Class theClass;
+			try {
+				theClass = Class.forName("es.upm.fi.dia.oeg.integration.adapter.gsn.GsnUrlQuery");
+			} catch (ClassNotFoundException e) {
+				throw new QueryTranslationException("Unable to use adapter query", e);
+			}			
+			try {
+				resquery = (SourceQuery) theClass.newInstance();
+			} catch (InstantiationException e) {
+				throw new QueryTranslationException("Unable to instantiate query", e);
+			} catch (IllegalAccessException e) {
+				throw new QueryTranslationException("Unable to instantiate query", e);
+			}
+		}
 		else
 			resquery = new SNEEqlQuery();	
 		resquery.load(algebra);

@@ -50,6 +50,11 @@ public class QueryOptimizer
 			else if (join.getLeft() instanceof OpProjection &&
 				join.getRight() instanceof OpProjection)
 			{
+				if (join.hasEqualConditions())
+				{
+					OpInterface opnew = join.getLeft().merge(join.getRight(), join.getConditions());
+					return opnew;
+				}
 				/*
 				OpProjection pl = (OpProjection)join.getLeft();
 				OpProjection pr = (OpProjection)join.getRight();

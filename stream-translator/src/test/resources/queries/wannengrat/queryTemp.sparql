@@ -22,7 +22,7 @@ WHERE
 #	?instant	time:xsdDateTime ?wavets.
 	?result		ssn:hasValue ?value.
 	?value		qudt:numericValue ?waveheight.
- 	?feature	a ssn:FeatureOfInterest;
- 				cd:locatedInRegion regions:SouthEastEnglandCCO. 
+# 	?feature	a ssn:FeatureOfInterest;
+# 				cd:locatedInRegion regions:SouthEastEnglandCCO. 
 }
 		

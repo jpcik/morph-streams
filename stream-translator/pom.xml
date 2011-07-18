@@ -2,14 +2,24 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<parent>
+		<artifactId>semantic-streams</artifactId>
+		<groupId>es.upm.fi.oeg.integration</groupId>
+		<version>0.0.1</version>
+	</parent>
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>es.upm.fi.dia.oeg.integrator</groupId>
+	<groupId>es.upm.fi.oeg.integration</groupId>
 	<artifactId>stream-translator</artifactId>
 	<packaging>jar</packaging>
-	<version>0.1.6</version>
 	<name>Stream-translator</name>
+	<version>0.2.1</version>
 	<description>Translator from SPARQL-Stream to Streaming data queries</description>
 	<dependencies>
+	<dependency>
+	<groupId>es.upm.fi.oeg.integration</groupId>
+	<artifactId>semantic-streams-core</artifactId>
+	<version>0.0.1</version>
+	</dependency>
 		<dependency>
 			<groupId>org.apache.cayenne</groupId>
 			<artifactId>cayenne-nodeps</artifactId>
@@ -46,11 +56,12 @@
 			<artifactId>iri</artifactId>
 			<version>0.7</version>
 		</dependency>
+		<!-- 
 		<dependency>
 			<groupId>es.upm.fi.dia.oeg.sparql</groupId>
 			<artifactId>resultbindings</artifactId>
 			<version>0.0.1</version>
-		</dependency>
+		</dependency> -->
 		<dependency>
 			<groupId>uk.ac.manchester.cs.snee</groupId>
 			<artifactId>snee-compiler</artifactId>
@@ -242,7 +253,7 @@
      <artifactId>maven-resources-plugin</artifactId> 
      <version>2.5</version> 
 </plugin>
-			
+			<!-- 
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>javacc-maven-plugin</artifactId>
@@ -255,7 +266,7 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>
+			</plugin> -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
@@ -274,6 +285,7 @@
           			</execution>
         		</executions>
 			</plugin>
+			<!-- 
 			<plugin>
 				<groupId>org.apache.axis2</groupId>
 				<artifactId>axis2-wsdl2code-maven-plugin</artifactId>
@@ -288,11 +300,11 @@
                         <configuration>
                             <packageName>gsn.webservice.standard</packageName> 
                             <wsdlFile>src/main/wsdl/gsn/GSNWebService.wsdl</wsdlFile>
-                            <!-- <databindingName>xmlbeans</databindingName> -->
+                         
                         </configuration>
                     </execution>
                 </executions>
-			</plugin>
+			</plugin> -->
 						<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
