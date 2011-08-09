@@ -103,7 +103,7 @@
 		<dependency>
 			<groupId>es.upm.fi.dia.oeg.integrator</groupId>
 			<artifactId>morph</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>0.0.4-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
@@ -460,6 +460,30 @@
 			<url>http://java.freehep.org/maven2</url>
 			<!-- layout>legacy</layout -->
 		</repository>
+		
+		<repository>
+			<id>ssg4env.internal</id>
+			<name>Archiva Managed Internal Repository</name>
+			<url>http://ssg4env.techideas.net:8180/archiva/repository/internal</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>ssg4env.snapshot</id>
+			<name>Archiva Managed Snapshot Repository</name>
+			<url>http://ssg4env.techideas.net:8180/archiva/repository/snapshots</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+		
 	</repositories>
 	<reporting>
 		<plugins>
@@ -489,7 +513,7 @@
 	</distributionManagement> 
 	<properties>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<snee.version>1.6.2</snee.version>
+		<snee.version>1.6.4-SNAPSHOT</snee.version>
 		<wsdl.location>${project.build.directory}/wsdl</wsdl.location>	
 		<cxf.version>2.2.8</cxf.version>			
 	</properties>

@@ -40,6 +40,7 @@ import uk.ac.manchester.cs.snee.EvaluatorException;
 import uk.ac.manchester.cs.snee.evaluator.types.Output;
 import uk.ac.manchester.cs.snee.metadata.schema.ExtentDoesNotExistException;
 import uk.ac.manchester.cs.snee.metadata.schema.ExtentMetadata;
+import uk.ac.manchester.cs.snee.types.Duration;
 
 public class SNEEAdapter implements SourceAdapter, Observer
 {

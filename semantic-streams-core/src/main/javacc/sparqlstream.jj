@@ -376,6 +376,7 @@ WindowUnit GetUnit(): {WindowUnit timeunit;}
 {
   ( <MS>     {timeunit = WindowUnit.MILLISECOND;}
   | <S>  	 {timeunit = WindowUnit.SECOND;}  
+  | <SECOND> {timeunit = WindowUnit.SECOND;}  
   | <MINUTE> {timeunit = WindowUnit.MINUTE;}
   | <HOUR> 	 {timeunit = WindowUnit.HOUR;} 
   | <DAY> 	 {timeunit = WindowUnit.DAY;}
@@ -1246,6 +1247,7 @@ TOKEN [IGNORE_CASE] :
 // Timeunit
 | < MS: "MS" >
 | < S: "S" >
+| < SECOND: "second" >
 | < MINUTE: "minute" >
 | < HOUR: "hour" >
 | < DAY: "day" >

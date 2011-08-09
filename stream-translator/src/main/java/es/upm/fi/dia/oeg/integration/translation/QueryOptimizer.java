@@ -1,25 +1,21 @@
 package es.upm.fi.dia.oeg.integration.translation;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.Map.Entry;
 
-import org.apache.commons.lang.NotImplementedException;
 import org.apache.log4j.Logger;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.hp.hpl.jena.sparql.algebra.Op;
 
 import es.upm.fi.dia.oeg.integration.algebra.OpBinary;
 import es.upm.fi.dia.oeg.integration.algebra.OpInterface;
 import es.upm.fi.dia.oeg.integration.algebra.OpJoin;
 import es.upm.fi.dia.oeg.integration.algebra.OpMultiUnion;
 import es.upm.fi.dia.oeg.integration.algebra.OpProjection;
-import es.upm.fi.dia.oeg.integration.algebra.OpRelation;
 import es.upm.fi.dia.oeg.integration.algebra.OpSelection;
 import es.upm.fi.dia.oeg.integration.algebra.OpUnary;
 import es.upm.fi.dia.oeg.integration.algebra.OpUnion;

@@ -86,7 +86,7 @@ public class SNEEAdapterIT
 		SNEEAdapter.printResults(list);
 	}
 	
-	@Test@Ignore
+	@Test//@Ignore
 	public void testQueryBoscombe() throws QueryException, MalformedURLException, InterruptedException, SNEEException, SQLException, ExtentDoesNotExistException, SchemaMetadataException, InvalidResourceNameFault, DataResourceUnavailableFault, NotAuthorizedFault, ServiceBusyFault, URISyntaxException, MaximumTuplesExceededFault, InvalidPositionFault, InvalidCountFault, InvalidDatasetFormatFault
 	{
 		
@@ -114,9 +114,9 @@ public class SNEEAdapterIT
 
 		//adap.addPullSource("http://webgis1.geodata.soton.ac.uk:8080/dai/services/AccessServiceCoreDataAccessPT?wsdl", SourceType.WSDAIR);
 		//adap.addPullSource("http://webgis1.geodata.soton.ac.uk:8080/dai/services/AccessServiceAccessFactoryPT?wsdl",SourceType.SERVICE);
-		//adap.addPullSource("http://ssg4e.techideas.net:8180/ABP/services/PullStream?wsdl",SourceType.SERVICE);
+		adap.addPullSource("http://ssg4e.techideas.net:8180/ABP/services/PullStream?wsdl",SourceType.SERVICE);
 		//adap.addPullSource("http://ssg4e.techideas.net:8180/AIS/services/PullStream?wsdl",SourceType.SERVICE);
-		adap.addPullSource("http://webgis1.geodata.soton.ac.uk:8080/CCO/services/PullStream?wsdl",SourceType.SERVICE);
+		//adap.addPullSource("http://webgis1.geodata.soton.ac.uk:8080/CCO/services/PullStream?wsdl",SourceType.SERVICE);
 		//adap.addPullSource("http://localhost:8080/CCO/services/PullStream?wsdl",SourceType.SERVICE);
 		//adap.addPullSource("http://localhost:8080/CCO/services/PullStream?wsdl",SourceType.SERVICE);
 		}
@@ -134,14 +134,15 @@ public class SNEEAdapterIT
 		//adap.getDetails("shipdata_southampton");
 		//String queryString = " SELECT wind_gust_speed FROM envdata_southampton;";
 		//String queryString = " SELECT * FROM shipdata_southampton;";
-		String queryString = " SELECT Hs+100.4 as coso FROM envdata_milford;";
+		String queryString = " (SELECT * FROM envdata_chichesterharbour) UNION (SELECT * FROM envdata_southampton);";
+		//String queryString = " SELECT Hs+100.4 as coso FROM envdata_milford;";
 		//String queryString = " SELECT * FROM rtdata_goodwin;";
 		String id = adap.invokeQueryFactory(queryString , 5);
 		logger.debug("Query id "+id);
-		Thread.sleep(10000);
+		Thread.sleep(5000);
 		
 		List<ResultSet> list =adap.pullNewestData(id);
-		//Thread.sleep(1000000);
+		Thread.sleep(5000);
 		
 		list =adap.pullNewestData(id);
 		SNEEAdapter.printResults(list);

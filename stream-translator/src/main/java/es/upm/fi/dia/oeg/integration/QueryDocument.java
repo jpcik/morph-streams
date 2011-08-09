@@ -4,6 +4,11 @@ public class QueryDocument
 {
 	private String queryString;
 
+	public QueryDocument(String queryString)
+	{
+		setQueryString(queryString);
+	}
+	
 	public String getQueryString() {
 		return queryString;
 	}

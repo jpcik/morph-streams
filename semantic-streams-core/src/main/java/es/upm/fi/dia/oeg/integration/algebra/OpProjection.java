@@ -164,34 +164,6 @@ public class OpProjection extends OpUnary
 
 
 	
-	private String removeColumn(String template)
-	{
-		//String res = template;
-		while (template.indexOf('{')!=-1)
-		{
-			int i = template.indexOf('{');
-			int f = template.indexOf('}');
-			template = template.substring(0,i)+
-					template.substring(f+1,template.length());					
-		}
-		return template;
-	}
-	
-	public void add(OpProjection proj)
-	{
-		for (Map.Entry<String, Xpr> entry: proj.getExpressions().entrySet())
-		{			
-			if (!this.getExpressions().containsKey(entry.getKey()))
-			{
-				this.getExpressions().put(entry.getKey(), entry.getValue());
-			}
-		}
-		if (this.getSubOp() == null)
-		{
-			this.setSubOp(proj.copyOp().getSubOp());
-		}
-	}
-	
 	public OpInterface merge(OpProjection proj,Collection<Xpr> xprs)
 	{
 		logger.debug("Merging projection: "+this +" and "+proj);
@@ -209,6 +181,10 @@ public class OpProjection extends OpUnary
 			//logger.debug(var1+":"+removeColumn(var1.getModifier()));
 			if (var1.getModifier()!=null && 
 					!removeColumn(var1.getModifier()).equals(removeColumn(var2.getModifier())))
+				return null;
+			else if (var1.getModifier()!=null && 
+					removeColumn(var1.getModifier()).equals(removeColumn(var2.getModifier())) &&
+					!getRelation().getExtentName().equals(proj.getRelation().getExtentName()))
 				return null;
 			else if (this.getRelation().getExtentName().equals(proj.getRelation().getExtentName()))
 			{				
@@ -278,6 +254,34 @@ public class OpProjection extends OpUnary
 		
 		//logger.debug("Merged projection: "+this);
 		return this;
+	}
+
+	private String removeColumn(String template)
+	{
+		//String res = template;
+		while (template.indexOf('{')!=-1)
+		{
+			int i = template.indexOf('{');
+			int f = template.indexOf('}');
+			template = template.substring(0,i)+
+					template.substring(f+1,template.length());					
+		}
+		return template;
+	}
+	
+	public void add(OpProjection proj)
+	{
+		for (Map.Entry<String, Xpr> entry: proj.getExpressions().entrySet())
+		{			
+			if (!this.getExpressions().containsKey(entry.getKey()))
+			{
+				this.getExpressions().put(entry.getKey(), entry.getValue());
+			}
+		}
+		if (this.getSubOp() == null)
+		{
+			this.setSubOp(proj.copyOp().getSubOp());
+		}
 	}
 	
 	@Override

@@ -8,6 +8,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import es.upm.fi.dia.oeg.common.ParameterUtils;
+import es.upm.fi.dia.oeg.common.Utils;
 import es.upm.fi.dia.oeg.integration.DataSourceException;
 import es.upm.fi.dia.oeg.integration.IntegratorConfigurationException;
 import es.upm.fi.dia.oeg.integration.QueryDocument;
@@ -46,8 +47,7 @@ public class SemanticIntegratorSSG4EnvIT extends QueryTestBase
 		String dataResourceName;
 
 		dataResourceName = "urn:ssg4e:iqs:GeneratorWave";
-		QueryDocument queryDoc = new QueryDocument();
-		queryDoc.setQueryString(testQuery);
+		QueryDocument queryDoc = new QueryDocument(testQuery);
 		logger.info(queryDoc.getQueryString());
 		PullDataSourceMetadata pullMD =  si.pullQueryFactory(dataResourceName, queryDoc );
 		logger.info("Query identifier:"+ pullMD.getQueryId()+" - "+pullMD.getSourceName());
@@ -59,7 +59,7 @@ public class SemanticIntegratorSSG4EnvIT extends QueryTestBase
 		ResponseDocument resp = null;
 		
 		resp = si.pullData(pullMD.getSourceName());
-		printSparqlResult(resp.getResultSet());
+		Utils.printSparqlResult(resp.getResultSet());
 		/*
 		Thread.sleep(10000);
 		resp = si.pullData(pullMD.getSourceName());

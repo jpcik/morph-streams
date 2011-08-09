@@ -96,7 +96,7 @@ public class SSG4EnvAdapter extends EasyMockSupport implements SourceAdapter
 		private String defaultIntegrationLocation = null;
 		private static final String DEFAULT_PULL_LOCATION = "integrator.queryexecutor.adapter.ssg4e.pull";
 		private static final String DEFAULT_QUERY_LOCATION = "integrator.queryexecutor.adapter.ssg4e.query";
-		private static final String DEFAULT_INTEGRATION_LOCATION = "integration.queryexecutor.adapter.ssg4e.integration";
+		private static final String DEFAULT_INTEGRATION_LOCATION = "integrator.queryexecutor.adapter.ssg4e.integration";
 		
 		private RDFDatatype toRDFDatatype(String datatype)
 		{
@@ -133,7 +133,7 @@ public class SSG4EnvAdapter extends EasyMockSupport implements SourceAdapter
 			URL wsdlURLintegration = null;
 			try
 			{
-				wsdlURLintegration = new URL(url);
+				wsdlURLintegration = new URL(defaultIntegrationLocation);
 			} catch (MalformedURLException e1)
 			{
 				e1.printStackTrace();

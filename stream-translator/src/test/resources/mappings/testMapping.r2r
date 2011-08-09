@@ -38,7 +38,7 @@
     				 rr:class ssg:Observation; rr:graph ssg:ccometeo.srdf . 
 
 :milfordTable rr:tableName "envdata_milford";
-	morph:uniqueIndex "wavets".
+	morph:uniqueIndex "timestamp".
 
 :milfordSensorPOMap rr:predicateMap [ rr:predicate ssg:measuredBy ]; 
       				rr:objectMap    [ rr:object ssg:MilfordSensor ].
@@ -58,7 +58,7 @@
       		   
 :MilfordWaveObservation   a rr:TriplesMap;	
     rr:logicalTable :milfordTable;
-    rr:subjectMap [ rr:template "http://semsorgrid4env.eu/ns#Observation/WaveHeight/CCO/Milford{DateTime}";
+    rr:subjectMap [ rr:template "http://semsorgrid4env.eu/ns#Observation/WaveHeight/CCO{DateTime}";
       				rr:class ssg:Observation; rr:graph ssg:ccometeo.srdf ];
     rr:predicateObjectMap :waveObsProp,:waveObsResult,:waveObsTime,:waveObsLat,:waveObsLon,:milfordSensorPOMap;
     rr:refPredicateObjectMap :waveFoISea;
@@ -85,7 +85,7 @@
  
  :FolkestoneWaveObservation   a rr:TriplesMap;
     rr:logicalTable [ rr:tableName "envdata_folkestone"];
-    rr:subjectMap [ rr:template "http://semsorgrid4env.eu/ns#Observation/WaveHeight/CCO/Folkestone{DateTime}";
+    rr:subjectMap [ rr:template "http://semsorgrid4env.eu/ns#Observation/WaveHeight/CCO{DateTime}";
       rr:class ssg:Observation; rr:graph ssg:ccometeo.srdf ];	
     rr:predicateObjectMap :waveObsResult;
     rr:predicateObjectMap :waveObsTime,:waveObsLat,:waveObsLon;
