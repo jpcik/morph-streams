@@ -33,5 +33,12 @@ uri="http://semsorgrid4env.eu/integratedSources/GeneratorCCOWave">
 </virtualSource>
 
 
+<virtualSource mappingUri="ssg4env.ttl" mappingName="ssg4env" 
+name="urn:ssg4e:iqs:Evaluator" 
+uri="http://semsorgrid4env.eu/integratedSources/Evaluator">
+	<dataSource name="Generator source" 
+	location="udp://localhost/TupleGenerator"/>
+</virtualSource>
+
 </virtualSources>
 </mappings>

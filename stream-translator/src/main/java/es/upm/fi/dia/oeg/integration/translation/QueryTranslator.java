@@ -547,7 +547,8 @@ public class QueryTranslator
 			union = new OpMultiUnion("multiunion");
 			OpProjection proj = (OpProjection)left;
 
-			union.getChildren().put(proj.getId(),proj);//+proj.getRelation().getExtentName(), proj);
+			union.getChildren().put(proj.getId()+proj.getRelation().getExtentName(),proj);//+proj.getRelation().getExtentName(), proj);
+			
 			Multimap<String,String> map = HashMultimap.create();
 			
 			map.put(proj.getId(), proj.getId()+proj.getRelation().getExtentName());
@@ -563,7 +564,8 @@ public class QueryTranslator
 		OpProjection proj = (OpProjection)right; 
 		if (proj.getId()==null)
 			logger.debug("is null"+ proj);
-		union.getChildren().put(proj.getId(),proj);//+proj.getRelation().getExtentName(), proj);
+		union.getChildren().put(proj.getId()+proj.getRelation().getExtentName(),proj);//+proj.getRelation().getExtentName(), proj);
+		
 		Multimap<String,String> map = union.index.get(proj.triple.getSubject().getName());
 		if (map ==null)
 		{	map = HashMultimap.create();				

@@ -32,6 +32,7 @@ import uk.ac.manchester.cs.snee.metadata.source.sensornet.TopologyReaderExceptio
 import uk.ac.manchester.cs.snee.sncb.SNCBException;
 
 import es.upm.fi.dia.oeg.common.ParameterUtils;
+import es.upm.fi.dia.oeg.common.Utils;
 import es.upm.fi.dia.oeg.integration.DataSourceException;
 import es.upm.fi.dia.oeg.integration.IntegratorConfigurationException;
 import es.upm.fi.dia.oeg.integration.QueryDocument;
@@ -130,8 +131,7 @@ public class SemanticIntegratorIT extends SemanticIntegratorTest
 			dataResourceName = "urn:ssg4e:iqs:GeneratorWave";
 			//QueryExecutor qe = QueryExecutor.getInstance(props);
 			//qe.addSource("file:wsdl/pull_stream_service.wsdl");
-		QueryDocument queryDoc = new QueryDocument();
-		queryDoc.setQueryString(testConstructSimple);
+		QueryDocument queryDoc = new QueryDocument(testConstructSimple);
 		logger.info(queryDoc.getQueryString());
 		PullDataSourceMetadata pullMD =  si.pullQueryFactory(dataResourceName, queryDoc );
 		logger.info("Query identifier:"+ pullMD.getQueryId()+" - "+pullMD.getSourceName());
@@ -154,8 +154,7 @@ Thread.sleep(10000);
 	public void testPullConstructQueryFactory() throws IntegratorRegistryException, QueryException, InterruptedException, InvalidR2RDocumentException, InvalidR2RLocationException, DataSourceException, IntegratorConfigurationException
 	{
 		String dataResourceName = "urn:ssg4e:iqs:GeneratorWave";
-		QueryDocument queryDoc = new QueryDocument();
-		queryDoc.setQueryString(testConstruct);
+		QueryDocument queryDoc = new QueryDocument(testConstruct);
 		logger.info(queryDoc.getQueryString());
 		PullDataSourceMetadata pullMD =  si.pullQueryFactory(dataResourceName, queryDoc );
 		logger.info("Query identifier:"+ pullMD.getQueryId()+" - "+pullMD.getSourceName());
@@ -174,8 +173,7 @@ Thread.sleep(10000);
 	public void testPullConstructTideQueryFactory() throws IntegratorRegistryException, QueryException, InterruptedException, InvalidR2RDocumentException, InvalidR2RLocationException, DataSourceException, IntegratorConfigurationException
 	{
 		String dataResourceName = "urn:ssg4e:iqs:GeneratorWave";
-		QueryDocument queryDoc = new QueryDocument();
-		queryDoc.setQueryString(testConstructTide);
+		QueryDocument queryDoc = new QueryDocument(testConstructTide);
 		logger.info(queryDoc.getQueryString());
 		PullDataSourceMetadata pullMD =  si.pullQueryFactory(dataResourceName, queryDoc );
 		logger.info("Query identifier:"+ pullMD.getQueryId()+" - "+pullMD.getSourceName());
@@ -196,8 +194,7 @@ Thread.sleep(10000);
 		String dataResourceName;
 
 		dataResourceName = "urn:ssg4e:iqs:GeneratorWave";
-		QueryDocument queryDoc = new QueryDocument();
-		queryDoc.setQueryString(testQuery);
+		QueryDocument queryDoc = new QueryDocument(testQuery);
 		logger.info(queryDoc.getQueryString());
 		PullDataSourceMetadata pullMD =  si.pullQueryFactory(dataResourceName, queryDoc );
 		logger.info("Query identifier:"+ pullMD.getQueryId()+" - "+pullMD.getSourceName());
@@ -209,7 +206,7 @@ Thread.sleep(10000);
 		ResponseDocument resp = null;
 		
 		resp = si.pullData(pullMD.getSourceName());
-		printSparqlResult(resp.getResultSet());
+		Utils.printSparqlResult(resp.getResultSet());
 		/*
 		Thread.sleep(10000);
 		resp = si.pullData(pullMD.getSourceName());
@@ -227,8 +224,7 @@ Thread.sleep(10000);
 		String dataResourceName;
 
 		dataResourceName = "urn:ssg4e:iqs:GeneratorWave";
-		QueryDocument queryDoc = new QueryDocument();
-		queryDoc.setQueryString(testQueryJoin);
+		QueryDocument queryDoc = new QueryDocument(testQueryJoin);
 		logger.info(queryDoc.getQueryString());
 		PullDataSourceMetadata pullMD =  si.pullQueryFactory(dataResourceName, queryDoc );
 		logger.info("Query identifier:"+ pullMD.getQueryId()+" - "+pullMD.getSourceName());
@@ -238,7 +234,7 @@ Thread.sleep(10000);
 		ResponseDocument resp = null;
 		
 		resp = si.pullData(pullMD.getSourceName());
-		printSparqlResult(resp.getResultSet());
+		Utils.printSparqlResult(resp.getResultSet());
 		
 	}
 
@@ -248,8 +244,7 @@ Thread.sleep(10000);
 		String dataResourceName;
 
 		dataResourceName = "urn:ssg4e:iqs:GeneratorWave";
-		QueryDocument queryDoc = new QueryDocument();
-		queryDoc.setQueryString(testConstructJoin);
+		QueryDocument queryDoc = new QueryDocument(testConstructJoin);
 		logger.info(queryDoc.getQueryString());
 		PullDataSourceMetadata pullMD =  si.pullQueryFactory(dataResourceName, queryDoc );
 		logger.info("Query identifier:"+ pullMD.getQueryId()+" - "+pullMD.getSourceName());
@@ -270,8 +265,7 @@ Thread.sleep(10000);
 		String dataResourceName;
 
 		dataResourceName = "urn:ssg4e:iqs:GeneratorWave";
-		QueryDocument queryDoc = new QueryDocument();
-		queryDoc.setQueryString(testQuerySimple);
+		QueryDocument queryDoc = new QueryDocument(testQuerySimple);
 		logger.info(queryDoc.getQueryString());
 		PullDataSourceMetadata pullMD =  si.pullQueryFactory(dataResourceName, queryDoc );
 		logger.info("Query identifier:"+ pullMD.getQueryId()+" - "+pullMD.getSourceName());
@@ -283,7 +277,7 @@ Thread.sleep(10000);
 		ResponseDocument resp = null;
 		
 		resp = si.pullData(pullMD.getSourceName());
-		printSparqlResult(resp.getResultSet());
+		Utils.printSparqlResult(resp.getResultSet());
 		
 		/*
 		Thread.sleep(10000);
@@ -302,8 +296,7 @@ Thread.sleep(10000);
 		String dataResourceName;
 
 		dataResourceName = "urn:ssg4e:iqs:GeneratorCCOWave";
-		QueryDocument queryDoc = new QueryDocument();
-		queryDoc.setQueryString(queryCCOWaveHeight);
+		QueryDocument queryDoc = new QueryDocument(queryCCOWaveHeight);
 		logger.info(queryDoc.getQueryString());
 		PullDataSourceMetadata pullMD =  si.pullQueryFactory(dataResourceName, queryDoc );
 		logger.info("Query identifier:"+ pullMD.getQueryId()+" - "+pullMD.getSourceName());
@@ -315,7 +308,7 @@ Thread.sleep(10000);
 		ResponseDocument resp = null;
 		
 		resp = si.pullData(pullMD.getSourceName());
-		printSparqlResult(resp.getResultSet());
+		Utils.printSparqlResult(resp.getResultSet());
 		/*
 		Thread.sleep(10000);
 		resp = si.pullData(pullMD.getSourceName());
@@ -333,8 +326,7 @@ Thread.sleep(10000);
 		String dataResourceName;
 
 		dataResourceName = "urn:ssg4e:iqs:GeneratorCCOWave";
-		QueryDocument queryDoc = new QueryDocument();
-		queryDoc.setQueryString(constructCCOWaveHeight);
+		QueryDocument queryDoc = new QueryDocument(constructCCOWaveHeight);
 		logger.info(queryDoc.getQueryString());
 		PullDataSourceMetadata pullMD =  si.pullQueryFactory(dataResourceName, queryDoc );
 		logger.info("Query identifier:"+ pullMD.getQueryId()+" - "+pullMD.getSourceName());

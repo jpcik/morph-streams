@@ -107,9 +107,9 @@ public class OpBinary implements OpInterface
 	
 	public Map<String,Xpr> getVarsNull(OpInterface op)
 	{
-/*		if (op==null)
+		if (op==null)
 			return Maps.newHashMap();
-		else*/
+		else
 			return op.getVars();
 	}
 	

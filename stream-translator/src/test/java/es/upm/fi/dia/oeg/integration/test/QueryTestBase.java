@@ -72,23 +72,5 @@ public abstract class QueryTestBase
 		String val = ParameterUtils.loadAsString(QueryTestBase.class.getClassLoader().getResource(path));
 		return val;
 	}
-	
-	protected void printSparqlResult(Sparql sparql)
-	{
-		   
-	 		try {
-	 			JAXBContext jax = JAXBContext.newInstance(Sparql.class) ;
-	 			Marshaller m = jax.createMarshaller();
-	 			StringWriter sr = new StringWriter();
-	 			m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-	 			m.marshal(sparql,sr);
-	 			logger.info(sr.toString());
 
-	 			
-	 		} catch (JAXBException e) {
-	 			// TODO Auto-generated catch block
-	 			e.printStackTrace();
-	 		}         
-	}
-	
 }

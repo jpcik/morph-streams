@@ -5,12 +5,14 @@ import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.w3.sparql.results.Sparql;
 
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.hp.hpl.jena.rdf.model.Model;
 
@@ -46,6 +48,7 @@ public class SemanticIntegrator
 	private IntegratorRegistry reg;
 	private QueryExecutor exe;
 	private Set<String> registeredSources = Sets.newHashSet();
+	private Map<String,SourceQuery> pullResourceQueries = Maps.newHashMap();
 	
 	public SemanticIntegrator(Properties props) throws IntegratorRegistryException, IntegratorConfigurationException
 	{	
@@ -102,8 +105,7 @@ public class SemanticIntegrator
 				if (retrieveIntegratedDataSource(pullDs.getVirtualSorceName())!=null)
 				{
 					removePullDataSource(pullDs.getSourceName());
-					QueryDocument queryDoc = new QueryDocument();
-					queryDoc.setQueryString(pullDs.getQuery());
+					QueryDocument queryDoc = new QueryDocument(pullDs.getQuery());
 					try
 					{
 						pullQueryFactory(pullDs.getVirtualSorceName(), queryDoc);
@@ -266,6 +268,7 @@ public class SemanticIntegrator
 		{
 			throw new QueryException("Query exception "+e.getMessage(),e);
 		}
+		pullResourceQueries.put(ds.getSourceName(), query);
 		return ds;
 		
 		
@@ -331,10 +334,15 @@ public class SemanticIntegrator
 		logger.info("Received query: "+pullData.getQuery());
 		IntegratedDataSourceMetadata is = retrieveIntegratedDataSource(pullData.getVirtualSorceName());
 		//Sparql s = exe.executeSNEEqlFactory(pullData.getQueryId(), qt.getProjectList(pullData.getSneeqlQuery()));
-		OpInterface op = qt.translateToAlgebra(pullData.getQuery(), is.getMapping().getUri());
-
-		SourceQuery sQuery = qt.transform(op);
 		
+		SourceQuery sQuery = null;
+		if (pullResourceQueries.containsKey(dataResourceName))
+			sQuery = pullResourceQueries.get(dataResourceName);
+		else
+		{
+			OpInterface op = qt.translateToAlgebra(pullData.getQuery(), is.getMapping().getUri());
+			sQuery = qt.transform(op);
+		}
 		//Sparql s = exe.pullData(pullData.getQueryId(), qt.getProjectList(pullData.getSneeqlQuery()));
 		StreamQuery query = (StreamQuery) StreamQueryFactory.create(pullData.getQuery());
 		if (query.getConstructTemplate() != null)

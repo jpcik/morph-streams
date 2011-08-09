@@ -438,7 +438,7 @@ public class SNEEqlQuery extends QueryBase implements SourceQuery
 			}
 			else
 				throw new NotImplementedException("Nested join queries not supported in target language");
-			String select = "SELECT "+serializeSelect(opLeft,"",true)+ ", "+serializeSelect(opRight,"2",true) +
+			String select = "SELECT RSTREAM "+serializeSelect(opLeft,"",true)+ ", "+serializeSelect(opRight,"2",true) +
 				" FROM "+build(opLeft.getSubOp())+","+build(opRight.getSubOp());
 			if (!join.getConditions().isEmpty())
 			{			

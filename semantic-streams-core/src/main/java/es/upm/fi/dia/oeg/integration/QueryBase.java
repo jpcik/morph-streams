@@ -3,8 +3,6 @@ package es.upm.fi.dia.oeg.integration;
 import java.util.HashMap;
 import java.util.Map;
 
-
-import es.upm.fi.dia.oeg.integration.algebra.OpBinary;
 import es.upm.fi.dia.oeg.integration.algebra.OpInterface;
 import es.upm.fi.dia.oeg.integration.algebra.OpJoin;
 import es.upm.fi.dia.oeg.integration.algebra.OpMultiUnion;
@@ -109,12 +107,12 @@ public abstract class QueryBase implements SourceQuery
 		}
 		else if (op instanceof OpWindow)
 		{
-			OpWindow win = (OpWindow)op;
+			//OpWindow win = (OpWindow)op;
 			//return win.getExtentName()+ serializeWindowSpec(win.getWindowSpec());
 		}
 		else if (op instanceof OpRelation)
 		{
-			OpRelation rel = (OpRelation)op;
+			//OpRelation rel = (OpRelation)op;
 			//return rel.getExtentName();
 		}
 		//else if (op.getName().equals("join"))

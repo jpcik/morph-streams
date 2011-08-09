@@ -384,6 +384,7 @@ public class QueryExecutor
 		
 		for (java.sql.ResultSet o : results)
 		{	
+			logger.info("some result");
 			ResultSetMetaData metaData;
 			Map<String,String> colIds = new HashMap<String,String>();
 			Map<Integer,String> extentIds = Maps.newHashMap();
