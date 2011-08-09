@@ -23,7 +23,8 @@
     </dependency>
   </dependencies>
   <modules>
-  	<module>stream-translator</module>
   	<module>semantic-streams-core</module>
+  	<module>stream-translator</module>
+  	<module>semantic-gsn</module>
   </modules>
 </project>
