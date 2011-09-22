@@ -14,9 +14,11 @@ import org.apache.log4j.PropertyConfigurator;
 import org.w3.sparql.results.Sparql;
 
 import es.upm.fi.dia.oeg.common.ParameterUtils;
+import static es.upm.fi.dia.oeg.common.ParameterUtils.*;
 
 public abstract class QueryTestBase
 {
+	/*
 	protected static String queryCCO="";
 	protected static String queryCCOComplex="";
 	protected static String queryCCOComplexTide = "";
@@ -32,18 +34,24 @@ public abstract class QueryTestBase
 	protected static String testStreamGraphSimple="";
 	
 	protected static String queryCCOWaveHeight="";
-	protected static String constructCCOWaveHeight="";
-	protected static String queryWannengratTemp="";
-	protected static String queryWannengratMetadataTemp="";
-	protected static String queryWannengratMetadataTempRemote="";
-	protected static String constructWannengratTemp="";
-	protected static String constructWannengratMetadataTemp="";
+	protected static String constructCCOWaveHeight="";*/
+
+	
+	protected static String queryWannengratTemp=loadQuery("queries/wannengrat/queryTemp.sparql");
+	protected static String queryWannengratMetadataTemp=loadQuery("queries/wannengrat/queryMetadataTemp.sparql");
+	protected static String queryWannengratMetadataTempRemote=loadQuery("queries/wannengrat/queryMetadataTempRemote.sparql");
+	protected static String constructWannengratTemp=loadQuery("queries/wannengrat/constructTemp.sparql");
+	protected static String constructWannengratMetadataTemp=loadQuery("queries/wannengrat/constructMetadataTemp.sparql");
+
+
+	
 	protected static Logger logger = Logger.getLogger(QueryTestBase.class.getName());
 
 	protected static void init() throws URISyntaxException, IOException
 	{
 		PropertyConfigurator.configure(QueryTestBase.class.getClassLoader().getResource("config/log4j.properties"));
 
+		/*
 		queryCCO= ParameterUtils.loadAsString(QueryTestBase.class.getClassLoader().getResource("mappings/cco_query.sparql"));
 		queryCCOComplex= ParameterUtils.loadAsString(QueryTestBase.class.getClassLoader().getResource("mappings/cco_queryComplex.sparql"));
 		queryCCOComplexTide= ParameterUtils.loadAsString(QueryTestBase.class.getClassLoader().getResource("mappings/cco_queryComplexWind.sparql"));
@@ -60,12 +68,7 @@ public abstract class QueryTestBase
 		
 		queryCCOWaveHeight = ParameterUtils.loadAsString(QueryTestBase.class.getClassLoader().getResource("queries/queryCCOWaveHeight.sparql"));		
 		constructCCOWaveHeight = ParameterUtils.loadAsString(QueryTestBase.class.getClassLoader().getResource("queries/constructCCOWaveHeight.sparql"));
-		queryWannengratTemp = ParameterUtils.loadAsString(QueryTestBase.class.getClassLoader().getResource("queries/wannengrat/queryTemp.sparql"));		
-		queryWannengratMetadataTemp = ParameterUtils.loadAsString(QueryTestBase.class.getClassLoader().getResource("queries/wannengrat/queryMetadataTemp.sparql"));		
-		queryWannengratMetadataTempRemote = ParameterUtils.loadAsString(QueryTestBase.class.getClassLoader().getResource("queries/wannengrat/queryMetadataTempRemote.sparql"));		
-		constructWannengratTemp = ParameterUtils.loadAsString(QueryTestBase.class.getClassLoader().getResource("queries/wannengrat/constructTemp.sparql"));		
-		constructWannengratMetadataTemp = ParameterUtils.loadAsString(QueryTestBase.class.getClassLoader().getResource("queries/wannengrat/constructMetadataTemp.sparql"));		
-
+*/
 	}
 	
 	public String loadString(String path) throws IOException, URISyntaxException

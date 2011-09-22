@@ -305,4 +305,16 @@ public class GsnQuery extends QueryBase implements SourceQuery
 	{
 		return getConditions(operator).toArray(new StandardCriterion[0]);
 	}
+
+	@Override
+	public void setOriginalQuery(String sparqlQuery) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String getOriginalQuery() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

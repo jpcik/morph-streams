@@ -39,7 +39,12 @@ public class GsnResultSet implements ResultSet
 {
 
 	protected static Logger logger = Logger.getLogger(GsnResultSet.class.getName());
-
+	private GSNWebService_QueryResult[] results;
+	private Map<String,Object> row;
+	private int current;
+	private int currentStream;
+	private GsnQuery query;
+	
 	public GsnResultSet(GSNWebService_QueryResult[] queryResults,GsnQuery gsnQuery)
 	{
 		row = new HashMap<String,Object>();
@@ -49,12 +54,7 @@ public class GsnResultSet implements ResultSet
 		current = -1;
 	}
 	
-	private GSNWebService_QueryResult[] results;
-	private Map<String,Object> row;
-	private int current;
-	private int currentStream;
-	private GsnQuery query;
-	
+
 	@Override
 	public boolean next() throws SQLException
 	{
