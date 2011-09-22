@@ -8,6 +8,9 @@ import es.upm.fi.dia.oeg.r2o.plan.Attribute;
 
 public interface SourceQuery
 {
+	void setOriginalQuery(String sparqlQuery);
+	String getOriginalQuery();
+	
 	void load(OpInterface op);
 
 	String serializeQuery();
