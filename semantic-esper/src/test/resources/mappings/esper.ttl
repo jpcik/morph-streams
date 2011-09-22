@@ -1,0 +1,95 @@
+@prefix rr: <http://www.w3.org/ns/r2rml#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix ssg: <http://semsorgrid4env.eu/ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix ssn: <http://purl.oclc.org/NET/ssnx/ssn#> .
+@prefix swissex: <http://swiss-experiment.ch/metadata#> .
+@prefix oeg: <http://oeg-upm.net#> .
+@prefix cd:  <http://www.semsorgrid4env.eu/ontologies/CoastalDefences.owl#> .
+@prefix dul: <http://www.loa-cnr.it/ontologies/DUL.owl#> .
+@prefix time: <http://www.w3.org/2006/time#> .
+@prefix regions: <http://www.semsorgrid4env.eu/ontologies/AdditionalRegions.owl#> .
+@prefix morph: <http://es.upm.fi.dia.oeg/morph#> .
+@prefix quantity: <http://data.nasa.gov/qudt/owl/quantity#> .
+@prefix qudt: <http://data.nasa.gov/qudt/owl/qudt#> .
+@prefix void: <http://rdfs.org/ns/void#>.
+@prefix propWindSpeed: <http://sweet.jpl.nasa.gov/2.1/propWindSpeed.owl#>.
+@prefix : <http://es.upm.fi.dia.oeg/R2RMapping#> . 
+
+
+:observedByPred rr:predicate ssn:observedBy.
+      						
+:obsProp   rr:predicateMap [ rr:predicate ssn:observedProperty ]; 
+      	   rr:objectMap    [ rr:object propWindSpeed:WindSpeed ].      		   
+      		        		       
+
+:29006Result rr:refPredicateMap [ rr:predicate ssn:observationResult ]; 
+      		 rr:refObjectMap    [ rr:parentTriplesMap :29006Output; rr:joinCondition "" ].
+      		        	      		       	      		        		        
+:29006Output a rr:TriplesMap;
+	rr:logicalTable [rr:tableName "Stream"];
+	rr:subjectMap [ rr:template "http://oeg-upm.net#29006/Output/WindSpeed/{time}";
+					rr:class ssn:SensorOutput; rr:graph oeg:PachubeSensors.srdf ];
+	rr:refPredicateObjectMap [ rr:refPredicateMap [ rr:predicate ssn:hasValue ];
+							   rr:refObjectMap	  [ rr:parentTriplesMap :29006Value; rr:joinCondition "" ] ];	   		  
+.      		   
+:29006Value a rr:TriplesMap;
+	rr:logicalTable [rr:tableName "Stream"];
+	rr:subjectMap [ rr:template "http://oeg-upm.net#29006/ObservationValue/WindSpeed/{time}";	
+				    rr:class ssn:ObservationValue; rr:graph oeg:PachubeSensors.srdf ];
+	rr:predicateObjectMap [ rr:predicateMap [ rr:predicate qudt:numericValue ];
+							rr:objectMap	[ rr:column "windspeed" ] ];     		   
+.		   
+      
+:29006Observation   a rr:TriplesMap;
+	rr:logicalTable [rr:tableName "Stream"];
+    rr:subjectMap [	rr:template "http://oeg-upm.net#29006/Observation/WindSpeed/{time}";  
+    				rr:class ssn:Observation; rr:graph oeg:PachubeSensors.srdf ];
+    rr:refPredicateObjectMap :29006Result;
+    rr:predicateObjectMap :obsProp;
+    rr:predicateObjectMap  [ rr:predicateMap [ rr:predicate ssn:observedBy ];
+    					     rr:objectMap    [ rr:object oeg:29006Sensor ]];
+    rr:refPredicateObjectMap :29006Time
+ .
+
+:29006Time  rr:refPredicateMap [ rr:predicate ssn:observationResultTime ];
+    		rr:refObjectMap	   [ rr:parentTriplesMap :29006Instant; rr:joinCondition "" ].
+
+:29006Instant a rr:TriplesMap;
+	rr:logicalTable [rr:tableName "Stream"];
+	rr:subjectMap [ rr:template "http://oeg-upm.net#29006/Observation/WindSpeed/Instant/{time}";
+					rr:class time:Instant; rr:graph oeg:PachubeSensors.srdf ];
+	rr:predicateObjectMap [ rr:predicateMap [ rr:predicate time:xsdDateTime ];
+							rr:objectMap	[ rr:column "time" ] ];     		   
+.		   
+
+
+:MilfordSensorMap a rr:TriplesMap;
+  	rr:SQLQuery "";
+  	rr:tableName "sensors";
+  	rr:subjectMap [rr:class ssn:Sensor; rr:subject ssg:MilfordSensor];
+ 	rr:predicateObjectMap [ rr:predicateMap [rr:predicate ssn:hasProperty];
+   							rr:objectMap 	[rr:object ssg:MilfordSensorLocation] ];
+.
+     
+:CCOSeaFOIMap a rr:TriplesMap;
+  	rr:SQLQuery "";
+  	rr:subjectMap [rr:class ssn:FeatureOfInterest;  rr:subject ssg:Sea];
+  	rr:tableName "";
+ 	rr:predicateObjectMap [ rr:predicateMap [rr:predicate cd:locatedInRegion];
+   							rr:objectMap 	[rr:object regions:SouthEastEnglandCCO] ];
+.
+
+
+:thisMapping void:subset :wannengratLinkSet.
+
+:wannengratLinkSet a void:Linkset;
+    void:subjectsTarget :thisMapping;
+    void:objectsTarget :testMetadata;
+    void:linkPredicate ssn:observes;
+    .
+        
+:testMetadata a void:Dataset;
+   void:dataDump <file:///metadata/swissex-metadata.n3>;
+   void:sparqlEndpoint <http://localhost:8080/openrdf-workbench/repositories/bigowlimTest/query>.
+   
