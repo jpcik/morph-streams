@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><mappings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<virtualSources>
+
+
+
+<virtualSource mappingUri="pachube.ttl" mappingName="pachube" 
+name="urn:oeg:PachubeTest" 
+uri="http://oeg-upm.net/integratedSources/PachubeTest">
+	<dataSource name="Pachube" 
+	location="udp://localhost/TupleGenerator"/>
+</virtualSource>
+
+</virtualSources>
+</mappings>
