@@ -50,6 +50,11 @@ public class SemanticIntegrator
 	private Set<String> registeredSources = Sets.newHashSet();
 	private Map<String,SourceQuery> pullResourceQueries = Maps.newHashMap();
 	
+	public QueryExecutor getExecutor()
+	{
+		return exe;
+	}
+	
 	public SemanticIntegrator(Properties props) throws IntegratorRegistryException, IntegratorConfigurationException
 	{	
 		//reg = new MemoryIntegratorRegistry(props);
@@ -287,10 +292,10 @@ public class SemanticIntegrator
 			throw new DataSourceException("Integrated Data Resource not found: "+dataResourceName);
 		}
 		SourceQuery query= qt.translate(queryDoc.getQueryString(), intSource.getMapping().getUri());
-		boolean executeSNEE = Boolean.parseBoolean(reg.getRegistryProps().getProperty(EXECUTE_STREAM_ENGINE));
-		logger.info("Executing with SNEE: "+executeSNEE);
+		//boolean executeSNEE = Boolean.parseBoolean(reg.getRegistryProps().getProperty(EXECUTE_STREAM_ENGINE));
+		//logger.info("Executing with SNEE: "+executeSNEE);
 		Sparql rs = null;
-		if (executeSNEE)
+		//if (executeSNEE)
 		{			
 			rs =exe.query(query,qt.getProjectList(queryDoc.getQueryString()));
 		}
@@ -352,7 +357,7 @@ public class SemanticIntegrator
 		}
 		else
 		{
-			Sparql s = exe.pullData(pullData.getQueryId(), sQuery,qt.getProjectList(pullData.getQuery()),newest,max);		
+			Sparql s = exe.pullData(pullData.getQueryId(), sQuery,QueryTranslator.getProjectList(pullData.getQuery()),newest,max);		
 			doc.setResultSet(s);
 		}
 		return doc;
@@ -385,5 +390,33 @@ public class SemanticIntegrator
 		reg.removeAllPullDataResources();
 	}
 	
+	public Statement registerQuery(String resourceName, QueryDocument query) throws DataSourceException, QueryCompilerException, QueryException
+	{
+		QueryTranslator qt = new QueryTranslator(reg.getRegistryProps());	
+		logger.info("Received query: "+query.getQueryString());
+		logger.info("Integrated data resource: "+resourceName);
+		IntegratedDataSourceMetadata intSource = retrieveIntegratedDataSource(resourceName);
+		if (intSource==null)
+		{
+			String msg = "Integrated Data resource not found: "+resourceName;
+			logger.warn(msg);
+			throw new InvalidResourceNameException(msg);
+		}
+		
+		SourceQuery thequery;
+		
+		try
+		{
+		thequery = qt.translate(query.getQueryString(), intSource.getMapping().getUri());
+		thequery.setOriginalQuery(query.getQueryString());
+		} catch (Exception e)
+		{
+			throw new QueryTranslationException("Translation error " + e.getMessage()+ " "+e.getClass().getName(),e);
+		}
+		//logger.info("Query translated: "+ query.serializeQuery());
+	    String uriRoot = reg.getRegistryProps().getProperty(IntegratorRegistry.INTEGRATOR_VIRTUAL_URIBASE); 
+		Statement sta = exe.registerQuery(thequery);
+		return sta;
+	}
 	
 }

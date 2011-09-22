@@ -43,6 +43,7 @@ import es.upm.fi.dia.oeg.integration.QueryCompilerException;
 import es.upm.fi.dia.oeg.integration.QueryException;
 import es.upm.fi.dia.oeg.integration.SourceAdapter;
 import es.upm.fi.dia.oeg.integration.SourceQuery;
+import es.upm.fi.dia.oeg.integration.Statement;
 import es.upm.fi.dia.oeg.integration.metadata.SourceType;
 import es.upm.fi.dia.oeg.r2o.plan.Attribute;
 import eu.semsorgrid4env.service.stream.StreamPropertyDocumentType;
@@ -656,6 +657,13 @@ public class SSG4EnvAdapter extends EasyMockSupport implements SourceAdapter
 		public List<ResultSet> invokeQuery(SourceQuery query)
 				throws QueryCompilerException, QueryException
 		{
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Statement registerQuery(SourceQuery query)
+				throws QueryCompilerException, QueryException {
 			// TODO Auto-generated method stub
 			return null;
 		}

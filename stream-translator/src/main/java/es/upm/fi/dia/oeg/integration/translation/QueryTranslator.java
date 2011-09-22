@@ -116,7 +116,7 @@ public class QueryTranslator
 		StreamQuery query = (StreamQuery)StreamQueryFactory.create(queryString);	
 	}*/
 	
-	public Map<String,Attribute> getProjectList(String queryString)
+	public static Map<String,Attribute> getProjectList(String queryString)
 	{
 		HashMap<String,Attribute> map = new HashMap<String, Attribute>();
 		StreamQuery query = (StreamQuery)StreamQueryFactory.create(queryString);
@@ -139,11 +139,14 @@ public class QueryTranslator
 	public SourceQuery transform(OpInterface algebra) throws QueryTranslationException
 	{
 		SourceQuery resquery = null;
-		if (props.getProperty(QueryExecutor.QUERY_EXECUTOR_ADAPTER).equals("gsn"))
+		String adapter = props.getProperty(QueryExecutor.QUERY_EXECUTOR_ADAPTER);
+		String queryClass = props.getProperty(QueryExecutor.QUERY_EXECUTOR_ADAPTER+"."+adapter+".query");
+		if (!adapter.equals("snee"))
 		{
 			Class theClass;
 			try {
-				theClass = Class.forName("es.upm.fi.dia.oeg.integration.adapter.gsn.GsnUrlQuery");
+				//theClass = Class.forName("es.upm.fi.dia.oeg.integration.adapter.gsn.GsnUrlQuery");
+				theClass = Class.forName(queryClass);
 			} catch (ClassNotFoundException e) {
 				throw new QueryTranslationException("Unable to use adapter query", e);
 			}			
