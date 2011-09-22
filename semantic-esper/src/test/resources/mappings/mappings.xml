@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><mappings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<virtualSources>
+
+
+
+<virtualSource mappingUri="esper.ttl" mappingName="esper" 
+name="urn:oeg:EsperTest" 
+uri="http://oeg-upm.net/integratedSources/EsperTest">
+	<dataSource name="Esper" 
+	location="udp://localhost/TupleGenerator"/>
+</virtualSource>
+
+</virtualSources>
+</mappings>
