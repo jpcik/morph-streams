@@ -11,6 +11,7 @@ import java.net.URL;
 import java.util.Properties;
 
 
+
 public class ParameterUtils 
 {
 	public static String COMMENT_CHAR = "#";
@@ -40,5 +41,18 @@ public class ParameterUtils
 		}		
 		return query;	
     }
+    
+    public static String loadQuery(String path)
+	{
+		try {
+			return ParameterUtils.loadAsString(ParameterUtils.class.getClassLoader().getResource(path));
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
+		return null;			
+	}
+	
    
 }
