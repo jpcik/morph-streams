@@ -44,11 +44,11 @@ import com.hp.hpl.jena.sparql.syntax.TemplateGroup;
 import com.hp.hpl.jena.sparql.syntax.TemplateTriple;
 
 import es.upm.fi.dia.oeg.r2o.plan.Attribute;
-import es.upm.fi.dia.oeg.sparqlstream.StreamQuery;
 import es.upm.fi.dia.oeg.integration.SourceAdapter;
 import es.upm.fi.dia.oeg.integration.adapter.snee.SNEEAdapter;
 import es.upm.fi.dia.oeg.integration.adapter.ssg4env.SSG4EnvAdapter;
 import es.upm.fi.dia.oeg.integration.metadata.SourceType;
+import es.upm.fi.dia.oeg.integration.translation.QueryTranslator;
 
 
 
@@ -61,6 +61,8 @@ public class QueryExecutor
 
 	//private String metadataPath;
 	private static Logger logger = Logger.getLogger(QueryExecutor.class.getName());
+
+	public static final String QUERY_EXECUTOR_ADAPTER = "integrator.queryexecutor.adapter";
 
 	/*
 	public String getMetadataPath() {
@@ -84,6 +86,10 @@ public class QueryExecutor
 		return instance;
 	}*/
 	
+	public SourceAdapter getAdapter()
+	{
+		return adapter;
+	}
 	
 	public QueryExecutor(Properties props) throws IntegratorConfigurationException
 	{
@@ -108,29 +114,28 @@ public class QueryExecutor
 			adapter = new SNEEAdapter();
 		else if (adapterId.equals("ssg4e"))
 			adapter = new SSG4EnvAdapter();
-		else if (adapterId.equals("gsn"))
+		else //if (adapterId.equals("gsn"))
 		{
+			String adapterClass = props.getProperty(QUERY_EXECUTOR_ADAPTER+"."+adapterId+".executor");
 			@SuppressWarnings("rawtypes")
 			Class theClass;
 			try {
-				theClass = Class.forName("es.upm.fi.dia.oeg.integration.adapter.gsn.GsnAdapter");
+				theClass = Class.forName(adapterClass);
 			} catch (ClassNotFoundException e) {
-				throw new StreamAdapterException("Unable to initialize adapter class", e);
+				throw new StreamAdapterException("Unable to initialize adapter class "+adapterClass, e);
 			}
 			try {
 				adapter = (SourceAdapter) theClass.newInstance();
 			} catch (InstantiationException e) {
-				throw new StreamAdapterException("Unable to instantiate adapter class", e);
+				throw new StreamAdapterException("Unable to instantiate adapter class "+adapterClass, e);
 
 			} catch (IllegalAccessException e) {
-				throw new StreamAdapterException("Unable to instatiate adapter class", e);
+				throw new StreamAdapterException("Unable to instatiate adapter class "+adapterClass, e);
 			}
 		}
 		adapter.init(props);		
 		
 	}
-	
-	public static final String QUERY_EXECUTOR_ADAPTER = "integrator.queryexecutor.adapter"; 
 	
 	public void init(Properties props) throws IntegratorConfigurationException
 	{
@@ -143,6 +148,11 @@ public class QueryExecutor
 		{
 			throw new IntegratorConfigurationException("Configuration error in source adapter. ", e);
 		}
+	}
+	
+	public Statement registerQuery(SourceQuery query) throws QueryCompilerException, QueryException
+	{
+		return adapter.registerQuery(query);
 	}
 	
 	public String createQuery(SourceQuery query) throws QueryException
@@ -166,6 +176,11 @@ public class QueryExecutor
 		return rdf;
 	}
 	
+	public static Sparql transfromData(List<ResultSet> results, SourceQuery query, String spquery) throws QueryException
+	{
+		Sparql sparqlResults = transform(results, QueryTranslator.getProjectList(spquery), query.getModifiers(),query.getStaticConstants());
+		return sparqlResults;
+	}
 	
 	public Sparql pullData(String queryId, SourceQuery query,Map<String, Attribute> projectList, boolean newest,int max) throws QueryException
 	{
@@ -367,10 +382,11 @@ public class QueryExecutor
 		return m;
 	}
 
-	private Sparql transform(List<ResultSet> results, Map<String,Attribute> projectList, Map<String, String> modifiers, Map<String,String> staticConstants) throws QueryException
+	private static Sparql transform(List<ResultSet> results, Map<String,Attribute> projectList, Map<String, String> modifiers, Map<String,String> staticConstants) throws QueryException
 	{
 		logger.debug("Modifiers list: "+ modifiers);
 		logger.debug("Constants list: "+ staticConstants);
+		
 		Sparql sparqlResult = new Sparql();
 		Head head = new Head();
 		Results res = new Results();
@@ -384,7 +400,7 @@ public class QueryExecutor
 		
 		for (java.sql.ResultSet o : results)
 		{	
-			logger.info("some result");
+			//logger.info("some result");
 			ResultSetMetaData metaData;
 			Map<String,String> colIds = new HashMap<String,String>();
 			Map<Integer,String> extentIds = Maps.newHashMap();
@@ -394,6 +410,7 @@ public class QueryExecutor
 				
 				for (int i=1;i<=metaData.getColumnCount();i++)
 				{
+					logger.debug("col id: "+ metaData.getColumnLabel(i));
 					colIds.put(metaData.getColumnLabel(i),i+"");
 					if (metaData.getColumnLabel(i).startsWith("extentname"))
 						extentIds.put(i,metaData.getColumnLabel(i));
@@ -440,8 +457,9 @@ public class QueryExecutor
 							try
 							{
 								value = o.getObject(Integer.parseInt(colIds.get(columnName)));
-							} catch (SQLException e)
-							{
+							} catch (SQLException e){
+								throw new QueryException("Cannot get value for "+columnName,e);
+							} catch (NumberFormatException e){
 								throw new QueryException("Cannot get value for "+columnName,e);
 							}
 
@@ -500,7 +518,7 @@ public class QueryExecutor
 		
 	}
 
-	private Object postprocess(Object value, String modifier)
+	private static Object postprocess(Object value, String modifier)
 	{
 		if (!modifier.startsWith("CONCAT"))
 		{
@@ -543,7 +561,7 @@ public class QueryExecutor
 		return val;
 	}
 
-	private RDFDatatype toRDFDatatype(int type)
+	private static RDFDatatype toRDFDatatype(int type)
 	{
 		RDFDatatype dt = com.hp.hpl.jena.datatypes.xsd.impl.XSDGenericType.XSDanyURI;
 		switch (type)

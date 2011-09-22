@@ -55,7 +55,7 @@ public class SNEEqlQuery extends QueryBase implements SourceQuery
 		//modifiers = new HashMap<String,String>();
 	}
 	
-	private String innerQuery;
+	protected String innerQuery;
 	
 	public List<Expression> condExpressions;
 	
@@ -464,12 +464,12 @@ public class SNEEqlQuery extends QueryBase implements SourceQuery
 		else return "";
 	}
 
-	private String serializeSelect(OpProjection proj)
+	protected String serializeSelect(OpProjection proj)
 	{
 		return serializeSelect(proj, "");
 	}
 	
-	private String serializeExpressions(OpJoin join)
+	protected String serializeExpressions(OpJoin join)
 	{
 		Map<String,String> varMappings = Maps.newHashMap();
 		if (join.getLeft() instanceof OpProjection)
@@ -484,7 +484,7 @@ public class SNEEqlQuery extends QueryBase implements SourceQuery
 	{
 		return serializeSelect(proj, index, false);
 	}
-	private String serializeSelect(OpProjection proj,String index, boolean fullExtent)
+	protected String serializeSelect(OpProjection proj,String index, boolean fullExtent)
 	{
 		//OpProjection proj = (OpProjection)op;
 		String select = "'"+proj.getRelation().getExtentName()+"' AS extentname"+index+", ";
@@ -540,7 +540,7 @@ public class SNEEqlQuery extends QueryBase implements SourceQuery
 		return unalias;
 	}
 	
-	private String serializeExpressions(Collection<Xpr> xprs,Map<String,String> varMappings)
+	protected String serializeExpressions(Collection<Xpr> xprs,Map<String,String> varMappings)
 	{
 		String exprs = "";
 		int i=0;
@@ -567,6 +567,16 @@ public class SNEEqlQuery extends QueryBase implements SourceQuery
 	private String serializeTimeUnit(TimeUnit tu)
 	{
 		return tu.toString()+"S";
+	}
+	@Override
+	public void setOriginalQuery(String sparqlQuery) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public String getOriginalQuery() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	

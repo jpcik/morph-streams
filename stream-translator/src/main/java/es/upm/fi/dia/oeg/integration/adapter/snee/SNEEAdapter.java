@@ -24,6 +24,7 @@ import es.upm.fi.dia.oeg.integration.QueryCompilerException;
 import es.upm.fi.dia.oeg.integration.QueryException;
 import es.upm.fi.dia.oeg.integration.SourceAdapter;
 import es.upm.fi.dia.oeg.integration.SourceQuery;
+import es.upm.fi.dia.oeg.integration.Statement;
 import es.upm.fi.dia.oeg.integration.StreamAdapterException;
 import es.upm.fi.dia.oeg.integration.metadata.SourceType;
 
@@ -371,6 +372,13 @@ public class SNEEAdapter implements SourceAdapter, Observer
 	public List<ResultSet> invokeQuery(SourceQuery query)
 			throws QueryCompilerException, QueryException
 	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Statement registerQuery(SourceQuery query)
+			throws QueryCompilerException, QueryException {
 		// TODO Auto-generated method stub
 		return null;
 	}
