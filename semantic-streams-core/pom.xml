@@ -26,7 +26,7 @@
 		<dependency>
 			<groupId>es.upm.fi.dia.oeg.integrator</groupId>
 			<artifactId>morph</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>0.0.4-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
 				<dependency>
