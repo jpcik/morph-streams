@@ -71,7 +71,7 @@
 
     <target name="runClient" depends="build">
         <java classpathref="lib.classpath" classname="com.espertech.esper.example.benchmark.client.Client" fork="true">
-            <arg line="-rate 1"/>
+            <arg line="-rate 8000"/>
         </java>
     </target>
 
