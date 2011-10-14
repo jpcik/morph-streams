@@ -48,6 +48,7 @@
           	<type class ="float"/>
          </column>
      </stream>
+     
      <stream name="envdata_folkestone" type="push">
      	<column name="DateTime">
      		<type class="timestamp"/>
@@ -583,5 +584,5 @@
           	<type class ="float"/>
          </column>
      </table>
-     
+      
 </schema>

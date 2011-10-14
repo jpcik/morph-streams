@@ -12,6 +12,7 @@ import net.sf.jsqlparser.expression.NullValue;
 import org.apache.commons.lang.NotImplementedException;
 
 import com.google.common.collect.Maps;
+import com.google.common.collect.Multimap;
 import com.hp.hpl.jena.sparql.algebra.Op;
 
 
@@ -50,9 +51,6 @@ public class SNEEqlQuery extends QueryBase implements SourceQuery
 		inner = new HashMap<String,Map<String,SNEEqlQuery>>();
 		condExpressions = new ArrayList<Expression>();
 		
-		
-		//constants = new HashMap<String,String>();
-		//modifiers = new HashMap<String,String>();
 	}
 	
 	protected String innerQuery;
@@ -240,100 +238,7 @@ public class SNEEqlQuery extends QueryBase implements SourceQuery
 		//System.out.println("SELECT");
 		return result;
 	}
-	/*
-	
-	private String serializeProjectionAll()
-	{
-		String result = "SELECT *,"; 
-		return result;
-	}
-	public String serialize()
-	{
-		return serialize(false);
-	}*/
-	/*
-	public String alternativeSerialization()
-	{
-		String result ="";
-		if (inner.size()>0)
-		{
-			for (Map.Entry<String, Map<String,SNEEqlQuery>> entry:inner.entrySet())
-			{
-				//result = result + " ( "; FIXME add this later
-				for (Map.Entry<String, SNEEqlQuery> ent:entry.getValue().entrySet())
-				{
-					//if (ent.getValue().getStreamList().size()>0)
-					 result = result +"("+ ent.getValue().serialize() + ") UNION \n "; 
-				}
-				result = result.substring(0,result.length()-9);
-				result = result + "," ;
-				//result = result + " ) AS "+entry.getKey()+ "," ; FIXME use this later
-			}
-			result = result.substring(0,result.length()-1);
 
-		}
-		
-			//result = result.substring(0,result.length()-36);
-		
-		return result;
-	}
-	*/
-	/*
-	public String serialize(boolean all)
-	{
-	
-		
-		//extend();
-		String result=null;
-		if (all)
-			result = serializeProjectionAll();
-		else
-			result = serializeProjection(); 
-		
-		
-		
-		result = result.substring(0,result.length()-1)+ " FROM ";
-		for (Map.Entry<String,String> proj : tableList.entrySet())
-		{
-			result = result +proj.getValue() +",";
-		}
-		//System.out.println("\nFROM STREAM");
-		for (Map.Entry<String,String> proj : streamList.entrySet())
-		{
-			result = result + proj.getValue()+",";
-		
-		}
-		for (Map.Entry<String, Map<String,SNEEqlQuery>> entry:inner.entrySet())
-		{
-			result = result + " ( "; //FIXME add this later
-			for (Map.Entry<String, SNEEqlQuery> ent:entry.getValue().entrySet())
-			{
-				result = result + ent.getValue().serialize() + " UNION "; 
-			}
-			result = result.substring(0,result.length()-6);
-			result = result + "," ;
-			result = result + " ) AS "+entry.getKey()+ "," ; //FIXME use this later
-		}
-		
-		result = result.substring(0,result.length()-1);
-		if (condExpressions.size()>0)
-		{			
-			result = result+" WHERE "; 
-		}
-		for (Expression e:condExpressions)
-		{
-			if (unionList.get(e.getExtent())==null)
-				result = result + buildCondition(e, null, null)+" and ";
-		}
-		
-		if (condExpressions.size()>0)
-			result = result.substring(0,result.length()-5);//+"; ";
-		else
-			result = result.substring(0,result.length());//+"; ";
-		//System.out.println("ser: "+result);
-		return result;
-	}*/
-	
 	private String buildCondition(Expression planExp,String oldExtent,String newExtent)
 	{
 		if (planExp.getValue() != null)
@@ -578,8 +483,6 @@ public class SNEEqlQuery extends QueryBase implements SourceQuery
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
-	
-	
+
 	
 }
