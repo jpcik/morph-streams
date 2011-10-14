@@ -26,6 +26,7 @@ import es.upm.fi.dia.oeg.integration.QueryDocument;
 import es.upm.fi.dia.oeg.integration.QueryException;
 import es.upm.fi.dia.oeg.integration.SemanticIntegrator;
 import es.upm.fi.dia.oeg.integration.Statement;
+import es.upm.fi.dia.oeg.integration.metadata.PullDataSourceMetadata;
 import es.upm.fi.dia.oeg.integration.registry.IntegratorRegistryException;
 
 import es.upm.fi.oeg.integration.adapter.esper.EsperAdapter;
@@ -44,6 +45,8 @@ public class CEPProvider {
         public void init(int sleepListenerMillis);
 
         public void registerStatement(String statement, String statementID);
+
+        public void queryFactory();
 
         public void sendEvent(Object event);
     }
@@ -151,6 +154,20 @@ public class CEPProvider {
             //epRuntime = epService.getEPRuntime();
         }
 
+        public void queryFactory()
+        {
+        	String queryTemp=loadQuery("queries/queryTemp.sparql");
+        	try {
+				PullDataSourceMetadata key = si.pullQueryFactory("urn:oeg:EsperTest", new QueryDocument(queryTemp));
+			} catch (DataSourceException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (QueryException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        }
+        
         public void registerStatement(String statement, String statementID) {
         	String queryTemp=loadQuery("queries/queryTemp.sparql");
         	Statement sta = null;

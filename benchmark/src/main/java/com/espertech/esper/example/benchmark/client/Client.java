@@ -18,7 +18,7 @@ package com.espertech.esper.example.benchmark.client;
  */
 public class Client {
 
-    public static final int MINIMUM_RATE = 1000;
+    public static final int MINIMUM_RATE = 10;
     public static final int DEFAULT_PORT = 6789;
     public static final int DEFAULT_RATE = 4000;
     public static final String DEFAULT_HOST = "localhost";

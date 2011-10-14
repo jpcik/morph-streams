@@ -124,6 +124,7 @@ public class Server extends Thread {
             
             if (Server.MODES.getProperty(mode).indexOf('$') < 0) {
                 cepProvider.registerStatement(stmtString, mode);
+            	//cepProvider.queryFactory();
                 System.out.println("\nStatements registered # 1 only");
             } else {
                 // create a stmt for each symbol
