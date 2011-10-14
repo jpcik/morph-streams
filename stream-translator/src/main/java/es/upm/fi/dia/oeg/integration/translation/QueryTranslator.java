@@ -133,7 +133,10 @@ public class QueryTranslator
 		
 		OpInterface opNew = null;
 		opNew = translateToAlgebra(queryString, mappingUri);
-		return transform(opNew);
+		SourceQuery sourcequery = transform(opNew);
+		sourcequery.setOriginalQuery(queryString);
+		return sourcequery;
+		
 	}
 
 	public SourceQuery transform(OpInterface algebra) throws QueryTranslationException
@@ -162,7 +165,6 @@ public class QueryTranslator
 			resquery = new SNEEqlQuery();	
 		resquery.load(algebra);
 		logger.info(resquery.serializeQuery());
-		
 		return resquery; 
 		
 	}

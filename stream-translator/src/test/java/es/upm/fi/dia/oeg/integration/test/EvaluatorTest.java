@@ -8,13 +8,17 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
+import java.util.Timer;
 
+import org.apache.log4j.PropertyConfigurator;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 import uk.ac.manchester.cs.snee.MetadataException;
 import uk.ac.manchester.cs.snee.SNEEDataSourceException;
@@ -72,6 +76,8 @@ public class EvaluatorTest extends QueryTestBase
 		SchemaMetadataException, UnsupportedAttributeTypeException, SourceMetadataException, TopologyReaderException, 
 		SNEEDataSourceException, CostParametersException, SNCBException, StreamAdapterException
 	{
+		PropertyConfigurator.configure(QueryTestBase.class.getClassLoader().getResource("config/log4j.properties"));
+
 		Properties props = ParameterUtils.load(EvaluatorTest.class.getClassLoader().getResourceAsStream("snee/evaluate/snee.properties"));
 		SNEEProperties.initialise(props );
 		generator = new ConstantRatePushStreamGenerator();
@@ -116,7 +122,7 @@ public class EvaluatorTest extends QueryTestBase
 		long tot =0;
 		int iter = 20;
 		try {
-			Thread.sleep(10000);
+			Thread.sleep(1000);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -142,7 +148,7 @@ public class EvaluatorTest extends QueryTestBase
 			int count =0;
 			for (Caller cal:callers)
 			{
-				if (!cal.finished)
+				if (!cal.finished && cal.isAlive())
 					break;
 				else 
 					count++;
@@ -151,58 +157,74 @@ public class EvaluatorTest extends QueryTestBase
 			if (count==callers.size())
 				allfinished=true;
 			try {
-				Thread.sleep(10000);
+				Thread.sleep(5000);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			System.out.println("Note yet: "+count);
+			
 		}
 		
+		int size = callers.size();
 		for (Caller cal:callers)
 		{
+			if (cal.finished)
+			{
 			tot+=cal.avg;
 			System.out.println(cal.avg);
+			}
+			else
+				size--;
 		}
 		
-		logger.info("time avg: "+(tot/callers.size()));
+		logger.info("time avg: "+(tot/size));
 
 	}
 
 	@Test@Ignore
 	public void testTranslate() throws QueryException, SQLException, InterruptedException, DataSourceException
 	{
-		String id =snee.invokeQueryFactory("(SELECT Hs AS waveheight, DateTime AS wavets FROM envdata_milford) ;", 5);
+		//String id =snee.invokeQueryFactory("(SELECT Hs AS waveheight, DateTime AS wavets FROM envdata_milford) ;", 5);
+		Set<String> ids= Sets.newHashSet();
+		for (int j=0;j<50;j++)
+			ids.add(snee.invokeQueryFactory("(SELECT Hs AS waveheight, DateTime AS wavets FROM envdata_milford) ;", 5));
 		//PullDataSourceMetadata pullMD =  si.pullQueryFactory("urn:ssg4e:iqs:Evaluator", 
 		//		new QueryDocument(query1SensorSimple));
 
-		Collection<Long> avgs = Lists.newArrayList();
-		//Thread.sleep(5000);
-		for (int i=0;i<200;i++)
+		Collection<Double> avgs = Lists.newArrayList();
+		//Thread.sleep(10000);
+		for (int i=0;i<20;i++)
 		{
-			Thread.sleep(100);
-
+			long total = 0;
+				Thread.sleep(50);
+for (String id:ids)
+{
 		long ini = System.currentTimeMillis();
 		//ResponseDocument resp = si.pullNewestData(pullMD.getSourceName());
 		//Utils.printSparqlResult(resp.getResultSet());
-		List<ResultSet> result = snee.pullData(id);
+		List<ResultSet> result = snee.pullNewestData(id);
 		if (result != null)
 			SNEEAdapter.printResults(result);
 		long elapsed =System.currentTimeMillis()-ini ;
-		avgs.add(elapsed);
+		total+=elapsed;
+}
+avgs.add((double)total/ids.size());
+
 		//System.out.println(elapsed);
 		}
 		
-		for (Long l:avgs)
+		for (Double l:avgs)
 			System.out.println(""+l);
 	}
 
 	@Test@Ignore
 	public void testTranslateQuery() throws QueryException, SQLException, InterruptedException, DataSourceException, URISyntaxException
 	{
-		//String id =snee.invokeQueryFactory("(SELECT Hs AS waveheight, DateTime AS wavets FROM envdata_milford) ;", 5);
+		String id =snee.invokeQueryFactory("(SELECT Hs AS waveheight, DateTime AS wavets FROM envdata_milford) ;", 5);
 		//PullDataSourceMetadata pullMD =  si.pullQueryFactory("urn:ssg4e:iqs:Evaluator", 
 		//		new QueryDocument(query1SensorSimple));
-String query = query1SensorSimple;
+		String query = query1SensorSimple;
 		Collection<Long> avgs = Lists.newArrayList();
 		//Thread.sleep(5000);
 		qt.translate(query, new URI("mappings/ssg4env.ttl"));
@@ -225,9 +247,8 @@ String query = query1SensorSimple;
 	@Test//@Ignore
 	public void testIncreasingQueries() throws InterruptedException, DataSourceException, QueryException
 	{
-		int quer = 50;
-		
-		
+		int quer = 1;
+				
 		Collection<PullDataSourceMetadata> pullList = Lists.newArrayList();
 		for (int k=0;k<quer;k++)
 		{
@@ -283,16 +304,15 @@ class Caller extends Thread
 			long ini = System.currentTimeMillis();
 			ResponseDocument resp;
 			try {
-				resp = si.pullData(pullMD.getSourceName(),50);
-				Utils.printSparqlResult(resp.getResultSet());
+				resp = si.pullNewestData(pullMD.getSourceName(),1000);
 				long elapsed =System.currentTimeMillis()-ini ;
+				//Utils.printSparqlResult(resp.getResultSet());
 				System.out.println(elapsed);
 				toti += elapsed;
 			} catch (DataSourceException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
+
 			} catch (QueryException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

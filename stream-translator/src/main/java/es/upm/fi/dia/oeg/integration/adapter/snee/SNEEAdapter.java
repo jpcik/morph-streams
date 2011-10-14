@@ -245,6 +245,12 @@ public class SNEEAdapter implements SourceAdapter, Observer
 	
 	
 	@Override
+	public String invokeQueryFactory(SourceQuery query) throws QueryException 
+	{
+		return invokeQueryFactory(query.serializeQuery(), 0);
+	}
+
+	@Override
 	public List<ResultSet> pullNewestData(String queryId) throws QueryException
 	{
 		return pullData(queryId, true,Integer.MAX_VALUE);

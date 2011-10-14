@@ -451,6 +451,13 @@ public class SSG4EnvAdapter extends EasyMockSupport implements SourceAdapter
 	*/		
 
 		@Override
+		public String invokeQueryFactory(SourceQuery query)
+				throws QueryException {
+			
+			return invokeQueryFactory(query.serializeQuery(), 0);
+		}
+
+		@Override
 		public List<ResultSet> invokeQuery(String query, int duration) throws QueryCompilerException
 		{
 			// TODO SNEE-WS does not accept one shot queries :(

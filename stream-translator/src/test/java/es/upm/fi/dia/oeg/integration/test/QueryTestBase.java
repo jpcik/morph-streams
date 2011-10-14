@@ -42,7 +42,6 @@ public abstract class QueryTestBase
 	protected static void init() throws URISyntaxException, IOException
 	{
 		PropertyConfigurator.configure(QueryTestBase.class.getClassLoader().getResource("config/log4j.properties"));
-
 		queryCCO= ParameterUtils.loadAsString(QueryTestBase.class.getClassLoader().getResource("mappings/cco_query.sparql"));
 		queryCCOComplex= ParameterUtils.loadAsString(QueryTestBase.class.getClassLoader().getResource("mappings/cco_queryComplex.sparql"));
 		queryCCOComplexTide= ParameterUtils.loadAsString(QueryTestBase.class.getClassLoader().getResource("mappings/cco_queryComplexWind.sparql"));

@@ -5,7 +5,7 @@ PREFIX cd:  <http://www.semsorgrid4env.eu/ontologies/CoastalDefences.owl#>
 PREFIX ssg: <http://semsorgrid4env.eu/ns#>    
 SELECT ?wavets ?waveheight  
 FROM NAMED STREAM <http://semsorgrid4env.eu/ns#ccometeo.srdf> 
-[NOW - 20 S SLIDE 1 S] 
+#[NOW - 20 S SLIDE 1 S] 
 WHERE { 
 	?WaveObs a ssn:Observation;
 		ssn:observationResultTime ?wavets;

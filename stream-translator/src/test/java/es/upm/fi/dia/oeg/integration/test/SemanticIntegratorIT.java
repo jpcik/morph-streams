@@ -136,7 +136,7 @@ public class SemanticIntegratorIT extends SemanticIntegratorTest
 		PullDataSourceMetadata pullMD =  si.pullQueryFactory(dataResourceName, queryDoc );
 		logger.info("Query identifier:"+ pullMD.getQueryId()+" - "+pullMD.getSourceName());
 		
-Thread.sleep(10000);
+Thread.sleep(5000);
 		
 		ResponseDocument resp = null;
 		
