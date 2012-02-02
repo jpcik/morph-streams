@@ -10,7 +10,6 @@ import org.apache.log4j.Logger;
 import org.w3.sparql.results.Sparql;
 
 
-@SuppressWarnings("restriction")
 public class Utils 
 {
 	protected static Logger logger = Logger.getLogger(Utils.class.getName());

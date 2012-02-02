@@ -16,9 +16,14 @@ public class SparqlUtils
 			Result r = resus.getResult().get(i);
 			for (Binding b:r.getBinding())
 			{
+				if (b.getLiteral()!=null)
 				buffer +=("Variable:" +b.getName()+								
 						" - Value:"+b.getLiteral().getContent()+
 						" - Type:"+b.getLiteral().getDatatype()+"\n");
+				else
+					buffer +=("Variable:" +b.getName()+								
+							" - Value:"+b.getUri()+
+							"\n");
 			}
 		}
 		return buffer;

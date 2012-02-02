@@ -1,0 +1,19 @@
+PREFIX cd: <http://semsorgrid4env.eu/ns#>							
+PREFIX sb: <http://www.w3.org/2009/SSN-XG/Ontologies/SensorBasis.owl#> 
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+CONSTRUCT 
+{?WaveObs a cd:Observation;
+cd:observationResultTime ?wavets;
+cd:observationResult ?waveheight.
+}
+#FROM NAMED STREAM <http://semsorgrid4env.eu/ns#ccometeo.srdf> 
+#[NOW - 10 MINUTE TO NOW - 5 MINUTE SLIDE 3 MINUTE] 
+WHERE 
+{ 
+	?WaveObs a cd:Observation.
+	{ ?WaveObs 	cd:observationResultTime ?wavets;
+ 				cd:observationResult ?waveheight. }  
+
+ 
+}
+		

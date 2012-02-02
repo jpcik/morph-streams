@@ -23,7 +23,7 @@ public class ParserSPARQLstr extends Parser {
     private interface Action { void exec(SPARQLStrParser parser) throws Exception ; }
     
     @Override
-    public Query parse(final Query query, String queryString)
+    public Query parse$(final Query query, String queryString)
     {
         query.setSyntax(Syntax.syntaxSPARQL) ;
 
@@ -98,6 +98,10 @@ public class ParserSPARQLstr extends Parser {
         {
             // The token stream can throw errors.
             throw new QueryParseException(err.getMessage(), err, -1, -1) ;
+        }
+        catch (es.upm.fi.dia.oeg.sparql.lang.sparqlstream.ParseException ex)
+        {
+        	throw new QueryParseException(ex.getMessage(), ex,ex.currentToken.beginLine,ex.currentToken.beginColumn);
         }
         catch (Throwable th)
         {

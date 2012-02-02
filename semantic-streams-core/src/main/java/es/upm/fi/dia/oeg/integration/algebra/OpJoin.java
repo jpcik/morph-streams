@@ -2,13 +2,11 @@ package es.upm.fi.dia.oeg.integration.algebra;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+
 
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.log4j.Logger;
 
-import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 
 
@@ -45,7 +43,7 @@ public class OpJoin extends OpBinary
 			for (String key:left.getVars().keySet())
 			{
 				
-				if (right!=null && right.getVars().containsKey(key))
+				if (right!=null && right.getVars()!=null && right.getVars().containsKey(key))
 				{
 					BinaryXpr e = new BinaryXpr();
 					e.setLeft(left.getVars().get(key));
@@ -194,7 +192,6 @@ public class OpJoin extends OpBinary
 	
 	public OpInterface build(OpProjection proj)
 	{
-		OpInterface inter = null;
 		if (this.getLeft()==null)
 		{
 			this.setLeft(proj);return this;

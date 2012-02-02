@@ -26,7 +26,7 @@
 		<dependency>
 			<groupId>es.upm.fi.dia.oeg.integrator</groupId>
 			<artifactId>morph</artifactId>
-			<version>0.0.4-SNAPSHOT</version>
+			<version>0.0.5-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
 				<dependency>
@@ -56,6 +56,13 @@
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
+				<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.7</version>
+		<!--<scope>test</scope>-->
+		</dependency>
+		
   </dependencies>
   <build>
   <plugins>

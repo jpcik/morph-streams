@@ -1,7 +1,8 @@
 package es.upm.fi.dia.oeg.integration;
 
-import java.util.HashMap;
 import java.util.Map;
+
+import com.google.common.collect.Maps;
 
 import es.upm.fi.dia.oeg.integration.algebra.OpInterface;
 import es.upm.fi.dia.oeg.integration.algebra.OpJoin;
@@ -19,9 +20,15 @@ import es.upm.fi.dia.oeg.r2o.plan.Attribute;
 public abstract class QueryBase implements SourceQuery
 {
 
-	Map<String,String> constants = new HashMap<String,String>();
-	Map<String,String> modifiers = new HashMap<String,String>();
-	Map<String, String> staticConstants = new HashMap<String,String>();
+	Map<String,String> constants = Maps.newHashMap();
+	Map<String, Template> staticConstants = Maps.newHashMap();
+	Map<String, Template> templates =  Maps.newHashMap();//HashMultimap.create();
+	
+	@Override
+	public Map<String,Template> getTemplates()
+	{
+		return templates;
+	}
 
 	
 	@Override
@@ -31,14 +38,9 @@ public abstract class QueryBase implements SourceQuery
 		return constants;
 	}
 
-	@Override
-	public Map<String, String> getModifiers()
-	{
-		return modifiers;
-	}
 	
 	@Override
-	public Map<String,String> getStaticConstants()
+	public Map<String, Template> getStaticConstants()
 	{
 		return staticConstants;
 	}
@@ -74,7 +76,7 @@ public abstract class QueryBase implements SourceQuery
 		{
 			OpProjection proj = (OpProjection)op;
 			//String select = "";
-			String extent = proj.getRelation().getExtentName();
+			String extent = proj.getRelation().getExtentName().toLowerCase();
 			int pos =0;
 			
 			for (Map.Entry<String, Xpr> entry : proj.getExpressions().entrySet())
@@ -87,15 +89,31 @@ public abstract class QueryBase implements SourceQuery
 					if (opXpr.getOp().equals("postproc"))
 						constants.put(entry.getKey().toLowerCase(), opXpr.getParam().toString());
 					else if (opXpr.getOp().equals("constant"))
-						staticConstants .put(lowerkey+extent, opXpr.getParam().toString());
-					
+					{
+						if (!staticConstants.containsKey(extent))
+						{
+							Template template= new Template(extent);
+							template.addModifier(lowerkey, opXpr.getParam().toString());
+							staticConstants.put(extent, template);
+						}
+						else
+							staticConstants.get(extent).addModifier(lowerkey, opXpr.getParam().toString());
+						//staticConstants .put(lowerkey+extent, opXpr.getParam().toString());
+					}
 				}
 				if (entry.getValue() instanceof VarXpr)
 				{
 					VarXpr var = (VarXpr)entry.getValue(); 
 					if (var.getModifier()!=null)
-					{					
-						modifiers.put(lowerkey+extent, var.getModifier());
+					{	
+						if (!templates.containsKey(extent))
+						{
+							Template template = new Template(extent);
+							template.addModifier(lowerkey, var.getModifier());
+							templates.put(extent,template);
+						}
+						else
+							templates.get(extent).addModifier(lowerkey, var.getModifier());
 					}
 				}
 				//if (pos < proj.getExpressions().size()-1) select += ", ";
