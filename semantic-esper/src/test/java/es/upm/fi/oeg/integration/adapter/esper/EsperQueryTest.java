@@ -237,7 +237,7 @@ public class EsperQueryTest
 				}				
 			}
 		}, 0L, 5000);
-		while (true)
+		//while (true)
 		{
 			Thread.sleep(5000);
 		}
