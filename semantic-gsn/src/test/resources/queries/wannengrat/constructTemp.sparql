@@ -8,6 +8,7 @@ PREFIX regions: <http://www.semsorgrid4env.eu/ontologies/AdditionalRegions.owl#>
 PREFIX swissex: <http://swiss-experiment.ch/metadata#> 
 PREFIX quantity: <http://data.nasa.gov/qudt/owl/quantity#>
 PREFIX qudt: <http://data.nasa.gov/qudt/owl/qudt#>
+PREFIX propTemperature: <http://sweet.jpl.nasa.gov/2.1/propTemperature.owl#> 
 CONSTRUCT
 {
 	?WaveObs 	a ssn:Observation;
@@ -22,7 +23,7 @@ WHERE
 	?WaveObs 	a ssn:Observation;
 #				ssn:observationResultTime ?instant;				
 				ssn:observationResult ?result;  
-				ssn:observedProperty quantity:ThermodynamicTemperature.
+				ssn:observedProperty propTemperature:Temperature.
 #	?instant	time:xsdDateTime ?wavets.
 	?result		ssn:hasValue ?value.
 	?value		qudt:numericValue ?waveheight.

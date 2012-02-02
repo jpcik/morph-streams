@@ -108,7 +108,8 @@ public class GsnAdapter implements SourceAdapter
 		{
 			throw new QueryException("Error processing query in gsn. ",e);
 		}
-		
+		if (response.getQueryResult()==null)
+			throw new QueryException("Unable to execute query in gsn.");
 		logger.debug("results: "+ response.getQueryResult().length);
 
 		for (int i=0;i<response.getQueryResult().length;i++)
@@ -149,6 +150,12 @@ public class GsnAdapter implements SourceAdapter
 				return null;
 	}
 
+
+	@Override
+	public String invokeQueryFactory(SourceQuery query) throws QueryException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 	@Override
 	public List<ResultSet> pullData(String queryId) throws QueryException
