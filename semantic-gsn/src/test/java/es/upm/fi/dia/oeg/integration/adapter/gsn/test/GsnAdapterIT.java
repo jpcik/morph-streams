@@ -35,6 +35,7 @@ import es.upm.fi.dia.oeg.integration.adapter.gsn.GsnQuery;
 import es.upm.fi.dia.oeg.integration.translation.QueryTranslator;
 import es.upm.fi.dia.oeg.morph.r2rml.InvalidR2RDocumentException;
 import es.upm.fi.dia.oeg.morph.r2rml.InvalidR2RLocationException;
+import es.upm.fi.dia.oeg.sparqlstream.SparqlUtils;
 import es.upm.fi.dia.oeg.sparqlstream.StreamQuery;
 import es.upm.fi.dia.oeg.sparqlstream.StreamQueryFactory;
 
@@ -65,7 +66,7 @@ public class GsnAdapterIT extends QueryTestBase
 		gsn.init(props);
 	}
 
-	@Test@Ignore
+	@Test//@Ignore
 	public void testInvokeQuery() throws StreamAdapterException, QueryException, InvalidR2RDocumentException, InvalidR2RLocationException, URISyntaxException
 	{
 		QueryTranslator trans = new QueryTranslator(props);
@@ -79,7 +80,7 @@ public class GsnAdapterIT extends QueryTestBase
 	}
 
 	
-	@Test@Ignore
+	@Test//@Ignore
 	public void testInvokeWindowQuery() throws StreamAdapterException, QueryException, InvalidR2RDocumentException, InvalidR2RLocationException, URISyntaxException
 	{
 		QueryTranslator trans = new QueryTranslator(props);
@@ -87,14 +88,14 @@ public class GsnAdapterIT extends QueryTestBase
 		GsnQuery gQuery = (GsnQuery)s;
 		gsn.init(props);
 		assertNotNull(gQuery.getWindow());
-		assertEquals(90, gQuery.getWindow().getFromOffset());
+		assertEquals(1, gQuery.getWindow().getFromOffset());
 		List<ResultSet> rs = gsn.invokeQuery(gQuery);
 		logger.debug(rs.size());
 		
 	}
 
 	
-	@Test@Ignore
+	@Test//@Ignore
 	public void testTranslateInvokeQuery() throws StreamAdapterException, QueryException, InvalidR2RDocumentException, InvalidR2RLocationException, URISyntaxException, IntegratorConfigurationException
 	{
 		QueryTranslator trans = new QueryTranslator(props);
@@ -102,14 +103,14 @@ public class GsnAdapterIT extends QueryTestBase
 		GsnQuery gQuery = (GsnQuery)s;
 		//gsn.init(props);
 		QueryExecutor exe = new QueryExecutor(props);
-		Sparql sparqlResult =exe.query(gQuery,trans.getProjectList(queryWannengratTemp));
+		Sparql sparqlResult =exe.query(gQuery,QueryTranslator.getProjectList(queryWannengratTemp));
 		//List<ResultSet> rs = gsn.invokeQuery(gQuery);
 		
 		logger.debug(sparqlResult.getResults().getResult().size());
 		printSparqlResult(sparqlResult);
 	}
 
-	@Test@Ignore
+	@Test//@Ignore
 	public void testTranslateInvokeConstruct() throws StreamAdapterException, QueryException, InvalidR2RDocumentException, InvalidR2RLocationException, URISyntaxException, IntegratorConfigurationException
 	{
 		QueryTranslator trans = new QueryTranslator(props);
@@ -125,7 +126,7 @@ public class GsnAdapterIT extends QueryTestBase
 		rdf.write(System.out);
 	}
 
-	@Test@Ignore
+	@Test//@Ignore
 	public void testInvokeMetadataQuery() throws StreamAdapterException, QueryException, InvalidR2RDocumentException, InvalidR2RLocationException, URISyntaxException, IntegratorConfigurationException
 	{		
 		//props.put(SemanticIntegrator.INTEGRATOR_METADATA_MAPPINGS_ENABLED, "true");
@@ -136,7 +137,7 @@ public class GsnAdapterIT extends QueryTestBase
 		long span0 =(System.currentTimeMillis()-ini1);
 
 		//QueryTranslator trans = new QueryTranslator(props,"http://localhost:8080/openrdf-workbench/repositories/wannengrat/query");
-double avg=0;
+		double avg=0;
 		//for (int i =0;i<6;i++)
 		{
 		long ini = System.currentTimeMillis();

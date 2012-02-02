@@ -11,13 +11,13 @@ PREFIX qudt: <http://data.nasa.gov/qudt/owl/qudt#>
 PREFIX propPressure: <http://sweet.jpl.nasa.gov/2.1/propPressure.owl#> 
 PREFIX propTemperature: <http://sweet.jpl.nasa.gov/2.1/propTemperature.owl#> 
 SELECT ?temperature ?sensor ?timestamp ?obs 
-FROM NAMED STREAM swissex:WannengratSensors.srdf [NOW - 1 MINUTE ] 
+FROM NAMED STREAM swissex:WannengratSensors.srdf [NOW - 5 MONTH ] 
 WHERE 
 { 
 	?obs     	a ssn:Observation;
 				ssn:observationResultTime ?instant;				
 				ssn:observationResult ?result;
-				ssn:observedProperty propTemperature:Temperature;
+				ssn:observedProperty quantity:ThermodynamicTemperature;
 				ssn:observedBy ?sensor.  		
 	?instant	time:xsdDateTime ?timestamp.
 	?result		ssn:hasValue ?obsresult.
@@ -26,6 +26,6 @@ WHERE
 #	?prop       a propTemperature:Temperature.	
 #				ssn:observes quantity:AbsoluteHumidity.
 #	FILTER ( ?temperature > 0 )
-	FILTER ( ?temperature > 15 )
+#	FILTER ( ?temperature > 15 )
 }
 		

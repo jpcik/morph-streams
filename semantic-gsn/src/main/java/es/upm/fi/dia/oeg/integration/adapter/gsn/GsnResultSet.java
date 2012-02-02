@@ -56,6 +56,25 @@ public class GsnResultSet implements ResultSet
 	
 
 	@Override
+	public ResultSetMetaData getMetaData() throws SQLException
+	{
+		RowSetMetaData md = new RowSetMetaDataImpl();
+	
+		md.setColumnCount(query.getProjectionMap().size()+1);
+		int i=1;
+		for (String alias: query.getProjectionMap().keySet())
+		{
+			md.setColumnLabel(i, alias);
+			md.setColumnType(i, SourceDataTypes.VARCHAR.getSQLType());
+			i++;
+		}
+		md.setColumnLabel(i, "extentname");
+		
+		return md;
+	}
+
+
+	@Override
 	public boolean next() throws SQLException
 	{
 		while (results[currentStream].getStreamElements()==null)
@@ -426,24 +445,6 @@ public class GsnResultSet implements ResultSet
 	}
 
 	@Override
-	public ResultSetMetaData getMetaData() throws SQLException
-	{
-		RowSetMetaData md = new RowSetMetaDataImpl();
-	
-		md.setColumnCount(query.getProjectionMap().size()+1);
-		int i=1;
-		for (String alias: query.getProjectionMap().keySet())
-		{
-			md.setColumnLabel(i, alias);
-			md.setColumnType(i, SourceDataTypes.VARCHAR.getSQLType());
-			i++;
-		}
-		md.setColumnLabel(i, "extentname");
-		
-		return md;
-	}
-
-	@Override
 	public Reader getNCharacterStream(int columnIndex) throws SQLException
 	{
 		// TODO Auto-generated method stub
@@ -495,11 +496,16 @@ public class GsnResultSet implements ResultSet
 	@Override
 	public Object getObject(String columnLabel) throws SQLException
 	{
-		String column = this.query.unAlias(results[currentStream].getVsname(), columnLabel);
+		String extent = results[currentStream].getVsname();
+		if (query.getStaticConstants().containsKey(extent)
+				&& query.getStaticConstants().get(extent).getModifiers().containsKey(columnLabel))
+			return query.getStaticConstants().get(extent).getModifiers().get(columnLabel);
+		
+		String column = this.query.unAlias(extent, columnLabel);
 		int i=0;int index =-1;
-		logger.debug("Fetch from:" +results[currentStream].getVsname()+" columnLabel: "+columnLabel+ " column: "+column);
+		logger.debug("Fetch from:" +extent+" columnLabel: "+columnLabel+ " column: "+column);
 		if (columnLabel.equals("extentname"))
-			return results[currentStream].getVsname();
+			return extent;
 		if (column.equals("timed"))
 			return results[currentStream].getStreamElements()[current].getTimed();
 		for (GSNWebService_DataField f:results[currentStream].getFormat().getField())
