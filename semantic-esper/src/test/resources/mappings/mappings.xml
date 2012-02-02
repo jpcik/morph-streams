@@ -4,11 +4,14 @@
 
 
 
-<virtualSource mappingUri="esper.ttl" mappingName="esper" 
-name="urn:oeg:EsperTest" 
+<virtualSource mappingUri="esper.ttl" mappingName="esper" name="urn:oeg:EsperTest" 
 uri="http://oeg-upm.net/integratedSources/EsperTest">
-	<dataSource name="Esper" 
-	location="udp://localhost/TupleGenerator"/>
+	<dataSource name="Esper" location="udp://localhost/TupleGenerator"/>
+</virtualSource>
+
+<virtualSource mappingUri="ssg4env.ttl" mappingName="ssg4env" name="urn:oeg:EsperEvaluation" 
+uri="http://oeg-upm.net/integratedSources/EsperEvaluation">
+	<dataSource name="Esper" location="udp://localhost/TupleGenerator"/>
 </virtualSource>
 
 </virtualSources>

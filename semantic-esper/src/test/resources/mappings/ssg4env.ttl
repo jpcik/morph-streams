@@ -1,0 +1,490 @@
+@prefix rr: <http://www.w3.org/ns/r2rml#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix ssg: <http://semsorgrid4env.eu/ns#> .
+@prefix ssn: <http://purl.oclc.org/NET/ssnx/ssn#> . 
+@prefix cd:  <http://www.semsorgrid4env.eu/ontologies/CoastalDefences.owl#> .
+@prefix dul: <http://www.loa-cnr.it/ontologies/DUL.owl#> .
+@prefix time: <http://www.w3.org/2006/time#> .
+@prefix regions: <http://www.semsorgrid4env.eu/ontologies/AdditionalRegions.owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> . 
+@prefix morph: <http://es.upm.fi.dia.oeg/morph#> .
+@prefix : <http://es.upm.fi.dia.oeg/R2RMapping#> . 
+
+:observedByPred rr:predicate ssn:observedBy.
+
+:windSpeedObsResult rr:predicateMap [ rr:predicate ssn:observationResult ]; 
+      		   rr:objectMap    [ rr:column "WindSpeed" ].      		   
+:abpWindSpeedObsResult rr:predicateMap [ rr:predicate ssn:observationResult ]; 
+      		   rr:objectMap    [ rr:column "wind_speed" ].
+:waveObsResult rr:predicateMap [ rr:predicate ssn:observationResult ]; 
+      		   rr:objectMap    [ rr:column "Hs" ].
+:tideObsResult rr:predicateMap [ rr:predicate ssn:observationResult ]; 
+      		   rr:objectMap    [ rr:column "Tp" ].
+:heaveObsResult rr:predicateMap [ rr:predicate ssn:observationResult ]; 
+      		    rr:objectMap    [ rr:column "VerticalHeave" ].
+:speedObsResult rr:predicateMap [ rr:predicate ssn:observationResult ]; 
+      		    rr:objectMap    [ rr:column "speed" ].
+:obsTime   rr:predicateMap [ rr:predicate ssn:observationResultTime ]; 
+      		   rr:objectMap    [ rr:column "DateTime" ].
+:obsTimestamp   rr:predicateMap [ rr:predicate ssn:observationResultTime ]; 
+      		   rr:objectMap    [ rr:column "timestamp" ].
+:foISea	       rr:predicateMap [ rr:predicate ssn:featureOfInterest ]; 
+      		   rr:objectMap    [ rr:object ssg:Sea ].
+:foIWind  rr:predicateMap [ rr:predicate ssn:featureOfInterest ]; 
+      		   rr:objectMap    [ rr:object ssg:Sea ].
+:foIShip  rr:refPredicateMap [ rr:predicate ssn:featureOfInterest ]; 
+      		   rr:refObjectMap    [ rr:parentTriplesMap :sotonShipTMap; rr:joinCondition "" ].
+:waveObsProp   rr:predicateMap [ rr:predicate ssn:observedProperty ]; 
+      		   rr:objectMap    [ rr:object cd:WaveHeight ].   
+:tideObsProp   rr:predicateMap [ rr:predicate ssn:observedProperty ]; 
+      		   rr:objectMap    [ rr:object cd:TideHeight ].   
+:heaveObsProp  rr:predicateMap [ rr:predicate ssn:observedProperty ]; 
+      		   rr:objectMap    [ rr:object cd:VerticalHeave ].   
+:windSpeedObsProp  rr:predicateMap [ rr:predicate ssn:observedProperty ]; 
+      		   rr:objectMap    [ rr:object cd:WindSpeed ].   
+:speedObsProp  rr:predicateMap [ rr:predicate ssn:observedProperty ]; 
+      		   rr:objectMap    [ rr:object cd:Speed ].   
+:waveLat	   rr:predicateMap [ rr:predicate ssg:hasLatitude ]; 
+      		   rr:objectMap    [ rr:column "Lat" ].      		   
+:waveLon	   rr:predicateMap [ rr:predicate ssg:hasLongitude ]; 
+      		   rr:objectMap    [ rr:column "Lon" ].
+:subjectWave   rr:template "http://semsorgrid4env.eu/ns#Observation/WaveHeight/CCO/{timestamp}";
+    		   rr:class ssn:Observation; rr:graph ssg:ccometeo.srdf.
+:subjectWaveNet  rr:template "http://semsorgrid4env.eu/ns#Observation/WaveHeight/WaveNet/{timestamp}";
+    		   rr:class ssn:Observation; rr:graph ssg:ccometeo.srdf.
+:subjectTide   rr:template "http://semsorgrid4env.eu/ns#Observation/TideHeight/CCO/{timestamp}";
+    		   rr:class ssn:Observation; rr:graph ssg:ccometeo.srdf.
+:subjectHeave  rr:template "http://semsorgrid4env.eu/ns#Observation/VerticalHeave/EMU/{timestamp}";
+    		   rr:class ssn:Observation; rr:graph ssg:ccometeo.srdf.
+:subjectWindSpeed  rr:template "http://semsorgrid4env.eu/ns#Observation/WindSpeed/CCO/{timestamp}";
+    		   rr:class ssn:Observation; rr:graph ssg:ccometeo.srdf.
+:subjectAbpWindSpeed rr:template "http://semsorgrid4env.eu/ns#Observation/WindSpeed/ABP/{timestamp}";
+    		   rr:class ssn:Observation; rr:graph ssg:ccometeo.srdf.
+
+:milfordSensor		rr:objectMap [rr:object ssg:MilfordSensor]; rr:predicateMap :observedByPred.	  
+:perranporthSensor	rr:objectMap [rr:object ssg:PerranporthSensor]; rr:predicateMap :observedByPred.
+:pevenseybaySensor  rr:objectMap [rr:object ssg:PevenseybaySensor]; rr:predicateMap :observedByPred.
+:goodwinSensor		rr:objectMap [rr:object ssg:GoodwinSensor]; rr:predicateMap :observedByPred.
+:torbaySensor		rr:objectMap [rr:object ssg:TorbaySensor]; rr:predicateMap :observedByPred.
+:rustingtonSensor	rr:objectMap [rr:object ssg:RustingtonSensor]; rr:predicateMap :observedByPred.
+:bidefordbaySensor	rr:objectMap [rr:object ssg:BidefordbaySensor]; rr:predicateMap :observedByPred.
+:folkestoneSensor	rr:objectMap [rr:object ssg:FolkestoneSensor]; rr:predicateMap :observedByPred.
+:boscombeSensor		rr:objectMap [rr:object ssg:BoscombeSensor]; rr:predicateMap :observedByPred.
+:penzanceSensor		rr:objectMap [rr:object ssg:PenzanceSensor]; rr:predicateMap :observedByPred.
+:weymouthSensor		rr:objectMap [rr:object ssg:WeymouthSensor]; rr:predicateMap :observedByPred.
+:ryeSensor			rr:objectMap [rr:object ssg:RyeSensor]; rr:predicateMap :observedByPred.
+:westonbaySensor	rr:objectMap [rr:object ssg:WestonbaySensor]; rr:predicateMap :observedByPred.
+:haylingislandSensor	rr:objectMap [rr:object ssg:HaylingislandSensor]; rr:predicateMap :observedByPred.
+:hornseaSensor		rr:objectMap [rr:object ssg:HornseaSensor]; rr:predicateMap :observedByPred.
+:rhylflatsSensor	rr:objectMap [rr:object ssg:RhylflatsSensor]; rr:predicateMap :observedByPred.
+:chesilSensor		rr:objectMap [rr:object ssg:ChesilSensor]; rr:predicateMap :observedByPred.
+:westbaySensor		rr:objectMap [rr:object ssg:WestbaySensor]; rr:predicateMap :observedByPred.
+:looebaySensor		rr:objectMap [rr:object ssg:LooebaySensor]; rr:predicateMap :observedByPred.
+:startbaySensor		rr:objectMap [rr:object ssg:StartbaySensor]; rr:predicateMap :observedByPred.
+:sandownbaySensor	rr:objectMap [rr:object ssg:SandownbaySensor]; rr:predicateMap :observedByPred.
+:mineheadSensor		rr:objectMap [rr:object ssg:MineheadSensor]; rr:predicateMap :observedByPred.
+:seafordSensor		rr:objectMap [rr:object ssg:SeafordSensor]; rr:predicateMap :observedByPred.
+:brackleshamSensor	rr:objectMap [rr:object ssg:BrackleshamSensor]; rr:predicateMap :observedByPred.
+
+
+
+:poolebaySensor  	rr:objectMap [rr:object ssg:PoolebaySensor]; rr:predicateMap :observedByPred .	  
+
+
+:lymingtonSensor	rr:objectMap [rr:object ssg:LymingtonSensor]; rr:predicateMap :observedByPred .	  
+:hernebaySensor		rr:objectMap [rr:object ssg:HernebaySensor]; rr:predicateMap :observedByPred .
+:dealSensor			rr:objectMap [rr:object ssg:DealSensor]; rr:predicateMap :observedByPred .
+:teignmouthpierSensor	rr:objectMap [rr:object ssg:TeignmouthpierSensor]; rr:predicateMap :observedByPred .
+:swanagepierSensor		rr:objectMap [rr:object ssg:SwanagepierSensor]; rr:predicateMap :observedByPred .
+:sandownpierSensor		rr:objectMap [rr:object ssg:SandownpierSensor]; rr:predicateMap :observedByPred .
+:westbaypierSensor		rr:objectMap [rr:object ssg:WestbaypierSensor]; rr:predicateMap :observedByPred .
+
+:dealMetSensor		rr:objectMap [rr:object ssg:DealMetSensor]; rr:predicateMap :observedByPred .
+:hernebayMetSensor	rr:objectMap [rr:object ssg:HernebayMetSensor]; rr:predicateMap :observedByPred .
+:looebayMetSensor	rr:objectMap [rr:object ssg:LooebayMetSensor]; rr:predicateMap :observedByPred .
+:worthingMetSensor	rr:objectMap [rr:object ssg:WorthingMetSensor]; rr:predicateMap :observedByPred .
+:arunplatformMetSensor	rr:objectMap [rr:object ssg:ArunplatformMetSensor]; rr:predicateMap :observedByPred .
+:swanagepierMetSensor	rr:objectMap [rr:object ssg:SwanagepierMetSensor]; rr:predicateMap :observedByPred .
+:sandownpierMetSensor	rr:objectMap [rr:object ssg:SandownpierMetSensor]; rr:predicateMap :observedByPred .
+:weymouthMetSensor	rr:objectMap [rr:object ssg:WeymouthMetSensor]; rr:predicateMap :observedByPred .
+:westbaypierMetSensor	rr:objectMap [rr:object ssg:WestbaypierMetSensor]; rr:predicateMap :observedByPred .
+:teignmouthpierMetSensor	rr:objectMap [rr:object ssg:TeignmouthpierMetSensor]; rr:predicateMap :observedByPred .
+:folkestoneMetSensor	rr:objectMap [rr:object ssg:FolkestoneMetSensor]; rr:predicateMap :observedByPred .
+:lymingtonMetSensor		rr:objectMap [rr:object ssg:LymingtonMetSensor]; rr:predicateMap :observedByPred .
+
+
+
+:emuBidefordBaySensor	rr:objectMap [rr:object :EmuBidefordBaySensor]; rr:predicateMap :observedByPred .	  
+:emuBrackleshamSensor	rr:objectMap [rr:object :EmuBrackleshamSensor]; rr:predicateMap :observedByPred .	  
+:emuChesilSensor		rr:objectMap [rr:object :EmuChesilSensor]; rr:predicateMap :observedByPred .	  
+:emuDawlishSensor		rr:objectMap [rr:object :EmuDawlishSensor]; rr:predicateMap :observedByPred .	  
+:emuGoodwinSensor		rr:objectMap [rr:object :EmuGoodwinSensor]; rr:predicateMap :observedByPred .	  
+:emuHaylingIslandSensor	rr:objectMap [rr:object :EmuHaylingIslandSensor]; rr:predicateMap :observedByPred .	  
+:emuMilfordSensor		rr:objectMap [rr:object :EmuMilfordSensor]; rr:predicateMap :observedByPred .	  
+:emuMineheadSensor		rr:objectMap [rr:object :EmuMineheadSensor]; rr:predicateMap :observedByPred .	  
+:emuPenzanceSensor		rr:objectMap [rr:object :EmuPenzanceSensor]; rr:predicateMap :observedByPred .	  
+:emuPerranporthSensor	rr:objectMap [rr:object :EmuPerranporthSensor]; rr:predicateMap :observedByPred .	  
+:emuRustingtonSensor	rr:objectMap [rr:object :EmuRustingtonSensor]; rr:predicateMap :observedByPred .	  
+:emuRyeSensor		rr:objectMap [rr:object :EmuRyeSensor]; rr:predicateMap :observedByPred .	  
+:emuSeafordSensor		rr:objectMap [rr:object :EmuSeafordSensor]; rr:predicateMap :observedByPred .	  
+:emuStartBaySensor		rr:objectMap [rr:object :EmuStartBaySensor]; rr:predicateMap :observedByPred .	  
+:emuTorbaySensor		rr:objectMap [rr:object :EmuTorbaySensor]; rr:predicateMap :observedByPred .	  
+:emuWestBaySensor		rr:objectMap [rr:object :EmuWestBaySensor]; rr:predicateMap :observedByPred .	  
+:emuWestonSensor		rr:objectMap [rr:object :EmuWestonSensor]; rr:predicateMap :observedByPred .	  
+:emuWeymouthSensor		rr:objectMap [rr:object :EmuWeymouthSensor]; rr:predicateMap :observedByPred .	  
+
+:poSouthamptonSensor		rr:objectMap [rr:object :abpSouthamptonSensor]; rr:predicateMap :observedByPred .	  
+:poChichesterHarbourSensor	rr:objectMap [rr:object :abpChichesterHarbourSensor]; rr:predicateMap :observedByPred .	  
+:poChichesterBarSensor		rr:objectMap [rr:object :abpChichesterBarSensor]; rr:predicateMap :observedByPred .	  
+:poBramblebankSensor		rr:objectMap [rr:object :abpBramblebankSensor]; rr:predicateMap :observedByPred .	  
+
+:poSouthamptonShipSensor	rr:objectMap [rr:object :aisSouthamptonSensor]; rr:predicateMap :observedByPred .	  
+     
+:poolebayWaveObservation   a rr:TriplesMap;
+    rr:subjectMap :subjectWaveNet;	rr:logicalTable [rr:tableName "envdata_wavenet_poolebay"];
+    rr:predicateObjectMap 	:waveObsResult,:obsTime, :foISea, :waveObsProp,:waveLat,:waveLon, 
+    						:poolebaySensor; 
+.
+
+
+:MilfordWaveObservation   a rr:TriplesMap;
+    rr:subjectMap :subjectWave;	rr:logicalTable [rr:tableName "envdata_milford"];
+	rr:predicateObjectMap 	:waveObsResult,:obsTime, :foISea, :waveObsProp,:waveLat,:waveLon, 
+        					:milfordSensor;
+ .
+:perranporthWaveObservation   a rr:TriplesMap;
+    rr:subjectMap :subjectWave; rr:logicalTable [rr:tableName "envdata_perranporth"];
+	rr:predicateObjectMap 	:waveObsResult,:obsTime, :foISea, :waveObsProp,:waveLat,:waveLon, 
+     						:perranporthSensor;
+ .
+:pevenseybayWaveObservation   a rr:TriplesMap;
+    rr:subjectMap :subjectWave;   rr:logicalTable [rr:tableName "envdata_pevenseybay"];
+	rr:predicateObjectMap 	:waveObsResult,:obsTime, :foISea, :waveObsProp,:waveLat,:waveLon, 
+							:pevenseybaySensor;
+ .
+:goodwinWaveObservation   a rr:TriplesMap;  
+	rr:subjectMap :subjectWave; rr:logicalTable [rr:tableName "envdata_goodwin"];
+	rr:predicateObjectMap 	:waveObsResult,:obsTime, :foISea, :waveObsProp,:waveLat,:waveLon, 
+							:goodwinSensor;
+ .
+:torbayWaveObservation   a rr:TriplesMap; 
+	rr:subjectMap :subjectWave; rr:logicalTable [rr:tableName "envdata_torbay"];
+	rr:predicateObjectMap 	:waveObsResult,:obsTime, :foISea, :waveObsProp,:waveLat,:waveLon, 
+				 			:torbaySensor;
+ .
+:rustingtonWaveObservation   a rr:TriplesMap;
+    rr:subjectMap :subjectWave;	rr:logicalTable [rr:tableName "envdata_rustington"];
+	rr:predicateObjectMap 	:waveObsResult,:obsTime, :foISea, :waveObsProp,:waveLat,:waveLon, 
+							:rustingtonSensor;
+ .
+:bidefordbayWaveObservation   a rr:TriplesMap;
+    rr:subjectMap :subjectWave; rr:logicalTable [rr:tableName "envdata_bidefordbay"];
+	rr:predicateObjectMap 	:waveObsResult,:obsTime, :foISea, :waveObsProp,:waveLat,:waveLon, 
+ 							:bidefordbaySensor;
+ .
+:folkestoneWaveObservation   a rr:TriplesMap;
+    rr:subjectMap :subjectWave; rr:logicalTable [rr:tableName "envdata_folkestone"];
+	rr:predicateObjectMap 	:waveObsResult,:obsTime, :foISea, :waveObsProp,:waveLat,:waveLon, 
+ 							:folkestoneSensor;
+. 							
+:boscombeWaveObservation   a rr:TriplesMap;
+    rr:subjectMap :subjectWave; rr:logicalTable [rr:tableName "envdata_boscombe"];
+	rr:predicateObjectMap 	:waveObsResult,:obsTime, :foISea, :waveObsProp,:waveLat,:waveLon, 
+ 							:boscombeSensor;
+.
+:penzanceWaveObservation   a rr:TriplesMap;
+    rr:subjectMap :subjectWave; rr:logicalTable [rr:tableName "envdata_penzance"];
+	rr:predicateObjectMap 	:waveObsResult,:obsTime, :foISea, :waveObsProp,:waveLat,:waveLon, 
+ 							:penzanceSensor;
+.
+:weymouthWaveObservation   a rr:TriplesMap;
+    rr:subjectMap :subjectWave; rr:logicalTable [rr:tableName "envdata_weymouth"];
+	rr:predicateObjectMap 	:waveObsResult,:obsTime, :foISea, :waveObsProp,:waveLat,:waveLon, 
+ 							:weymouthSensor;
+.
+:ryeWaveObservation   a rr:TriplesMap;
+    rr:subjectMap :subjectWave; rr:logicalTable [rr:tableName "envdata_rye"];
+	rr:predicateObjectMap 	:waveObsResult,:obsTime, :foISea, :waveObsProp,:waveLat,:waveLon, 
+ 							:ryeSensor;
+.
+:westonbayWaveObservation   a rr:TriplesMap;
+    rr:subjectMap :subjectWave; rr:logicalTable [rr:tableName "envdata_westonbay"];
+	rr:predicateObjectMap 	:waveObsResult,:obsTime, :foISea, :waveObsProp,:waveLat,:waveLon, 
+ 							:westonbaySensor;
+.
+:haylingislandWaveObservation   a rr:TriplesMap;
+    rr:subjectMap :subjectWave; rr:logicalTable [rr:tableName "envdata_haylingisland"];
+	rr:predicateObjectMap 	:waveObsResult,:obsTime, :foISea, :waveObsProp,:waveLat,:waveLon, 
+ 							:haylingislandSensor;
+.
+:hornseaWaveObservation   a rr:TriplesMap;
+    rr:subjectMap :subjectWave; rr:logicalTable [rr:tableName "envdata_hornsea"];
+	rr:predicateObjectMap 	:waveObsResult,:obsTime, :foISea, :waveObsProp,:waveLat,:waveLon, 
+ 							:hornseaSensor;
+.
+:rhylflatsWaveObservation   a rr:TriplesMap;
+    rr:subjectMap :subjectWave; rr:logicalTable [rr:tableName "envdata_rhylflats"];
+	rr:predicateObjectMap 	:waveObsResult,:obsTime, :foISea, :waveObsProp,:waveLat,:waveLon, 
+ 							:rhylflatsSensor;
+.
+:chesilWaveObservation   a rr:TriplesMap;
+    rr:subjectMap :subjectWave; rr:logicalTable [rr:tableName "envdata_chesil"];
+	rr:predicateObjectMap 	:waveObsResult,:obsTime, :foISea, :waveObsProp,:waveLat,:waveLon, 
+ 							:chesilSensor;
+.
+:westbayWaveObservation   a rr:TriplesMap;
+    rr:subjectMap :subjectWave; rr:logicalTable [rr:tableName "envdata_westbay"];
+	rr:predicateObjectMap 	:waveObsResult,:obsTime, :foISea, :waveObsProp,:waveLat,:waveLon, 
+ 							:westbaySensor;
+.
+:looebayWaveObservation   a rr:TriplesMap;
+    rr:subjectMap :subjectWave; rr:logicalTable [rr:tableName "envdata_looebay"];
+	rr:predicateObjectMap 	:waveObsResult,:obsTime, :foISea, :waveObsProp,:waveLat,:waveLon, 
+ 							:looebaySensor;
+.
+:startbayWaveObservation   a rr:TriplesMap;
+    rr:subjectMap :subjectWave; rr:logicalTable [rr:tableName "envdata_startbay"];
+	rr:predicateObjectMap 	:waveObsResult,:obsTime, :foISea, :waveObsProp,:waveLat,:waveLon, 
+ 							:startbaySensor;
+.
+:sandownbayWaveObservation   a rr:TriplesMap;
+    rr:subjectMap :subjectWave; rr:logicalTable [rr:tableName "envdata_sandownbay"];
+	rr:predicateObjectMap 	:waveObsResult,:obsTime, :foISea, :waveObsProp,:waveLat,:waveLon, 
+ 							:sandownbaySensor;
+.
+:mineheadWaveObservation   a rr:TriplesMap;
+    rr:subjectMap :subjectWave; rr:logicalTable [rr:tableName "envdata_minehead"];
+	rr:predicateObjectMap 	:waveObsResult,:obsTime, :foISea, :waveObsProp,:waveLat,:waveLon, 
+ 							:mineheadSensor;
+.
+:seafordWaveObservation   a rr:TriplesMap;
+    rr:subjectMap :subjectWave; rr:logicalTable [rr:tableName "envdata_seaford"];
+	rr:predicateObjectMap 	:waveObsResult,:obsTime, :foISea, :waveObsProp,:waveLat,:waveLon, 
+ 							:seafordSensor;
+.
+:brackleshamWaveObservation   a rr:TriplesMap;
+    rr:subjectMap :subjectWave; rr:logicalTable [rr:tableName "envdata_bracklesham"];
+	rr:predicateObjectMap 	:waveObsResult,:obsTime, :foISea, :waveObsProp,:waveLat,:waveLon, 
+ 							:brackleshamSensor;
+.
+
+
+:lymingtonTideObservation   a rr:TriplesMap;
+    rr:subjectMap :subjectTide;	rr:logicalTable [rr:tableName "envdata_lymington_tide"];
+	rr:predicateObjectMap 	:tideObsResult,:obsTime, :foISea, :tideObsProp, :lymingtonSensor;
+.
+:hernebayTideObservation   a rr:TriplesMap;
+    rr:subjectMap :subjectTide; rr:logicalTable [rr:tableName "envdata_hernebay_tide"];
+		rr:predicateObjectMap 	:tideObsResult,:obsTime, :foISea, :tideObsProp, :hernebaySensor;
+.
+:dealTideObservation   a rr:TriplesMap;
+    rr:subjectMap :subjectTide; rr:logicalTable [rr:tableName "envdata_deal_tide"];
+	rr:predicateObjectMap 	:tideObsResult,:obsTime, :foISea, :tideObsProp, :dealSensor;
+.
+:teignmouthpierTideObservation   a rr:TriplesMap;
+    rr:subjectMap :subjectTide; rr:logicalTable [rr:tableName "envdata_teignmouthpier_tide"];
+	rr:predicateObjectMap 	:tideObsResult,:obsTime, :foISea, :tideObsProp, :teignmouthpierSensor;
+.
+:swanagepierTideObservation   a rr:TriplesMap;
+    rr:subjectMap :subjectTide; rr:logicalTable [rr:tableName "envdata_swanagepier_tide"];
+	rr:predicateObjectMap 	:tideObsResult,:obsTime, :foISea, :tideObsProp, :swanagepierSensor;
+.
+:sandownpierTideObservation   a rr:TriplesMap;
+    rr:subjectMap :subjectTide; rr:logicalTable [rr:tableName "envdata_sandownpier_tide"];
+	rr:predicateObjectMap 	:tideObsResult,:obsTime, :foISea, :tideObsProp, :sandownpierSensor;
+.
+:westbaypierTideObservation   a rr:TriplesMap;
+    rr:subjectMap :subjectTide; rr:logicalTable [rr:tableName "envdata_westbaypier_tide"];
+	rr:predicateObjectMap 	:tideObsResult,:obsTime, :foISea, :tideObsProp, :westbaypierSensor;
+.
+
+
+
+:dealWindSpeedObservation   a rr:TriplesMap;
+    rr:subjectMap :subjectWindSpeed; rr:logicalTable [rr:tableName "envdata_deal_met"];
+	rr:predicateObjectMap 	:windSpeedObsResult,:obsTime, :foIWind, :windSpeedObsProp, :dealMetSensor;
+.
+:hernebayWindSpeedObservation   a rr:TriplesMap;
+    rr:subjectMap :subjectWindSpeed; rr:logicalTable [rr:tableName "envdata_hernebay_met"];
+	rr:predicateObjectMap 	:windSpeedObsResult,:obsTime, :foIWind, :windSpeedObsProp, :hernebayMetSensor;
+.
+:looebayWindSpeedObservation   a rr:TriplesMap;
+    rr:subjectMap :subjectWindSpeed; rr:logicalTable [rr:tableName "envdata_looebay_met"];
+	rr:predicateObjectMap 	:windSpeedObsResult,:obsTime, :foIWind, :windSpeedObsProp, :looebayMetSensor;
+.
+:worthingWindSpeedObservation   a rr:TriplesMap;
+    rr:subjectMap :subjectWindSpeed; rr:logicalTable [rr:tableName "envdata_worthing_met"];
+	rr:predicateObjectMap 	:windSpeedObsResult,:obsTime, :foIWind, :windSpeedObsProp, :worthingMetSensor;
+.
+:arunplatformWindSpeedObservation   a rr:TriplesMap;
+    rr:subjectMap :subjectWindSpeed; rr:logicalTable [rr:tableName "envdata_arunplatform_met"];
+	rr:predicateObjectMap 	:windSpeedObsResult,:obsTime, :foIWind, :windSpeedObsProp, :arunplatformMetSensor;
+.
+:swanagepierWindSpeedObservation   a rr:TriplesMap;
+    rr:subjectMap :subjectWindSpeed; rr:logicalTable [rr:tableName "envdata_swanagepier_met"];
+	rr:predicateObjectMap 	:windSpeedObsResult,:obsTime, :foIWind, :windSpeedObsProp, :swanagepierMetSensor;
+.
+:sandownpierWindSpeedObservation   a rr:TriplesMap;
+    rr:subjectMap :subjectWindSpeed; rr:logicalTable [rr:tableName "envdata_sandownpier_met"];
+	rr:predicateObjectMap 	:windSpeedObsResult,:obsTime, :foIWind, :windSpeedObsProp, :sandownpierMetSensor;
+.
+:weymouthWindSpeedObservation   a rr:TriplesMap;
+    rr:subjectMap :subjectWindSpeed; rr:logicalTable [rr:tableName "envdata_weymouth_met"];
+	rr:predicateObjectMap 	:windSpeedObsResult,:obsTime, :foIWind, :windSpeedObsProp, :weymouthMetSensor;
+.
+:westbaypierWindSpeedObservation   a rr:TriplesMap;
+    rr:subjectMap :subjectWindSpeed; rr:logicalTable [rr:tableName "envdata_westbaypier_met"];
+	rr:predicateObjectMap 	:windSpeedObsResult,:obsTime, :foIWind, :windSpeedObsProp, :westbaypierMetSensor;
+.
+:teignmouthpierWindSpeedObservation   a rr:TriplesMap;
+    rr:subjectMap :subjectWindSpeed; rr:logicalTable [rr:tableName "envdata_teignmouthpier_met"];
+	rr:predicateObjectMap 	:windSpeedObsResult,:obsTime, :foIWind, :windSpeedObsProp, :teignmouthpierMetSensor;
+.
+:folkestoneWindSpeedObservation   a rr:TriplesMap;
+    rr:subjectMap :subjectWindSpeed; rr:logicalTable [rr:tableName "envdata_folkestone_met"];
+	rr:predicateObjectMap 	:windSpeedObsResult,:obsTime, :foIWind, :windSpeedObsProp, :folkestoneMetSensor;
+.
+:lymingtonWindSpeedObservation   a rr:TriplesMap;
+    rr:subjectMap :subjectWindSpeed; rr:logicalTable [rr:tableName "envdata_lymington_met"];
+	rr:predicateObjectMap 	:windSpeedObsResult,:obsTime, :foIWind, :windSpeedObsProp, :lymingtonMetSensor;
+.
+
+
+
+
+:bidefordBayHeaveObservation   a rr:TriplesMap;
+    rr:subjectMap :subjectHeave;	rr:logicalTable [rr:tableName "rtdata_Bideford"];
+	rr:predicateObjectMap 	:heaveObsResult,:obsTime, :foISea, :heaveObsProp, 
+ 							:emuBidefordBaySensor;
+ .
+:brackleshamHeaveObservation   a rr:TriplesMap;
+    rr:subjectMap :subjectHeave;	rr:logicalTable [rr:tableName "rtdata_Bracklesha"];
+	rr:predicateObjectMap 	:heaveObsResult,:obsTime, :foISea, :heaveObsProp, 
+ 							:emuBrackleshamSensor;
+ .
+:chesilHeaveObservation   a rr:TriplesMap;
+    rr:subjectMap :subjectHeave;	rr:logicalTable [rr:tableName "rtdata_Chesil"];
+	rr:predicateObjectMap 	:heaveObsResult,:obsTime, :foISea, :heaveObsProp, 
+ 							:emuChesilSensor;
+ .
+:dawlishHeaveObservation   a rr:TriplesMap;
+    rr:subjectMap :subjectHeave;	rr:logicalTable [rr:tableName "rtdata_dawlish"];
+	rr:predicateObjectMap 	:heaveObsResult,:obsTime, :foISea, :heaveObsProp, 
+ 							:emuDawlishSensor;
+ .
+:goodwinHeaveObservation   a rr:TriplesMap;
+    rr:subjectMap :subjectHeave;	rr:logicalTable [rr:tableName "rtdata_goodwin"];
+	rr:predicateObjectMap 	:heaveObsResult,:obsTime, :foISea, :heaveObsProp, 
+ 							:emuGoodwinSensor;
+ .
+:haylingIslandHeaveObservation   a rr:TriplesMap;
+    rr:subjectMap :subjectHeave;	rr:logicalTable [rr:tableName "rtdata_haylingIsl"];
+	rr:predicateObjectMap 	:heaveObsResult,:obsTime, :foISea, :heaveObsProp, 
+ 							:emuHaylingIslandSensor;
+ .
+:milfordHeaveObservation   a rr:TriplesMap;
+    rr:subjectMap :subjectHeave;	rr:logicalTable [rr:tableName "rtdata_milford"];
+	rr:predicateObjectMap 	:heaveObsResult,:obsTime, :foISea, :heaveObsProp, 
+ 							:emuMilfordSensor;
+ .
+:mineheadHeaveObservation   a rr:TriplesMap;
+    rr:subjectMap :subjectHeave;	rr:logicalTable [rr:tableName "rtdata_minehead"];
+	rr:predicateObjectMap 	:heaveObsResult,:obsTime, :foISea, :heaveObsProp, 
+ 							:emuMineheadSensor;
+ .
+:penzanceHeaveObservation   a rr:TriplesMap;
+    rr:subjectMap :subjectHeave;	rr:logicalTable [rr:tableName "rtdata_penzance"];
+	rr:predicateObjectMap 	:heaveObsResult,:obsTime, :foISea, :heaveObsProp, 
+ 							:emuPenzanceSensor;
+ .
+:perranporthHeaveObservation   a rr:TriplesMap;
+    rr:subjectMap :subjectHeave;	rr:logicalTable [rr:tableName "rtdata_perranport"];
+	rr:predicateObjectMap 	:heaveObsResult,:obsTime, :foISea, :heaveObsProp, 
+ 							:emuPerranporthSensor;
+ .
+:rustingtonHeaveObservation   a rr:TriplesMap;
+    rr:subjectMap :subjectHeave;	rr:logicalTable [rr:tableName "rtdata_rustington"];
+	rr:predicateObjectMap 	:heaveObsResult,:obsTime, :foISea, :heaveObsProp, 
+ 							:emuRustingtonSensor;
+ .
+:ryeHeaveObservation   a rr:TriplesMap;
+    rr:subjectMap :subjectHeave;	rr:logicalTable [rr:tableName "rtdata_rye"];
+	rr:predicateObjectMap 	:heaveObsResult,:obsTime, :foISea, :heaveObsProp, 
+ 							:emuRyeSensor;
+ .
+:seafordHeaveObservation   a rr:TriplesMap;
+    rr:subjectMap :subjectHeave;	rr:logicalTable [rr:tableName "rtdata_seaford"];
+	rr:predicateObjectMap 	:heaveObsResult,:obsTime, :foISea, :heaveObsProp, 
+ 							:emuSeafordSensor;
+ .
+:startBayHeaveObservation   a rr:TriplesMap;
+    rr:subjectMap :subjectHeave;	rr:logicalTable [rr:tableName "rtdata_startBay"];
+	rr:predicateObjectMap 	:heaveObsResult,:obsTime, :foISea, :heaveObsProp, 
+ 							:emuStartBaySensor;
+ .
+:torbayHeaveObservation   a rr:TriplesMap;
+    rr:subjectMap :subjectHeave;	rr:logicalTable [rr:tableName "rtdata_torbay"];
+	rr:predicateObjectMap 	:heaveObsResult,:obsTime, :foISea, :heaveObsProp, 
+ 							:emuTorbaySensor;
+ .
+:westBayHeaveObservation   a rr:TriplesMap;
+    rr:subjectMap :subjectHeave;	rr:logicalTable [rr:tableName "rtdata_westBay"];
+	rr:predicateObjectMap 	:heaveObsResult,:obsTime, :foISea, :heaveObsProp, 
+ 							:emuWestBaySensor;
+ .
+:westonHeaveObservation   a rr:TriplesMap;
+    rr:subjectMap :subjectHeave;	rr:logicalTable [rr:tableName "rtdata_weston"];
+	rr:predicateObjectMap 	:heaveObsResult,:obsTime, :foISea, :heaveObsProp, 
+ 							:emuWestonSensor;
+ .
+:weymouthHeaveObservation   a rr:TriplesMap;
+    rr:subjectMap :subjectHeave;	rr:logicalTable [rr:tableName "rtdata_weymouth"];
+	rr:predicateObjectMap 	:heaveObsResult,:obsTime, :foISea, :heaveObsProp, 
+ 							:emuWeymouthSensor;
+ .
+
+
+:abpSouthamptonWindSpeedObs   a rr:TriplesMap;
+    rr:subjectMap :subjectAbpWindSpeed;	rr:logicalTable [rr:tableName "envdata_southampton"];
+	rr:predicateObjectMap 	:abpWindSpeedObsResult,:obsTime, :foISea, :windSpeedObsProp, 
+ 							:poSouthamptonSensor;
+ .
+:abpChichesterHarbourWindSpeedObs   a rr:TriplesMap;
+    rr:subjectMap :subjectAbpWindSpeed;	rr:logicalTable [rr:tableName "envdata_chichesterharbour"];
+	rr:predicateObjectMap 	:abpWindSpeedObsResult,:obsTime, :foISea, :windSpeedObsProp, 
+ 							:poChichesterHarbourSensor;
+ .
+:abpChichesterBarWindSpeedObs   a rr:TriplesMap;
+    rr:subjectMap :subjectAbpWindSpeed;	rr:logicalTable [rr:tableName "envdata_chichesterbar"];
+	rr:predicateObjectMap 	:abpWindSpeedObsResult,:obsTime, :foISea, :windSpeedObsProp, 
+ 							:poChichesterBarSensor;
+ .
+:abpBramblebankWindSpeedObs   a rr:TriplesMap;
+    rr:subjectMap :subjectAbpWindSpeed;	rr:logicalTable [rr:tableName "envdata_bramblebank"];
+	rr:predicateObjectMap 	:abpWindSpeedObsResult,:obsTime, :foISea, :windSpeedObsProp, 
+ 							:poBramblebankSensor;
+ .
+
+
+
+:CCOSeaFOIMap a rr:TriplesMap;
+  	rr:subjectMap [rr:class ssn:FeatureOfInterest;  rr:subject ssg:Sea];
+  	rr:logicalTable [rr:tableName ""];
+ 	rr:predicateObjectMap [ rr:predicateMap [rr:predicate cd:locatedInRegion];
+   							rr:objectMap 	[rr:object regions:SouthEastEnglandCCO] ];
+.
+:CCOWindFOIMap a rr:TriplesMap;
+  	rr:subjectMap [rr:class ssn:FeatureOfjInterest;  rr:subject ssg:Wind];
+  	rr:logicalTable [rr:tableName ""];
+ 	rr:predicateObjectMap [ rr:predicateMap [rr:predicate cd:locatedjInRegion];
+   							rr:objectMap 	[rr:object regions:SouthEastEnglandCCO] ];
+.
+
+:MilfordSensorMap a rr:TriplesMap;
+  	rr:logicalTable [rr:sqlQuery "select 'MilfordSensorUri' as uri from cco.envdata_milford"];
+  	rr:subjectMap [rr:class ssn:Sensor; rr:column "uri"];
+ 	rr:predicateObjectMap [ rr:predicateMap [rr:predicate ssn:hasProperty];
+   							rr:objectMap 	[rr:object ssg:MilfordSensorLocation] ];
+.
+    
+

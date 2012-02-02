@@ -55,13 +55,13 @@ public class EsperQuery extends SNEEqlQuery implements SourceQuery
 		return originalQuery;
 	}
 	
-	/*
+	
 	@Override
 	public String serializeQuery()
 	{
 		//return alternativeSerialization();
-		return innerQuery;
-	}*/
+		return innerQuery.substring(0,innerQuery.indexOf(';'));
+	}
 	
 	private String build(OpInterface op)
 	{
@@ -84,7 +84,7 @@ public class EsperQuery extends SNEEqlQuery implements SourceQuery
 			{
 				projectionMap.put(key, null);
 			}
-			return "SELECT "+ select+" FROM "+build(proj.getSubOp())+"";
+			return "SELECT "+ select+" FROM "+build(proj.getSubOp())+".win:time(30 sec)";//".win:keepall()";//
 		}
 		else if (op instanceof OpWindow)
 		{
@@ -123,14 +123,14 @@ public class EsperQuery extends SNEEqlQuery implements SourceQuery
 			}
 			else
 				throw new NotImplementedException("Nested join queries not supported in target language");
-			String select = "SELECT RSTREAM "+serializeSelect(opLeft,"",true)+ ", "+serializeSelect(opRight,"2",true) +
-				" FROM "+build(opLeft.getSubOp())+","+build(opRight.getSubOp());
+			String select = "SELECT "+serializeSelect(opLeft,"",true)+ ", "+serializeSelect(opRight,"2",true) +
+				" FROM "+build(opLeft.getSubOp())+".win:keepall(),"+build(opRight.getSubOp())+".win:keepall()";
 			if (!join.getConditions().isEmpty())
 			{			
 				//System.err.println(unAlias("sada",join));
 				select+=" WHERE "+serializeExpressions(join);
 			}
-			return "("+select+")";
+			return ""+select+"";
 		}
 		else if (op instanceof OpMultiUnion)
 		{
