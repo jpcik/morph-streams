@@ -20,21 +20,32 @@ import java.sql.Statement;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
+import java.util.Iterator;
 import java.util.Map;
 
 import javax.sql.RowSetMetaData;
 import javax.sql.rowset.RowSetMetaDataImpl;
 
+import org.apache.log4j.Logger;
+
 import com.espertech.esper.client.EventBean;
+import com.espertech.esper.client.SafeIterator;
+import com.google.common.collect.Maps;
 
 import es.upm.fi.dia.oeg.integration.metadata.SourceDataTypes;
+import es.upm.fi.dia.oeg.integration.translation.DataTranslator;
 
 public class EsperResultSet implements ResultSet
 {
+	private static Logger logger = Logger.getLogger(EsperResultSet.class.getName());
 
 	private EventBean[] events;
 	private int current;
 	private EsperQuery query;
+	private Iterator<EventBean> iterator;
+	private EventBean currentEvent;
+	private ResultSetMetaData metadata;
+	private Map<String,Integer> columns;
 	
 	public EsperResultSet(EventBean[] events,EsperQuery query)
 	{
@@ -43,25 +54,97 @@ public class EsperResultSet implements ResultSet
 		current = -1;
 	}
 	
+	public EsperResultSet(Iterator<EventBean> it,EsperQuery query)
+	{
+		this.iterator = it;
+		this.query = query;
+		current = -1;
+	}
+	
+
+	public ResultSetMetaData getMetaData() throws SQLException 
+	{
+		if (metadata==null)
+			metadata =  createMetaData();
+		return metadata;
+	}
 
 	private ResultSetMetaData createMetaData() throws SQLException
 	{
 		RowSetMetaData md = new RowSetMetaDataImpl();
-		
+		columns = Maps.newHashMap();
 		md.setColumnCount(query.getProjectionMap().size()+1);
 		int i=1;
 		for (String alias: query.getProjectionMap().keySet())
 		{
+			columns.put(alias, i);
 			md.setColumnLabel(i, alias);
 			md.setColumnType(i, SourceDataTypes.VARCHAR.getSQLType());
 			i++;
 		}
 		md.setColumnLabel(i, "extentname");
-
+		columns.put("extentname", i);
 		
 		return md;
 }
 	
+	public int findColumn(String columnLabel) throws SQLException {
+		
+		return columns.get(columnLabel);
+	}
+
+	public boolean next() throws SQLException 
+	{	
+		if (iterator != null)
+		{
+			if (iterator.hasNext())
+			{
+				currentEvent = iterator.next();
+				return true;
+			}
+			else
+				return false;
+		}
+		else
+		{
+		
+		if (events == null || events.length<1 || events.length == current+1)
+			return false;
+		else
+		{
+			current++;
+			return true;
+		}
+			
+		}	
+	}
+
+	public Object getObject(String columnLabel) throws SQLException 
+	{
+		if (logger.isTraceEnabled())
+			logger.trace("getObject. columnLabel: "+columnLabel);
+		/*if (columnLabel.endsWith("extentname"))
+		{
+			if (currentEvent!=null)
+			{
+				for (String s:currentEvent.getEventType().getPropertyNames())
+				logger.debug(s+"list");
+				return currentEvent.getEventType().getName().toLowerCase();
+			}
+			else
+				return events[current].getEventType().getName().toLowerCase();
+		}*/
+		if (iterator != null)
+			return currentEvent.get(columnLabel);
+		else
+			return events[current].get(columnLabel);
+	}
+
+	public Object getObject(int columnIndex) throws SQLException {
+		String label =this.getMetaData().getColumnLabel(columnIndex);
+		return getObject(label);
+	}
+
 	public <T> T unwrap(Class<T> iface) throws SQLException {
 		// TODO Auto-generated method stub
 		return null;
@@ -72,21 +155,9 @@ public class EsperResultSet implements ResultSet
 		return false;
 	}
 
-	public boolean next() throws SQLException {
-		if (events == null || events.length<1 || events.length == current+1)
-			return false;
-		else
-		{
-			current++;
-			return true;
-		}
-			
-			
-	}
-
 	public void close() throws SQLException {
-		// TODO Auto-generated method stub
 		
+		((SafeIterator)iterator).close();
 	}
 
 	public boolean wasNull() throws SQLException {
@@ -269,24 +340,6 @@ public class EsperResultSet implements ResultSet
 	public String getCursorName() throws SQLException {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	public ResultSetMetaData getMetaData() throws SQLException {
-		return createMetaData();
-	}
-
-	public Object getObject(int columnIndex) throws SQLException {
-		String label =this.getMetaData().getColumnLabel(columnIndex);
-		return getObject(label);
-	}
-
-	public Object getObject(String columnLabel) throws SQLException {
-		return events[current].get(columnLabel);
-	}
-
-	public int findColumn(String columnLabel) throws SQLException {
-		// TODO Auto-generated method stub
-		return 0;
 	}
 
 	public Reader getCharacterStream(int columnIndex) throws SQLException {

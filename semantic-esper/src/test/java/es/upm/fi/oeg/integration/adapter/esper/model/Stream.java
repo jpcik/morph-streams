@@ -19,6 +19,7 @@ public Stream(double windspeed) {
 private Stream()
 {
     this.inTime = System.nanoTime();
+    setTime(inTime);
 }
 
 private void setTime(long time) {
