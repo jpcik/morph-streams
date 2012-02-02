@@ -28,7 +28,7 @@
   		<artifactId>stream-translator</artifactId>
   		<version>0.2.1</version>
   		<type>jar</type>
-  		<scope>test</scope>
+  		<scope>compile</scope>
   	</dependency>
     <dependency>
     	<groupId>com.espertech</groupId>
