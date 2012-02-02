@@ -33,5 +33,7 @@ public interface SourceAdapter
 	List<ResultSet> pullNewestData(String queryId, int max) throws QueryException;
 
 	Statement registerQuery(SourceQuery query) throws QueryCompilerException, QueryException;
+
+	public abstract String invokeQueryFactory(SourceQuery query) throws QueryException;
 	
 }

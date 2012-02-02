@@ -9,7 +9,7 @@ public class Void
 	
 	private static final String uri = "http://rdfs.org/ns/void#"; 
 	
-	public static Resource datasetType = property("Dataset");
+	public static Resource datasetType = resource("Dataset");
 	public static Property vocabulary = property("vocabulary");
 	public static Property classProperty = property("class");
 	public static Property classPartition = property("classPartition");

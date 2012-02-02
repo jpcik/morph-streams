@@ -5,17 +5,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.ListUtils;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.log4j.Logger;
 
-import com.google.common.collect.Collections2;
 import com.google.common.collect.Maps;
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.OpVisitor;
-import com.hp.hpl.jena.sparql.algebra.Transform;
-import com.hp.hpl.jena.sparql.algebra.op.Op2;
-import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 import es.upm.fi.dia.oeg.integration.algebra.xpr.ValueSetXpr;
 import es.upm.fi.dia.oeg.integration.algebra.xpr.Xpr;
