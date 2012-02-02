@@ -336,7 +336,7 @@ public class SemanticIntegrator
 		}
 		
 		QueryTranslator qt = new QueryTranslator(reg.getRegistryProps());
-		logger.info("Received query: "+pullData.getQuery());
+		logger.debug("Received query: "+pullData.getQuery());
 		IntegratedDataSourceMetadata is = retrieveIntegratedDataSource(pullData.getVirtualSorceName());
 		//Sparql s = exe.executeSNEEqlFactory(pullData.getQueryId(), qt.getProjectList(pullData.getSneeqlQuery()));
 		

@@ -50,7 +50,6 @@ import es.upm.fi.dia.oeg.integration.registry.IntegratorRegistry;
 import es.upm.fi.dia.oeg.integration.registry.IntegratorRegistryException;
 import es.upm.fi.dia.oeg.morph.r2rml.InvalidR2RDocumentException;
 import es.upm.fi.dia.oeg.morph.r2rml.InvalidR2RLocationException;
-import es.upm.fi.dia.oeg.sparqlstream.test.SparqlStreamParseTest;
 
 public class SemanticIntegratorIT extends SemanticIntegratorTest
 {

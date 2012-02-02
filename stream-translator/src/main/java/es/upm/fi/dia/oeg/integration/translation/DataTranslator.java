@@ -29,6 +29,7 @@ import com.google.common.collect.Maps;
 import com.hp.hpl.jena.datatypes.DatatypeFormatException;
 import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.datatypes.xsd.impl.XSDGenericType;
+import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
@@ -36,8 +37,8 @@ import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.sparql.syntax.Template;
-import com.hp.hpl.jena.sparql.syntax.TemplateGroup;
-import com.hp.hpl.jena.sparql.syntax.TemplateTriple;
+//import com.hp.hpl.jena.sparql.syntax.TemplateGroup;
+//import com.hp.hpl.jena.sparql.syntax.TemplateTriple;
 
 import es.upm.fi.dia.oeg.integration.QueryException;
 import es.upm.fi.dia.oeg.integration.SourceQuery;
@@ -101,6 +102,7 @@ public class DataTranslator
 		Object value;						
 		Binding b = new Binding();
 		b.setName(columnName);
+		
 		try {
 			value = rs.getObject(columnName);
 		} catch (SQLException e){
@@ -136,6 +138,8 @@ public class DataTranslator
 	{
 		Map<String, es.upm.fi.dia.oeg.integration.Template> templates = query.getTemplates();
 		logger.debug("templates list: "+ templates);
+		logger.debug("constant list: "+ query.getStaticConstants());
+
 		Map<String,String> temps = Maps.newHashMap();
 		Map<String,Object> extents = Maps.newHashMap();
 
@@ -170,6 +174,7 @@ public class DataTranslator
 					temps.clear();
 					extents.clear();
 				}
+				rs.close();
 				
 			} catch (SQLException e){
 				throw new QueryException("Cannot get value for resultset",e);
@@ -196,7 +201,7 @@ public class DataTranslator
 		Map<String,Object> extents = Maps.newHashMap();
 
 		Model m = ModelFactory.createDefaultModel();
-		TemplateGroup gt = (TemplateGroup)construct;
+		//TemplateGroup gt = (TemplateGroup)construct;
 		Random r = new Random();
 		if (results != null)
 		{	
@@ -219,30 +224,31 @@ public class DataTranslator
 
 						HashMap<String,AnonId> bnodes = new HashMap<String,AnonId>();
 						long l = r.nextLong();
-						for (Template tmp:  gt.getTemplates())
+						//for (Template tmp: gt.getTemplates())
+						for (Triple tt:construct.getTriples())
 						{							
-							TemplateTriple tt = (TemplateTriple)tmp;
+							//TemplateTriple tt = (TemplateTriple)tmp;
 							Resource subject = null;
 							RDFNode object = null;
-							if (tt.getTriple().getSubject().isVariable())
+							if (tt.getSubject().isVariable())
 							{
-								if (query.getConstants().containsKey(tt.getTriple().getSubject().getName().toLowerCase()))
+								if (query.getConstants().containsKey(tt.getSubject().getName().toLowerCase()))
 								{
-									subject = m.createResource(query.getConstants().get(tt.getTriple().getSubject().getName().toLowerCase()));
+									subject = m.createResource(query.getConstants().get(tt.getSubject().getName().toLowerCase()));
 								}
 								else
 								{
 								Object val;
 								try
 								{
-									val = o.getObject(tt.getTriple().getSubject().getName().toLowerCase());
+									val = o.getObject(tt.getSubject().getName().toLowerCase());
 								} catch (SQLException e)
 								{
-									throw new QueryException("Cannot get value for "+tt.getTriple().getSubject().getName(),e);
+									throw new QueryException("Cannot get value for "+tt.getSubject().getName(),e);
 								}
-								if (temps.containsKey(tt.getTriple().getSubject().getName().toLowerCase()))
+								if (temps.containsKey(tt.getSubject().getName().toLowerCase()))
 								{
-									val = postprocess(val, temps.get(tt.getTriple().getSubject().getName().toLowerCase()));
+									val = postprocess(val, temps.get(tt.getSubject().getName().toLowerCase()));
 									subject = m.createResource(val.toString()+l);
 								}
 								else
@@ -250,30 +256,30 @@ public class DataTranslator
 
 								}
 							}
-							else if (tt.getTriple().getSubject().isBlank())
+							else if (tt.getSubject().isBlank())
 							{
-								if (bnodes.containsKey(tt.getTriple().getSubject().getBlankNodeLabel()))
+								if (bnodes.containsKey(tt.getSubject().getBlankNodeLabel()))
 								{
-									subject = m.createResource(bnodes.get(tt.getTriple().getSubject().getBlankNodeLabel()));
+									subject = m.createResource(bnodes.get(tt.getSubject().getBlankNodeLabel()));
 								}
 								else
 								{
 									subject = m.createResource();
-									bnodes.put(tt.getTriple().getSubject().getBlankNodeLabel(), subject.asNode().getBlankNodeId());
+									bnodes.put(tt.getSubject().getBlankNodeLabel(), subject.asNode().getBlankNodeId());
 								}
 							}
 							
 							else
 							{
-								subject = (Resource) tt.getTriple().getSubject();
+								subject = (Resource) tt.getSubject();
 							}
 							
 							
-							if (tt.getTriple().getObject().isVariable())
+							if (tt.getObject().isVariable())
 							{
-								if (query.getConstants().containsKey(tt.getTriple().getObject().getName().toLowerCase()))
+								if (query.getConstants().containsKey(tt.getObject().getName().toLowerCase()))
 								{
-									object = m.createResource(query.getConstants().get(tt.getTriple().getObject().getName().toLowerCase()));
+									object = m.createResource(query.getConstants().get(tt.getObject().getName().toLowerCase()));
 								}
 								else
 								{
@@ -283,10 +289,10 @@ public class DataTranslator
 									{
 									throw new QueryException("Cannot get value for "+tt.getTriple().getObject().getName().toLowerCase());
 									}*/
-									val = o.getObject(tt.getTriple().getObject().getName().toLowerCase());
-									if (temps.containsKey(tt.getTriple().getObject().getName().toLowerCase()))
+									val = o.getObject(tt.getObject().getName().toLowerCase());
+									if (temps.containsKey(tt.getObject().getName().toLowerCase()))
 									{
-										val = postprocess(val, temps.get(tt.getTriple().getObject().getName().toLowerCase()));
+										val = postprocess(val, temps.get(tt.getObject().getName().toLowerCase()));
 										object = m.createResource(val.toString()+l);
 									}
 									else
@@ -301,25 +307,25 @@ public class DataTranslator
 							}
 							else
 							{
-								if (tt.getTriple().getObject().isLiteral())
-									object = m.createLiteral(tt.getTriple().getObject().getLiteral().getValue().toString());
-								else if (tt.getTriple().getObject().isBlank())
+								if (tt.getObject().isLiteral())
+									object = m.createLiteral(tt.getObject().getLiteral().getValue().toString());
+								else if (tt.getObject().isBlank())
 								{
-									if (bnodes.containsKey(tt.getTriple().getObject().getBlankNodeLabel()))
+									if (bnodes.containsKey(tt.getObject().getBlankNodeLabel()))
 									{
-										object = m.createResource(bnodes.get(tt.getTriple().getObject().getBlankNodeLabel()));
+										object = m.createResource(bnodes.get(tt.getObject().getBlankNodeLabel()));
 									}
 									else
 									{
 										object = m.createResource();
-										bnodes.put(tt.getTriple().getObject().getBlankNodeLabel(), object.asNode().getBlankNodeId());
+										bnodes.put(tt.getObject().getBlankNodeLabel(), object.asNode().getBlankNodeId());
 									}
 								}
 								
 								else
-									object = m.createResource(tt.getTriple().getObject().getURI());
+									object = m.createResource(tt.getObject().getURI());
 							}
-							Property p = m.createProperty(tt.getTriple().getPredicate().getURI());
+							Property p = m.createProperty(tt.getPredicate().getURI());
 							m.add(subject,p,object);
 							
 						}

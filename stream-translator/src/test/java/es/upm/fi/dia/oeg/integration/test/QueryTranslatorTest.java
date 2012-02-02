@@ -20,6 +20,7 @@ import com.hp.hpl.jena.sparql.algebra.Op;
 import es.upm.fi.dia.oeg.common.ParameterUtils;
 import es.upm.fi.dia.oeg.integration.QueryException;
 import es.upm.fi.dia.oeg.integration.SemanticIntegrator;
+import es.upm.fi.dia.oeg.integration.algebra.OpInterface;
 import es.upm.fi.dia.oeg.integration.translation.QueryTranslationException;
 import es.upm.fi.dia.oeg.integration.translation.QueryTranslator;
 import es.upm.fi.dia.oeg.morph.r2rml.InvalidR2RDocumentException;
@@ -58,10 +59,10 @@ public class QueryTranslatorTest extends QueryTestBase
 	@Test
 	public void testParseNoStreams()
 	{
-		String queryString = "PREFIX fire: <http://www.semsorgrid4env.eu#>"+
+		String queryString = "PREFIX fire: <http://www.semsorgrid4env.eu#> \n"+
 							
-		" PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>"+ 
-		" SELECT (?sid + ?sid * ?speed) AS ?tot ?speed timestamp(?speed) AS ?popo"+  
+		" PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"+ 
+		" SELECT ((?sid + ?sid * ?speed) AS ?tot) ?speed (seconds(?speed) AS ?popo) \n"+  
 		//" SELECT TIMESTAMP(?sid) AS ?pipo "+  
 		//" SELECT (count(*) AS ?coso) ?direction ?sid ?name"+
 		" WHERE"+ 
@@ -93,10 +94,10 @@ public class QueryTranslatorTest extends QueryTestBase
 		String queryString = "PREFIX fire: <http://www.semsorgrid4env.eu#>"+							
 		" PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>"+ 
 		" SELECT ?speed ?direction ?sid ?name "+  
-		" FROM NAMED STREAM <http://www.ssg4env/mes.srdf> [NOW SLIDE 2 HOUR]"+
-		" FROM NAMED STREAM <http://www.ssg4env/mes1.srdf> [NOW - 10 HOUR SLIDE 1 MINUTE]"+
+		" FROM NAMED STREAM <http://www.ssg4env/mes.srdf> [NOW SLIDE 2 HOURS]"+
+		" FROM NAMED STREAM <http://www.ssg4env/mes1.srdf> [NOW - 10 HOURS SLIDE 1 MINUTES]"+
 		" FROM NAMED STREAM <http://www.ssg4env/mes2.srdf>"+
-		" [NOW - 10 HOUR TO NOW - 0 HOUR SLIDE 1 MINUTE]"+ 
+		" [NOW - 10 HOURS TO NOW - 0 HOURS SLIDE 1 MINUTES]"+ 
 		" WHERE"+ 
 		" {"+ 
 		" ?WindSpeed a fire:WindSpeedMeasurement;"+ 
@@ -196,6 +197,14 @@ public class QueryTranslatorTest extends QueryTestBase
 	{
 		QueryTranslator trans = new QueryTranslator(props);
 		trans.translate(loadString("queries/testQueryTwoWaves.sparql"), new URI("mappings/testMapping.r2r"));
+	}
+
+	@Test@Ignore
+	public void testTranslateService() throws  URISyntaxException, QueryTranslationException, IOException
+	{
+		QueryTranslator trans = new QueryTranslator(props);
+		OpInterface op = trans.translateToAlgebra(loadString("queries/testQueryService.sparql"), new URI("mappings/wannengrat1.r2r"));
+		
 	}
 
 	

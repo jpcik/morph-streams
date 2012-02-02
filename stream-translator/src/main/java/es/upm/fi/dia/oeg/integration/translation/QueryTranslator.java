@@ -31,20 +31,26 @@ import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.QuerySolution;
+import com.hp.hpl.jena.query.QuerySolutionMap;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
+import com.hp.hpl.jena.sparql.algebra.OpAsQuery;
 import com.hp.hpl.jena.sparql.algebra.op.OpBGP;
 import com.hp.hpl.jena.sparql.algebra.op.OpFilter;
 import com.hp.hpl.jena.sparql.algebra.op.OpProject;
+import com.hp.hpl.jena.sparql.algebra.op.OpService;
 import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.engine.binding.BindingFactory;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprFunction;
 import com.hp.hpl.jena.sparql.expr.ExprFunction2;
+import com.hp.hpl.jena.sparql.expr.ExprVar;
 import com.hp.hpl.jena.sparql.resultset.ResultSetException;
 import com.hp.hpl.jena.sparql.syntax.Template;
-import com.hp.hpl.jena.sparql.syntax.TemplateGroup;
-import com.hp.hpl.jena.sparql.syntax.TemplateTriple;
+//import com.hp.hpl.jena.sparql.syntax.TemplateGroup;
+//import com.hp.hpl.jena.sparql.syntax.TemplateTriple;
 import com.hp.hpl.jena.vocabulary.RDF;
 
 import es.upm.fi.dia.oeg.integration.adapter.snee.SNEEqlQuery;
@@ -55,6 +61,7 @@ import es.upm.fi.dia.oeg.integration.algebra.OpProjection;
 import es.upm.fi.dia.oeg.integration.algebra.OpRelation;
 import es.upm.fi.dia.oeg.integration.algebra.OpRoot;
 import es.upm.fi.dia.oeg.integration.algebra.OpSelection;
+import es.upm.fi.dia.oeg.integration.algebra.OpSparql;
 import es.upm.fi.dia.oeg.integration.algebra.OpUnary;
 import es.upm.fi.dia.oeg.integration.algebra.OpWindow;
 import es.upm.fi.dia.oeg.integration.algebra.Window;
@@ -349,20 +356,22 @@ public class QueryTranslator
 		if (query.getConstructTemplate()!=null)
 		{//TODO ugliest code ever, please refactor
 			OpProjection cProj = new OpProjection("mainProjection", opo);
-			TemplateGroup tg = (TemplateGroup)query.getConstructTemplate();
-			for (Template temp:tg.getTemplates())
+			//TemplateGroup tg = (TemplateGroup)query.getConstructTemplate();
+			Template tg = query.getConstructTemplate();
+			//for (Template temp:tg.getTemplates())
+			for (Triple tt:tg.getTriples())
 			{				
 				String var="";
-				TemplateTriple tt = (TemplateTriple)temp;
-				if (tt.getTriple().getSubject().isVariable())
+				//TemplateTriple tt = (TemplateTriple)temp;
+				if (tt.getSubject().isVariable())
 				{
-					var = tt.getTriple().getSubject().getName();
+					var = tt.getSubject().getName();
 					VarXpr exp = new VarXpr(var);
 					cProj.addExpression(var,exp);
 				}
-				if (tt.getTriple().getObject().isVariable())
+				if (tt.getObject().isVariable())
 				{
-					var = tt.getTriple().getObject().getName();
+					var = tt.getObject().getName();
 					VarXpr exp = new VarXpr(var);
 					cProj.addExpression(var,exp);
 				}
@@ -374,7 +383,7 @@ public class QueryTranslator
 		
 		else
 		{
-		opNew.build(opo);
+			opNew.build(opo);
 		}
 		long span3 = System.currentTimeMillis()-ini;
 
@@ -529,8 +538,39 @@ public class QueryTranslator
 			selection.setSubOp(inner);
 			return selection;
 		}
+		else if (op instanceof OpService)
+		{
+			OpService service = (OpService)op;
+			
+			OpSparql sp = new OpSparql("service");
+			OpBGP bgp = (OpBGP)service.getSubOp();
+			//List<Var> vars = new ArrayList<Var>();
+			//vars.add(Var.alloc("sensor"));
+			//OpProject p = new OpProject(bgp,vars);
+			Query q= OpAsQuery.asQuery(bgp);
+			//q.addResultVar("pensor", new ExprVar("sensor"));
+			//q.addResultVar("sensor");
+			//QuerySolutionMap qs = new QuerySolutionMap();
+			//qs.
+			//QuerySolution initialBinding =;
+			System.out.println(q.serialize());
+			QueryExecution e = QueryExecutionFactory.sparqlService("http://localhost:8080/openrdf-workbench/repositories/owlimDemo/query", q.serialize());
+			ResultSet rs = e.execSelect();
+			QuerySolution qs;
+			while (rs.hasNext())
+			{
+				qs = rs.next();
+				qs.get("sensor");
+			}
+			
+			sp.sparql = service.getService().toString();
+			sp.service = service.getName();
+			return sp;
+		}
 		else 
 		{
+			//Binding b = BindingFactory.create();
+			//b.add(var, node)
 			logger.info("None of above: "+op.getClass().getName());
 			throw new NotImplementedException("Query processing for SPARQL operation not supported: "+op.getClass().getName());
 		}
