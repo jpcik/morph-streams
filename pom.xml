@@ -26,5 +26,19 @@
   	<module>semantic-streams-core</module>
   	<module>stream-translator</module>
   	<module>semantic-gsn</module>
+  	<module>semantic-esper</module>
   </modules>
+  	<distributionManagement>
+		<repository>
+			<id>aldebaran</id>
+			<name>Semantic Streams Repository</name>
+			<url>http://aldebaran.dia.fi.upm.es/artifactory/sstreams-releases-local</url>
+		</repository>
+		<snapshotRepository>
+			<id>aldebaran</id>
+			<name>Semantic Streams Snapshot Repository</name>
+			<url>http://aldebaran.dia.fi.upm.es/artifactory/sstreams-snapshots-local</url>
+		</snapshotRepository>
+	</distributionManagement> 
+  
 </project>
