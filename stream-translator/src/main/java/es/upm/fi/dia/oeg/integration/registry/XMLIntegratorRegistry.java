@@ -1,13 +1,10 @@
 package es.upm.fi.dia.oeg.integration.registry;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Properties;
@@ -39,14 +36,10 @@ import es.upm.fi.dia.oeg.integration.metadata.DataSourceMetadata;
 import es.upm.fi.dia.oeg.integration.metadata.DatasetMetadata;
 import es.upm.fi.dia.oeg.integration.metadata.IntegratedDataSourceMetadata;
 import es.upm.fi.dia.oeg.integration.metadata.MappingDocumentMetadata;
-import es.upm.fi.dia.oeg.integration.metadata.MetadataException;
 import es.upm.fi.dia.oeg.integration.metadata.PullDataSourceMetadata;
 import es.upm.fi.dia.oeg.integration.metadata.SPARQLServiceMetadata;
 import es.upm.fi.dia.oeg.integration.metadata.SourceType;
 import es.upm.fi.dia.oeg.integration.metadata.mappings.MappingLanguage;
-import es.upm.fi.dia.oeg.morph.r2rml.R2RML;
-import es.upm.fi.dia.oeg.morph.r2rml.R2RModel;
-import es.upm.fi.dia.oeg.r2o.stream.S2OReader;
 
 public abstract class XMLIntegratorRegistry extends IntegratorRegistry
 {
@@ -161,7 +154,7 @@ public abstract class XMLIntegratorRegistry extends IntegratorRegistry
 			Element e = (Element) sources.item(i);
 			intMD = buildIntegratedDataSourceMetadata(e);
 
-			logger.info("Retrieving data resource: "+ intMD.getSourceName());
+			logger.debug("Retrieving data resource: "+ intMD.getSourceName());
 			col.add(intMD);
 		}
 
@@ -420,7 +413,7 @@ public abstract class XMLIntegratorRegistry extends IntegratorRegistry
 			if (name.equals(sourceName))
 			{
 				intMD = buildPullDataSourceMetadata(e);
-				logger.info("Retrieving data resource: " + sourceName);
+				logger.debug("Retrieving data resource: " + sourceName);
 			}
 		}
 
@@ -441,7 +434,7 @@ public abstract class XMLIntegratorRegistry extends IntegratorRegistry
 			Element e = (Element) sources.item(i);
 			//String name = e.getAttribute("name");
 			pullMD = buildPullDataSourceMetadata(e);
-			logger.info("Retrieving data resource: " + pullMD.getSourceName());		
+			logger.debug("Retrieving data resource: " + pullMD.getSourceName());		
 			res.add(pullMD);
 		}
 

@@ -102,12 +102,6 @@
 		</dependency>
 		<dependency>
 			<groupId>es.upm.fi.dia.oeg.integrator</groupId>
-			<artifactId>morph</artifactId>
-			<version>0.0.4-SNAPSHOT</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>es.upm.fi.dia.oeg.integrator</groupId>
 			<artifactId>mapster</artifactId>
 			<version>0.0.1</version>
 			<scope>compile</scope>

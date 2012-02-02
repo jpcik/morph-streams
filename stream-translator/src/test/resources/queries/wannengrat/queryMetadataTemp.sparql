@@ -11,7 +11,7 @@ PREFIX qudt: <http://data.nasa.gov/qudt/owl/qudt#>
 PREFIX propPressure: <http://sweet.jpl.nasa.gov/2.1/propPressure.owl#> 
 PREFIX propTemperature: <http://sweet.jpl.nasa.gov/2.1/propTemperature.owl#> 
 SELECT ?temperature ?sensor ?timestamp ?obs 
-FROM NAMED STREAM swissex:WannengratSensors.srdf [NOW - 1 MINUTE ] 
+FROM NAMED STREAM swissex:WannengratSensors.srdf [NOW - 1 MINUTES ] 
 WHERE 
 { 
 	?obs     	a ssn:Observation;

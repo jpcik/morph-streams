@@ -28,7 +28,7 @@ public abstract class QueryTestBase
 	protected static String testConstructJoin="";
 	protected static String testConstruct="";
 	protected static String testConstructTide="";
-	protected static String testStreamGraphSimple="";
+	//protected static String testStreamGraphSimple="";
 	
 	protected static String queryCCOWaveHeight="";
 	protected static String constructCCOWaveHeight="";
@@ -44,7 +44,7 @@ public abstract class QueryTestBase
 		PropertyConfigurator.configure(QueryTestBase.class.getClassLoader().getResource("config/log4j.properties"));
 		queryCCO= ParameterUtils.loadAsString(QueryTestBase.class.getClassLoader().getResource("mappings/cco_query.sparql"));
 		queryCCOComplex= ParameterUtils.loadAsString(QueryTestBase.class.getClassLoader().getResource("mappings/cco_queryComplex.sparql"));
-		queryCCOComplexTide= ParameterUtils.loadAsString(QueryTestBase.class.getClassLoader().getResource("mappings/cco_queryComplexWind.sparql"));
+		queryCCOComplexTide= ParameterUtils.loadAsString(QueryTestBase.class.getClassLoader().getResource("queries/common/cco_queryPressure.sparql"));
 		testQuery= ParameterUtils.loadAsString(QueryTestBase.class.getClassLoader().getResource("queries/testQuery.sparql"));
 		testQuerySimple= ParameterUtils.loadAsString(QueryTestBase.class.getClassLoader().getResource("queries/testQuerySimple.sparql"));
 		testQueryFilter= ParameterUtils.loadAsString(QueryTestBase.class.getClassLoader().getResource("queries/testQueryFilter.sparql"));
@@ -54,7 +54,6 @@ public abstract class QueryTestBase
 		testConstructJoin = ParameterUtils.loadAsString(QueryTestBase.class.getClassLoader().getResource("queries/testConstructJoin.sparql"));
 		testConstruct = ParameterUtils.loadAsString(QueryTestBase.class.getClassLoader().getResource("queries/testConstruct.sparql"));
 		testConstructTide = ParameterUtils.loadAsString(QueryTestBase.class.getClassLoader().getResource("queries/testConstructTide.sparql"));
-		testStreamGraphSimple = ParameterUtils.loadAsString(QueryTestBase.class.getClassLoader().getResource("queries/common/testStreamGraphSimple.sparql"));
 		
 		queryCCOWaveHeight = ParameterUtils.loadAsString(QueryTestBase.class.getClassLoader().getResource("queries/queryCCOWaveHeight.sparql"));		
 		constructCCOWaveHeight = ParameterUtils.loadAsString(QueryTestBase.class.getClassLoader().getResource("queries/constructCCOWaveHeight.sparql"));
