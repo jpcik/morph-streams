@@ -129,7 +129,7 @@ void SelectQuery() : { }
 {
   SelectClause()
 //  ( DatasetClause() )*
-  ( FromClause() )?
+( FromClause() )
   WhereClause()
   SolutionModifier()
 }
@@ -185,7 +185,8 @@ void ConstructQuery() : { Template t ;
     // Full form.
     t = ConstructTemplate()
       { getQuery().setConstructTemplate(t) ; }
-    ( DatasetClause() )*
+    //( DatasetClause() )*
+    ( FromClause() )
     WhereClause()
     SolutionModifier()
  |
@@ -227,17 +228,18 @@ void DescribeQuery() : { Node n ; }
 void AskQuery() : {}
 {
   <ASK> { getQuery().setQueryAskType() ; }
-  ( DatasetClause() )*
+  //( DatasetClause() )*
+  ( FromClause() )
   WhereClause()
 }
 
 void FromClause() : {}
 {
-  ( LOOKAHEAD(3) DatasetClause() | DataStreamClause())
+  ( LOOKAHEAD(3) DatasetClause() |  DataStreamClause())*
 }
 void DataStreamClause() : {}
 {
-  ( <FROM> NamedStreamClause() )+
+  <FROM> NamedStreamClause() 
 }
 void NamedStreamClause() : 
 { 
