@@ -118,6 +118,32 @@ public class SparqlStreamParseTest
 	}
 
 	@Test
+	public void testNamedGraphs()
+	{
+		String queryString = "PREFIX cd: <http://semsorgrid4env.eu/ns#> "+							
+			"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "+ 
+			"SELECT ?WaveObs "+
+			"FROM NAMED cd:ccostatic.rdf "+
+			"FROM cd:cco.rdf "+
+			"FROM NAMED STREAM cd:ccometeo.srdf [NOW] "+
+			"FROM NAMED STREAM cd:ccometeo1.srdf [NOW] "+
+			"WHERE "+
+			"{ ?WaveObs a cd:Observation. 	} ";
+					
+		StreamQuery query = (StreamQuery) StreamQueryFactory.create(queryString);
+		assertEquals(2,query.getStreams().size());
+
+		ElementStream s = query.getStream("http://semsorgrid4env.eu/ns#ccometeo.srdf");
+		ElementTimeWindow w = (ElementTimeWindow) s.getWindow();
+		assertEquals(0, w.getFrom().getOffset());
+		assertNull(w.getTo());
+		
+		assertNotNull(query.getStream("http://semsorgrid4env.eu/ns#ccometeo1.srdf"));
+		assertEquals("http://semsorgrid4env.eu/ns#ccostatic.rdf", query.getNamedGraphURIs().get(0));
+		
+	}
+
+	@Test
 	public void testStreamLatest30Query()
 	{
 		String queryString = "PREFIX cd: <http://semsorgrid4env.eu/ns#> "+							
@@ -230,6 +256,63 @@ public class SparqlStreamParseTest
 		
 	}
 
+
+	@Test
+	public void testQueryAverageStreams()
+	{
+		String queryString = 
+			"PREFIX cd: <http://semsorgrid4env.eu/ns#> "+							
+			"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "+ 
+			"SELECT (AVG(?WaveObs) as ?cola) (?var2 as ?var3) "+
+			"FROM cd:ccostatic.rdf  \n"+
+			"FROM NAMED cd:cconamed.rdf  "+
+			"FROM NAMED STREAM cd:ccometeo.srdf [NOW]  "+
+			"FROM NAMED STREAM cd:ccometeo2.srdf [NOW]  "+
+			"WHERE "+
+			"{ ?WaveObs a cd:ObservationValue. }" +
+			"GROUP BY ?var2 ";
+								
+		StreamQuery query = (StreamQuery) StreamQueryFactory.create(queryString);
+		assertNotNull(query);
+		assertEquals(1, query.getAggregators().size());
+		logger.info("results: "+query.getResultVars().size());
+		assertEquals("cola",query.getResultVars().get(0));
+		assertEquals("var3",query.getResultVars().get(1));
+
+		Var v1 = query.getProjectVars().get(0);
+		ExprAggregator agg = (ExprAggregator) query.getProject().getExprs().get(v1);
+		
+		assertEquals(AggAvg.class, agg.getAggregator().getClass());
+		assertEquals("WaveObs", agg.getAggregator().getExpr().getVarName());
+		
+		assertEquals(1, query.getGroupBy().size());
+		
+		
+		assertNotNull(query.getStream("http://semsorgrid4env.eu/ns#ccometeo.srdf"));
+		assertNotNull(query.getStream("http://semsorgrid4env.eu/ns#ccometeo2.srdf"));
+	}
+
+	@Test
+	public void testQueryHaving()
+	{
+		String queryString = 
+			"PREFIX cd: <http://semsorgrid4env.eu/ns#> "+							
+			"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "+ 
+			"SELECT (AVG(?WaveObs) as ?cola) (?var2 as ?var3) ?var4 "+
+			"FROM NAMED STREAM cd:ccometeo.srdf [NOW]  "+
+			"WHERE "+
+			"{ ?WaveObs a cd:ObservationValue. }" +
+			"GROUP BY ?var2 ?var4 " +
+			"HAVING (?var2 > 5)";
+								
+		StreamQuery query = (StreamQuery) StreamQueryFactory.create(queryString);
+		assertNotNull(query);
+		
+		assertEquals(1,query.getHavingExprs().size());
+		assertEquals("var2",query.getHavingExprs().get(0).getVarsMentioned().iterator().next().getName());
+		
+
+	}
 	@Test
 	public void testQueryService()
 	{
@@ -246,11 +329,58 @@ public class SparqlStreamParseTest
 		Element el = query.getQueryPattern();
 		
 	}
-	
+
+	@Test
+	public void testConstructManyGraphs()
+	{
+		String queryString = 
+			"PREFIX cd: <http://semsorgrid4env.eu/ns#> "+							
+			"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "+ 
+			"CONSTRUCT { " +
+			"?WaveObs a cd:Observation; "+
+			"} "+
+			"FROM cd:ccostatic.rdf  \n"+
+			"FROM NAMED cd:cconamed.rdf  "+
+			"FROM NAMED STREAM cd:ccometeo.srdf [NOW]  "+
+			"FROM NAMED STREAM cd:ccometeo2.srdf [NOW]  "+
+			"WHERE "+
+			"{ ?WaveObs a cd:ObservationValue. }" ;
+										
+		StreamQuery query = (StreamQuery) StreamQueryFactory.create(queryString);
+		assertNotNull(query);
+
+		assertEquals("http://semsorgrid4env.eu/ns#cconamed.rdf",query.getNamedGraphURIs().get(0));
+		assertNotNull(query.getStream("http://semsorgrid4env.eu/ns#ccometeo.srdf"));
+		assertNotNull(query.getStream("http://semsorgrid4env.eu/ns#ccometeo2.srdf"));
+	}
+
 	@Test
 	public void  testConstructQuery()
 	{
 		Query query = StreamQueryFactory.create(constructSimple);
 		query.toString();
 	}
+	
+	@Test
+	public void testAskManyGraphs()
+	{
+		String queryString = 
+			"PREFIX cd: <http://semsorgrid4env.eu/ns#> "+							
+			"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "+ 
+			"ASK "+
+			"FROM cd:ccostatic.rdf  \n"+
+			"FROM NAMED cd:cconamed.rdf  "+
+			"FROM NAMED STREAM cd:ccometeo.srdf [NOW]  "+
+			"FROM NAMED STREAM cd:ccometeo2.srdf [NOW]  "+
+			"WHERE "+
+			"{ ?WaveObs a cd:ObservationValue. }" ;
+										
+		StreamQuery query = (StreamQuery) StreamQueryFactory.create(queryString);
+		assertNotNull(query);
+
+		assertEquals("http://semsorgrid4env.eu/ns#cconamed.rdf",query.getNamedGraphURIs().get(0));
+		assertNotNull(query.getStream("http://semsorgrid4env.eu/ns#ccometeo.srdf"));
+		assertNotNull(query.getStream("http://semsorgrid4env.eu/ns#ccometeo2.srdf"));
+	}
+
 }
