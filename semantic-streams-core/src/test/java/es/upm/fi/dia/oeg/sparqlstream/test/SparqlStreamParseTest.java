@@ -44,7 +44,8 @@ public class SparqlStreamParseTest
 	
 	static String queryInvalidWindow="";
 	static String constructSimple ="";
-	static String constructComplex="";
+	static String constructComplex=loadQuery("queries/common/constructComplex.sparql");
+	static String selectGroupExpressions=loadQuery("queries/common/selectGroupExpressions.sparql");
 	static String testStreamGraphSimple = loadQuery("queries/common/testStreamGraphSimple.sparql");
 
 	
@@ -59,7 +60,6 @@ public class SparqlStreamParseTest
 
 		queryInvalidWindow= ParameterUtils.loadAsString(SparqlStreamParseTest.class.getClassLoader().getResource("queries/common/invalidWindow.sparql"));
 		constructSimple = ParameterUtils.loadAsString(SparqlStreamParseTest.class.getClassLoader().getResource("queries/common/testConstructSimple.sparql"));
-		constructComplex = ParameterUtils.loadQuery("queries/common/constructComplex.sparql");
 	}
 
 
@@ -103,8 +103,28 @@ public class SparqlStreamParseTest
 	public void testStreamNowQuery()
 	{
 		String queryString = "PREFIX cd: <http://semsorgrid4env.eu/ns#> "+							
-			"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "+ 
+			"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"+ 
 			"SELECT ?WaveObs "+
+			"FROM NAMED STREAM cd:ccometeo.srdf [NOW] "+
+			"WHERE "+
+			"{ ?WaveObs a cd:Observation. 	} ";
+					
+		StreamQuery query = (StreamQuery) StreamQueryFactory.create(queryString);
+		assertEquals(1,query.getStreams().size());
+
+		ElementStream s = query.getStream("http://semsorgrid4env.eu/ns#ccometeo.srdf");
+		ElementTimeWindow w = (ElementTimeWindow) s.getWindow();
+		assertEquals(0, w.getFrom().getOffset());
+		assertNull(w.getTo());
+		
+	}
+	
+	@Test
+	public void testDStreamQuery()
+	{
+		String queryString = "PREFIX cd: <http://semsorgrid4env.eu/ns#> "+							
+			"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"+ 
+			"SELECT DSTREAM ?WaveObs "+
 			"FROM NAMED STREAM cd:ccometeo.srdf [NOW] "+
 			"WHERE "+
 			"{ ?WaveObs a cd:Observation. 	} ";
@@ -367,6 +387,13 @@ public class SparqlStreamParseTest
 	public void  testConstructQueryComplex()
 	{
 		Query query = StreamQueryFactory.create(constructComplex);
+		query.toString();
+	}
+	
+	@Test
+	public void  testSelectGroupByExpressions()
+	{
+		Query query = StreamQueryFactory.create(selectGroupExpressions);
 		query.toString();
 	}
 

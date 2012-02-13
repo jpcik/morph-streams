@@ -1,0 +1,29 @@
+PREFIX gn: <http://www.geonames.org/ontology#>
+PREFIX om-owl: <http://knoesis.wright.edu/ssw/ont/sensor-observation.owl#>
+PREFIX weather: <http://knoesis.wright.edu/ssw/ont/weather.owl#>
+PREFIX wgs84_pos: <http://www.w3.org/2003/01/geo/wgs84_pos>
+
+SELECT ?shoreName ?lat ?long
+      ( IF(AVG(?windSpeed) < 31, 6,
+         IF(AVG(?windSpeed) < 39, 7, IF(AVG(?windSpeed) < 47, 8, 9))) AS ?windForce )
+FROM NAMED STREAM <http://www.cwi.nl/SRBench/observations> [NOW - 1 HOURS]
+FROM <http://www.cwi.nl/SRBench/sensors>
+FROM <http://www.cwi.nl/SRBench/geonames>
+WHERE {
+ ?shore gn:featureClass ?shoreClass ;
+        wgs84_pos:lat ?lat ;
+        wgs84_pos:long ?long ;
+        gn:name|gn:officialName ?shoreName ;
+        gn:parentFeature+ ?florida .
+ ?florida gn:name|gn:officialName ?floridaName .
+ FILTER ( ( REGEX(?shoreClass, "L.CST" , "i") || # coast
+            REGEX(?shoreClass, "T.BCH" , "i") || # beach
+            REGEX(?shoreClass, "T.SHOR" , "i") ) && # shore
+          REGEX(?floridaName, "Florida", "i") )
+ ?sensor om-owl:generatedObservation ?observation;
+         om-owl:hasLocatedNearRel [ om-owl:hasLocation ?shore ] .
+ ?observation om-owl:observedProperty weather:_WindSpeed ;
+              om-owl:result [ om-owl:floatValue ?windSpeed ] .
+ FILTER ( 25 <= ?windSpeed || ?windSpeed <= 54 ) # milesPerHour
+}
+GROUP BY ?shoreName ?lat ?long ?windSpeed

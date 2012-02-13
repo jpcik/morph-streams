@@ -143,6 +143,7 @@ void SelectClause() : { Var v ; Expr expr ; Node n ; }
 {
   <SELECT>
     { getQuery().setQuerySelectType() ; }
+    (<RSTREAM> | <DSTREAM> | <ISTREAM>)?
   ( <DISTINCT> { getQuery().setDistinct(true);}
   | <REDUCED> { getQuery().setReduced(true); }
   )?
@@ -1692,6 +1693,9 @@ TOKEN [IGNORE_CASE] :
 //| < NOW: "now" >
 //| < AS: "as" >
 | < TIMESTAMP: "timestamp" >
+| < RSTREAM: "rstream" >
+| < DSTREAM: "dstream" >
+| < ISTREAM: "istream" >
 
 // Timeunit
 | < MS: "MS" >
