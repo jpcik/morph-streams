@@ -44,6 +44,7 @@ public class SparqlStreamParseTest
 	
 	static String queryInvalidWindow="";
 	static String constructSimple ="";
+	static String constructComplex="";
 	static String testStreamGraphSimple = loadQuery("queries/common/testStreamGraphSimple.sparql");
 
 	
@@ -58,6 +59,7 @@ public class SparqlStreamParseTest
 
 		queryInvalidWindow= ParameterUtils.loadAsString(SparqlStreamParseTest.class.getClassLoader().getResource("queries/common/invalidWindow.sparql"));
 		constructSimple = ParameterUtils.loadAsString(SparqlStreamParseTest.class.getClassLoader().getResource("queries/common/testConstructSimple.sparql"));
+		constructComplex = ParameterUtils.loadQuery("queries/common/constructComplex.sparql");
 	}
 
 
@@ -303,14 +305,14 @@ public class SparqlStreamParseTest
 			"WHERE "+
 			"{ ?WaveObs a cd:ObservationValue. }" +
 			"GROUP BY ?var2 ?var4 " +
-			"HAVING (?var2 > 5)";
+			"HAVING (?var2 > 5) ";
 								
 		StreamQuery query = (StreamQuery) StreamQueryFactory.create(queryString);
 		assertNotNull(query);
 		
 		assertEquals(1,query.getHavingExprs().size());
 		assertEquals("var2",query.getHavingExprs().get(0).getVarsMentioned().iterator().next().getName());
-		
+		logger.info(query.getHavingExprs().get(0));
 
 	}
 	@Test
@@ -360,7 +362,14 @@ public class SparqlStreamParseTest
 		Query query = StreamQueryFactory.create(constructSimple);
 		query.toString();
 	}
-	
+
+	@Test
+	public void  testConstructQueryComplex()
+	{
+		Query query = StreamQueryFactory.create(constructComplex);
+		query.toString();
+	}
+
 	@Test
 	public void testAskManyGraphs()
 	{
