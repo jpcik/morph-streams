@@ -53,7 +53,7 @@ public class EvaluatorTest extends QueryTestBase
 	private static SNEEAdapter snee;
 	private static QueryTranslator qt; 
 
-	private static String query1SensorSimple = loadQuery("queries/evaluate/query1SensorSimple.sparql");
+	//private static String query1SensorSimple = loadQuery("queries/evaluate/query1SensorSimple.sparql");
 	private static String querySingleSensorSimple = loadQuery("queries/evaluate/querySingleSensorSimple.sparql");
 	private static String query2SensorJoin = loadQuery("queries/evaluate/query2SensorJoin.sparql");
 	
@@ -104,7 +104,7 @@ public class EvaluatorTest extends QueryTestBase
 		
 		PullDataSourceMetadata pullMD =  
 			si.pullQueryFactory("urn:ssg4e:iqs:Evaluator", 
-								new QueryDocument(query1SensorSimple));
+								new QueryDocument(querySingleSensorSimple));
 		logger.info("Query identifier:"+ pullMD.getQueryId()+" - "+pullMD.getSourceName());					
 		for (int i=0;i<3000;i++)
 		{
@@ -224,7 +224,7 @@ avgs.add((double)total/ids.size());
 		String id =snee.invokeQueryFactory("(SELECT Hs AS waveheight, DateTime AS wavets FROM envdata_milford) ;", 5);
 		//PullDataSourceMetadata pullMD =  si.pullQueryFactory("urn:ssg4e:iqs:Evaluator", 
 		//		new QueryDocument(query1SensorSimple));
-		String query = query1SensorSimple;
+		String query = querySingleSensorSimple;
 		Collection<Long> avgs = Lists.newArrayList();
 		//Thread.sleep(5000);
 		qt.translate(query, new URI("mappings/ssg4env.ttl"));
@@ -254,7 +254,7 @@ avgs.add((double)total/ids.size());
 		{
 			
 			PullDataSourceMetadata pullMD =  si.pullQueryFactory("urn:ssg4e:iqs:Evaluator", 
-									new QueryDocument(query1SensorSimple));
+									new QueryDocument(querySingleSensorSimple));
 			logger.info("Query identifier:"+ pullMD.getQueryId()+" - "+pullMD.getSourceName());					
 			pullList.add(pullMD);
 		}

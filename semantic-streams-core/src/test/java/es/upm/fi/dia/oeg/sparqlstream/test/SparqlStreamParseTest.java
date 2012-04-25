@@ -46,8 +46,9 @@ public class SparqlStreamParseTest
 	static String constructSimple ="";
 	static String constructComplex=loadQuery("queries/common/constructComplex.sparql");
 	static String selectGroupExpressions=loadQuery("queries/common/selectGroupExpressions.sparql");
+	static String selectGroupByAvg=loadQuery("queries/common/selectGroupByAvg.sparql");
 	static String testStreamGraphSimple = loadQuery("queries/common/testStreamGraphSimple.sparql");
-
+	static String constructGroupBy=loadQuery("queries/common/constructGroupBy.sparql");
 	
 	private static Logger logger = Logger.getLogger(SparqlStreamParseTest.class.getName());
 	//static Properties props;
@@ -397,6 +398,22 @@ public class SparqlStreamParseTest
 		query.toString();
 	}
 
+	@Test
+	public void  testSelectGroupByAvg()
+	{
+		Query query = StreamQueryFactory.create(selectGroupByAvg);
+		query.toString();
+		assertEquals("shoreName", query.getGroupBy().getVars().get(0).getName());
+		logger.info(query.getGroupBy().getVars());
+	}
+	
+	@Test
+	public void testConstructGroupBy(){
+		Query query = StreamQueryFactory.create(constructGroupBy);
+		query.toString();
+		
+	}
+	
 	@Test
 	public void testAskManyGraphs()
 	{

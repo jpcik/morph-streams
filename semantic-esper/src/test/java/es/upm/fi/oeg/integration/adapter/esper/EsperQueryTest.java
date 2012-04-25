@@ -203,7 +203,7 @@ public class EsperQueryTest
 		//System.out.println(SparqlUtils.print(response.getResultSet()));
 	}
 	
-	@Test//@Ignore
+	@Test@Ignore
 	public void testPullSimple() throws DataSourceException, QueryException, InterruptedException
 	{
 		QueryDocument queryDoc = new QueryDocument(querySingleSensorSimple);
@@ -243,10 +243,10 @@ public class EsperQueryTest
 		}
 	}
 	
-	@Test@Ignore
+	@Test//@Ignore
 	public void testPushJoin() throws DataSourceException, QueryException, InterruptedException
 	{
-		QueryDocument queryDoc = new QueryDocument(query2SensorJoin);
+		QueryDocument queryDoc = new QueryDocument(querySingleSensorSimple);
 		EsperStatement md = (EsperStatement)si.registerQuery("urn:oeg:EsperEvaluation", queryDoc);
 		md.addListener(new EsperListener());
 		

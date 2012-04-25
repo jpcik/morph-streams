@@ -127,9 +127,21 @@ public class QueryTranslator
 	{
 		HashMap<String,Attribute> map = new HashMap<String, Attribute>();
 		StreamQuery query = (StreamQuery)StreamQueryFactory.create(queryString);
-		for (String var :query.getResultVars())
+		//query.getProjectVars()
+		if (query.isConstructType()){
+		List<Triple> lt=query.getConstructTemplate().getTriples();
+		for (Triple t:lt){
+			if (t.getSubject().isVariable())
+				map.put(t.getSubject().getName().toLowerCase(), null);
+			if (t.getObject().isVariable())
+				map.put(t.getObject().getName().toLowerCase(), null);			
+		}
+		}
+		if (query.isSelectType())
+		
+		for (Var var :query.getProjectVars())//.getResultVars())
 		{
-			map.put(var.toLowerCase(), null);
+			map.put(var.getVarName().toLowerCase(), null);
 		}
 		return map;
 		

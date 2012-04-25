@@ -17,8 +17,8 @@ public class EsperListener implements Observer
 
 	public void update(Observable o, Object arg) 
 	{
-		//Utils.printSparqlResult((Sparql)arg);
-		//System.out.println(arg);
+		Utils.printSparqlResult((Sparql)arg);
+		System.out.println(arg);
 		//System.out.println("papas: "+arg);
 		
 	}
