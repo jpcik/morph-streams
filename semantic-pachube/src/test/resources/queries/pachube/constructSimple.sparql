@@ -3,9 +3,14 @@ PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX time: <http://www.w3.org/2006/time#>
 PREFIX qudt: <http://data.nasa.gov/qudt/owl/qudt#>
 PREFIX propWindSpeed: <http://sweet.jpl.nasa.gov/2.1/propWindSpeed.owl#> 
-SELECT ?windspeed ?instant ?time 
-#FROM NAMED STREAM <http://semsorgrid4env.eu/ns#ccometeo.srdf> 
-#[NOW - 10 MINUTE TO NOW - 5 MINUTE SLIDE 3 MINUTE] 
+CONSTRUCT {
+  ?WindObs 	a ssn:Observation;
+				ssn:observationResultTime [time:xsdDateTime ?time];				
+				ssn:observationResult [ssn:hasValue [qudt:numericValue ?windspeed]];  
+				ssn:observedProperty propWindSpeed:WindSpeed.	
+}
+FROM NAMED STREAM <http://oeg-upm.net#PachubeSensors.srdf> 
+[NOW - 10 MINUTES TO NOW - 5 MINUTES SLIDE 1 MINUTES] 
 WHERE 
 { 
 	?WindObs 	a ssn:Observation;

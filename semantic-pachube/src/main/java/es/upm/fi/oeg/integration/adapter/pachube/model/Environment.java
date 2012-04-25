@@ -1,6 +1,7 @@
 package es.upm.fi.oeg.integration.adapter.pachube.model;
 
 import java.util.Collection;
+import java.util.List;
 
 import com.google.common.collect.Lists;
 
@@ -8,7 +9,7 @@ import com.google.common.collect.Lists;
 public class Environment {
 
 		private String id;
-		private String timeAlias;
+		private List<String> timeAlias;
 		private String status;
 		private String email;
 		private String feed;
@@ -17,6 +18,7 @@ public class Environment {
 		
 		public Environment()
 		{
+			timeAlias=Lists.newArrayList();
 			datastreams = Lists.newArrayList();
 		}
 		
@@ -56,12 +58,12 @@ public class Environment {
 		public String getId() {
 			return id;
 		}
-
+/*
 		public void setTimeAlias(String timeAlias) {
 			this.timeAlias = timeAlias;
 		}
-
-		public String getTimeAlias() {
+*/
+		public List<String> getTimeAlias() {
 			return timeAlias;
 		}
 		

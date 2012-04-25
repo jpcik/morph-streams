@@ -26,15 +26,15 @@ public class PachubeQueryTest
 {
 	static Properties props;
 	protected static String queryTemp=loadQuery("queries/pachube/queryTemp.sparql");
-
+	protected static String constructSimple=loadQuery("queries/pachube/constructSimple.sparql");
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception 
 	{
 		PropertyConfigurator.configure(
-				PachubeQueryTranslationTest.class.getClassLoader().getResource("config/log4j.properties"));
+				PachubeQueryTest.class.getClassLoader().getResource("config/log4j.properties"));
 		props = ParameterUtils.load(
-				PachubeQueryTranslationTest.class.getClassLoader().getResourceAsStream(
+				PachubeQueryTest.class.getClassLoader().getResourceAsStream(
 						"config/config_memoryStore.pachube.properties"));
 		
 	}
@@ -46,5 +46,14 @@ public class PachubeQueryTest
 		QueryDocument queryDoc = new QueryDocument(queryTemp);
 		ResponseDocument res = si.query("urn:oeg:PachubeTest", queryDoc );
 		Utils.printSparqlResult(res.getResultSet());
+	}
+	
+	@Test
+	public void testConstructSimple() throws IntegratorRegistryException, IntegratorConfigurationException, QueryCompilerException, DataSourceException, QueryException, InvalidR2RDocumentException, InvalidR2RLocationException
+	{
+		SemanticIntegrator si = new SemanticIntegrator(props);
+		QueryDocument queryDoc = new QueryDocument(constructSimple);
+		ResponseDocument res = si.query("urn:oeg:PachubeTest", queryDoc );
+		res.getRdfResultSet().write(System.out);
 	}
 }

@@ -1,5 +1,6 @@
 package es.upm.fi.oeg.integration.adapter.pachube;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.sql.ResultSet;
@@ -31,6 +32,8 @@ import es.upm.fi.oeg.integration.adapter.pachube.model.Environment;
 public class PachubeAdapter implements SourceAdapter
 {
 
+	private String apikey;
+	
 	public void addPullSource(String url, SourceType type)
 			throws MalformedURLException, DataSourceException {
 		// TODO Auto-generated method stub
@@ -39,13 +42,27 @@ public class PachubeAdapter implements SourceAdapter
 
 	public void init(Properties props) throws StreamAdapterException {
 		// TODO Auto-generated method stub
+		Properties pachubeProps=new Properties();
+		try {
+			pachubeProps.load(getClass().getClassLoader().getResourceAsStream("config/pachube.properties"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
+		apikey=pachubeProps.getProperty("api.key");
 	}
 
 	public String invokeQueryFactory(String query, int duration)
 			throws QueryCompilerException, QueryException 
 	{
 		// TODO Auto-generated method stub
+		return null;
+	}
+	public String invokeQueryFactory(SourceQuery query)
+	throws QueryCompilerException, QueryException 
+	{
+			// 	TODO Auto-generated method stub
 		return null;
 	}
 
@@ -68,7 +85,7 @@ public class PachubeAdapter implements SourceAdapter
 			WebResource webResource = c.resource("http://api.pachube.com/v2/feeds/"+
 					e.getId()+"/datastreams/"+e.getDatastreams().iterator().next().getId());
 			MultivaluedMap<String,String> queryParams = new MultivaluedMapImpl();
-			queryParams.add("key", "c9c8f31503188d651636301d3deda6b295862803f93c2e8034750798b1257f05");
+			queryParams.add("key", apikey);//"c9c8f31503188d651636301d3deda6b295862803f93c2e8034750798b1257f05");
 			queryParams.add("start", "2011-09-02T14:01:46Z");
 			queryParams.add("end", "2011-09-02T17:01:46Z");
 			queryParams.add("interval", "0");

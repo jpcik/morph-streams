@@ -28,6 +28,7 @@ import javax.sql.RowSetMetaData;
 import javax.sql.rowset.RowSetMetaDataImpl;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.hp.hpl.jena.query.QueryException;
 import com.mysql.jdbc.IterateBlock;
 
@@ -46,7 +47,8 @@ public class PachubeResultSet implements ResultSet
 	private Environment current;
 	private PachubeQuery query;
 	private ResultSetMetaData metadata;
-	
+	private Map<String,Integer> columns;
+
 	public PachubeResultSet(PachubeQuery query) 
 	{
 		this.query = query;
@@ -105,20 +107,30 @@ public class PachubeResultSet implements ResultSet
 	private ResultSetMetaData createMetaData() throws SQLException
 	{
 		RowSetMetaData md = new RowSetMetaDataImpl();
-		
+		columns = Maps.newHashMap();
+
 		Environment e = dataset.getResults().iterator().next();
-		md.setColumnCount(e.getDatastreams().size()+1);
+		//md.setColumnCount(e.getDatastreams().size()+1+);
+		md.setColumnCount(query.getProjectionMap().size()+1);
 		int i=1;
 		for (String alias: query.getProjectionMap().keySet())
 		{
+			columns.put(alias, i);
 			md.setColumnLabel(i, alias);
 			md.setColumnType(i, SourceDataTypes.VARCHAR.getSQLType());
 			i++;
 		}
-		//md.setColumnLabel(i, "extentname");
-		
+		md.setColumnLabel(i, "extentname");
+		columns.put("extentname", i);
+
 		return md;
 }
+	public int findColumn(String columnLabel) throws SQLException {
+		//if (columns==null)
+			//getMetaData();		
+		return columns.get(columnLabel);
+	}
+
 	@Override
 	public ResultSetMetaData getMetaData() throws SQLException
 	{
@@ -127,6 +139,38 @@ public class PachubeResultSet implements ResultSet
 		return metadata;
 	}
 
+	public Object getObject(int columnIndex) throws SQLException 
+	{
+		String label = metadata.getColumnLabel(columnIndex);
+		return getObject(label);
+		
+		//throw new QueryException("No data for index "+columnIndex+" "+label+" "+colName);
+	}
+
+	public Object getObject(String columnLabel) throws SQLException {
+		if (columnLabel.equals("extentname"))
+			return current.getId();
+		for (Environment e:query.getEnvironments())
+		{
+			if (current.getId().equals(e.getId()))
+			{
+				if (e.getTimeAlias().contains(columnLabel))
+					return currentDs.getAt();
+				else
+				for (Datastream ds: e.getDatastreams())
+				{
+					if (ds.getAlias().equals(columnLabel))
+						return currentDs.getCurrent_value();
+					//else if (ds.getTimeAlias().equals(columnLabel))
+						//return currentDs.getAt();
+				}
+			}
+		}
+			
+		throw new QueryException("No data for column "+columnLabel);	
+	}
+	
+	
 	public boolean wasNull() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
@@ -309,38 +353,6 @@ public class PachubeResultSet implements ResultSet
 		return null;
 	}
 
-	public Object getObject(int columnIndex) throws SQLException 
-	{
-		String label = metadata.getColumnLabel(columnIndex);
-		String colName = null;
-		
-		for (Environment e:query.getEnvironments())
-		{
-			if (current.getId().equals(e.getId()))
-			{
-				if (e.getTimeAlias().equals(label))
-					return currentDs.getAt();
-				else
-				for (Datastream ds: e.getDatastreams())
-				{
-					if (ds.getAlias().equals(label))
-						return currentDs.getCurrent_value();
-				}
-			}
-		}
-		
-		
-		throw new QueryException("No data for index "+columnIndex+" "+label+" "+colName);
-	}
-
-	public Object getObject(String columnLabel) throws SQLException {
-		throw new RuntimeException("not implemented!");
-	}
-
-	public int findColumn(String columnLabel) throws SQLException {
-		// TODO Auto-generated method stub
-		return 0;
-	}
 
 	public Reader getCharacterStream(int columnIndex) throws SQLException {
 		// TODO Auto-generated method stub

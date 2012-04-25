@@ -50,8 +50,10 @@ public class PachubeQuery extends QueryBase implements SourceQuery
 		for (Datastream d:e.getDatastreams())
 		{
 			projectionMap.put(d.getAlias(), null);
+			projectionMap.put(d.getTimeAlias(), null);			
 		}
-		projectionMap.put(e.getTimeAlias(),null);
+		for (String a:e.getTimeAlias())
+			projectionMap.put(a,null);
 		return projectionMap;	
 	}
 
@@ -75,6 +77,7 @@ public class PachubeQuery extends QueryBase implements SourceQuery
 			if (proj.getSubOp() instanceof OpRelation)
 			{
 				Environment e = new Environment();
+				
 				e.setId(proj.getRelation().getExtentName());
 				for (Entry<String,String> entry:proj.getVarMappings().entrySet())
 				{
@@ -83,10 +86,11 @@ public class PachubeQuery extends QueryBase implements SourceQuery
 					Datastream ds = new Datastream();
 					ds.setAlias(entry.getKey());
 					ds.setId(entry.getValue());
+					//ds.setTimeAlias("time");
 					e.getDatastreams().add(ds);
 					}
 					else
-					e.setTimeAlias(entry.getKey());
+					e.getTimeAlias().add(entry.getKey().toLowerCase());
 				}
 				environments.add(e );
 			}

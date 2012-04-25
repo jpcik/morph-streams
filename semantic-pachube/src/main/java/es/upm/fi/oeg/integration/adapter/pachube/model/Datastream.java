@@ -8,6 +8,8 @@ public class Datastream
 	private String[] tags;
 	private String at;
 	private String current_value;
+	public String start;
+	public String end;
 	public void setTags(String[] tags) {
 		this.tags = tags;
 	}

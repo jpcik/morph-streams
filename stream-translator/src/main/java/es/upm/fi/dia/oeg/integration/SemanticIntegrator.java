@@ -295,12 +295,14 @@ public class SemanticIntegrator
 		//boolean executeSNEE = Boolean.parseBoolean(reg.getRegistryProps().getProperty(EXECUTE_STREAM_ENGINE));
 		//logger.info("Executing with SNEE: "+executeSNEE);
 		Sparql rs = null;
-		//if (executeSNEE)
+		StreamQuery q = (StreamQuery) StreamQueryFactory.create(queryDoc.getQueryString());
+		if (q.isConstructType()){
+			doc.setRdfResultSet(exe.query(query, q.getConstructTemplate()));
+		}
+		else
 		{			
 			rs =exe.query(query,qt.getProjectList(queryDoc.getQueryString()));
-		}
-		
-		
+		}				
 		
 		doc.setResultSet(rs);
 		return doc;
