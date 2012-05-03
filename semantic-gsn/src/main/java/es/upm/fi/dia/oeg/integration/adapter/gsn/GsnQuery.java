@@ -233,7 +233,7 @@ public class GsnQuery extends QueryBase implements SourceQuery
 		else if (op.equals(">"))
 			return "ge";
 		else if (op.equals("="))
-			return "eq";
+			return "like";
 		else return null;
 	}
 	

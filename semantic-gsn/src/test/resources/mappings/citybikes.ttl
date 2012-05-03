@@ -1,0 +1,90 @@
+@prefix rr: <http://www.w3.org/ns/r2rml#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix ssg: <http://semsorgrid4env.eu/ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix ssn: <http://purl.oclc.org/NET/ssnx/ssn#> .
+@prefix swissex: <http://swiss-experiment.ch/metadata#> . 
+@prefix cd:  <http://www.semsorgrid4env.eu/ontologies/CoastalDefences.owl#> .
+@prefix dul: <http://www.loa-cnr.it/ontologies/DUL.owl#> .
+@prefix time: <http://www.w3.org/2006/time#> .
+@prefix regions: <http://www.semsorgrid4env.eu/ontologies/AdditionalRegions.owl#> .
+@prefix morph: <http://es.upm.fi.dia.oeg/morph#> .
+@prefix quantity: <http://data.nasa.gov/qudt/owl/quantity#> .
+@prefix qudt: <http://data.nasa.gov/qudt/owl/qudt#> .
+@prefix void: <http://rdfs.org/ns/void#>.
+@prefix propPressure: <http://sweet.jpl.nasa.gov/2.1/propPressure.owl#> . 
+@prefix propTemperature: <http://sweet.jpl.nasa.gov/2.1/propTemperature.owl#> . 
+@prefix : <http://es.upm.fi.dia.oeg/R2RMapping#> .
+ 
+
+:observedByPred rr:predicate ssn:observedBy.
+      						
+:foIWan5Air	   rr:predicateMap [ rr:predicate ssn:featureOfInterest ]; 
+      		   rr:objectMap    [ rr:object swissex:AirAtWan5 ].
+:foISS1054Air  rr:predicateMap [ rr:predicate ssn:featureOfInterest ]; 
+      		   rr:objectMap    [ rr:object swissex:AirAtSS1054 ].
+:foISS1058Air  rr:predicateMap [ rr:predicate ssn:featureOfInterest ]; 
+      		   rr:objectMap    [ rr:object swissex:AirAtSS1058 ].
+:obsProp   rr:predicateMap [ rr:predicate ssn:observedProperty ]; 
+      		   rr:objectMap    [ rr:object propTemperature:Temperature ].      		   
+:obsProp2   rr:predicateMap [ rr:predicate ssn:observedProperty ]; 
+      		   rr:objectMap    [ rr:object propPressure:Pressure ].      		   
+      		        		       
+
+:stationTm a rr:TriplesMap;
+  rr:logicalTable [rr:tableName "bizi"];
+  rr:subjectMap [rr:template "http://citybik.es/station/{id}"; rr:class ssn:Station];
+  rr:predicateObjectMap [rr:predicateMap [rr:predicate ssn:name];
+                         rr:objectMap [rr:column "id"]]
+.
+
+:wan5Result2 rr:refPredicateMap [ rr:predicate ssn:observationResult ]; 
+      		   rr:refObjectMap    [ rr:parentTriplesMap :Wan5Output2; rr:joinCondition "" ].
+      		        	      		       	      		        		        
+:Wan5Output2 a rr:TriplesMap;
+	rr:logicalTable [rr:tableName "bizi"];
+	rr:subjectMap [ rr:template "http://swiss-experiment.ch/metadata#Observation/AirPres/Wan5/Output/{timed}";
+					rr:class ssn:SensorOutput; rr:graph swissex:WannengratSensors.srdf ];
+	rr:refPredicateObjectMap [ rr:refPredicateMap [ rr:predicate ssn:hasValue ];
+							   rr:refObjectMap	  [ rr:parentTriplesMap :Wan5Temp2; rr:joinCondition "" ] ];	   		  
+.      		   
+
+:Wan5Temp2 a rr:TriplesMap;
+	rr:logicalTable [rr:tableName "bizi"];
+	rr:subjectMap [ rr:template "http://swiss-experiment.ch/metadata#ObservationValue/AirPressure/Wan5/{timed}";	
+				 rr:class ssn:ObservationValue; rr:graph swissex:WannengratSensors.srdf ];
+	rr:predicateObjectMap [ rr:predicateMap [ rr:predicate qudt:numericValue ];
+							rr:objectMap	[ rr:column "free" ] ];     		   
+.		   
+
+
+      
+:Wan5TempObservation2   a rr:TriplesMap;
+    rr:subjectMap [	rr:template "http://swiss-experiment.ch/metadata#Wan5/AirPres/Observation/{timed}";  
+    				rr:class ssn:Observation; rr:graph swissex:WannengratSensors.srdf ];
+	rr:logicalTable [rr:tableName "bizi"];
+    rr:refPredicateObjectMap :wan5Result2;
+    rr:predicateObjectMap :foIWan5Air;
+    rr:predicateObjectMap :obsProp2;
+    rr:refPredicateObjectMap  [ rr:refPredicateMap [ rr:predicate ssn:observedBy ];
+    					     rr:refObjectMap    [ rr:parentTriplesMap :stationTm; rr:joinCondition "" ]];
+#    rr:predicateObjectMap [ rr:predicateMap [ rr:predicate ssg:hasLatitude ]; 
+#      						rr:objectMap    [ rr:column "Lat" ]];
+#    rr:predicateObjectMap [ rr:predicateMap [ rr:predicate ssg:hasLongitude ]; 
+#      						rr:objectMap    [ rr:column "Lon" ]];
+      						
+    rr:refPredicateObjectMap :wan5Time2
+ .
+
+:wan5Time2   	   rr:refPredicateMap [ rr:predicate ssn:observationResultTime ];
+    		   rr:refObjectMap	  [ rr:parentTriplesMap :Wan5Instant2; rr:joinCondition "" ].
+
+:Wan5Instant2 a rr:TriplesMap;
+	rr:logicalTable [rr:tableName "bizi"];
+	rr:subjectMap [ rr:template "http://swiss-experiment.ch/metadata#Observation/AirPressure/Wan5/Instant/{DateTime}";
+					rr:class time:Instant; rr:graph swissex:WannengratSensors.srdf ];
+	rr:predicateObjectMap [ rr:predicateMap [ rr:predicate time:xsdDateTime ];
+							rr:objectMap	[ rr:column "timed" ] ];     		   
+.		   
+
+
