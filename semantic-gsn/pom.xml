@@ -21,14 +21,12 @@
 			<groupId>es.upm.fi.oeg.integration</groupId>
 			<artifactId>semantic-streams-core</artifactId>
 			<version>0.0.1</version>
-			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>es.upm.fi.oeg.integration</groupId>
 			<artifactId>stream-translator</artifactId>
 			<version>0.2.1</version>
-			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
@@ -64,7 +62,30 @@
 			<version>4.7</version>
 			<!--<scope>test</scope> -->
 		</dependency>
-
+<dependency>
+  <groupId>log4j</groupId>
+  <artifactId>log4j</artifactId>
+  <version>1.2.15</version>
+  <scope>provided</scope>
+  <exclusions>
+    <exclusion>
+      <groupId>javax.mail</groupId>
+      <artifactId>mail</artifactId>
+    </exclusion>
+    <exclusion>
+      <groupId>javax.jms</groupId>
+      <artifactId>jms</artifactId>
+    </exclusion>
+    <exclusion>
+      <groupId>com.sun.jdmk</groupId>
+      <artifactId>jmxtools</artifactId>
+    </exclusion>
+    <exclusion>
+      <groupId>com.sun.jmx</groupId>
+      <artifactId>jmxri</artifactId>
+    </exclusion>
+  </exclusions>
+</dependency>
 	</dependencies>
 	<build>
 		<plugins>
@@ -96,5 +117,46 @@
 			</plugin>
 
 		</plugins>
+				<pluginManagement>
+			<plugins>
+				<!-- Ignore/Execute plugin execution -->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<!-- copy-dependency plugin -->
+								<pluginExecution>
+									<pluginExecutionFilter>
+									<groupId>org.apache.axis2</groupId>
+				<artifactId>axis2-wsdl2code-maven-plugin</artifactId>
+										<versionRange>[1.0.0,)</versionRange>
+										<goals>
+											<goal>wsdl2code</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>								
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
+	<repositories>
+		<repository>
+			<id>aldebaran</id>
+			<name>semantic streams artifactory repository</name>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<url>http://aldebaran.dia.fi.upm.es/artifactory/sstreams-releases-local</url>
+			<layout>default</layout>
+		</repository>
+	</repositories>
 </project>

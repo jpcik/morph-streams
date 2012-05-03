@@ -6,7 +6,7 @@ CONSTRUCT {
 ?TideObs   cd:observationResult ?tideheight.
 }
 FROM NAMED STREAM <http://semsorgrid4env.eu/ns#ccometeo.srdf> 
-[NOW - 10 MINUTE TO NOW - 0 MINUTE] 
+[NOW - 10 MINUTES TO NOW - 0 MINUTES] 
 WHERE 
 { 
 ?WaveObs a cd:Observation;
