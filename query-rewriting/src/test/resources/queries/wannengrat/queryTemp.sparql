@@ -1,0 +1,28 @@
+PREFIX ssg: <http://semsorgrid4env.eu/ns#>							
+PREFIX ssn: <http://purl.oclc.org/NET/ssnx/ssn#> 
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+PREFIX cd:  <http://www.semsorgrid4env.eu/ontologies/CoastalDefences.owl#>
+PREFIX dul:	<http://www.loa-cnr.it/ontologies/DUL.owl#>
+PREFIX time: <http://www.w3.org/2006/time#>
+PREFIX regions: <http://www.semsorgrid4env.eu/ontologies/AdditionalRegions.owl#>
+PREFIX swissex: <http://swiss-experiment.ch/metadata#> 
+PREFIX quantity: <http://data.nasa.gov/qudt/owl/quantity#>
+PREFIX qudt: <http://data.nasa.gov/qudt/owl/qudt#>
+PREFIX propTemperature: <http://sweet.jpl.nasa.gov/2.1/propTemperature.owl#> 
+SELECT ?waveheight ?value 
+#FROM NAMED STREAM <http://semsorgrid4env.eu/ns#ccometeo.srdf> 
+#[NOW - 10 MINUTE TO NOW - 5 MINUTE SLIDE 3 MINUTE] 
+WHERE 
+{ 
+	?WaveObs 	a ssn:Observation;
+#				ssn:observationResultTime ?instant;				
+				ssn:observationResult ?result;  
+				ssn:featureOfInterest ?feature;  
+				ssn:observedProperty propTemperature:Temperature.
+#	?instant	time:xsdDateTime ?wavets.
+	?result		ssn:hasValue ?value.
+	?value		qudt:numericValue ?waveheight.
+# 	?feature	a ssn:FeatureOfInterest;
+# 				cd:locatedInRegion regions:SouthEastEnglandCCO. 
+}
+		

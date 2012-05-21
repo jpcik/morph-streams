@@ -1,0 +1,22 @@
+PREFIX sb: <http://www.w3.org/2009/SSN-XG/Ontologies/SensorBasis.owl#> 
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ssn: <http://purl.oclc.org/NET/ssnx/ssn#>
+PREFIX cd:  <http://www.semsorgrid4env.eu/ontologies/CoastalDefences.owl#> 
+PREFIX ssg: <http://semsorgrid4env.eu/ns#>    
+SELECT ?wavets ?waveheight ?tideheight 
+FROM NAMED STREAM <http://semsorgrid4env.eu/ns#ccometeo.srdf> 
+[NOW - 1 MINUTE SLIDE 10 S] 
+WHERE { 
+	?WaveObs a ssn:Observation;
+		ssn:observationResultTime ?wavets;
+ 		ssn:observationResult ?waveheight;
+ 		ssn:observedProperty cd:WaveHeight;
+ 		ssn:observedBy ssg:MilfordSensor.  		 
+	?TideObs a ssn:Observation;
+		ssn:observationResultTime ?tidets;
+ 		ssn:observationResult ?tideheight;
+ 		ssn:observedProperty cd:TideHeight;
+ 		ssn:observedBy ssg:HernebaySensor.  		  		
+ 	FILTER (?waveheight>?tideheight) 		
+}
+		

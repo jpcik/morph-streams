@@ -98,6 +98,7 @@ public class QueryTranslator
 	private Properties props;
 	
 	private R2RModel r2r;
+
 	private LinksetProcessor linker;
 	private boolean metadataMappings = false;
 	private OpProjection bindings;
@@ -113,7 +114,9 @@ public class QueryTranslator
 	public QueryTranslator(Properties props, String mappingEndopint)
 	{
 		this.props = props;
-		r2r = new R2RModel(mappingEndopint);		
+		r2r = new R2RModel(mappingEndopint);
+		
+		//reader=R2rmlReader.apply(mappingEndopint);//testPath+"/"+name+"/"+ tc.mappingDoc)
 		//if (props.getProperty(SemanticIntegrator.INTEGRATOR_METADATA_MAPPINGS_ENABLED).equals("true"))
 		//	metadataMappings = true;
 	}
@@ -343,6 +346,7 @@ public class QueryTranslator
 			try
 			{
 				//if (r2r.getTriplesMap()==null)
+				
 					r2r.read(mappingUri);
 			} catch (InvalidR2RDocumentException e)
 			{
