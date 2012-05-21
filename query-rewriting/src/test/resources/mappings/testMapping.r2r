@@ -1,0 +1,146 @@
+@prefix rr: <http://www.w3.org/ns/r2rml#> .
+@prefix morph: <http://es.upm.fi.dia.oeg/morph#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix ssg: <http://semsorgrid4env.eu/ns#> .
+@prefix dept: <http://www.example.com/dept#> .
+@prefix emp: <http://www.example.com/emp#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> . 
+@prefix : <http://es.upm.fi.dia.oeg/R2RMapping#> . 
+
+:tideObsResult rr:predicateMap [ rr:constant ssg:observationResult ]; 
+      		   rr:objectMap    [ rr:column "Ts" ].
+:waveObsResult rr:predicateMap [ rr:constant ssg:observationResult ]; 
+      		   rr:objectMap    [ rr:column "Hs" ].
+:waveMaxObsResult rr:predicateMap [ rr:constant ssg:observationResult ]; 
+      		   rr:objectMap    [ rr:column "Hmax" ].
+:waveObsTime   rr:predicateMap [ rr:constant ssg:observationResultTime ]; 
+      		   rr:objectMap    [ rr:column "timestamp" ].
+:waveObsLat    rr:predicateMap [ rr:constant ssg:hasLatitude ]; 
+      		   rr:objectMap    [ rr:column "Lat" ].
+:waveObsLon    rr:predicateMap [ rr:constant ssg:hasLongitude ]; 
+      		   rr:objectMap    [ rr:column "Lon" ].
+:stormLat      rr:predicateMap [ rr:constant ssg:latitude ]; 
+      		   rr:objectMap    [ rr:column "Lat" ].
+:stormLon      rr:predicateMap [ rr:constant ssg:longitude ]; 
+      		   rr:objectMap    [ rr:column "Lon" ].
+:waveFoISea	   rr:predicateMap [ rr:constant ssg:featureOfInterest ]; 
+      		   rr:objectMap    [ rr:parentTriplesMap :CCOSeaFOIMap; rr:joinCondition "" ].
+:waveFoIWind   rr:predicateMap [ rr:constant ssg:featureOfInterest ]; 
+      		   rr:objectMap    [ rr:parentTriplesMap :CCOWindFOIMap; rr:joinCondition "" ].
+:waveObsProp   rr:predicateMap [ rr:constant ssg:observedProperty ]; 
+      		   rr:objectMap    [ rr:constant ssg:WaveHeight ].      		   
+:waveMaxObsProp   rr:predicateMap [ rr:constant ssg:observedProperty ]; 
+      		   rr:objectMap    [ rr:constant ssg:WaveHeightMax ].      		   
+:tideObsProp   rr:predicateMap [ rr:constant ssg:observedProperty ]; 
+      		   rr:objectMap    [ rr:constant ssg:TideHeight ].      		   
+      		   
+:waveSubjectMap rr:template "http://semsorgrid4env.eu/ns#Observation/WaveHeight/CCO/Milford{DateTime}"; 
+    				 rr:class ssg:Observation; rr:graph ssg:ccometeo.srdf . 
+
+:milfordTable rr:tableName "envdata_milford";
+	morph:uniqueIndex "timestamp".
+
+:milfordSensorPOMap rr:predicateMap [ rr:constant ssg:measuredBy ]; 
+      				rr:objectMap    [ rr:constant ssg:MilfordSensor ].
+      						
+      						
+:SotonShipObservation   a rr:TTriplesMapClass;	
+    rr:logicalTable [rr:trableName "envdata_southampton"];  
+    rr:subjectMap :waveSubjectMap;
+    rr:predicateObjectMap :waveObsResult;
+    rr:predicateObjectMap :waveObsTime,:shipObsLat,:shipObsLon;
+    rr:refPredicateObjectMap :shipFoI;
+    rr:predicateObjectMap :ObsProp;
+    rr:predicateObjectMap [ rr:predicateMap [ rr:predicate ssg:measuredBy ]; 
+      						rr:objectMap    [ rr:object ssg:MilfordSensor ]];
+ .
+
+      		   
+:MilfordWaveObservation   a rr:TriplesMap;	
+    rr:logicalTable :milfordTable;
+    rr:subjectMap [ rr:template "http://semsorgrid4env.eu/ns#Observation/WaveHeight/CCO{DateTime}";
+      				rr:class ssg:Observation; rr:graph ssg:ccometeo.srdf ];
+    rr:predicateObjectMap :waveObsProp,:waveObsResult,:waveObsTime,:waveObsLat,:waveObsLon,:milfordSensorPOMap;
+    rr:predicateObjectMap :waveFoISea;
+ .
+ 
+:MilfordWaveMax a rr:TriplesMap;
+    rr:logicalTable :milfordTable;
+    rr:subjectMap [ rr:template "http://semsorgrid4env.eu/ns#SensorOutput/WaveHeightMax/CCO/Milford{DateTime}";
+      				rr:class ssg:SensorOutput; rr:graph ssg:ccometeo.srdf ];
+    rr:predicateObjectMap [rr:predicateMap [rr:constant ssg:hasValue]; 
+    					   rr:objectMap [rr:column "HMax"]];
+.
+
+:MilfordWaveMaxObservation   a rr:TriplesMap;	
+    rr:logicalTable :milfordTable;
+    rr:subjectMap [ rr:template "http://semsorgrid4env.eu/ns#Observation/WaveHeightMax/CCO/Milford{DateTime}";
+			        rr:class ssg:Observation; rr:graph ssg:ccometeo.srdf ];
+    rr:predicateObjectMap :waveMaxObsProp,:waveMaxObsResult,:waveObsTime,:waveObsLat,:waveObsLon,:milfordSensorPOMap;                          
+    rr:predicateObjectMap :waveFoISea,
+    						[ rr:predicateMap [rr:constant ssg:obsedrvationResult]; 
+    						  rr:objectMap [rr:parentTriplesMap :MilfordWaveMax ; rr:joinCondition ""] ];
+ .
+
+ 
+ :FolkestoneWaveObservation   a rr:TriplesMap;
+    rr:logicalTable [ rr:tableName "envdata_folkestone"];
+    rr:subjectMap [ rr:template "http://semsorgrid4env.eu/ns#Observation/WaveHeight/CCO{DateTime}";
+      rr:class ssg:Observation; rr:graph ssg:ccometeo.srdf ];	
+    rr:predicateObjectMap :waveObsResult;
+    rr:predicateObjectMap :waveObsTime,:waveObsLat,:waveObsLon;
+    rr:predicateObjectMap :waveFoISea;
+    rr:predicateObjectMap :waveObsProp;
+    rr:predicateObjectMap [ rr:predicateMap [ rr:constant ssg:measuredBy ]; 
+      						rr:objectMap    [ rr:constant ssg:FolkestoneSensor ]];
+ .
+
+ 
+
+ :HernebayWaveObservation   a rr:TriplesMap;
+    rr:logicalTable [rr:tableName "envdata_hernebay"];
+    rr:subjectMap [ rr:template "http://semsorgrid4env.eu/ns#Observation/WaveHeight/CCO/Hernebay{DateTime}"; 
+    			 rr:class ssg:Observation; rr:graph ssg:ccometeo.srdf ];	
+    rr:predicateObjectMap :waveObsResult;
+    rr:predicateObjectMap :waveObsTime,:waveObsLat,:waveObsLon;
+    rr:predicateObjectMap :waveFoISea;
+    rr:predicateObjectMap :waveObsProp;
+    rr:predicateObjectMap [ rr:predicateMap [ rr:constant ssg:measuredBy ]; 
+      						rr:objectMap    [ rr:constant ssg:HernebaySensor ]];
+ .
+
+ :BoscombeTideObservation   a rr:TriplesMap;
+    rr:subjectMap [ rr:template "http://semsorgrid4env.eu/ns#Observation/TideHeight/CCO/Boscombe{DateTime}"; 
+    			 rr:class ssg:Observation; rr:graph ssg:ccometeo.srdf ];
+	rr:logicalTable [rr:tableName "envdata_boscombe_tide"];
+    rr:predicateObjectMap :tideObsResult;
+    rr:predicateObjectMap :waveObsTime,:waveObsLat,:waveObsLon;
+    rr:predicateObjectMap :waveFoISea;
+    rr:predicateObjectMap :tideObsProp;
+    rr:predicateObjectMap [ rr:predicateMap [ rr:constant ssg:measuredBy ]; 
+      						rr:objectMap    [ rr:constant ssg:BoscombeSensor ]];
+ .
+
+ 
+ :CCOSeaFOIMap a rr:TriplesMap;
+  	rr:subjectMap [rr:class ssg:Feature;  rr:constant ssg:Sea; rr:graph ssg:metadata.rdf ];
+  	rr:logicalTable [rr:tableName ""];
+ 	rr:predicateObjectMap [ rr:predicateMap [rr:constant ssg:locatedInRegion];
+   							rr:objectMap 	[rr:constant ssg:SouthEastEnglandCCO] ];
+ .
+ :CCOWindFOIMap a rr:TriplesMap;
+  	rr:subjectMap [rr:class ssg:Feature;  rr:constant ssg:Wind; rr:graph ssg:metadata.rdf ];
+  	rr:logicalTable [rr:tableName ""];
+ 	rr:predicateObjectMap [ rr:predicateMap [rr:constant ssg:locatedInRegion];
+   							rr:objectMap 	[rr:constant ssg:SouthEastEnglandCCO] ];
+ .
+ 
+:ThresholdMap   a rr:TriplesMap;
+    rr:subjectMap [ rr:template "http://semsorgrid4env.eu/ns#ThresholdBoscombe"; 
+    			 rr:class ssg:Threshold; rr:graph ssg:ccometeo.srdf ];
+	rr:logicalTable [rr:tableName "storm_threshold"];
+	rr:predicateObjectMap [ rr:predicateMap [ rr:constant ssg:hasThreshold ]; 
+      						rr:objectMap    [ rr:column "stormValue"  ]];
+     rr:predicateObjectMap :stormLat,:stormLon;
+      						
+ .

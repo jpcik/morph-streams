@@ -1,0 +1,75 @@
+@prefix rr: <http://www.w3.org/ns/r2rml#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix ssg: <http://semsorgrid4env.eu/ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix ssn: <http://purl.oclc.org/NET/ssnx/ssn#> . 
+@prefix cd:  <http://www.semsorgrid4env.eu/ontologies/CoastalDefences.owl#> .
+@prefix dul: <http://www.loa-cnr.it/ontologies/DUL.owl#> .
+@prefix time: <http://www.w3.org/2006/time#> .
+@prefix regions: <http://www.semsorgrid4env.eu/ontologies/AdditionalRegions.owl#> .
+@prefix morph: <http://es.upm.fi.dia.oeg/morph#> .
+@prefix : <http://es.upm.fi.dia.oeg/R2RMapping#> . 
+
+:waveFoISea	   rr:predicateMap [ rr:constant ssn:featureOfInterest ]; 
+      		   rr:objectMap    [ rr:constant ssg:Sea ].
+:waveObsProp   rr:predicateMap [ rr:constant ssn:observedProperty ]; 
+      		   rr:objectMap    [ rr:constant cd:WaveHeight ].      		   
+      		  
+:MilfordWaveHeight a rr:TriplesMap;
+	rr:logicalTable [rr:tableName "envdata_milford"];
+	rr:subjectMap [ rr:template "http://semsorgrid4env.eu/ns#ObservationValue/WaveHeight/CCO/{DateTime}";	
+					 rr:class ssn:ObservationValue; rr:graph ssg:ccometeo.srdf ];
+	rr:predicateObjectMap [ rr:predicateMap [ rr:constant ssn:hasQuantityValue ];
+							rr:objectMap	[ rr:column "Hs" ] ];     		   
+.		   
+
+
+
+:MilfordWaveResult a rr:TriplesMap;
+	rr:logicalTable [rr:tableName "envdata_milford"];
+	rr:subjectMap [ rr:template "http://semsorgrid4env.eu/ns#Observation/WaveHeight/CCO/Output/{DateTime}";
+				 rr:class ssn:SensorOutput; rr:graph ssg:ccometeo.srdf ];
+	rr:predicateObjectMap [ rr:predicateMap [ rr:constant ssn:hasValue ];
+							   rr:objectMap	  [ rr:parentTriplesMap :MilfordWaveHeight; rr:joinCondition "" ] ];	   		  
+.      		   
+
+:MilfordWaveInstant a rr:TriplesMap;
+		rr:logicalTable [rr:tableName "envdata_milford"];
+		rr:subjectMap [ rr:template "http://semsorgrid4env.eu/ns#Observation/WaveHeight/CCO/Instant/{DateTime}";
+							rr:class time:Instant; rr:graph ssg:ccometeo.srdf ];
+		rr:predicateObjectMap [ rr:predicateMap [ rr:constant time:xsdDateTime ];
+								rr:objectMap	[ rr:column "timestamp" ] ];     		   		  
+.
+      
+:MilfordWaveObservation   a rr:TriplesMap;
+    rr:subjectMap [	rr:template "http://semsorgrid4env.eu/ns#Observation/WaveHeight/CCO/{DateTime}";  
+    				 rr:class ssn:Observation; rr:graph ssg:ccometeo.srdf ];
+	rr:logicalTable [rr:tableName "envdata_milford"];
+    rr:predicateObjectMap [ rr:predicateMap [ rr:constant ssn:observationResult ]; 
+      		   				   rr:objectMap    [ rr:parentTriplesMap :MilfordWaveResult; rr:joinCondition "" ]];
+   
+    rr:predicateObjectMap :waveFoISea;
+    rr:predicateObjectMap :waveObsProp;
+    rr:predicateObjectMap [ rr:predicateMap [ rr:constant ssg:hasLatitude ]; 
+      						rr:objectMap    [ rr:column "Lat" ]];
+    rr:predicateObjectMap [ rr:predicateMap [ rr:constant ssg:hasLongitude ]; 
+      						rr:objectMap    [ rr:column "Lon" ]];
+      						
+    rr:predicateObjectMap[ rr:predicateMap [ rr:constant ssn:observationResultTime ];
+    		   				  rr:objectMap	 [ rr:parentTriplesMap :MilfordWaveInstant; rr:joinCondition "" ]]; 
+ .
+
+
+:MilfordSensorMap a rr:TriplesMap;
+  	rr:logicalTable [rr:tableName "sensors"];
+  	rr:subjectMap [rr:class ssn:Sensor; rr:constant ssg:MilfordSensor];
+ 	rr:predicateObjectMap [ rr:predicateMap [rr:constant ssn:hasProperty];
+   							rr:objectMap 	[rr:constant ssg:MilfordSensorLocation] ];
+.
+     
+:CCOSeaFOIMap a rr:TriplesMap;
+  	rr:subjectMap [rr:class ssn:FeatureOfInterest;  rr:constant ssg:Sea];
+  	rr:logicalTable [rr:tableName ""];
+ 	rr:predicateObjectMap [ rr:predicateMap [rr:constant cd:locatedInRegion];
+   							rr:objectMap 	[rr:constant regions:SouthEastEnglandCCO] ];
+.
