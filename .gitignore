@@ -1,4 +1,8 @@
-/target
-/.settings
+*.class
+*.log
+target/
+.settings/
 .classpath
-
+bin/
+output/
+project/boot/
