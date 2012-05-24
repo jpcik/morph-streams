@@ -12,11 +12,10 @@ import java.net.URI
 
 class SRBenchRewritingTest extends JUnitSuite with ShouldMatchersForJUnit with Checkers with Logging {
   PropertyConfigurator.configure(classOf[SRBenchRewritingTest].getClassLoader().getResource("config/log4j.properties"));
-  val props = load(classOf[SRBenchRewritingTest].getClassLoader.getResourceAsStream("config/config_memoryStore.properties"));
+  val props = load(getClass.getClassLoader.getResourceAsStream("config/config_memoryStore.properties"));
   val trans = new QueryRewriting(props);    
   
   @Before def initialize() {}
-
  
   @Test def testTranslate() {     
     val query = loadQuery("queries/srbench/basic-pattern-matching.sparql")
