@@ -1,38 +1,45 @@
 @prefix rr: <http://www.w3.org/ns/r2rml#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix ssg: <http://semsorgrid4env.eu/ns#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix ssn: <http://purl.oclc.org/NET/ssnx/ssn#> . 
-@prefix cd:  <http://www.semsorgrid4env.eu/ontologies/CoastalDefences.owl#> .
 @prefix dul: <http://www.loa-cnr.it/ontologies/DUL.owl#> .
 @prefix time: <http://www.w3.org/2006/time#> .
-@prefix regions: <http://www.semsorgrid4env.eu/ontologies/AdditionalRegions.owl#> .
 @prefix morph: <http://es.upm.fi.dia.oeg/morph#> .
 @prefix om-owl: <http://knoesis.wright.edu/ssw/ont/sensor-observation.owl#> .
 @prefix weather: <http://knoesis.wright.edu/ssw/ont/weather.owl#> .
 @prefix srbench: <http://cwi.nl/SRBench/> .
 @prefix : <http://es.upm.fi.dia.oeg/R2RMapping#> . 
 
-
-
 :obsResult a rr:TriplesMap;
-  rr:logicalTable [rr:tableName "datacell.srbin"];
-  rr:subjectMap   [ rr:column "s";
-					rr:class om-owl:Result; rr:graph srbench:observations ];
-  rr:predicateObjectMap [ rr:predicateMap [ rr:constant om-owl:floatValue ];
-						  rr:objectMap	[ rr:column "o" ] ];     		   		  
-  rr:predicateObjectMap [ rr:predicateMap [ rr:constant om-owl:uom ];
-						  rr:objectMap	[ rr:column "o" ] ];     		   		  
+  rr:logicalTable [rr:sqlQuery "SELECT * FROM datacell.srbin WHERE p=\'om-owl:floatValue\'"];
+  rr:subjectMap   [ rr:column "s"; rr:class om-owl:Result; rr:graph srbench:observations ];
 .
-      
+
+:obsResultFloatValue a rr:TriplesMap;
+  rr:logicalTable [rr:sqlQuery "SELECT * FROM datacell.srbin WHERE p=\'om-owl:floatValue\'"];
+  rr:subjectMap   [ rr:column "s"; rr:class om-owl:Result; rr:graph srbench:observations ];
+  rr:predicateObjectMap [ rr:predicate om-owl:floatValue; rr:objectMap	[ rr:column "o" ] ];     		   		  
+.
+:obsResultUom a rr:TriplesMap;
+  rr:logicalTable [rr:sqlQuery "SELECT * FROM datacell.srbin WHERE p=uom"];
+  rr:subjectMap   [ rr:column "s"; rr:class om-owl:Result; rr:graph srbench:observations ];
+  rr:predicateObjectMap [ rr:predicate om-owl:uom;  rr:objectMap [ rr:column "o" ] ];     		   		  
+.
+
 :rainfallObservation a rr:TriplesMap;
-  rr:logicalTable [ rr:sqlQuery "SELECT * FROM datacell.srbin WHERE o=RainfallObservation";  
-                    rr:tafleName "datacell.srbin"; morph:select "s = RainfallObservation"];
-  rr:subjectMap   [ rr:column "s";  
-    			    rr:class weather:RainfallObservation; rr:graph srbench:observations ];
-  rr:predicateObjectMap [ rr:predicateMap [ rr:constant om-owl:procedure ];
-                          rr:objectMap    [ rr:column "o"] ];
-  rr:predicateObjectMap [ rr:predicateMap [ rr:constant om-owl:result ];
-      		   			  rr:objectMap    [ rr:parentTriplesMap :obsResult; rr:joinCondition "" ]];
+  rr:logicalTable [ rr:sqlQuery "SELECT * FROM datacell.srbin WHERE o=RainfallObservation and p=type"];
+  rr:subjectMap   [ rr:column "s"; rr:class weather:RainfallObservation; rr:graph srbench:observations ];
+.   
+ 
+:rainfallProcedure a rr:TriplesMap;
+  rr:logicalTable [ rr:sqlQuery "SELECT * FROM datacell.srbin WHERE p=procedure"];
+  rr:subjectMap   [ rr:column "s"; rr:class weather:Observation; rr:graph srbench:observations ];
+  rr:predicateObjectMap [ rr:predicate om-owl:procedure; rr:objectMap [ rr:column "o"] ];
+.   
+:rainfallResult a rr:TriplesMap;
+  rr:logicalTable [ rr:sqlQuery "SELECT * FROM datacell.srbin WHERE p=result"];
+  rr:subjectMap   [ rr:column "s"; rr:class weather:CObservation; rr:graph srbench:observations ];
+  rr:predicateObjectMap [ rr:predicate om-owl:result;
+                          rr:objectMap    [ rr:parentTriplesMap :obsResult; rr:joinCondition "" ]];
 .   
  

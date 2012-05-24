@@ -35,7 +35,6 @@ import es.upm.fi.dia.oeg.integration.algebra.OpSparql
 import es.upm.fi.dia.oeg.integration.algebra.OpUnary
 import es.upm.fi.dia.oeg.integration.algebra.OpWindow
 import es.upm.fi.dia.oeg.integration.algebra.Window
-import es.upm.fi.dia.oeg.integration.translation.QueryOptimizer
 import es.upm.fi.dia.oeg.integration.translation.QueryTranslationException
 import es.upm.fi.dia.oeg.integration.QueryExecutor
 import es.upm.fi.dia.oeg.integration.SourceQuery
@@ -124,8 +123,9 @@ class QueryRewriting(props: Properties) extends Logging {
 
   def transform(algebra: OpInterface): SourceQuery = // throws QueryTranslationException
     {
-      val adapter = props.getProperty(QueryExecutor.QUERY_EXECUTOR_ADAPTER);
-      val queryClass = props.getProperty(QueryExecutor.QUERY_EXECUTOR_ADAPTER + "." + adapter + ".query");
+      val adapter = props.getProperty("siq.queryexecutor.adapter");
+      val queryClass = props.getProperty("siq.queryexecutor.adapter" + "." + adapter + ".query");
+      logger.info("Using query adapter: "+queryClass)
       val resquery =
         if (!adapter.equals("snee")) {
           val theClass =
@@ -350,7 +350,7 @@ class QueryRewriting(props: Properties) extends Logging {
 
       opNew.display();
 
-      val opt = new QueryOptimizer();
+      val opt = new QueryOptimizer
       opt.staticOptimize(opNew);
       val span4 = System.currentTimeMillis() - ini;
 
@@ -370,7 +370,7 @@ class QueryRewriting(props: Properties) extends Logging {
         var skip = false
         triples.foreach { t =>
           skip = false
-          if (t.getPredicate().getURI().equals(RDF.typeProp.getURI())) {
+          if (t.getPredicate.getURI.equals(RDF.typeProp.getURI)) {
             val tMaps = reader.filterBySubject(t.getObject.getURI) //r2r.getTriplesMapForUri(t.getObject().getURI());
             skip = tMaps.isEmpty
             if (!skip) {
@@ -395,26 +395,11 @@ class QueryRewriting(props: Properties) extends Logging {
             {
               var pro: OpInterface = null;
               opCurrent = null;
-              /*
-					if (poMaps.size()== -8)
-					{
-						logger.debug("predicate not found: "+t.getPredicate().getURI());
-						try
-						{
-							pro = linker.findPredicate(t, null);
-							if (opCurrent!=null) opCurrent = union(opCurrent,pro);
-							else opCurrent = pro;
-						} catch (QueryException e)
-						{
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					}*/
 
               poMaps.foreach {
                 case (poMap, tMap) =>
                   logger.debug("Graphs: " + poMap.graphMap);
-                  val graphstream=poMap.graphMap
+                  val graphstream=if (poMap.graphMap==null)tMap.subjectMap.graphMap else poMap.graphMap
                   
                   val stream = query.getStream(if (graphstream!=null) graphstream.constant.asResource.getURI else null)
 
@@ -578,17 +563,25 @@ class QueryRewriting(props: Properties) extends Logging {
       return union;
     }
 
-  private def createSelection(t: Triple, nMap: TermMap, value: String): OpSelection =
-    {
+  private def createSelection(xprs:Seq[(String,String,String)]):OpSelection={
+    val varName=xprs.map(_._2).mkString("-")
+    val selection = new OpSelection(varName, null)
+    xprs.foreach{x=>
+      val xpr = BinaryXpr.createFilter(x._1, x._2, x._3)
+      selection.addExpression(xpr)
+    }
+    selection
+  }
+  
+  private def createSelection(operation:String,varName:String,value:String):OpSelection={
+    createSelection(Array((varName,operation,value)))
+  }
+  
+  private def createSelection(t: Triple, nMap: TermMap, value: String):OpSelection={
       val vari = if (nMap.column == null)
         "localVar" + t.getPredicate().getLocalName() + t.getSubject().getName()
       else nMap.column;
-      val selection = new OpSelection(vari, null);
-      val xpr = BinaryXpr.createFilter(vari, "=", value);
-
-      selection.addExpression(xpr);
-
-      return selection;
+      createSelection("=",vari,value)
     }
 
   private def createProjection(t: Triple, tMap: TriplesMap, nMap: TermMap, poMap: PredicateObjectMap, stream: ElementStream): OpProjection =
@@ -718,24 +711,14 @@ class QueryRewriting(props: Properties) extends Logging {
         return null;
     }
 
-  private def getAlias(query: String): String =
-    {
-      val p = new CCJSqlParserManager();
-      val s = p.parse(new StringReader(query));
-      val select = s.asInstanceOf[Select];
-      val ps = select.getSelectBody().asInstanceOf[PlainSelect];
-      val tab = ps.getFromItem().asInstanceOf[net.sf.jsqlparser.schema.Table];
-      tab.getName();
 
-      return tab.getName();
-
-    }
 
   private def createRelation(tMap: TriplesMap, nMap: TermMap, stream: ElementStream): OpUnary =
     {
       var tableid = "";
       var extentName = "";
-    
+     
+      val uri=new URI(tMap.uri).getFragment()
     
       logger.debug("Creating relation: " + nMap +
         " table: " + tMap.logicalTable.tableName);
@@ -746,15 +729,18 @@ class QueryRewriting(props: Properties) extends Logging {
         tableid = tMap.logicalTable.tableName
         extentName = tableid;
       } else if (tMap.logicalTable.sqlQuery != null) {
-        tableid = getAlias(tMap.logicalTable.sqlQuery)
+        tableid = SQLParser.tableAlias(tMap.logicalTable.sqlQuery)
 
-        extentName = "(" + tMap.logicalTable.sqlQuery + ") " + tableid;
+        //extentName = "(" + tMap.logicalTable.sqlQuery + ") " + tableid;
+        extentName=tableid
       }
     
+      
+      
       val relation =
         if (stream != null) {
           logger.debug("Create window: " + stream.getUri());
-          val window = new OpWindow(tableid, null);
+          val window = new OpWindow(tableid+uri, null);
           val sw = stream.getWindow().asInstanceOf[ElementTimeWindow];
           if (sw != null) {
             val win = new Window();
@@ -772,8 +758,9 @@ class QueryRewriting(props: Properties) extends Logging {
           }
           window;
         } else {
-          new OpRelation(tableid);
+          new OpRelation(tableid+"lala");
         }
+      
       relation.setExtentName(extentName);
       /*did I ever use the unique index?
       if (nMap.getTriplesMap().getTableUniqueIndex() != null)
@@ -781,7 +768,17 @@ class QueryRewriting(props: Properties) extends Logging {
 */
       logger.debug("Created relation: " + relation.getExtentName());
 
-      return relation;
+      if (tMap.logicalTable.sqlQuery!=null){
+        val cond=SQLParser.selections(tMap.logicalTable.sqlQuery)
+        if (cond.isDefined){
+          val sel=createSelection(cond.get)
+          sel.setSubOp(relation)
+          sel
+        }
+        else relation
+      }        
+      else
+        relation
     }
     
 

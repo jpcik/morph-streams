@@ -16,8 +16,8 @@ libraryDependencies ++= Seq(
   "es.upm.fi.oeg.integration" % "stream-translator" % "0.2.1",
   "org.apache.ws.commons.axiom" % "axiom-api" % "1.2.11",
   "org.apache.ws.commons.axiom" % "axiom-impl" % "1.2.11",  
-  "org.scalatest" % "scalatest_2.9.2" % "1.7.2" % "test",
-  "org.scalacheck" % "scalacheck_2.9.2" % "1.9" % "test"
+  "org.scalatest" % "scalatest_2.9.1" % "1.7.2" % "test",
+  "org.scalacheck" % "scalacheck_2.9.1" % "1.9" % "test"
 )
 
 resolvers ++= Seq(
