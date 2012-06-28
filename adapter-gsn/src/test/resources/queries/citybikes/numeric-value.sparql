@@ -1,0 +1,10 @@
+PREFIX ssn: <http://purl.oclc.org/NET/ssnx/ssn#> 
+PREFIX qudt: <http://data.nasa.gov/qudt/owl/qudt#> 
+PREFIX bicy: <http://citybikes.linkeddata.es/ontology#>  
+SELECT ?avbikes ?av   
+WHERE {
+  ?output bicy:hasAvailableBikesValue ?av.
+  ?av qudt:numericValue ?avbikes.
+}
+
+

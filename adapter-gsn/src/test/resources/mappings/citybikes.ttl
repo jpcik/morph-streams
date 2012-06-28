@@ -1,0 +1,66 @@
+@prefix rr: <http://www.w3.org/ns/r2rml#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix ssg: <http://semsorgrid4env.eu/ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix ssn: <http://purl.oclc.org/NET/ssnx/ssn#> .
+@prefix bicy: <http://citybikes.linkeddata.es/ontology#> . 
+@prefix dul: <http://www.loa-cnr.it/ontologies/DUL.owl#> .
+@prefix time: <http://www.w3.org/2006/time#> .
+@prefix quantity: <http://data.nasa.gov/qudt/owl/quantity#> .
+@prefix qudt: <http://data.nasa.gov/qudt/owl/qudt#> .
+@prefix void: <http://rdfs.org/ns/void#>.
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix : <http://es.upm.fi.dia.oeg/R2RMapping#> .
+
+:device a rr:TriplesMap;
+  rr:logicalTable [rr:tableName "citybikes"];
+  rr:subjectMap [rr:template "http://citybikes.linkeddata.es/id/bikesystem/{systemid}/sensingdevice/{id}"; 
+                 rr:class bicy:BikeStationSensingDevice];
+  rr:predicateObjectMap [rr:predicate dcterms:identifier;rr:objectMap [rr:column "id"]];
+  rr:predicateObjectMap [rr:predicate ssn:featureOfInterest;rr:objectMap [rr:constant bicy:free_bikes_feature]]
+.
+
+:freeSlotsValue a rr:TriplesMap;
+  rr:logicalTable [rr:tableName "citybikes"];
+  rr:subjectMap [ rr:template "http://citybikes.linkeddata.es/id/bikessystem/{systemid}/sensingdevice/{id}/freeslotsvalue/{timed}";	
+		  	      rr:class bicy:FreeSlotsValue; rr:graph bicy:CityBikes.srdf ];
+  rr:predicateObjectMap [ rr:predicate qudt:numericValue;rr:objectMap [rr:column "free"]];     		   
+.		   
+
+:availableBikesValue a rr:TriplesMap;
+  rr:logicalTable [rr:tableName "citybikes"];
+  rr:subjectMap [ rr:template "http://citybikes.linkeddata.es/id/bikessystem/{systemid}/sensingdevice/{id}/availablebikesvalue/{timed}";	
+	   		      rr:class bicy:AvailableBikesValue; rr:graph bicy:CityBikes.srdf ];
+  rr:predicateObjectMap [ rr:predicate qudt:numericValue;rr:objectMap [rr:column "bikes"]];     		   
+.		   
+      		        	      		       	      		        		        
+:bikesOutput a rr:TriplesMap;
+  rr:logicalTable [rr:tableName "citybikes"];
+  rr:subjectMap [ rr:template "http://citybikes.linkeddata.es/id/bikesystem/{systemid}/sensingdevice/{id}/sensoroutput/{timed}";
+				  rr:class bicy:BikeStationSensorOutput; rr:graph bicy:CityBikes.srdf ];
+  rr:predicateObjectMap [ rr:predicate bicy:hasFreeSlotsValue;
+  						  rr:objectMap	  [ rr:parentTriplesMap :freeSlotsValue; rr:joinCondition "" ] ];	   		  
+  rr:predicateObjectMap [ rr:predicate bicy:hasAvailableBikesValue;
+						  rr:objectMap	  [ rr:parentTriplesMap :availableBikesValue; rr:joinCondition "" ] ];	   		  
+.      		   
+
+:bikesResultTime a rr:TriplesMap;	
+  rr:logicalTable [rr:tableName "citybikes"];
+  rr:subjectMap [ rr:template "http://citybikes.linkeddata.es/id/bikesystem/{systemid}/sensingdevice/{id}/bikesresulttime/{timed}";
+	  			  rr:class time:Instant; rr:graph bicy:CityBikes.srdf ];
+  rr:predicateObjectMap [ rr:predicate time:inXSDDateTime;rr:objectMap [ rr:column "timestamp" ] ];     		   
+.		   
+     
+:bikesObservation a rr:TriplesMap;
+  rr:logicalTable [rr:tableName "citybikes"];
+  rr:subjectMap   [rr:template "http://citybikes.linkeddata.es/bikesystem/{systemid}/sensingdevice/{id}/observation/{timed}";  
+    			   rr:class bicy:FreeBikesObservation; rr:graph bicy:CityBikes.srdf ];
+  rr:predicateObjectMap [rr:predicateMap [ rr:constant ssn:observedProperty ]; 
+      		             rr:objectMap    [ rr:constant bicy:free-slots ]];      		   
+  rr:predicateObjectMap [rr:predicateMap [ rr:constant ssn:observedBy ];
+    					 rr:objectMap    [ rr:parentTriplesMap :device; rr:joinCondition "" ]];
+  rr:predicateObjectMap [rr:predicateMap [ rr:constant ssn:observationResult ]; 
+      		             rr:objectMap    [ rr:parentTriplesMap :bikesOutput; rr:joinCondition "" ]];
+  rr:predicateObjectMap [rr:predicateMap [ rr:constant ssn:observationResultTime ];
+    		             rr:objectMap	 [ rr:parentTriplesMap :bikesResultTime; rr:joinCondition "" ]]
+ .
