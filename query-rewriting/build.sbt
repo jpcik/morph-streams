@@ -13,16 +13,15 @@ libraryDependencies ++= Seq(
   "es.upm.fi.oeg.morph" % "morph-core" % "1.0.0",
   "es.upm.fi.oeg.morph" % "morph-querygen" % "1.0.0",
   "es.upm.fi.oeg.integration" % "semantic-streams-core" % "0.0.1",
-  "es.upm.fi.oeg.integration" % "stream-translator" % "0.2.1",
   "org.apache.ws.commons.axiom" % "axiom-api" % "1.2.11",
   "org.apache.ws.commons.axiom" % "axiom-impl" % "1.2.11",  
   "org.scalatest" % "scalatest_2.9.1" % "1.7.2" % "test",
   "org.scalacheck" % "scalacheck_2.9.1" % "1.9" % "test"
 )
 
-resolvers ++= Seq(
-  "Local Maven Repository" at "file://"+Path.userHome.absolutePath+"/.m2/repository",
-  DefaultMavenRepository
+resolvers ++= Seq(  
+  DefaultMavenRepository,
+  "Local Maven Repository" at "file://"+Path.userHome.absolutePath+"/.m2/repository"
 )
 
 scalacOptions += "-deprecation"
