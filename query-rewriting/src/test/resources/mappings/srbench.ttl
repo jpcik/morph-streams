@@ -11,7 +11,7 @@
 @prefix : <http://es.upm.fi.dia.oeg/R2RMapping#> . 
 
 :obsResult a rr:TriplesMap;
-  rr:logicalTable [rr:sqlQuery "SELECT * FROM datacell.srbin WHERE p=\'om-owl:floatValue\'"];
+  rr:logicalTable [rr:sqlQuery "SELECT * FROM datacell.srbin WHERE p=\'rdfs:type\' AND o=\'om-owl:Result\'"];
   rr:subjectMap   [ rr:column "s"; rr:class om-owl:Result; rr:graph srbench:observations ];
 .
 
@@ -40,6 +40,7 @@
   rr:logicalTable [ rr:sqlQuery "SELECT * FROM datacell.srbin WHERE p=result"];
   rr:subjectMap   [ rr:column "s"; rr:class weather:CObservation; rr:graph srbench:observations ];
   rr:predicateObjectMap [ rr:predicate om-owl:result;
-                          rr:objectMap    [ rr:parentTriplesMap :obsResult; rr:joinCondition "" ]];
+                          rr:objectMap    [ rr:parentTriplesMap :obsResult; 
+                                            rr:joinCondition [rr:parent "s";rr:child "o"] ]];
 .   
  

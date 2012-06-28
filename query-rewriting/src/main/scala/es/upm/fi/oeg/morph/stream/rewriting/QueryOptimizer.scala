@@ -1,55 +1,94 @@
 package es.upm.fi.oeg.morph.stream.rewriting
 import com.weiglewilczek.slf4s.Logging
-import es.upm.fi.dia.oeg.integration.algebra.OpInterface
-import es.upm.fi.dia.oeg.integration.algebra.OpBinary
-import es.upm.fi.dia.oeg.integration.algebra.OpJoin
-import es.upm.fi.dia.oeg.integration.algebra.OpProjection
-import es.upm.fi.dia.oeg.integration.algebra.OpMultiUnion
 import collection.JavaConversions._
 import com.google.common.collect.Sets
-import es.upm.fi.dia.oeg.integration.algebra.OpUnary
-import es.upm.fi.dia.oeg.integration.algebra.OpSelection
-import es.upm.fi.dia.oeg.integration.algebra.xpr.BinaryXpr
-import es.upm.fi.dia.oeg.integration.algebra.xpr.VarXpr
-import es.upm.fi.dia.oeg.integration.algebra.xpr.ValueXpr
-import es.upm.fi.dia.oeg.integration.algebra.xpr.OperationXpr
 import java.util.TreeMap
-import es.upm.fi.dia.oeg.integration.algebra.OpUnion
 import org.apache.commons.lang.NotImplementedException
+import es.upm.fi.oeg.morph.stream.algebra.LeftOuterJoinOp
+import es.upm.fi.oeg.morph.stream.algebra.InnerJoinOp
+import es.upm.fi.oeg.morph.stream.algebra.MultiUnionOp
+import es.upm.fi.oeg.morph.stream.algebra.ProjectionOp
+import es.upm.fi.oeg.morph.stream.algebra.AlgebraOp
+import es.upm.fi.oeg.morph.stream.algebra.BinaryOp
+import es.upm.fi.oeg.morph.stream.algebra.UnaryOp
+import es.upm.fi.oeg.morph.stream.algebra.SelectionOp
+import es.upm.fi.oeg.morph.stream.algebra.xpr.BinaryXpr
+import es.upm.fi.oeg.morph.stream.algebra.xpr.VarXpr
+import es.upm.fi.oeg.morph.stream.algebra.xpr.OperationXpr
+import es.upm.fi.oeg.morph.stream.algebra.xpr.ValueXpr
+import es.upm.fi.oeg.morph.stream.algebra.xpr.NullValueXpr
+import es.upm.fi.oeg.morph.stream.algebra.LeftOuterJoinOp
+import es.upm.fi.oeg.morph.stream.algebra.RootOp
+import es.upm.fi.oeg.morph.stream.algebra.ProjectionOp
+import es.upm.fi.oeg.morph.stream.algebra.JoinOp
+import es.upm.fi.oeg.morph.stream.algebra.xpr.XprUtils
 
 class QueryOptimizer extends Logging{
-  def optimizeJoin(join:OpJoin):OpInterface={
-    if (join.getLeft == null || join.getRight == null)
+  def optimizeLeftJoin(join:LeftOuterJoinOp):AlgebraOp={
+    if (join.left == null || join.right == null)
 	  return null  //join with empty relations is empty
-	if (join.getConditions().isEmpty()){
+	if (join.conditions.isEmpty){
 	  logger.debug("Cross product");
-	  return join;
+	  return join
 	}
-	else if (join.getLeft.isInstanceOf[OpProjection] &&
-				join.getRight.isInstanceOf[OpProjection]){
-	  val left=join.getLeft.asInstanceOf[OpProjection]
-	  val right=join.getRight.asInstanceOf[OpProjection]
-	  if (join.hasEqualConditions && !left.getSubOp.isInstanceOf[OpSelection] 
-	    && !right.getSubOp().isInstanceOf[OpSelection]){
-		return join.getLeft.merge(join.getRight, join.getConditions)		
-	  }
-	}
-	else {
-	  logger.debug("join merging "+join.getConditions)
-	  join.getLeft.display
-	  join.getRight.display
+    return join
+  }
 
-	  if (join.getLeft().isInstanceOf[OpJoin]){
-		val ljoin = join.getLeft().asInstanceOf[OpJoin]
-		if (ljoin.getConditions().isEmpty())// optimize empty cross prod
+  def pushDownJoin(join:InnerJoinOp):AlgebraOp={
+    (join.left,join.right) match{
+      case (op1:ProjectionOp,op2:ProjectionOp)=>
+        logger.debug("push down join "+ join.conditions.mkString("--")+" ")
+        logger.debug(join.hasEqualConditions+ join.isCompatible.toString+op1.getRelation)
+        if (join.hasEqualConditions && join.isCompatible && op1.getRelation.extentName.equals(op2.getRelation.extentName)){
+          logger.debug("merging projs")
+          op1.merge(op2)
+        }
+        else if (!join.isCompatible) null
+        else join        
+      case (op1:MultiUnionOp,op2:AlgebraOp)=>new MultiUnionOp(op1.id,
+          op1.children.map(c=>c._1->optimizeJoin(new InnerJoinOp(c._2,op2))))
+      case (op1:AlgebraOp,op2:MultiUnionOp)=>new MultiUnionOp(op2.id,
+          op2.children.map(c=>c._1->optimizeJoin(new InnerJoinOp(c._2,op1))))      
+    }
+  }
+  
+  def listCombinations(join:JoinOp)=(join.left,join.right) match{
+    case (op1:ProjectionOp,op2:ProjectionOp)=>List(join)
+    case (op1:MultiUnionOp,op2:AlgebraOp)=>
+    
+  }
+  
+  def optimizeJoin(join:InnerJoinOp):AlgebraOp={
+    
+    if (join.left == null || join.right == null)
+	  return null  //join with empty relations is empty
+	if (join.conditions.isEmpty){
+	  logger.debug("Cross product")
+	  return join
+	}	/*
+	else if (join.left.isInstanceOf[ProjectionOp] &&
+				join.right.isInstanceOf[ProjectionOp]){
+	  val left=join.left.asInstanceOf[ProjectionOp]
+	  val right=join.right.asInstanceOf[ProjectionOp]
+	  if (join.hasEqualConditions && !left.subOp.isInstanceOf[SelectionOp] 
+	    && !right.subOp.isInstanceOf[SelectionOp]){
+		return join.left.merge(join.right, join.conditions)		
+	  }
+	}*/
+	else if (false) {
+	  logger.debug("join merging "+join.conditions)
+	  join.left.display
+	  join.right.display
+
+	  if (join.left.isInstanceOf[InnerJoinOp]){
+		val ljoin = join.left.asInstanceOf[InnerJoinOp]
+		if (ljoin.conditions.isEmpty)// optimize empty cross prod
 		{
-		  join.setLeft(ljoin.getRight());
-		  ljoin.setRight(join);
-		  return ljoin;
+		  return new InnerJoinOp(ljoin.left,new InnerJoinOp(ljoin.right,join.right))
 		}
 	  }
 					
-	  if (join.getRight.isInstanceOf[OpJoin])
+	  if (join.right.isInstanceOf[InnerJoinOp])
 		return join
 					
 	  /* this merges left and right					
@@ -62,120 +101,102 @@ class QueryOptimizer extends Logging{
 	  }*/
 					
 					
-	  if (join.getLeft().isInstanceOf[OpMultiUnion])
+	  if (join.left.isInstanceOf[MultiUnionOp])
 		//join.getRight() instanceof OpMultiUnion) //push down join in unions
 	  {
-		  val newunion = new OpMultiUnion(null);					
-		  val lunion = join.getLeft().asInstanceOf[OpMultiUnion]
+		  val lunion = join.left.asInstanceOf[MultiUnionOp]
 						
 		  val rightOps = 
-		    if (join.getRight().isInstanceOf[OpMultiUnion]){
-			  val runion=join.getRight().asInstanceOf[OpMultiUnion]
-			  runion.getChildren().values().toList
+		    if (join.right.isInstanceOf[MultiUnionOp]){
+			  val runion=join.right.asInstanceOf[MultiUnionOp]
+			  runion.children.values.toList
 		    }
-		    else if (join.getRight() .isInstanceOf[OpProjection])
-			  List(join.getRight)
+		    else if (join.right.isInstanceOf[ProjectionOp])
+			  List(join.right)
 		    else List()
 						
 						
 		  var i=0;
-		  lunion.getChildren().values().foreach{lo=>
-		    rightOps.foreach{ro=>
-			  val newjoin = new OpJoin(null,lo.copyOp(),ro.copyOp(), false );
-			  newjoin.getConditions().addAll(join.getConditions());
-			  newunion.getChildren().put("join"+i, newjoin);
+		  val children=lunion.children.values.map{lo=>
+		    rightOps.map{ro=>
+			  val newjoin = new InnerJoinOp(lo.copyOp,ro.copyOp)//, false ) why is the generate condition false?
+			  //newjoin.conditions.addAll(join.conditions);
+			  val d="join"+i-> newjoin
 			  i+=1
-		   }
-		}							
+			  d
+		     }
+		   }.flatten.toMap
+     	val newunion = new MultiUnionOp(null,children)				
+ 
 		return newunion;
 	  }
 	}
+	else return staticOptimize(pushDownJoin(join))
     return join
   }
-  def staticOptimize(op:OpBinary):OpInterface={
-	val l = staticOptimize(op.getLeft)
-	val r = staticOptimize(op.getRight)
-	op.setLeft(l)
-	op.setRight(r)
-    op match {
-	  case join:OpJoin=>optimizeJoin(join)
-	  case union:OpUnion=>throw new NotImplementedException("Optimize union not implemented")
+  
+  def staticOptimize(op:BinaryOp):AlgebraOp={
+	val l = staticOptimize(op.left)
+	val r = staticOptimize(op.right)	
+	op match {
+	  case join:InnerJoinOp=>optimizeJoin(new InnerJoinOp(l,r))
+	  case join:LeftOuterJoinOp=>optimizeLeftJoin(new LeftOuterJoinOp(l,r))
+	  //case union:UnionOp=>throw new NotImplementedException("Optimize union not implemented")
 	  case _=>op
 	}
-
   }
   
-	def staticOptimize(union:OpMultiUnion):OpInterface={
-		logger.debug("optimize: "+union);
-		//union.display();
-		val toRemove = Sets.newHashSet[String]();
-		union.getChildren().entrySet().foreach{entry=>	
-			val optimized = staticOptimize(entry.getValue());
-			if (optimized!=null)
-				union.getChildren().put(entry.getKey(),optimized );
-			else
-			{
-				toRemove.add(entry.getKey());				
-			}
-		}
-		toRemove.foreach{key=>
-			union.getChildren().remove(key);
-			union.index.keySet.foreach{k=>
-				if (union.index.get(k).containsValue(key))
-				{
-					var rkey:String = null;
-					union.index.get(k).keySet.foreach{k2=>
-						if (union.index.get(k).get(k2).contains(key))
-							rkey = k2;
-					}
-					union.index.get(k).removeAll(rkey);
-				}
-				//throw new NotImplementedException("this key "+key);
-				//union.index.get(k).inverse().remove(key);
-			}
-		}
-		if (union.getChildren().size()==1)
-		{
-			logger.debug("simplified");
-			//return union.getChildren().values().iterator().next();
-		}
-		//union.display();
-		return union;
+	def staticOptimize(union:MultiUnionOp):AlgebraOp={
+		logger.debug("optimize: "+union)		
 		
+		val newChildren=union.children.values.map(op=>staticOptimize(op)).filter(_!=null)
+		/*
+		val grouped=newChildren.filter(_.isInstanceOf[UnaryOp]).groupBy(_.asInstanceOf[UnaryOp].getRelation.extentName)
+		val merged=grouped.map{g=>
+		  val xprs= g._2.map{op=>op match{
+		    case proj:ProjectionOp=>proj.expressions
+		    case _=>null
+		  }}.flatten.toMap
+		  new ProjectionOp(null,xprs,g._2.head.asInstanceOf[UnaryOp].getRelation)
+		}*/
+		.zipWithIndex
+		val newUnion=new MultiUnionOp(union.id,newChildren.map(c=>c._1.id+c._2->c._1).toMap)
+		simplify(newUnion)
 	}
 	
-	def staticOptimize(op:OpUnary):OpInterface={
-		val o =staticOptimize(op.getSubOp());
-		op.setSubOp(o);
-		
-		if (op.getName().equals("projection"))
-		{
-			
-			val proj = op.asInstanceOf[OpProjection]
-			if (proj.getSubOp()==null) //no relation to project
+	private def simplify(union:MultiUnionOp)={
+	  if (union.children.size==1)
+	    union.children.head._2
+	  else union
+	}
+	
+	def optimizeProjection(proj:ProjectionOp):AlgebraOp={
+	  	val o =proj.subOp
+
+	  	if (proj.subOp==null) //no relation to project
 			{
 				return null;
 			}
-			else if (proj.getSubOp().getName().equals("selection"))
+			else if (proj.subOp.name.equals("selection"))
 			{
-				val sel = proj.getSubOp.asInstanceOf[OpSelection]
+				val sel = proj.subOp.asInstanceOf[SelectionOp]
 				logger.debug("remove constant selections");
-				sel.getExpressions.foreach{xpr=>
+				sel.expressions.foreach{xpr=>
 				val cond=xpr.asInstanceOf[BinaryXpr]
-				if (cond.getOp().equals("=") && cond.getLeft().isInstanceOf[VarXpr])
+				if (cond.op.equals("=") && cond.left.isInstanceOf[VarXpr])
 				{
-					val vari = cond.getLeft.asInstanceOf[VarXpr]  //so ugly code, we can refactor this mess
-					if (proj.getExpressions().containsKey(vari.getVarName()) && 
-							proj.getExpressions().get(vari.getVarName()).isInstanceOf[OperationXpr] )
+					val vari = cond.left.asInstanceOf[VarXpr]  //so ugly code, we can refactor this mess
+					if (proj.expressions.containsKey(vari.varName) && 
+							proj.expressions.get(vari.varName).isInstanceOf[OperationXpr] )
 					{
-						val oper = proj.getExpressions().get(vari.getVarName()).asInstanceOf[OperationXpr];
-						if (oper.getOp().equals("constant"))
+						val oper = proj.expressions.get(vari.varName).asInstanceOf[OperationXpr];
+						if (oper.op.equals("constant"))
 						{
-							val vali = cond.getRight().asInstanceOf[ValueXpr]
-							if (vali.getValue().equals((oper.getParam().asInstanceOf[ValueXpr]).getValue()))
+							val vali = cond.right.asInstanceOf[ValueXpr]
+							if (vali.value.equals((oper.param.asInstanceOf[ValueXpr]).value))
 							{								
-								proj.setSubOp(sel.getSubOp());
-								return proj;
+								//proj.setSubOp(sel.getSubOp());
+								return new ProjectionOp(proj.id,proj.expressions,sel.subOp)
 							}
 							else
 							{
@@ -186,121 +207,92 @@ class QueryOptimizer extends Logging{
 				}
 			
 				}
+				proj
 				
 			}
-			else if (proj.getSubOp().isInstanceOf[OpBinary] ) //push down projection in unions :)
+			else if (proj.subOp.isInstanceOf[BinaryOp] ) //push down projection in binary :)
 			{
-				val union=proj.getSubOp.asInstanceOf[OpBinary]
+				val bin=proj.subOp.asInstanceOf[BinaryOp]								
 				
-				
-				
-				val leftProj = proj.copyOp();
-				val rightProj = proj.copyOp();
-				if (proj.getSubOp().isInstanceOf[OpJoin])
-				{
-					val join=proj.getSubOp.asInstanceOf[OpJoin]
-					join.getConditions.foreach{xpr=>
-						xpr.getVars.foreach{vari=>
-							if (!proj.getExpressions().containsKey(vari))
-							{
-								leftProj.addExpression(vari,new VarXpr(vari));
-								rightProj.addExpression(vari,new VarXpr(vari));
-							}
-						}
-					}
+				val addVars=if (proj.subOp.isInstanceOf[InnerJoinOp]){
+					val join=proj.subOp.asInstanceOf[InnerJoinOp]
+					join.conditions.map{xpr=>
+						xpr.varNames.filter(vr=> !proj.expressions.contains(vr))
+					}.flatten.map(name=>name->VarXpr(name))
 				}
-				leftProj.setSubOp(union.getLeft());
-				rightProj.setSubOp(union.getRight());
+				else List()
+				val leftProj = new ProjectionOp(proj.id,proj.expressions++addVars.toMap,bin.left)
+				val rightProj = new ProjectionOp(proj.id,proj.expressions++addVars.toMap,bin.right)
 				val l = staticOptimize(leftProj);
 				val r = staticOptimize(rightProj);
-				union.setLeft(l);
-				union.setRight(r);
+				val newBin=new InnerJoinOp(l,r)
 				//should simplify here!!!!
-				return	union.simplify();
+				return	newBin//union.simplify();
 			
 				//return union;
 			}
-			else if (o.isInstanceOf[OpMultiUnion])
+			else if (o.isInstanceOf[MultiUnionOp])
 			{
-				val union =o.asInstanceOf[OpMultiUnion];
-				val newChildren = new TreeMap[String, OpInterface]();
-				union.getChildren().entrySet.foreach{col=>
-					val copy= new OpProjection(proj.getId(),null);
-					copy.getExpressions().putAll(proj.getExpressions());
-					//Collection<OpInterface> newCol = new ArrayList<OpInterface>();
-					//for (OpInterface opi:col.getValue())
-					
-						copy.setSubOp(col.getValue());
-						val newOp = ( staticOptimize(copy));
-					
-					newChildren.put(col.getKey(),newOp);
-
-				}
-				union.setChildren(newChildren);
-				return union;
+				val union =o.asInstanceOf[MultiUnionOp]
+				val newChildren = 
+				union.children.entrySet.map{col=>
+				  val copy= new ProjectionOp(proj.id,proj.expressions, col.getValue)
+				  val newOp=staticOptimize(copy)
+				  col.getKey->newOp
+				}.toMap
+				return new MultiUnionOp(union.id,newChildren)
 			}
 			else
 			{
-				if (o.isInstanceOf[OpProjection] ) //double projection, eat the inner!!!
+				if (o.isInstanceOf[ProjectionOp] ) //double projection, eat the inner!!!
 				{
 					logger.debug("merge double projections "+proj+o);
-					val innerProj = o.asInstanceOf[OpProjection]
-					//boolean test = true;
-					proj.getExpressions().keySet.foreach{key=>
-						if (innerProj.getExpressions().containsKey(key))
-						{	
-							proj.getExpressions().put(key, innerProj.getExpressions().get(key));
-							//test=false;
-							//break;
-						}
+					val innerProj = o.asInstanceOf[ProjectionOp]
+					val xprs=
+					proj.expressions.keySet.map{key=>
+						if (innerProj.expressions.containsKey(key))
+							(key, innerProj.expressions(key))
 						else //inner projection doesn't cover the attributes of the outer one
-						{
-							proj.getExpressions().put(key, ValueXpr.NullValueXpr);
-						}
-					}
-					//if (test)
-						proj.setSubOp(innerProj.getSubOp());
-					//else
-						//proj.setSubOp(o);
+							(key, NullValueXpr)
+					}.toMap
+					return new ProjectionOp(proj.id,proj.expressions++xprs,innerProj.subOp)
+						//proj.setSubOp(innerProj.getSubOp());
 				}
-				else if (o.isInstanceOf[OpUnion])
-				{
-					System.out.println("cosos");
+				//else if (o.isInstanceOf[OpUnion])
+				//{
+					//System.out.println("cosos");
 					/*
 					OpUnion union = (OpUnion)o;
-					OpInterface l = staticOptimize(union.getLeft());
-					OpInterface r = staticOptimize(union.getRight());
+					AlgebraOp l = staticOptimize(union.getLeft());
+					AlgebraOp r = staticOptimize(union.getRight());
 					union.setRight(r);
 					union.setLeft(l);
 					return union;*/
-				}
+				//}
 				else if (o!=null)  
-					proj.setSubOp(o);
+					return new ProjectionOp(proj.id,proj.expressions,o)
 				else   // if projection has no relation to project!!!
 					return null;
-				
 				return proj;
-			}
-		}
-		else if (op.isInstanceOf[OpSelection])
-		{
-			val selection=op.asInstanceOf[OpSelection];
-			//BinaryXpr bin = (BinaryXpr) xpr;
-			//VarXpr var = (VarXpr) bin.getLeft();
-			if (op.getSubOp.isInstanceOf[OpProjection]) //apply the selection to the projection
+			}		
+		
+	}
+	
+	def optimizeSelection(selection:SelectionOp):AlgebraOp={
+	  	if (selection.subOp.isInstanceOf[ProjectionOp]) //apply the selection to the projection
 			{
-				val proj = op.getSubOp.asInstanceOf[OpProjection]
-				selection.getSelectionVars.foreach{varName=>
-					if (proj.getExpressions().containsKey(varName))
+				val proj = selection.subOp.asInstanceOf[ProjectionOp]
+				selection.selectionVarNames.foreach{varName=>
+					if (proj.expressions.containsKey(varName))
 					{
-						val sel = new OpSelection(selection.getId(),null,selection.getExpressions());
+						val sel = new SelectionOp(selection.id,null,selection.expressions)
 						proj.build(sel);
 						return proj;
 					}
 					else
 						return null;
 				}
-			}
+			}/*
 			else if (op.getSubOp.isInstanceOf[OpUnion])
 			{
 				// push down selection to union children
@@ -313,50 +305,70 @@ class QueryOptimizer extends Logging{
 				val right = staticOptimize(selRight);
 				return new OpUnion(left, right).simplify();
 				
-			}
-			else if (op.getSubOp().isInstanceOf[OpMultiUnion])
+			}*/
+			else if (selection.subOp.isInstanceOf[MultiUnionOp])
 			{
-				val union=op.getSubOp.asInstanceOf[OpMultiUnion]
-				val newChildren = new TreeMap[String, OpInterface]();
-				union.getChildren().entrySet.foreach{col=>
-					//Collection<OpInterface> col2 = new ArrayList<OpInterface>();
-					//for (OpInterface opi:col.getValue())
+				val union=selection.subOp.asInstanceOf[MultiUnionOp]
+				val newChildren = new TreeMap[String, AlgebraOp]();
+				union.children.entrySet.foreach{col=>
+					//Collection<AlgebraOp> col2 = new ArrayList<AlgebraOp>();
+					//for (AlgebraOp opi:col.getValue())
 					
-					val sel = new OpSelection(selection.getId(),col.getValue(),selection.getExpressions());
+					val sel = new SelectionOp(selection.id,col.getValue(),selection.expressions);
 					//sel.getExpressions().addAll(selection.getExpressions());
 					val newChild = staticOptimize(sel);
 					//col2.add(newChild);
 					
 					newChildren.put(col.getKey(), newChild);
 				}
-				union.setChildren(newChildren);
+				union.children.putAll(newChildren);
 				return union;
 			}
-			else if (op.getSubOp.isInstanceOf[OpJoin])
+			else if (selection.subOp.isInstanceOf[InnerJoinOp])
 			{
-				val join=op.getSubOp.asInstanceOf[OpJoin]
-				join.getConditions().addAll(selection.getExpressions());
+				val join=selection.subOp.asInstanceOf[InnerJoinOp]
+				val selxprs=selection.expressions.map(_.asInstanceOf[BinaryXpr]).toList
+				join.conditions.addAll(selxprs)
 				return join;
 				//throw new NotImplementedException("Not done for joins");
 			}
+		return selection
+	}
+	
+	def staticOptimize(op:UnaryOp):AlgebraOp={
+		val o =staticOptimize(op.subOp);
+		//op.setSubOp(o);
+		
+		if (op.name.equals("projection"))
+		{
+			
+			val proj = op.asInstanceOf[ProjectionOp]
+		  return optimizeProjection(new ProjectionOp(proj.id,proj.expressions,o))
+		}
+		else if (op.isInstanceOf[SelectionOp])
+		{
+			val selection=op.asInstanceOf[SelectionOp];
+			return optimizeSelection(new SelectionOp(selection.id,o,selection.expressions))
+			//BinaryXpr bin = (BinaryXpr) xpr;
+			//VarXpr var = (VarXpr) bin.getLeft();
 			
 		}
-		else
+		else if (op.isInstanceOf[RootOp])
 		{
-			val oi =staticOptimize(op.getSubOp())
-			op.setSubOp(oi)
-			return op
+			//val oi =staticOptimize(op.subOp)
+			//op.setSubOp(oi)
+			return new RootOp(op.id,o)
 		}
 		return op
 	}
 	
-	def staticOptimize(op:OpInterface):OpInterface={
+	def staticOptimize(op:AlgebraOp):AlgebraOp={
 	  if (op==null) op
 	  else
 	  op match {
-	    case unary:OpUnary=>staticOptimize(unary)
-	    case binary:OpBinary=>staticOptimize(binary)
-	    case union:OpMultiUnion=>staticOptimize(union)
+	    case unary:UnaryOp=>staticOptimize(unary)
+	    case binary:BinaryOp=>staticOptimize(binary)
+	    case union:MultiUnionOp=>staticOptimize(union)
 	    case _ =>op
 	  }
 	}
