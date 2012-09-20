@@ -1,0 +1,14 @@
+PREFIX ssn: <http://purl.oclc.org/NET/ssnx/ssn#> 
+PREFIX qudt: <http://data.nasa.gov/qudt/owl/qudt#> 
+PREFIX bicy: <http://citybikes.linkeddata.es/ontology#>
+PREFIX dcterms: <http://purl.org/dc/terms/> 
+SELECT ?avbikes ?obs ?av 
+FROM NAMED STREAM <http://citybikes.linkeddata.es/ontology#CityBikes.srdf> [NOW - 320 S]
+WHERE {
+  ?obs a bicy:FreeBikesObservation.
+  ?obs ssn:observationResult ?output.
+  ?output bicy:hasAvailableBikesValue ?av.
+  ?av qudt:numericValue ?avbikes.
+  ?obs ssn:observedBy ?sen.
+  ?sen dcterms:identifier "79".
+}
