@@ -1,0 +1,9 @@
+PREFIX ssn: <http://purl.oclc.org/NET/ssnx/ssn#> 
+PREFIX qudt: <http://data.nasa.gov/qudt/owl/qudt#> 
+PREFIX bicy: <http://citybikes.linkeddata.es/ontology#>  
+SELECT ?obs   
+WHERE {
+  ?obs a ssn:Observation
+}
+
+
