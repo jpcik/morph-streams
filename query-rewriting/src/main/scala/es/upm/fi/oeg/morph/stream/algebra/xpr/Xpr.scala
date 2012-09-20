@@ -1,5 +1,6 @@
 package es.upm.fi.oeg.morph.stream.algebra.xpr
 import es.upm.fi.oeg.morph.r2rml.R2rmlUtils
+import es.upm.fi.oeg.siq.tools.URLTools
 
 trait Xpr {
   def copy:Xpr 
@@ -29,7 +30,20 @@ case class ValueXpr(value:String) extends Xpr{
   override def copy=new ValueXpr(value)
 }
 
-case class VarXpr(varName:String) extends Xpr{
+
+abstract class FunctionXpr(val op:String,val params:Seq[Xpr]) extends Xpr{
+  def evaluate(values:Map[String,Any]):Any
+  override def isEqual(other:Xpr)=other match{
+    case fun:FunctionXpr=>op.equals(fun.op)&& params.zip(fun.params).forall(a=>a._1.isEqual(a._2))
+    case _=>false
+  }
+  override def varNames=params.map(_.varNames).flatten.toSet
+  override def toString=op+"("+params.mkString(",")+")"
+  override def copy:Xpr=null//new FunctionXpr(op,params)
+}
+
+case class VarXpr(varName:String) extends FunctionXpr("var",Seq()){
+  //def this(varName:String)=this(varName,null)
   override def toString=varName
   override def isEqual(other:Xpr)=other match{
 	case varXpr:VarXpr=>varName.equals(varXpr.varName)
@@ -37,29 +51,26 @@ case class VarXpr(varName:String) extends Xpr{
   }
   override def varNames=Set(varName)
   override def copy=new VarXpr(varName)
+  override def evaluate(values:Map[String,Any])= values(varName)
 }
 
+object UnassignedVarXpr extends VarXpr("?")
 
-case class FunctionXpr(op:String,params:Seq[Xpr]) extends Xpr{
-  override def isEqual(other:Xpr)=other match{
-    case fun:FunctionXpr=>op.equals(fun.op)&& params.zip(fun.params).forall(a=>a._1.isEqual(a._2))
-    case _=>false
-  }
-  override def varNames=params.map(_.varNames).flatten.toSet
-  override def toString=op+"("+params.mkString(",")+")"
-  override def copy=new FunctionXpr(op,params)
-}
-
-class ConcatXpr(params:Seq[Xpr]) extends FunctionXpr("concat",params)
-class ReplaceXpr(val template:String,val vars:Seq[VarXpr]) 
+class ReplaceXpr(val template:String,val vars:Seq[FunctionXpr]) 
   extends FunctionXpr("replace",vars++Seq(ValueXpr(template))){
-  
-  def replace(values:Map[String,Any])={
+  def split=R2rmlUtils.extractTemplateVals(template) zip vars
+  override def evaluate(values:Map[String,Any])={
     var res=template
-    vars.foreach(v=>res=res.replace("{"+v.varName+"}",values(v.varName).toString))
+    split.foreach(v=>res=res.replace("{"+v._1+"}",v._2.evaluate(values).toString))
     res
   }
 }
+
+class PercentEncodeXpr(val vari:VarXpr) extends FunctionXpr("pencode",Seq(vari)){
+  override def evaluate(values:Map[String,Any])=
+    URLTools.encode(values(vari.varName).toString)  
+}
+
 
 case class OperationXpr(op:String,param:Xpr) extends Xpr{
   override def toString=

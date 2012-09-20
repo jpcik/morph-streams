@@ -1,3 +1,4 @@
+
 name := "adapter-gsn"
 
 organization := "es.upm.fi.oeg.morph.streams"
@@ -16,6 +17,7 @@ libraryDependencies ++= Seq(
   "org.scalatest" % "scalatest_2.9.1" % "1.7.2" % "test",
   "org.scalacheck" % "scalacheck_2.9.1" % "1.9" % "test",
   "org.jibx" % "jibx-bind" % "1.2.2",
+  "commons-collections" % "commons-collections" % "3.2.1",
   "ch.epfl.lsir" % "gsn" % "1.1.2"
 )
 
@@ -33,3 +35,7 @@ EclipseKeys.createSrc := EclipseCreateSrc.Default + EclipseCreateSrc.Resource
 unmanagedSourceDirectories in Compile <<= (scalaSource in Compile)(Seq(_))
 
 unmanagedSourceDirectories in Test <<= (scalaSource in Test)(Seq(_))
+
+publishTo := Some(Resolver.file("jpc repo",new File(Path.userHome.absolutePath+"/git/jpc-repo/repo")))
+
+publishMavenStyle := true

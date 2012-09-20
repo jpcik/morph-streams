@@ -22,6 +22,7 @@ import es.upm.fi.oeg.morph.stream.algebra.RootOp
 import es.upm.fi.oeg.morph.stream.algebra.ProjectionOp
 import es.upm.fi.oeg.morph.stream.algebra.JoinOp
 import es.upm.fi.oeg.morph.stream.algebra.xpr.XprUtils
+import es.upm.fi.oeg.morph.stream.algebra.RelationOp
 
 class QueryOptimizer extends Logging{
   def optimizeLeftJoin(join:LeftOuterJoinOp):AlgebraOp={
@@ -39,16 +40,22 @@ class QueryOptimizer extends Logging{
       case (op1:ProjectionOp,op2:ProjectionOp)=>
         logger.debug("push down join "+ join.conditions.mkString("--")+" ")
         logger.debug(join.hasEqualConditions+ join.isCompatible.toString+op1.getRelation)
-        if (join.hasEqualConditions && join.isCompatible && op1.getRelation.extentName.equals(op2.getRelation.extentName)){
+        if (join.hasEqualConditions && join.isCompatible && 
+            op1.getRelation.extentName.equals(op2.getRelation.extentName) &&
+            op1.subOp.isInstanceOf[RelationOp] && op2.subOp.isInstanceOf[RelationOp]
+            ){
           logger.debug("merging projs")
           op1.merge(op2)
         }
         else if (!join.isCompatible) null
         else join        
+      //case (m1:MultiUnionOp,m2:MultiUnionOp)=>
+        
       case (op1:MultiUnionOp,op2:AlgebraOp)=>new MultiUnionOp(op1.id,
           op1.children.map(c=>c._1->optimizeJoin(new InnerJoinOp(c._2,op2))))
       case (op1:AlgebraOp,op2:MultiUnionOp)=>new MultiUnionOp(op2.id,
-          op2.children.map(c=>c._1->optimizeJoin(new InnerJoinOp(c._2,op1))))      
+          op2.children.map(c=>c._1->optimizeJoin(new InnerJoinOp(c._2,op1))))
+      case _=>join
     }
   }
   
@@ -65,16 +72,7 @@ class QueryOptimizer extends Logging{
 	if (join.conditions.isEmpty){
 	  logger.debug("Cross product")
 	  return join
-	}	/*
-	else if (join.left.isInstanceOf[ProjectionOp] &&
-				join.right.isInstanceOf[ProjectionOp]){
-	  val left=join.left.asInstanceOf[ProjectionOp]
-	  val right=join.right.asInstanceOf[ProjectionOp]
-	  if (join.hasEqualConditions && !left.subOp.isInstanceOf[SelectionOp] 
-	    && !right.subOp.isInstanceOf[SelectionOp]){
-		return join.left.merge(join.right, join.conditions)		
-	  }
-	}*/
+	}		
 	else if (false) {
 	  logger.debug("join merging "+join.conditions)
 	  join.left.display
@@ -90,17 +88,6 @@ class QueryOptimizer extends Logging{
 					
 	  if (join.right.isInstanceOf[InnerJoinOp])
 		return join
-					
-	  /* this merges left and right					
-	  if (join.hasEqualConditions()){
-		val merged = join.getLeft().merge(join.getRight(),join.getConditions());
-				
-		logger.debug("merged join");
-		merged.display();
-		return merged;
-	  }*/
-					
-					
 	  if (join.left.isInstanceOf[MultiUnionOp])
 		//join.getRight() instanceof OpMultiUnion) //push down join in unions
 	  {
@@ -131,7 +118,12 @@ class QueryOptimizer extends Logging{
 		return newunion;
 	  }
 	}
-	else return staticOptimize(pushDownJoin(join))
+	else {
+	  val pushed=pushDownJoin(join)
+	  if (pushed==join) return join
+	  else return staticOptimize(pushed) 
+	    //return staticOptimize(pushDownJoin(join))
+	}
     return join
   }
   
@@ -177,7 +169,7 @@ class QueryOptimizer extends Logging{
 			{
 				return null;
 			}
-			else if (proj.subOp.name.equals("selection"))
+			else if (proj.subOp.name.equals("selectionxxx"))
 			{
 				val sel = proj.subOp.asInstanceOf[SelectionOp]
 				logger.debug("remove constant selections");
@@ -221,13 +213,18 @@ class QueryOptimizer extends Logging{
 					}.flatten.map(name=>name->VarXpr(name))
 				}
 				else List()
-				val leftProj = new ProjectionOp(proj.id,proj.expressions++addVars.toMap,bin.left)
-				val rightProj = new ProjectionOp(proj.id,proj.expressions++addVars.toMap,bin.right)
-				val l = staticOptimize(leftProj);
-				val r = staticOptimize(rightProj);
-				val newBin=new InnerJoinOp(l,r)
+				//val leftProj = new ProjectionOp(proj.id,proj.expressions++addVars.toMap,bin.left)
+				//val rightProj = new ProjectionOp(proj.id,proj.expressions++addVars.toMap,bin.right)
+				val l = staticOptimize(bin.left);
+				val r = staticOptimize(bin.right);				
+				val newBin=proj.subOp match {
+				  case inner:InnerJoinOp=> new InnerJoinOp(l,r)
+				  case outer:LeftOuterJoinOp=> new LeftOuterJoinOp(l,r)
+				  case _=>throw new Exception("unsupported optimization")
+				}
 				//should simplify here!!!!
-				return	newBin//union.simplify();
+				return	new ProjectionOp(proj.id,proj.expressions,newBin)
+				//return newBin
 			
 				//return union;
 			}
@@ -246,7 +243,7 @@ class QueryOptimizer extends Logging{
 			{
 				if (o.isInstanceOf[ProjectionOp] ) //double projection, eat the inner!!!
 				{
-					logger.debug("merge double projections "+proj+o);
+					logger.debug("merge double projections "+proj+"\n"+o);
 					val innerProj = o.asInstanceOf[ProjectionOp]
 					val xprs=
 					proj.expressions.keySet.map{key=>

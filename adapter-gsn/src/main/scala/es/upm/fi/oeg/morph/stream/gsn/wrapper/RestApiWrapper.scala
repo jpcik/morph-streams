@@ -15,6 +15,7 @@ class RestApiWrapper extends AbstractWrapper {
   lazy val params=getActiveAddressBean
   lazy val rate=params.getPredicateValue("rate").toLong
   lazy val liveRate=rate
+  lazy val dateTimeFormat=params.getPredicateValue("dateTimeFormat")
   lazy val url=params.getPredicateValue("url")
   lazy val systemids=params.getPredicateValue("systemids").split(',')
   private lazy val fieldNames=params.getPredicateValue("fields").split(',')
@@ -51,7 +52,7 @@ class RestApiWrapper extends AbstractWrapper {
 class SystemCaller(who:RestApiWrapper,systemid:String) extends Actor{
   private lazy val client=Client.create
   private lazy val webResource=client.resource(who.url+systemid+".json")
-  private val df=new SimpleDateFormat("yyy-MM-dd HH:mm:ss.SSS")
+  private val df=new SimpleDateFormat(who.dateTimeFormat)//"yyyy-MM-dd HH:mm:ss.SSS")
 
   def callRest{
     try{

@@ -1,6 +1,6 @@
 package es.upm.fi.oeg.morph.stream.algebra.xpr
 
-class AggXpr(val aggOp:AggFunction,varName:String) 
+class AggXpr(val aggOp:AggFunction,val varName:String) 
   extends OperationXpr(aggOp.opName,new VarXpr(varName)){
 
   override def toString()=aggOp.opName+"("+varName+")"

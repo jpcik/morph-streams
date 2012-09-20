@@ -20,13 +20,6 @@ import com.hp.hpl.jena.sparql.algebra.Op
 import com.hp.hpl.jena.sparql.algebra.OpAsQuery
 import com.hp.hpl.jena.sparql.expr.ExprFunction2
 import com.weiglewilczek.slf4s.Logging
-import es.upm.fi.dia.oeg.integration.algebra.Window
-import es.upm.fi.dia.oeg.morph.r2rml.InvalidR2RDocumentException
-import es.upm.fi.dia.oeg.morph.r2rml.InvalidR2RLocationException
-import es.upm.fi.dia.oeg.sparqlstream.syntax.ElementStream
-import es.upm.fi.dia.oeg.sparqlstream.syntax.ElementTimeWindow
-import es.upm.fi.dia.oeg.sparqlstream.StreamQuery
-import es.upm.fi.dia.oeg.sparqlstream.StreamQueryFactory
 import es.upm.fi.oeg.morph.r2rml.PredicateObjectMap
 import es.upm.fi.oeg.morph.r2rml.R2rmlReader
 import es.upm.fi.oeg.morph.r2rml.TermMap
@@ -38,7 +31,6 @@ import net.sf.jsqlparser.statement.select.Select
 import com.hp.hpl.jena.sparql.algebra.op.OpDistinct
 import es.upm.fi.oeg.morph.stream.algebra.LeftOuterJoinOp
 import es.upm.fi.oeg.morph.stream.query.SqlQuery
-import es.upm.fi.dia.oeg.integration.QueryCompilerException
 import es.upm.fi.oeg.morph.stream.algebra.InnerJoinOp
 import es.upm.fi.oeg.morph.stream.algebra.MultiUnionOp
 import es.upm.fi.oeg.morph.stream.algebra.ProjectionOp
@@ -48,30 +40,15 @@ import com.hp.hpl.jena.sparql.algebra.op.OpLeftJoin
 import com.hp.hpl.jena.sparql.algebra.op.OpGroup
 import es.upm.fi.oeg.morph.stream.algebra.GroupOp
 import es.upm.fi.oeg.morph.stream.algebra.xpr.AggXpr
-import com.hp.hpl.jena.sparql.expr.aggregate.Aggregator
-import com.hp.hpl.jena.sparql.expr.aggregate.AggMax
-import com.hp.hpl.jena.sparql.expr.aggregate.AggMin
-import com.hp.hpl.jena.sparql.expr.aggregate.AggAvg
-import com.hp.hpl.jena.sparql.expr.aggregate.AggCount
-import com.hp.hpl.jena.sparql.expr.aggregate.AggSum
-import es.upm.fi.oeg.morph.stream.algebra.xpr.MaxXpr
-import es.upm.fi.oeg.morph.stream.algebra.xpr.MinXpr
-import es.upm.fi.oeg.morph.stream.algebra.xpr.AvgXpr
-import es.upm.fi.oeg.morph.stream.algebra.xpr.CountXpr
-import es.upm.fi.oeg.morph.stream.algebra.xpr.SumXpr
+import com.hp.hpl.jena.sparql.expr.aggregate._
+import es.upm.fi.oeg.morph.stream.algebra.xpr._
 import es.upm.fi.oeg.morph.r2rml.R2rmlUtils
-import es.upm.fi.oeg.morph.stream.algebra.xpr.VarXpr
-import es.upm.fi.oeg.morph.stream.algebra.xpr.BinaryXpr
-import es.upm.fi.oeg.morph.stream.algebra.xpr.ValueXpr
-import es.upm.fi.oeg.morph.stream.algebra.xpr.Xpr
-import es.upm.fi.oeg.morph.stream.algebra.xpr.OperationXpr
 import es.upm.fi.oeg.morph.stream.algebra.AlgebraOp
 import es.upm.fi.oeg.morph.stream.algebra.RootOp
 import es.upm.fi.oeg.morph.stream.algebra.RelationOp
 import es.upm.fi.oeg.morph.stream.algebra.SelectionOp
 import es.upm.fi.oeg.morph.stream.algebra.UnaryOp
 import es.upm.fi.oeg.morph.stream.algebra.WindowOp
-import es.upm.fi.oeg.morph.stream.algebra.xpr.ConcatXpr
 import es.upm.fi.oeg.morph.stream.query.SourceQuery
 import es.upm.fi.oeg.morph.r2rml.SubjectMap
 import es.upm.fi.oeg.morph.r2rml.RefObjectMap
@@ -80,74 +57,72 @@ import es.upm.fi.oeg.morph.r2rml.ObjectMap
 import com.hp.hpl.jena.sparql.core.Var
 import com.hp.hpl.jena.graph.Node
 import es.upm.fi.oeg.morph.stream.algebra.xpr.ReplaceXpr
+import es.upm.fi.oeg.morph.stream.algebra.WindowSpec
+import es.upm.fi.oeg.sparqlstream.StreamQuery
+import es.upm.fi.oeg.sparqlstream.StreamQueryFactory
+import es.upm.fi.oeg.morph.common.TimeUnit
+import es.upm.fi.oeg.sparqlstream.syntax.ElementTimeWindow
+import es.upm.fi.oeg.sparqlstream.syntax.ElementStreamGraph
+import es.upm.fi.oeg.sparqlstream.SparqlStream
+import es.upm.fi.oeg.morph.r2rml.IRIType
+import es.upm.fi.oeg.morph.r2rml.LiteralType
 
-class QueryRewriting(props: Properties) extends Logging {
-  private val reader = new R2rmlReader
+class QueryRewriting(props: Properties,mapping:String) extends Logging {
+  logger.debug("mapping is: "+mapping)
+  private val reader = R2rmlReader(mapping)
 
   //private LinksetProcessor linker;
   //private boolean metadataMappings = false;
   private var bindings: ProjectionOp = null
 
-  def getProjectList(queryString: String): Map[String, String] =
-    {
-      val map = new collection.mutable.HashMap[String, String]
-      val query = StreamQueryFactory.create(queryString).asInstanceOf[StreamQuery]
-
-      if (query.isConstructType) {
-        val lt = query.getConstructTemplate.getTriples
-        lt.foreach { t =>
-          if (t.getSubject.isVariable)
-            map.put(t.getSubject.getName.toLowerCase, null)
-          if (t.getObject.isVariable)
-            map.put(t.getObject.getName.toLowerCase, null)
-        }
+  private def getProjectList(query: StreamQuery): Map[String,String]= {
+    val map = new collection.mutable.HashMap[String, String]
+    if (query.isConstructType) {
+      val lt = query.getConstructTemplate.getTriples
+      lt.foreach { t =>
+        if (t.getSubject.isVariable)
+          map.put(t.getSubject.getName.toLowerCase, null)
+        if (t.getObject.isVariable)
+          map.put(t.getObject.getName.toLowerCase, null)
       }
-      if (query.isSelectType)
+    }
+    if (query.isSelectType)
+      query.getProjectVars.foreach{ vari=>map.put(vari.getVarName.toLowerCase, null)}
+    map.toMap
+  }
 
-        query.getProjectVars.foreach //.getResultVars())
-        { vari =>
-          map.put(vari.getVarName().toLowerCase(), null)
+  def translate(queryString: String): SourceQuery =
+    translate(SparqlStream.parse(queryString))  
+
+  def translate(query:StreamQuery): SourceQuery ={
+    val opNew = translateToAlgebra(query)
+    val pVars=getProjectList(query).map(a=>a._1->a._1).toMap
+    transform(opNew,pVars)      
+  }
+
+  def transform(algebra: AlgebraOp,projectVars:Map[String,String]):SourceQuery={
+    val adapter = props.getProperty("siq.adapter")
+    val queryClass = props.getProperty("siq.adapter" + "." + adapter + ".query")
+    logger.info("Using query adapter: "+queryClass)
+    val resquery=
+      if (!adapter.equals("sql")) {
+        val theClass =try Class.forName(queryClass)
+        catch {
+          case e: ClassNotFoundException =>throw new QueryRewritingException("Unable to use adapter query", e)
         }
-      map.toMap
-    }
-
-  def translate(queryString: String, mappingUri: URI): SourceQuery = // throws  QueryTranslationException 
-    {
-      val opNew = translateToAlgebra(queryString, mappingUri);
-      val pVars=getProjectList(queryString).map(a=>a._1->a._1).toMap
-      val sourcequery = transform(opNew,pVars)
-      //sourcequery.setOriginalQuery(queryString);
-      return sourcequery;
-
-    }
-
-  def transform(algebra: AlgebraOp,projectVars:Map[String,String]): SourceQuery = {
-      val adapter = props.getProperty("siq.queryexecutor.adapter");
-      val queryClass = props.getProperty("siq.queryexecutor.adapter" + "." + adapter + ".query");
-      logger.info("Using query adapter: "+queryClass)
-      val resquery =
-        if (!adapter.equals("sql")) {
-          val theClass =
-            try Class.forName(queryClass)
-            catch {
-              case e: ClassNotFoundException =>
-                throw new QueryRewritingException("Unable to use adapter query", e)
-            }
-
-          try 
-            theClass.getDeclaredConstructor(classOf[Map[String,String]]).newInstance(projectVars).asInstanceOf[SourceQuery]
-          catch {
-            case e: InstantiationException =>
-              throw new QueryRewritingException("Unable to instantiate query", e)
-            case e: IllegalAccessException =>
-              throw new QueryRewritingException("Unable to instantiate query", e)
-          }
-        } else new SqlQuery(projectVars)
+        try 
+          theClass.getDeclaredConstructor(classOf[Map[String,String]]).newInstance(projectVars).asInstanceOf[SourceQuery]
+        catch {
+          case e: InstantiationException =>throw new QueryRewritingException("Unable to instantiate query", e)
+          case e: IllegalAccessException =>throw new QueryRewritingException("Unable to instantiate query", e)
+        }
+      } 
+      else new SqlQuery(projectVars)
         
-      resquery.load(algebra)
-      logger.info(resquery.serializeQuery)
-      return resquery
-    }
+    resquery.load(algebra)
+    logger.info(resquery.serializeQuery)
+    return resquery
+  }
   /*
 	private AlgebraOp partition(Op op)
 	
@@ -293,50 +268,43 @@ class QueryRewriting(props: Properties) extends Logging {
 		return null;
 	}
 	*/
-  def translateToAlgebra(queryString: String, mappingUri: URI): AlgebraOp ={
-      val ini = System.currentTimeMillis
-      val query = StreamQueryFactory.create(queryString).asInstanceOf[StreamQuery]
-      val op = Algebra.compile(query)
-      val span1 = System.currentTimeMillis() - ini
-      if (mappingUri != null) {
-        try 
-          reader.read(mappingUri)
-        catch {
-          case e: InvalidR2RDocumentException => throw new QueryRewritingException(e)
-          case e: InvalidR2RLocationException => throw new QueryRewritingException(e)
-        }
-      }
-      //linker = new LinksetProcessor(mappingUri.toString());
-      val span2 = System.currentTimeMillis() - ini;
+  def translateToAlgebra(query: StreamQuery):AlgebraOp={
+    val ini = System.currentTimeMillis      
+    val op = Algebra.compile(query)
+    val span1 = System.currentTimeMillis() - ini
+    /*
+    if (mappingUri != null) {
+      //try reader.read(mappingUri)
+      //catch {case e: Exception => throw new QueryRewritingException(e)}
+    }*/
+    //linker = new LinksetProcessor(mappingUri.toString());
+    val span2 = System.currentTimeMillis() - ini;
 
-      val binds = null //partition(op).asInstanceOf[OpProjection]
-      this.bindings = binds;
-      val opo = navigate(op, query);
+    val binds = null //partition(op).asInstanceOf[OpProjection]
+    this.bindings = binds;
+    val opo = navigate(op, query);
       /*
       if (binds != null) {
         val mainPro = opo.asInstanceOf[ProjectionOp];
         mainPro.setSubOp(opo.build(binds));
       }*/
-     val opNew=
+    val opNew=
       if (query.getConstructTemplate != null) { //TODO ugliest code ever, please refactor
         val tg = query.getConstructTemplate
         val xprs=tg.getTriples.map { tt =>
           var vari = ""
           if (tt.getSubject.isVariable) 
-            vari = tt.getSubject.getName
-          
+            vari = tt.getSubject.getName          
           if (tt.getObject.isVariable) 
             vari = tt.getObject.getName
           
-            val exp = new VarXpr(vari)
-            (vari, exp)
+          val exp = new VarXpr(vari)
+          (vari, exp)
         }.toMap
         val cProj = new ProjectionOp("mainProjection",xprs, opo)
 
-
         //opNew.setSubOp(cProj)
         new RootOp(null,cProj)
-
       } else {
         new RootOp(null,null).build(opo)
       }
@@ -352,8 +320,8 @@ class QueryRewriting(props: Properties) extends Logging {
 
       //if (opNew.getSubOp==null) throw new Exception("Empty translated query throws no results")
       System.err.println(span1 + "-" + span2 + "-" + span3 + "-" + span4);
-      return optimized
-    }
+      optimized
+  }
 
   private def processPOMap(t:Triple,poMap:PredicateObjectMap,tMap:TriplesMap,query:StreamQuery)={
     logger.debug("Graphs: " + poMap.graphMap)
@@ -361,14 +329,15 @@ class QueryRewriting(props: Properties) extends Logging {
       tMap.subjectMap.graphMap 
       else poMap.graphMap
       
-    val stream = query.getStream(if (graphstream!=null) graphstream.constant.asResource.getURI else null)
-     
-    if (t.getObject.isURI) {
-      val selection = createSelection(t, poMap.objectMap, t.getObject.getURI)
-      val p = createProjection(t, tMap, poMap.objectMap, poMap, stream, selection)
-      p.build(selection)
+    val stream = query.getStream(
+        if (graphstream!=null) graphstream.constant.asResource.getURI else null)
+
+    val unary = createRelation(tMap, poMap.objectMap, stream)         
+    if (t.getObject.isURI || t.getObject.isLiteral) {
+      val selection = createSelection(t,poMap.objectMap,t.getObject.toString,unary)
+      createProjection(t,tMap,poMap.objectMap,poMap, stream, selection)
     } 
-    else createProjection(t, tMap, poMap.objectMap, poMap, stream)  
+    else createProjection(t, tMap, poMap.objectMap, poMap, stream,unary)  
     
   }
   
@@ -453,7 +422,7 @@ class QueryRewriting(props: Properties) extends Logging {
         val project = op.asInstanceOf[OpProject]
         val opo = navigate(project.getSubOp(), query)
         val xprs=project.getVars().map { vari =>
-          val exp = new VarXpr(vari.getVarName());
+          val exp = UnassignedVarXpr //new VarXpr(vari.getVarName)
           (vari.getVarName, exp)
         }.toMap
         val proj = new ProjectionOp("mainProjection", xprs,opo)
@@ -476,6 +445,8 @@ class QueryRewriting(props: Properties) extends Logging {
       }  else if (op.isInstanceOf[OpFilter]) {
         val filter = op.asInstanceOf[OpFilter]
         val it = filter.getExprs().iterator();
+        val inner = navigate(filter.getSubOp(), query);
+
         val selXprs:Set[Xpr]=filter.getExprs.iterator.map{ex=>
           val expr = ex.asInstanceOf[ExprFunction2];
           val function = expr.getFunction
@@ -493,7 +464,6 @@ class QueryRewriting(props: Properties) extends Logging {
         }.toSet
         //logger.debug("Filter "+filter.toString());
 
-        val inner = navigate(filter.getSubOp(), query);
         //selection.setSubOp(inner);
         val selection = new SelectionOp("selec", inner,selXprs);
         return selection;
@@ -531,12 +501,18 @@ class QueryRewriting(props: Properties) extends Logging {
       else if (op.isInstanceOf[OpExtend]){
         val ext=op.asInstanceOf[OpExtend]
         logger.debug("Extend "+ext.getVarExprList().getExprs()+" "+ext.getSubOp)
-        return navigate(ext.getSubOp,query)
+        if (ext.getSubOp.isInstanceOf[OpGroup]){
+        val group=ext.getSubOp.asInstanceOf[OpGroup]
+         return new GroupOp(null,group.getGroupVars.getVars.map(v=>v.getVarName),
+            group.getAggregators.map(a=>aggregator(extendReplace(ext,a.getVar.getVarName),a.getAggregator)).toMap,
+            navigate(group.getSubOp,query))          
+        }          
+        else return navigate(ext.getSubOp,query)
       }
       else if (op.isInstanceOf[OpGroup]){
         val group=op.asInstanceOf[OpGroup]
         val g=new GroupOp(null,group.getGroupVars.getVars.map(v=>v.getVarName),
-            group.getAggregators.map(a=>aggregator(a.getAggregator)),
+            group.getAggregators.map(a=>aggregator(a.getVar.getVarName,a.getAggregator)).toMap,
             navigate(group.getSubOp,query))
         return g
       }
@@ -549,9 +525,17 @@ class QueryRewriting(props: Properties) extends Logging {
       }
 
       //return null;	
-    }
+  }
   
-  private def aggregator(agg:Aggregator)={
+  private def extendReplace(extend:OpExtend,varname:String)={
+    val alias=extend.getVarExprList.getExprs.find(e=>e._2.getVarName.equals(varname))
+    if (alias.isDefined)
+      alias.get._1.getVarName
+    else varname
+    
+  }
+  
+  private def aggregator(varName:String,agg:Aggregator)={
     val op=agg match  {
       case max:AggMax=>MaxXpr
       case min:AggMin=>MinXpr
@@ -559,7 +543,7 @@ class QueryRewriting(props: Properties) extends Logging {
       case count:AggCount=>CountXpr
       case sum:AggSum=>SumXpr
     }
-    new AggXpr(op,agg.getExpr.getVarName)
+    (varName,new AggXpr(op,agg.getExpr.getVarName))
   }
   
   private def union(left: AlgebraOp, right: AlgebraOp): AlgebraOp ={
@@ -609,9 +593,9 @@ class QueryRewriting(props: Properties) extends Logging {
 
       }*/
       //return union;
-    }
+  }
 
-  private def createSelection(xprs:Seq[(String,String,String)],subOp:AlgebraOp):SelectionOp={
+  private def createSelection(xprs:Seq[(String,String,String)],subOp:AlgebraOp):UnaryOp={
     val varName=xprs.map(_._2).mkString("-")
     val selXprs:Set[Xpr]=xprs.map{x=>
       new BinaryXpr(x._2, VarXpr(x._1),ValueXpr(x._3))
@@ -621,16 +605,21 @@ class QueryRewriting(props: Properties) extends Logging {
     selection
   }
   
-  private def createSelection(operation:String,varName:String,value:String):SelectionOp={
-    createSelection(Array((varName,operation,value)),null)
+  private def createSelection(operation:String,varName:String,value:String,unary:AlgebraOp):UnaryOp={
+    createSelection(Array((varName,operation,value)),unary)
   }
   
-  private def createSelection(t: Triple, nMap: TermMap, value: String):SelectionOp={
-      val vari = if (nMap.column == null)
-        "localVar" + t.getPredicate().getLocalName() + t.getSubject().getName()
+  private def createSelection(t: Triple, nMap: TermMap, value: String,unary:UnaryOp):UnaryOp={
+    logger.debug("Create selection value: "+value )
+    val vari = if (nMap.column == null)
+      "localVar" + t.getPredicate.getLocalName + t.getSubject.getName
       else nMap.column;
-      createSelection("=",vari,value)
-    }
+    if (nMap.constant!=null && 
+        nMap.constant.toString.equals(value))
+      //createSelection("=",vari,value,unary)
+      unary
+    else null
+  }
 
  
   private def projectionXprs(tripleNode:Node,oMap:TermMap):(String,Xpr)={   
@@ -646,21 +635,39 @@ class QueryRewriting(props: Properties) extends Logging {
         }
         else if (oMap.template!=null){
           val columns=R2rmlUtils.extractTemplateVals(oMap.template)
-          val varXprs=columns.map(col=>new VarXpr(col))
-          val replace=new ReplaceXpr(oMap.template,varXprs) 
-          (objVar.getName,replace)
+          //val replace=new ReplaceXpr(oMap.template,columns.map(new VarXpr(_)))
+          val fun=if (termType(oMap)==IRIType){
+            new ReplaceXpr(oMap.template,columns.map(c=>new PercentEncodeXpr(VarXpr(c))))
+          }
+          else new ReplaceXpr(oMap.template,columns.map(VarXpr(_)))
+          
+          
+          (objVar.getName,fun)
         }
         else null
       case _=>null
     }
   }
 
-  private def createProjection(t:Triple,tMap:TriplesMap,nMap:TermMap,poMap:PredicateObjectMap,stream:ElementStream):ProjectionOp =
-      return createProjection(t, tMap, nMap, poMap, stream, null)
+  private def termType(term:TermMap)=
+    if (term.termType == null) term match {
+      case subj:SubjectMap=>IRIType
+      case obj:ObjectMap=>
+        if (term.column!=null || obj.dtype!=null || obj.language!=null) LiteralType
+        else IRIType
+    }
+    else term.termType
+  
+    
+    
+  private def createProjection(t:Triple,tMap:TriplesMap,nMap:TermMap,poMap:PredicateObjectMap,stream:ElementStreamGraph):ProjectionOp ={
+    val unary = createRelation(tMap, nMap, stream)           
+    createProjection(t, tMap, nMap, poMap, stream, unary)
+  }
 
   private def createProjection(t:Triple, tMap:TriplesMap, nMap: TermMap, 
-      poMap: PredicateObjectMap, stream: ElementStream, sel: SelectionOp): ProjectionOp =  {
-    val unary = createRelation(tMap, nMap, stream)
+      poMap: PredicateObjectMap, stream: ElementStreamGraph, sub: UnaryOp): ProjectionOp =  {
+      
     val nMapUri = tMap.uri
 
     logger.debug("Creating projection for "+nMap)
@@ -688,14 +695,14 @@ class QueryRewriting(props: Properties) extends Logging {
     val xprs=List(subjXprs)++List(objectXprs)++List(refXprs)
     logger.debug("projection Xprs: "+xprs)
     
-    val relation = if (unary.isInstanceOf[RelationOp]) unary else unary.getRelation
-    val projection = new ProjectionOp(id+"-"+relation.id,xprs.filter(_!=null).toMap, unary)
+    val relation = if (sub.isInstanceOf[RelationOp]) sub else sub.getRelation
+    val projection = new ProjectionOp(id+"-"+relation.id,xprs.filter(_!=null).toMap, sub)
   
     //logger.debug("Created projection: "+projection.toString());
     return projection
   }
 
-  private def createRelation(tMap:TriplesMap,nMap:TermMap, stream: ElementStream): UnaryOp ={
+  private def createRelation(tMap:TriplesMap,nMap:TermMap, stream: ElementStreamGraph): UnaryOp ={
     var tableid = "";
     var extentName = "";
      
@@ -718,20 +725,22 @@ class QueryRewriting(props: Properties) extends Logging {
     val relation =
       if (stream != null) {
         logger.debug("Create window: " + stream.getUri)
-        val sw = stream.getWindow.asInstanceOf[ElementTimeWindow]
+        val sw = stream.window.asInstanceOf[ElementTimeWindow]
         val wn=
           if (sw != null) {
-            val win = new Window
-            win.setFromOffset(sw.getFrom.getOffset)
-            win.setFromUnit(sw.getFrom.getUnit)
-            if (sw.getTo != null) {
-              win.setToOffset(sw.getTo.getOffset)
-              win.setToUnit(sw.getTo.getUnit)
-            }
-            if (sw.getSlide != null) {
-              win.setSlide(sw.getSlide.getTime)
-              win.setSlideUnit(sw.getSlide.getUnit)
-            }
+            //win.setFromOffset(sw.getFrom.getOffset)
+            //win.setFromUnit(sw.getFrom.getUnit)
+            val (to,toU):(Long,TimeUnit)= if (sw.to != null) {
+              (sw.to.time,sw.to.getUnit)
+            }else (null,null)
+            /*val (sl,slu):(Long,TimeUnit)= if (sw.getSlide != null) {
+              (sw.getSlide.time,sw.getSlide.unit)
+            } else ( null,null)*/
+            /*val win = new WindowSpec("",sw.getFrom.offset,TimeUnit.toTimeUnit(sw.getFrom.unit),
+                to,TimeUnit.toTimeUnit(toU),sl,TimeUnit.toTimeUnit(slu))*/
+            val win = new WindowSpec("",sw.from.time,sw.from.unit,
+                0,null,0,null)
+            
             win
            
           } else null
@@ -757,6 +766,8 @@ class QueryRewriting(props: Properties) extends Logging {
     
 
 }
+
+class QueryCompilerException(msg:String,e:Throwable) extends Exception(msg,e)
 
 class QueryRewritingException(msg:String,e:Throwable) extends QueryCompilerException(msg,e){
   def this(e:Throwable)=this(null,e)

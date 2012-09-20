@@ -19,22 +19,18 @@ import java.sql.Statement
 import java.net.URL
 import java.sql.SQLWarning
 import java.sql.Types
-import es.upm.fi.dia.oeg.common.ParameterUtils._
 import es.upm.fi.oeg.morph.stream.algebra.xpr.Xpr
 import es.upm.fi.oeg.morph.stream.algebra.xpr.ReplaceXpr
 import es.upm.fi.oeg.morph.stream.algebra.xpr.VarXpr
-
 
 class GsnResultSet(val records: Stream[Array[String]], val metadata: Map[String, Xpr]) extends ResultSet {
   val it = records.iterator
   var current: Seq[String] = _
 
-  override def unwrap[T](iface: java.lang.Class[T]): T = {
-    null.asInstanceOf[T]
-  }
-  override def isWrapperFor(iface: java.lang.Class[_]): Boolean = false
+  override def unwrap[T](iface:Class[T]): T = null.asInstanceOf[T]
+  override def isWrapperFor(iface:Class[_]): Boolean = false
 
-  override def next: Boolean = {
+  override def next:Boolean = {
     if (it.hasNext) {
       current = it.next
       println(current.mkString("-"))
@@ -49,7 +45,7 @@ class GsnResultSet(val records: Stream[Array[String]], val metadata: Map[String,
   override def getHoldability(): Int = 0
   override def isClosed(): Boolean = false
 
-  private val metaData: ResultSetMetaData = {
+  protected def createMetadata={
     val md: RowSetMetaData = new RowSetMetaDataImpl
     md.setColumnCount(metadata.size)
     var i=1
@@ -62,6 +58,7 @@ class GsnResultSet(val records: Stream[Array[String]], val metadata: Map[String,
     //md.setColumnLabel(i,"extentname")
     md
   }
+  private val metaData: ResultSetMetaData = createMetadata
   
   private val internalLabels={
     val vars=metadata.map(m=>m._2.varNames).flatten.filterNot(_.equals("timed"))++List("timed")
@@ -83,8 +80,8 @@ class GsnResultSet(val records: Stream[Array[String]], val metadata: Map[String,
   override def getObject(columnLabel:String):Object={ 
     metadata(columnLabel) match{
       case rep:ReplaceXpr=>
-        val replaceVals=rep.vars.map(v=>v.varName->current(internalLabels(v.varName))).toMap
-        rep.replace(replaceVals)
+        //val replaceVals=rep.vars.map(v=>v.varName->current(internalLabels(v.varName))).toMap
+        rep.evaluate(internalLabels.map(l=>l._1->current(l._2)).toMap)
       case v:VarXpr=>current(internalLabels(v.varName))
     }
   }
@@ -299,4 +296,33 @@ class GsnResultSet(val records: Stream[Array[String]], val metadata: Map[String,
   override def updateNClob(columnIndex: Int, reader: Reader) {}
   override def updateNClob(columnLabel: String, reader: Reader) {}
 
+}
+
+
+class GsnMultiResultSet(resultSets:Array[GsnResultSet]) extends GsnResultSet(Stream(),Map()){
+  val iter=resultSets.iterator
+  var currentRs:GsnResultSet=_
+  override protected def createMetadata=new RowSetMetaDataImpl
+
+  override def next:Boolean={
+    if (currentRs!=null && currentRs.next)
+      true
+    else if (currentRs==null || iter.hasNext){ 
+      currentRs=iter.next
+      currentRs.next
+    }
+    else false
+  }
+  override def findColumn(columnLabel: String): Int = 
+    currentRs.findColumn(columnLabel)
+    
+  
+  override def getObject(columnIndex:Int):Object=  
+    currentRs.getObject(columnIndex)
+  
+  override def getObject(columnLabel:String):Object=
+    currentRs.getObject(columnLabel)
+    
+ override def getMetaData=if (currentRs!=null)currentRs.getMetaData
+ else super.getMetaData
 }

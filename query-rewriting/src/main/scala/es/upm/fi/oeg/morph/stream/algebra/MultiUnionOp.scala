@@ -4,7 +4,7 @@ import com.weiglewilczek.slf4s.Logging
 import scala.collection.immutable.TreeMap
 import com.google.common.collect.Multimap
 import java.util.HashMap
-import org.apache.commons.collections.CollectionUtils
+//import org.apache.commons.collections.CollectionUtils
 import collection.JavaConversions._
 import es.upm.fi.oeg.morph.stream.algebra.xpr.Xpr
 
@@ -46,7 +46,7 @@ class MultiUnionOp(val id:String,childrenOps:Map[String,AlgebraOp])
   override def merge(op:AlgebraOp,xprs:Seq[Xpr]):AlgebraOp={
 	if (op.isInstanceOf[MultiUnionOp]){
 	  val union = op.asInstanceOf[MultiUnionOp];
-	  val seti = CollectionUtils.intersection(index.keySet, union.index.keySet)
+	  val seti = index.keySet & union.index.keySet
 	  logger.debug("merge unions: "+children.keySet+"--"+union.children.keySet)
 		
 	  val set =  this.children.keySet //CollectionUtils.intersection(this.children.keySet(), union.children.keySet());			

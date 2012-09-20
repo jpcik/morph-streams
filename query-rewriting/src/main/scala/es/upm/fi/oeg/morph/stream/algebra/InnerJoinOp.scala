@@ -20,7 +20,8 @@ class InnerJoinOp (left:AlgebraOp,right:AlgebraOp)
       val varnames=conditions.map(c=>c.varNames).flatten
       logger.debug("compatible: "+varnames)
       
-      varnames.forall{v=>println(p1.expressions(v));  XprUtils.canbeEqual(p1.expressions(v),p2.expressions(v))}
+      varnames.forall{v=>println(p1.expressions(v));  
+        XprUtils.canbeEqual(p1.expressions(v),p2.expressions(v))}
     case (_,_)=>true
   }
 	
