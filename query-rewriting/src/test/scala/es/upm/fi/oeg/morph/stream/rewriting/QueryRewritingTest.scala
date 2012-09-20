@@ -7,10 +7,10 @@ import org.scalatest.junit.ShouldMatchersForJUnit
 import org.scalatest.prop.Checkers
 import com.hp.hpl.jena.sparql.algebra.Algebra
 import com.weiglewilczek.slf4s.Logging
-import es.upm.fi.dia.oeg.common.ParameterUtils.loadQuery
-import es.upm.fi.dia.oeg.common.ParameterUtils
-import es.upm.fi.dia.oeg.sparqlstream.StreamQueryFactory
+import es.upm.fi.oeg.morph.common.ParameterUtils._
+import es.upm.fi.oeg.sparqlstream.StreamQueryFactory
 import org.apache.log4j.PropertyConfigurator
+import es.upm.fi.oeg.morph.common.ParameterUtils
 
 class QueryRewritingTest extends JUnitSuite with ShouldMatchersForJUnit with Checkers with Logging {
   PropertyConfigurator.configure(classOf[QueryRewritingTest].getClassLoader().getResource("config/log4j.properties"));
@@ -40,14 +40,14 @@ class QueryRewritingTest extends JUnitSuite with ShouldMatchersForJUnit with Che
 
   @Test def testTranslate() { //}throws QueryException, InvalidR2RDocumentException, InvalidR2RLocationException, URISyntaxException {
     logger.info(queryCCOComplexTide);
-    val trans = new QueryRewriting(props);
-    trans.translate(queryCCOComplexTide, new URI("mappings/cco.r2r"));
+    val trans = new QueryRewriting(props,"mappings/cco.r2r");
+    trans.translate(queryCCOComplexTide);
   }
 
   @Test def testAlgebraTransformation()  {
     logger.info(testQuery);
-    val trans = new QueryRewriting(props);
-    trans.translate(testQuery, new URI("mappings/cco.r2r"));
+    val trans = new QueryRewriting(props,"mappings/cco.r2r");
+    trans.translate(testQuery)
   }
 
   @Test
@@ -112,75 +112,75 @@ class QueryRewritingTest extends JUnitSuite with ShouldMatchersForJUnit with Che
   def testTranslateQuery() //throws  QueryTranslationException, URISyntaxException
   {
     logger.info(testQuery);
-    val trans = new QueryRewriting(props);
-    trans.translate(testQuery, new URI("mappings/testMapping.r2r"));
+    val trans = new QueryRewriting(props,"mappings/testMapping.r2r");
+    trans.translate(testQuery);
   }
 
   @Test def testTranslateIsolatedQuery() {
     logger.info(testQueryIsolate);
-    val trans = new QueryRewriting(props);
-    trans.translate(testQueryIsolate, new URI("mappings/testMapping.r2r"));
+    val trans = new QueryRewriting(props,"mappings/testMapping.r2r");
+    trans.translate(testQueryIsolate);
   }
 
   @Test def testTranslateWithSQL {
-    val trans = new QueryRewriting(props);
-    trans.translate(testQuerySimple, new URI("mappings/testMappingSQL.r2r"))
+    val trans = new QueryRewriting(props,"mappings/testMappingSQL.r2r");
+    trans.translate(testQuerySimple)
   }
 
   @Test
   def testTranslateConstructSimple() //throws URISyntaxException, QueryTranslationException
   {
-    val trans = new QueryRewriting(props);
-    trans.translate(testConstructSimple, new URI("mappings/testMapping.r2r"));
+    val trans = new QueryRewriting(props,"mappings/testMapping.r2r");
+    trans.translate(testConstructSimple);
   }
 
   @Test
   def testTranslateConstruct() //throws  URISyntaxException, QueryTranslationException
   {
-    val trans = new QueryRewriting(props);
-    trans.translate(testConstruct, new URI("mappings/testMapping.r2r"));
+    val trans = new QueryRewriting(props,"mappings/testMapping.r2r");
+    trans.translate(testConstruct)
   }
 
   @Test
   def testTranslateFilters() //throws  URISyntaxException, QueryTranslationException
   {
-    val trans = new QueryRewriting(props);
-    trans.translate(testQueryFilter, new URI("mappings/testMapping.r2r"));
+    val trans = new QueryRewriting(props,"mappings/testMapping.r2r");
+    trans.translate(testQueryFilter);
   }
 
   @Test
   def testTranslateJoin() //throws  URISyntaxException, QueryTranslationException
   {
-    val trans = new QueryRewriting(props);
-    trans.translate(testQueryJoin, new URI("mappings/testMapping.r2r"));
+    val trans = new QueryRewriting(props,"mappings/testMapping.r2r");
+    trans.translate(testQueryJoin);
   }
 
   @Test
   def testTranslateCCOWaveHeight() //throws  URISyntaxException, QueryTranslationException
   {
-    val trans = new QueryRewriting(props);
-    trans.translate(queryCCOWaveHeight, new URI("mappings/cco.r2r"));
+    val trans = new QueryRewriting(props,"mappings/cco.r2r");
+    trans.translate(queryCCOWaveHeight);
   }
 
   @Test
   def testTranslateWannengratTemp() //throws URISyntaxException, QueryTranslationException
   {
-    val trans = new QueryRewriting(props);
-    trans.translate(queryWannengratTemp, new URI("mappings/wannengrat.r2r"));
+    val trans = new QueryRewriting(props,"mappings/wannengrat.r2r");
+    trans.translate(queryWannengratTemp);
   }
 
   @Test
   def testTranslateWannengratMetadataTemp() //throws  URISyntaxException, QueryTranslationException
   {
-    val trans = new QueryRewriting(props);
-    trans.translate(queryWannengratMetadataTemp, new URI("mappings/wannengrat.r2r"));
+    val trans = new QueryRewriting(props,"mappings/wannengrat.r2r");
+    trans.translate(queryWannengratMetadataTemp);
   }
 
   @Test //@Ignore
   def testTranslateTwoWaves() //throws  URISyntaxException, QueryTranslationException, IOException
   {
-    val trans = new QueryRewriting(props);
-    trans.translate(loadQuery("queries/testQueryTwoWaves.sparql"), new URI("mappings/testMapping.r2r"));
+    val trans = new QueryRewriting(props,"mappings/testMapping.r2r")
+    trans.translate(loadQuery("queries/testQueryTwoWaves.sparql"))
   }
 
 }

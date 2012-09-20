@@ -2,8 +2,6 @@ package es.upm.fi.oeg.morph.stream.query
 import collection.JavaConversions._
 import org.apache.commons.lang.NotImplementedException
 import com.google.common.collect.Maps
-import es.upm.fi.dia.oeg.integration.algebra.Window
-import es.upm.fi.dia.oeg.common.TimeUnit
 import scala.collection.mutable.HashMap
 import es.upm.fi.oeg.morph.stream.algebra.LeftOuterJoinOp
 import es.upm.fi.oeg.morph.stream.algebra.MultiUnionOp
@@ -20,65 +18,99 @@ import es.upm.fi.oeg.morph.stream.algebra.xpr.NullValueXpr
 import es.upm.fi.oeg.morph.stream.algebra.xpr.ValueXpr
 import es.upm.fi.oeg.morph.stream.algebra.RootOp
 import es.upm.fi.oeg.morph.stream.algebra.RelationOp
+import es.upm.fi.oeg.morph.stream.algebra.WindowSpec
+import es.upm.fi.oeg.morph.common.TimeUnit
+import es.upm.fi.oeg.morph.stream.algebra.UnaryOp
+import es.upm.fi.oeg.morph.stream.algebra.GroupOp
+import es.upm.fi.oeg.morph.stream.algebra.xpr.FunctionXpr
+import es.upm.fi.oeg.morph.stream.algebra.JoinOp
+import es.upm.fi.oeg.morph.stream.algebra.xpr.AggXpr
 
 class SqlQuery(val projectionVars:Map[String,String]) extends SourceQuery{
-	protected var innerQuery:String=null
-	val	projectList = new HashMap[String,String]();
-    val inner= new HashMap[String,Map[String,SqlQuery]]();
-	
-	override def load(op:AlgebraOp){
-		//super.load(op)
-		this.innerQuery = build(op)
-	}
+  protected var innerQuery:String=null
+  val projectList = new HashMap[String,String]();
+  val inner= new HashMap[String,Map[String,SqlQuery]]();
+  private var aliasGen=0
+  private val niceAlias=new collection.mutable.HashMap[String,String]
+  protected def getAlias(name:String)={
+    if (!niceAlias.contains(name)){
+      niceAlias.put(name,"rel"+aliasGen)
+      aliasGen+=1      
+    }
+    niceAlias(name)
+  }
+  
+  override def load(op:AlgebraOp){
+	//super.load(op)
+	this.innerQuery = build(op)
+  }
 
     override def serializeQuery():String=return innerQuery
     override def supportsPostProc=true
     
     override def getProjection:Map[String,String]=
 		return getAugmentedProjectList();
-/*
-	override def setOriginalQuery(sparqlQuery:String){} 
-		// TODO Auto-generated method stub
-		
-	override def getOriginalQuery():String= null
-		// TODO Auto-generated method stub
-*/
-	
-	
+    override def getConstruct=null
+	/*
+    private def serExpr(xpr:Xpr,relation:RelationOp):Xpr={
+      xpr match {
+        case varXpr:VarXpr=>VarXpr(getAlias(relation.id)+"."+varXpr.varName)
+        case bin:BinaryXpr=>BinaryXpr(bin.op,serExpr(bin.left,relation),serExpr(bin.right,relation))
+        case _=>xpr
+      }
+    }*/
+    
+    protected def repExpr(xpr:Xpr,op:AlgebraOp):Xpr={
+      xpr match {
+        case varXpr:VarXpr=>VarXpr(getAlias(attRelation(op,varXpr.varName))+"."+varXpr.varName)
+        case bin:BinaryXpr=>BinaryXpr(bin.op,repExpr(bin.left,op),repExpr(bin.right,op))
+        case fun:AggXpr=>new AggXpr(fun.aggOp,getAlias(attRelation(op,fun.varName))+"."+fun.varName)
+        case _=>xpr
+      }
+    }
+    
+    def extentAlias(relation:RelationOp)=
+      relation.extentName+" AS "+getAlias(relation.id)
+    
     def projExtentAlias(proj:ProjectionOp)=
-      proj.getRelation.extentName+" AS "+proj.getRelation.id 
+      proj.getRelation.extentName+" AS "+ getAlias(proj.getRelation.id) 
+      
       
     def projConditions(proj:ProjectionOp)=proj.subOp match{
-	  case sel:SelectionOp=>sel.expressions.map(e=>e.toString).mkString(" ")
+	  case sel:SelectionOp=>sel.expressions.map(e=>repExpr(e,proj).toString).mkString(" ")
 	  case _=>""
 	}
 	def joinConditions(join:InnerJoinOp)=join.conditions.map(c=>unAliasXpr(join,c)).mkString(" AND ")
 	def joinConditions(join:LeftOuterJoinOp)=join.conditions.map(c=>unAliasXpr(join,c)).mkString(" AND ")
 
-	private def conditions(op:AlgebraOp):Seq[String]=op match{
+	
+	
+	protected def conditions(op:AlgebraOp):Seq[String]=op match{
 	  case join:InnerJoinOp=>conditions(join)
 	  case join:LeftOuterJoinOp=>conditions(join)
+	  case sel:SelectionOp=>sel.expressions.map(e=>repExpr(e,sel).toString).toSeq
 	  case _=>List()
 	}
-	private def conditions(join:BinaryOp):Seq[String]=(join.left,join.right) match{
+	protected def conditions(join:BinaryOp):Seq[String]=(join.left,join.right) match{
 	  case (lp:ProjectionOp,rp:ProjectionOp)=>List(projConditions(lp),projConditions(rp))
 	  case (lp:ProjectionOp,a) =>List(projConditions(lp))++conditions(a)
 	  case (a,rp:ProjectionOp) =>List(projConditions(rp))++conditions(a) 
 	}
 
-	private def joinXprs(op:AlgebraOp):Seq[String]=op match{
+	protected def joinXprs(op:AlgebraOp):Seq[String]=op match{
 	  case join:InnerJoinOp=>List(joinConditions(join))++joinXprs(join.left)++joinXprs(join.right)
 	  case _=>List()
 	}
 	
-	private def get(op:AlgebraOp):Seq[String]=op match{
+	protected def get(op:AlgebraOp):Seq[String]=op match{
 	  case join:InnerJoinOp=>get(join)
+	  case outerJoin:LeftOuterJoinOp=>get(outerJoin)
 	  case _=>List()
 	}
 	
 	private def getNotNull(p1:String,p2:String)=if (p1==null) p2 else p1
 	
-	private def get(join:LeftOuterJoinOp):Seq[String]= (join.left,join.right) match {
+	protected def get(join:LeftOuterJoinOp):Seq[String]= (join.left,join.right) match {
 	  case (lp:ProjectionOp,rp:ProjectionOp)=>
 	    List(projExtentAlias(lp)+" LEFT OUTER JOIN "+ projExtentAlias(rp) +" ON "+joinConditions(join))
 	  case (lp:ProjectionOp,a) =>List(projExtentAlias(lp))++get(a)
@@ -91,12 +123,21 @@ class SqlQuery(val projectionVars:Map[String,String]) extends SourceQuery{
 	  case (a,rp:ProjectionOp) =>List(projExtentAlias(rp))++get(a)
 	}
 
-	protected def projVars(op:AlgebraOp):List[String]=op match{
-	  case proj:ProjectionOp=>	    
-	    proj.getVarMappings.filter(_._2!=null).map(v=>v._2.map(s=>proj.getRelation.id+"."+s)).flatten.toList
+	protected def projVars(op:AlgebraOp):String=op match{
+	  case proj:ProjectionOp=>
+	    serializeSelect(proj)
+	    //proj.getVarMappings.filter(_._2!=null).map(v=>v._2.map(s=>proj.getRelation.extentName+"."+s)).flatten.toList
 	    //proj.getVarMappings().keys.toList
-	  case bi:BinaryOp=>projVars(bi.left)++projVars(bi.right)
+	  case bi:BinaryOp=>projVars(bi.left)+projVars(bi.right)
 	}
+	protected def projVarNames(op:AlgebraOp):Seq[String]=op match{
+	  case proj:ProjectionOp=>
+	    //serializeSelect(proj)
+	    proj.getVarMappings.filter(_._2!=null).map(v=>v._2.map(s=>proj.getRelation.extentName+"."+s)).flatten.toList
+	    //proj.getVarMappings().keys.toList
+	  case bi:BinaryOp=>projVarNames(bi.left)++projVarNames(bi.right)
+	}
+
 	
 	private def unAliasXpr(join:BinaryOp,xpr:BinaryXpr):String=
 	  unAliasXpr(join.left,xpr.left)+xpr.op+unAliasXpr(join.right,xpr.right)
@@ -104,23 +145,24 @@ class SqlQuery(val projectionVars:Map[String,String]) extends SourceQuery{
 	private def unAliasXpr(op:AlgebraOp,xpr:Xpr):String=(op,xpr) match {
 	  case (join:BinaryOp,bi:BinaryXpr)=>unAliasXpr(join,bi)
 	  case (join:BinaryOp,varXpr:VarXpr)=>getNotNull(unAliasXpr(join.left,xpr), unAliasXpr(join.right,xpr))	  
-	  case (proj:ProjectionOp,varXpr:VarXpr)=> if (proj.getVarMappings.containsKey(varXpr.varName))
-	      proj.getRelation.id+"."+proj.getVarMappings.get(varXpr.varName) else null
+	  case (proj:ProjectionOp,varXpr:VarXpr)=> 
+	    if (proj.getVarMappings.containsKey(varXpr.varName))
+	      getAlias(proj.getRelation.id)+"."+proj.getVarMappings(varXpr.varName).head else null
 	  case _=>throw new Exception("Not supported "+op.toString + xpr.toString)
 	}
 	
-  private def build(op:AlgebraOp):String={
+  protected def build(op:AlgebraOp):String={
 	if (op == null)	return "";
 	else op match{
 	  case root:RootOp=>return build(root.subOp)+";"
 	  //case union:OpUnion=>return build(union.left)+" UNION  "+build(union.getRight)			
       case proj:ProjectionOp=>
-        return "(SELECT "+ serializeSelect(proj)+" FROM "+build(proj.subOp)+")";
+        return "(SELECT "+ projVars(proj)+" FROM "+build(proj.subOp)+")";
 	  case win:WindowOp=>
 	    return win.extentName+ serializeWindowSpec(win.windowSpec)+ " "+win.extentName
       case rel:RelationOp=>return rel.extentName
 	  case sel:SelectionOp=>
-		return build(sel.subOp)+ " WHERE "+serializeExpressions(sel.expressions,null)
+		return build(sel.subOp)+ " WHERE "+serializeExpressions(sel.expressions.toSeq,null)
 	  case join:LeftOuterJoinOp=>
 	    var select = "SELECT "+projVars(join)+" FROM "+ get(join).mkString(",") 
 		if (!join.conditions.isEmpty)
@@ -136,6 +178,9 @@ class SqlQuery(val projectionVars:Map[String,String]) extends SourceQuery{
 		
 	  case union:MultiUnionOp=>
 		return union.children.values.map(col=>build(col)).mkString(" UNION ")
+		
+	  case group:GroupOp=>
+	    return group.aggs.map(agg=>agg._2 +" AS "+agg._1).mkString(",") +build(group.subOp)
 	  case _=>throw new Exception("Unsupported operator: "+op)
 	}
   }
@@ -156,29 +201,38 @@ class SqlQuery(val projectionVars:Map[String,String]) extends SourceQuery{
 
 	private def serializeSelect(proj:ProjectionOp,index:String):String=
 	{
-		return serializeSelect(proj, index, false);
+		return serializeSelect(proj, index, true,false)
 	}
-	protected def serializeSelect(proj:ProjectionOp,index:String,fullExtent:Boolean):String={
-		//OpProjection proj = (OpProjection)op;
-		var select = "'"+proj.getRelation.extentName+"' AS extentname"+index+", ";
-		var pos =0;
+	
+  protected def serializeSelect(proj:ProjectionOp,index:String,fullExtent:Boolean,extentName:Boolean):String={		
+	val relation=proj.getRelation
+	  
+	val alias=if (relation!=null){
+	  getAlias(relation.id.toString)
+	}
+	else null
+	    
+	var select =
+	  if (relation!=null&&extentName)
+		"'"+relation.extentName+"' AS extentname"+index+", ";
+	  else ""
+	var pos =0;
 		
-		proj.expressions.entrySet.foreach{entry=>				
-			if (entry.getValue()==NullValueXpr){
-				pos+=1
-				//continue;
-			}
-			else {
-			var vali:String = null;
-			vali = entry.getValue().toString()
+	proj.expressions.entrySet.foreach{entry=>				
+	      if (entry.getValue()==NullValueXpr){
+			pos+=1
+		  }
+		  else {
+			var vali:String = entry.getValue().toString()
 			if (fullExtent)
-				vali = proj.getRelation.extentName+"."+vali;
+			  //vali = proj.getRelation.extentName+"."+vali
+			  vali = alias+"."+vali
 			select += vali+ " AS "+entry.getKey();
 
 			if (pos < proj.expressions.size()-1) 
 				select += ", ";
 			pos+=1;
-			}
+		  }
 		}
 		if (select.endsWith(", "))//TODO remove this ugly control
 			select = select.substring(0,select.length()-2);
@@ -213,23 +267,25 @@ class SqlQuery(val projectionVars:Map[String,String]) extends SourceQuery{
 		return unalias;
 	}
 	
-	protected def serializeExpressions(xprs:Collection[Xpr],varMappings:Map[String,Seq[String]]):String={
+	protected def serializeExpressions(xprs:Seq[Xpr],varMappings:Map[String,Seq[String]]):String={
 		var exprs = "";
-		var i=0;
-		xprs.foreach{xpr=>						
+		//var i=0;
+		xprs.map{xpr=>
+		  xpr.toString
 			//exprs+=unAlias(xpr,varMappings) + (if ((i+1) < xprs.size) " AND " else "")
-			i+=1;
-		}
-		return exprs;
+			//i+=1;
+		}.mkString("AND")
+		//return exprs;
 	}
 	
 	
-	private def serializeWindowSpec(window:Window):String={
+	private def serializeWindowSpec(window:WindowSpec):String={
 		if (window == null) return "";
-		var ser = "[FROM NOW - "+window.getFromOffset()+" "+serializeTimeUnit(window.getFromUnit())+
-					" TO NOW - "+window.getToOffset()+" "+serializeTimeUnit(window.getToUnit());
-		if (window.getSlideUnit()!=null)
-			ser +=	" SLIDE "+window.getSlide()+ " "+serializeTimeUnit(window.getSlideUnit());
+		var ser = "[FROM NOW - "+window.from+" "+serializeTimeUnit(window.fromUnit)
+		if  (window.toUnit != null)
+			ser += " TO NOW - "+window.to+" "+serializeTimeUnit(window.toUnit);
+		if (window.slideUnit!=null)
+			ser +=	" SLIDE "+window.slide+ " "+serializeTimeUnit(window.slideUnit);
 		return ser+"]";
 	}
 	
@@ -265,5 +321,22 @@ class SqlQuery(val projectionVars:Map[String,String]) extends SourceQuery{
 		return extent+field.substring(m)		
 	}
 		
-
+  protected def attRelation(op:AlgebraOp,varName:String):String= 
+    op match{    
+      case root:RootOp=>attRelation(root.subOp,varName)
+      case join:JoinOp=>
+        val rel=attRelation(join.left,varName)
+        if (rel==null) attRelation(join.right,varName)
+        else rel
+      case proj:ProjectionOp=>
+        if (proj.expressions.contains(varName) && proj.getRelation!=null) 
+          proj.getRelation.id
+        else null
+      case sel:SelectionOp=>
+        if (sel.getRelation!=null) sel.getRelation.id
+        else null
+      case group:GroupOp=>
+        attRelation(group.subOp,varName)
+    }
+    //else null
 }

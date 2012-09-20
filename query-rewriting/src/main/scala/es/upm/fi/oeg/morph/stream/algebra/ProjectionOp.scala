@@ -1,7 +1,6 @@
 package es.upm.fi.oeg.morph.stream.algebra
 import com.weiglewilczek.slf4s.Logging
 import com.google.common.collect.Maps
-import es.upm.fi.dia.oeg.integration.algebra.OpUnion
 import collection.JavaConversions._
 import es.upm.fi.oeg.morph.stream.algebra.xpr.Xpr
 import es.upm.fi.oeg.morph.stream.algebra.xpr.VarXpr
@@ -29,7 +28,7 @@ class ProjectionOp(id:String,val expressions:Map[String,Xpr], subOp:AlgebraOp)
   }
 	
   override def toString:String=
-	return name+" "+id+"("+expressions.mkString(",")+")"
+	return name+" ("+expressions.mkString(",")+")"
 	
   override def copyOp():ProjectionOp=	{		
 	val op=if (subOp!=null) subOp.copyOp
@@ -50,7 +49,10 @@ class ProjectionOp(id:String,val expressions:Map[String,Xpr], subOp:AlgebraOp)
   }
   
   def merge(proj:ProjectionOp)={
-    new ProjectionOp(id,expressions++proj.expressions,subOp)
+    // Use the more complex subop
+    val sub=if (!proj.subOp.isInstanceOf[RelationOp]) proj.subOp
+      else subOp
+    new ProjectionOp(id,expressions++proj.expressions,sub)
   }
 
   def merge(proj:ProjectionOp,xprs:Seq[Xpr]):AlgebraOp={
@@ -104,7 +106,8 @@ class ProjectionOp(id:String,val expressions:Map[String,Xpr], subOp:AlgebraOp)
 	}
 	
 	override def build(newOp:AlgebraOp):AlgebraOp=
-	  if (this.id.equals("mainProjection"))//TODO this is hacky
+	  if (newOp==null) null
+	  else if (this.id.equals("mainProjection"))//TODO this is hacky
 	  {
 		if (subOp==null)	return newOp
 		else return subOp.build(newOp)			

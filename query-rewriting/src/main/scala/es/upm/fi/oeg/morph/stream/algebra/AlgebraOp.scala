@@ -49,8 +49,9 @@ class UnaryOp(val id:String,val name:String,val subOp:AlgebraOp) extends Algebra
 	if (subOp==null) null
 	else if (subOp!=null && subOp.isInstanceOf[RelationOp])
 	  subOp.asInstanceOf[RelationOp]
-	else
-	  subOp.asInstanceOf[UnaryOp].getRelation					
+	else if (subOp.isInstanceOf[UnaryOp])
+	  subOp.asInstanceOf[UnaryOp].getRelation
+	else null
 }
 
 class BinaryOp(val id:String,val name:String,val left:AlgebraOp,val right:AlgebraOp) extends AlgebraOp with Logging{

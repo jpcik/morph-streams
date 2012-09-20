@@ -6,7 +6,6 @@ import es.upm.fi.oeg.morph.stream.algebra.ProjectionOp
 import collection.JavaConversions._
 import es.upm.fi.oeg.morph.stream.algebra.MultiUnionOp
 import org.apache.commons.lang.NotImplementedException
-import es.upm.fi.dia.oeg.integration.Template
 import com.google.common.collect.Maps
 import es.upm.fi.oeg.morph.stream.algebra.AlgebraOp
 import es.upm.fi.oeg.morph.stream.algebra.xpr.OperationXpr
@@ -16,15 +15,20 @@ import es.upm.fi.oeg.morph.stream.algebra.WindowOp
 import es.upm.fi.oeg.morph.stream.algebra.RelationOp
 import es.upm.fi.oeg.morph.stream.algebra.SelectionOp
 import es.upm.fi.oeg.morph.stream.algebra.xpr.Xpr
+import java.util.Calendar
+import es.upm.fi.oeg.morph.common.TimeUnit
+import java.text.SimpleDateFormat
 
 class GsnQuery(projectionVars:Map[String,String]) extends SqlQuery(projectionVars){   
   
   var vars:Map[String,Seq[String]]=_
   var expressions:Map[String,Xpr]=_
+  var algebra:AlgebraOp=_
   
   override def load(op:AlgebraOp){
 	super.load(op)
 	this.innerQuery = build(op)
+	algebra=op
 	loadModifiers(op)
 	vars=varMappings(op)
 	expressions=varXprs(op)
@@ -45,12 +49,13 @@ class GsnQuery(projectionVars:Map[String,String]) extends SqlQuery(projectionVar
   private def varXprs(op:AlgebraOp):Map[String,Xpr]=op match{
     case root:RootOp=>varXprs(root.subOp)
     case proj:ProjectionOp=>proj.expressions
+    case union:MultiUnionOp=>varXprs(union.children.last._2)
     case _=>Map[String,Xpr]()
   }
   
   val gconstants = Maps.newHashMap[String,String]
-  val gstaticConstants = Maps.newHashMap[String, Template]();
-  val gtemplates =  Maps.newHashMap[String, Template]
+  //val gstaticConstants = Maps.newHashMap[String, Template]();
+  //val gtemplates =  Maps.newHashMap[String, Template]
 
 	private def loadModifiers(op:AlgebraOp)
 	{
@@ -75,6 +80,7 @@ class GsnQuery(projectionVars:Map[String,String]) extends SqlQuery(projectionVar
 						gconstants.put(entry.getKey().toLowerCase(), opXpr.param.toString());
 					else if (opXpr.op.equals("constant"))
 					{
+					  /*
 						if (!gstaticConstants.containsKey(extent))
 						{
 							val template= new Template(extent);
@@ -84,6 +90,8 @@ class GsnQuery(projectionVars:Map[String,String]) extends SqlQuery(projectionVar
 						else
 							gstaticConstants.get(extent).addModifier(lowerkey, opXpr.param.toString());
 						//staticConstants .put(lowerkey+extent, opXpr.getParam().toString());
+						 * 
+						 */
 					}
 				}
 				if (entry.getValue().isInstanceOf[VarXpr])
@@ -138,18 +146,29 @@ class GsnQuery(projectionVars:Map[String,String]) extends SqlQuery(projectionVar
   
   
 
-  private def build(op:AlgebraOp):String={
+  override def build(op:AlgebraOp):String={
 	if (op == null)	return "";
 	else op match{
 	  case root:RootOp=>return build(root.subOp)
 	  //case union:OpUnion=>return build(union.getLeft)+" UNION  "+build(union.getRight)			
       case proj:ProjectionOp=>
-        "field[0]="+projVars(proj).map(trimExtent(_)).filterNot(_.equals("timed")).mkString(",")+"&"+build(proj.subOp)
-	  case win:WindowOp=> throw new NotImplementedException("NYI Window")
+        println("proj vars: "+projVars(proj))
+        "field[0]="+projVarNames(proj).map(trimExtent(_)).filterNot(_.equals("timed")).mkString(",")+"&"+build(proj.subOp)
+	  case win:WindowOp=> 
+	    val dt= Calendar.getInstance()
+	    val from=win.windowSpec.from
+	    val t=TimeUnit.convertToUnit(from,win.windowSpec.fromUnit,TimeUnit.MILLISECOND).toLong
+	    dt.setTimeInMillis(System.currentTimeMillis() -t )
+	    //dt.getFirstDay
+	    val df=new SimpleDateFormat("dd/MM/yyyy+HH:mm:ss")
+        
+	    
+	    //throw new NotImplementedException("NYI Window "+df.format(dt.getTime())+"--"+win.windowSpec.fromUnit)
 	    //return win.getExtentName+ serializeWindowSpec(win.getWindowSpec)+ " "+win.getExtentName
+	    "vs[0]="+win.extentName+"&from="+df.format(dt.getTime)+"&gogog="+t
       case rel:RelationOp=> "vs[0]="+rel.extentName
 	  case sel:SelectionOp=>
-		return build(sel.subOp)+ " WHERE "+serializeExpressions(sel.expressions,null)
+		return build(sel.subOp)+ " WHERE "+serializeExpressions(sel.expressions.toSeq,null)
 	  case join:LeftOuterJoinOp=>throw new NotImplementedException("NYI Left Join")
 	  /*
 	    var select = "SELECT "+projVars(join)+" FROM "+ get(join).mkString(",") 

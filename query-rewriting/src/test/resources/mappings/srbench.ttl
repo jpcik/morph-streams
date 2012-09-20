@@ -21,23 +21,23 @@
   rr:predicateObjectMap [ rr:predicate om-owl:floatValue; rr:objectMap	[ rr:column "o" ] ];     		   		  
 .
 :obsResultUom a rr:TriplesMap;
-  rr:logicalTable [rr:sqlQuery "SELECT * FROM datacell.srbin WHERE p=uom"];
+  rr:logicalTable [rr:sqlQuery "SELECT * FROM datacell.srbin WHERE p=\'om-owl:uom\'"];
   rr:subjectMap   [ rr:column "s"; rr:class om-owl:Result; rr:graph srbench:observations ];
   rr:predicateObjectMap [ rr:predicate om-owl:uom;  rr:objectMap [ rr:column "o" ] ];     		   		  
 .
 
 :rainfallObservation a rr:TriplesMap;
-  rr:logicalTable [ rr:sqlQuery "SELECT * FROM datacell.srbin WHERE o=RainfallObservation and p=type"];
+  rr:logicalTable [ rr:sqlQuery "SELECT * FROM datacell.srbin WHERE o=\'om-owl:RainfallObservation\' and p=\'rdf:type\'"];
   rr:subjectMap   [ rr:column "s"; rr:class weather:RainfallObservation; rr:graph srbench:observations ];
 .   
  
 :rainfallProcedure a rr:TriplesMap;
-  rr:logicalTable [ rr:sqlQuery "SELECT * FROM datacell.srbin WHERE p=procedure"];
+  rr:logicalTable [ rr:sqlQuery "SELECT * FROM datacell.srbin WHERE p=\'om-owl:procedure\'"];
   rr:subjectMap   [ rr:column "s"; rr:class weather:Observation; rr:graph srbench:observations ];
   rr:predicateObjectMap [ rr:predicate om-owl:procedure; rr:objectMap [ rr:column "o"] ];
 .   
 :rainfallResult a rr:TriplesMap;
-  rr:logicalTable [ rr:sqlQuery "SELECT * FROM datacell.srbin WHERE p=result"];
+  rr:logicalTable [ rr:sqlQuery "SELECT * FROM datacell.srbin WHERE p=\'om-owl:result\'"];
   rr:subjectMap   [ rr:column "s"; rr:class weather:CObservation; rr:graph srbench:observations ];
   rr:predicateObjectMap [ rr:predicate om-owl:result;
                           rr:objectMap    [ rr:parentTriplesMap :obsResult; 
