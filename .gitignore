@@ -1,4 +1,6 @@
 .cache
+.settings
+.project
 *.class
 *.log
 target/
