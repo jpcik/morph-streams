@@ -2,7 +2,7 @@ name := "query-rewriting"
 
 organization := "es.upm.fi.oeg.morph"
 
-version := "1.0.0"
+version := "1.0.1"
 
 scalaVersion := "2.9.1"
 
@@ -14,8 +14,8 @@ libraryDependencies ++= Seq(
   "es.upm.fi.dia.oeg.sparql" % "resultbindings" % "0.0.1",
   "commons-lang" % "commons-lang" % "2.4",
   "com.google.guava" % "guava" % "r09",
-  "es.upm.fi.oeg.morph" % "morph-core" % "1.0.0",
-  "es.upm.fi.oeg.morph" % "morph-querygen" % "1.0.0",
+  "es.upm.fi.oeg.morph" % "morph-core" % "1.0.1",
+  "es.upm.fi.oeg.morph" % "morph-querygen" % "1.0.1",
   "org.apache.ws.commons.axiom" % "axiom-api" % "1.2.11",
   "org.apache.ws.commons.axiom" % "axiom-impl" % "1.2.11",  
   "org.scalatest" % "scalatest_2.9.1" % "1.7.2" % "test",

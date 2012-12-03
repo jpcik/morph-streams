@@ -50,6 +50,8 @@
    
     rr:predicateObjectMap :waveFoISea;
     rr:predicateObjectMap :waveObsProp;
+    rr:predicateObjectMap [ rr:predicateMap [ rr:constant ssn:observedBy ]; 
+      						rr:objectMap    [ rr:constant :milfordSensor ]];
     rr:predicateObjectMap [ rr:predicateMap [ rr:constant ssg:hasLatitude ]; 
       						rr:objectMap    [ rr:column "Lat" ]];
     rr:predicateObjectMap [ rr:predicateMap [ rr:constant ssg:hasLongitude ]; 

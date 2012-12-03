@@ -15,7 +15,7 @@
 :device a rr:TriplesMap;
   rr:logicalTable [rr:tableName "citybikes"];
   rr:subjectMap [rr:template "http://citybikes.linkeddata.es/id/bikesystem/{systemid}/sensingdevice/{id}"; 
-                 rr:class bicy:BikeStationSensingDevice];
+                 rr:class bicy:BikeStationSensingDevice; rr:graph bicy:CityBikes.srdf];
   rr:predicateObjectMap [rr:predicate dcterms:identifier;rr:objectMap [rr:column "id"]];
   rr:predicateObjectMap [rr:predicate ssn:featureOfInterest;rr:objectMap [rr:constant bicy:free_bikes_feature]]
 .
@@ -41,7 +41,7 @@
   rr:predicateObjectMap [ rr:predicate bicy:hasFreeSlotsValue;
   						  rr:objectMap	  [ rr:parentTriplesMap :freeSlotsValue; rr:joinCondition "" ] ];	   		  
   rr:predicateObjectMap [ rr:predicate bicy:hasAvailableBikesValue;
-						  rr:objectMap	  [ rr:parentTriplesMap :availableBikesValue; rr:joinCondition "" ] ];	   		  
+						  rr:objectMap	  [ rr:parentTriplesMap :availableBikesValue;] ];	   		  
 .      		   
 
 :bikesResultTime a rr:TriplesMap;	

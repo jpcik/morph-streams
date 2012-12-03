@@ -1,4 +1,4 @@
-package es.upm.fi.oeg.morph.streams.wrapper
+package es.upm.fi.oeg.morph.stream.wrapper
 
 import scala.xml._
 import com.sun.jersey.api.client.Client

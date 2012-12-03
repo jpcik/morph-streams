@@ -46,6 +46,16 @@ class SRBenchRewritingTest extends JUnitSuite with ShouldMatchersForJUnit with C
     logger.info(query)    
     trans.translate(query)
   }
+  @Test def testFilterValue() {     
+    val query = loadQuery("queries/srbench/filter-value.sparql")
+    logger.info(query)    
+    trans.translate(query)
+  }
+  @Test def testFilterUriValue() {     
+    val query = loadQuery("queries/srbench/filter-uri-value.sparql")
+    logger.info(query)    
+    trans.translate(query)
+  }
 
   
 }

@@ -15,6 +15,7 @@ import es.upm.fi.oeg.morph.stream.gsn.wrapper.BikeObservation
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import es.upm.fi.oeg.morph.stream.evaluate.QueryEvaluator
+import org.junit.Ignore
 
 class CityBikesQueryTest extends JUnitSuite with ShouldMatchersForJUnit with Checkers with Logging {
   PropertyConfigurator.configure(getClass.getClassLoader().getResource("config/log4j.properties"));
@@ -66,7 +67,7 @@ class CityBikesQueryTest extends JUnitSuite with ShouldMatchersForJUnit with Che
     gsn.executeQuery(query,mappingUri)
   }
 
-  @Test def testLatestAvailableBikeObservationsStation() {     
+  @Ignore@Test def testLatestAvailableBikeObservationsStation() {     
     val query = loadQuery("queries/citybikes/latest-availablebike-observations-station.sparql")
     logger.info(query)        
     gsn.executeQuery(query,mappingUri)

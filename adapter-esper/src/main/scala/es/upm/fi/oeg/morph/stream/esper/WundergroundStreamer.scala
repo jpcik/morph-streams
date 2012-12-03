@@ -1,5 +1,5 @@
-package es.upm.fi.oeg.morph.streams.esper
-import es.upm.fi.oeg.morph.streams.wrapper.Wunderground
+package es.upm.fi.oeg.morph.stream.esper
+import es.upm.fi.oeg.morph.stream.wrapper.Wunderground
 
 class WundergroundStreamer(stationid:String,extent:String,rate:Int,esper:EsperEngine) 
   extends EsperStreamer(extent,rate,esper){

@@ -9,7 +9,8 @@ scalaVersion := "2.9.1"
 crossPaths := false
 
 libraryDependencies ++= Seq(
-  "com.hp.hpl.jena" % "jena" % "2.6.4"
+  "com.hp.hpl.jena" % "jena" % "2.6.4",
+  "es.upm.fi.oeg.morph" % "morph-core" % "1.0.1"
 )
 
 scalacOptions += "-deprecation"

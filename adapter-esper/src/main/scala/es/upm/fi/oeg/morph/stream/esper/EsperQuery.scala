@@ -1,39 +1,51 @@
-package es.upm.fi.oeg.morph.stream.query
-import es.upm.fi.oeg.morph.stream.algebra._
-import es.upm.fi.oeg.morph.common.TimeUnit
+package es.upm.fi.oeg.morph.stream.esper
+import es.upm.fi.oeg.morph.stream.query.SqlQuery
 import es.upm.fi.oeg.morph.stream.algebra.xpr.Xpr
-import es.upm.fi.oeg.morph.stream.algebra.xpr.UnassignedVarXpr
 import scala.collection.mutable.ArrayBuffer
+import es.upm.fi.oeg.morph.stream.algebra.AlgebraOp
+import es.upm.fi.oeg.morph.stream.algebra.RootOp
+import es.upm.fi.oeg.morph.stream.algebra.GroupOp
+import es.upm.fi.oeg.morph.stream.algebra.InnerJoinOp
+import es.upm.fi.oeg.morph.stream.algebra.LeftOuterJoinOp
+import es.upm.fi.oeg.morph.stream.algebra.SelectionOp
+import es.upm.fi.oeg.morph.stream.algebra.ProjectionOp
+import es.upm.fi.oeg.morph.stream.algebra.WindowOp
+import es.upm.fi.oeg.morph.stream.algebra.RelationOp
+import es.upm.fi.oeg.morph.stream.algebra.MultiUnionOp
+import es.upm.fi.oeg.morph.stream.algebra.JoinOp
+import es.upm.fi.oeg.morph.stream.algebra.xpr.UnassignedVarXpr
+import es.upm.fi.oeg.morph.common.TimeUnit
+import es.upm.fi.oeg.morph.stream.algebra.xpr.VarXpr
 
-class DatacellQuery(projectionVars:Map[String,String]) extends SqlQuery(projectionVars) {
-  
+class EsperQuery (projectionVars:Map[String,String]) extends SqlQuery(projectionVars) {
+  val projectionXprs=projectionVars.map(p=>(p._1,VarXpr(p._2))) 
   val selectXprs=new collection.mutable.HashMap[String,Xpr]
   val from=new ArrayBuffer[String]
   val where=new ArrayBuffer[String]
   val unions=new ArrayBuffer[String]
-  
+
   def serializeSelect=
     "SELECT "+ selectXprs.map(s=>s._2 +" AS "+s._1).mkString(",")
   
-  def generateWhere(op:AlgebraOp):Unit=generateWhere(op,true)
-  def generateWhere(op:AlgebraOp,joinConditions:Boolean):Unit=op match{
-    case root:RootOp=>generateWhere(root.subOp)
-    case group:GroupOp=>generateWhere(group.subOp)
+  def generateWhere(op:AlgebraOp,vars:Map[String,Xpr]):Unit=generateWhere(op,vars,true)
+  def generateWhere(op:AlgebraOp,vars:Map[String,Xpr],joinConditions:Boolean):Unit=op match{
+    case root:RootOp=>generateWhere(root.subOp,Map())
+    case group:GroupOp=>generateWhere(group.subOp,Map())
     case join:InnerJoinOp=>
       val joinXpr = get(join).mkString(",") 
       if (joinConditions && !join.conditions.isEmpty) 			  
 		where+=joinXprs(join).mkString(" RAND ")		
-	  generateWhere(join.left,false)
-	  generateWhere(join.right,false)
+	  generateWhere(join.left,vars,false)
+	  generateWhere(join.right,vars,false)
     case join:LeftOuterJoinOp=>
-	  generateWhere(join.left)
-	  generateWhere(join.right)
+	  generateWhere(join.left,vars)
+	  generateWhere(join.right,vars)
     case sel:SelectionOp=>
-      where++=conditions(sel,Map())
-      generateWhere(sel.subOp)
-    case proj:ProjectionOp=>generateWhere(proj.subOp)
+      where++=conditions(sel,vars)
+      generateWhere(sel.subOp,vars)
+    case proj:ProjectionOp=>generateWhere(proj.subOp,proj.expressions)
     case win:WindowOp=>      
-      where+=getAlias(win.id)+".ts "+ window(win)
+      //where+=getAlias(win.id)+ window(win)
     case rel:RelationOp=>      
       where+=getAlias(rel.id)
   }
@@ -41,7 +53,7 @@ class DatacellQuery(projectionVars:Map[String,String]) extends SqlQuery(projecti
   def generateUnion(op:AlgebraOp):Unit=op match{
     case union:MultiUnionOp=>
       val un=union.children.values.map{opi=>
-        val q=new DatacellQuery(projectionVars)
+        val q=new EsperQuery(projectionVars)
         q.build(new RootOp("",opi))                
       }
       unions++=un
@@ -65,13 +77,14 @@ class DatacellQuery(projectionVars:Map[String,String]) extends SqlQuery(projecti
       generateFrom(sel.subOp)
     case group:GroupOp=>generateFrom(group.subOp)
     case win:WindowOp=>      
-      from+=extentAlias(win)
+      //from+=extentAlias(win)
+      from+=win.extentName+window(win)+ " AS "+getAlias(win.id)
       //where+=getAlias(win.id)+".ts "+ window(win)
     case rel:RelationOp=>      
       from+=extentAlias(rel)
     case union:MultiUnionOp=>
       val un=union.children.values.map{opi=>
-        val q=new DatacellQuery(projectionVars)
+        val q=new EsperQuery(projectionVars)
         q.build(new RootOp("",opi))                
       }
       from+=un.mkString(" union ")
@@ -99,7 +112,9 @@ class DatacellQuery(projectionVars:Map[String,String]) extends SqlQuery(projecti
       generateSelectVars(join.right)   
     case _=>
   }
-  
+  override def getProjection:Map[String,String]={
+    projectionVars.map(p=>p._1->null)
+  }
   override def build(op:AlgebraOp):String={
 	if (op == null)	return "";
 	else op match{
@@ -111,8 +126,9 @@ class DatacellQuery(projectionVars:Map[String,String]) extends SqlQuery(projecti
 	    else {
 	    generateSelectVars(op)
 	    generateFrom(op)
-	    generateWhere(op)
-	    return serializeSelect+" FROM "+from.mkString(",")+" WHERE "+where.mkString(" AND ")//+ build(root.subOp)+";"
+	    generateWhere(op,Map())
+	    val wherestr=if (where.isEmpty) "" else " WHERE "+where.mkString(" AND ")
+	    return serializeSelect+" FROM "+from.mkString(",")+wherestr//+ build(root.subOp)+";"
 	    }
 	  //case union:OpUnion=>return build(union.left)+" UNION  "+build(union.getRight)			
       case proj:ProjectionOp=>
@@ -145,13 +161,14 @@ class DatacellQuery(projectionVars:Map[String,String]) extends SqlQuery(projecti
   }
   
   private def interval(time:Double,unit:TimeUnit)=
-    if (unit !=null && time>0) "NOW - INTERVAL '"+time+"' "+unit.name
+    if (unit !=null && time>0) time+" "+unit.name
     else "NOW()"
   
   private def window(win:WindowOp)={
     val spec=win.windowSpec
     val to=interval(spec.to,spec.toUnit)
     val from=interval(spec.from,spec.fromUnit)
-    "BETWEEN "+to+" AND "+from      
+    ".win:time("+from+")"      
   }
 }
+

@@ -1,0 +1,31 @@
+@prefix rr: <http://www.w3.org/ns/r2rml#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix ssn: <http://purl.oclc.org/NET/ssnx/ssn#> . 
+@prefix dul: <http://www.loa-cnr.it/ontologies/DUL.owl#> .
+@prefix time: <http://www.w3.org/2006/time#> .
+@prefix morph: <http://es.upm.fi.dia.oeg/morph#> .
+@prefix om-owl: <http://knoesis.wright.edu/ssw/ont/sensor-observation.owl#> .
+@prefix weather: <http://knoesis.wright.edu/ssw/ont/weather.owl#> .
+@prefix srbench: <http://cwi.nl/SRBench/> .
+@prefix : <http://es.upm.fi.dia.oeg/R2RMapping#> . 
+
+:tempObsResult a rr:TriplesMap;
+  rr:logicalTable [rr:tableName "wunderground"];
+  rr:subjectMap   [ rr:template "http://meteo.us/{stationId}/rainfall/observation/{observationTime}"; 
+                    rr:class om-owl:Result; rr:graph srbench:observations ];
+  rr:predicateObjectMap [ rr:predicate om-owl:floatValue; rr:objectMap	[ rr:column "temperature" ] ];     		   		  
+  rr:predicateObjectMap [ rr:predicate om-owl:uom; rr:objectMap	[ rr:constant morph:celsius ] ];     		   		  
+.
+
+:tempObs a rr:TriplesMap;
+  rr:logicalTable [ rr:tableName "wunderground"];
+  rr:subjectMap   [ rr:template "http://meteo.us/{stationId}/temperature/observation/{observationTime}"; 
+                    rr:class weather:RainfallObservation; rr:graph srbench:observations ];
+  rr:predicateObjectMap [ rr:predicate om-owl:result;
+                          rr:objectMap [ rr:parentTriplesMap :tempObsResult; 
+                                         rr:joinCondition [rr:parent "stationId";rr:child "stationId"] ]];
+  rr:predicateObjectMap [ rr:predicate om-owl:observedBy; rr:objectMap [ rr:column "stationId"] ];
+.   
+ 
+ 

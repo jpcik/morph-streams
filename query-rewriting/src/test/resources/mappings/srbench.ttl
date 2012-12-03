@@ -43,4 +43,10 @@
                           rr:objectMap    [ rr:parentTriplesMap :obsResult; 
                                             rr:joinCondition [rr:parent "s";rr:child "o"] ]];
 .   
+
+:obsPropertyObservation a rr:TriplesMap;
+  rr:logicalTable [ rr:sqlQuery "SELECT * FROM datacell.srbin WHERE p=\'om-owl:observedProperty\'"];
+  rr:subjectMap   [ rr:column "s"; rr:class weather:CObservation; rr:graph srbench:observations ];
+  rr:predicateObjectMap [ rr:predicate om-owl:observedProperty; rr:objectMap [ rr:column "o"] ];
+.   
  

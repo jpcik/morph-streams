@@ -1,4 +1,4 @@
-package es.upm.fi.oeg.morph.streams.esper
+package es.upm.fi.oeg.morph.stream.esper
 
 import akka.actor._
 import akka.routing.RoundRobinRouter

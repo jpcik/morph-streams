@@ -1,31 +1,82 @@
-package es.upm.fi.oeg.morph.stream.gsn
+package es.upm.fi.oeg.morph.stream.esper
+import es.upm.fi.oeg.morph.stream.evaluate.StreamEvaluatorAdapter
+import es.upm.fi.oeg.morph.stream.query.SourceQuery
+import java.util.Properties
+import es.upm.fi.oeg.morph.stream.algebra.xpr.Xpr
 import java.sql.ResultSet
-import java.sql.ResultSetMetaData
 import javax.sql.RowSetMetaData
 import javax.sql.rowset.RowSetMetaDataImpl
+import java.sql.Types
+import java.sql.ResultSetMetaData
+import es.upm.fi.oeg.morph.stream.algebra.xpr.ReplaceXpr
+import es.upm.fi.oeg.morph.stream.algebra.xpr.VarXpr
+import java.sql.Ref
+import java.sql.Blob
+import java.sql.Clob
+import java.util.Calendar
 import java.sql.Date
 import java.sql.Time
 import java.sql.Timestamp
+import java.net.URL
 import java.io.Reader
-import java.sql.RowId
 import java.io.InputStream
-import java.sql.Blob
-import java.sql.Ref
-import java.sql.Clob
-import java.util.Calendar
+import java.sql.RowId
 import java.sql.NClob
 import java.sql.SQLXML
-import java.sql.Statement
-import java.net.URL
 import java.sql.SQLWarning
-import java.sql.Types
-import es.upm.fi.oeg.morph.stream.algebra.xpr.Xpr
-import es.upm.fi.oeg.morph.stream.algebra.xpr.ReplaceXpr
-import es.upm.fi.oeg.morph.stream.algebra.xpr.VarXpr
+import java.sql.Statement
+import com.espertech.esper.client.UpdateListener
+import com.espertech.esper.client.EventBean
+import scala.actors.Future
+import com.espertech.esper.client.EPStatement
+import collection.JavaConversions._
 
-class GsnResultSet(val records: Stream[Array[String]], val metadata: Map[String, Xpr]) extends ResultSet {
+class EsperAdapter(props:Properties) extends  StreamEvaluatorAdapter with UpdateListener {
+  val esper= new EsperEngine
+  esper.start
+  
+  def update(row:Array[EventBean],old:Array[EventBean])={
+    println("updates coming "+row.map(_.get("value")).mkString)
+  }
+  
+  def registerQuery(query:SourceQuery)={
+    val esperQuery=query.asInstanceOf[EsperQuery]
+    val id=( esper !! ListenQuery(query.serializeQuery,this))
+    println ("id is: "+id().asInstanceOf[String])
+    
+    id().asInstanceOf[String]
+  }
+  
+  def pull(id:String,query:SourceQuery)={
+    val esperQuery=query.asInstanceOf[EsperQuery]
+    val stmt=(esper !! Pull(id))().asInstanceOf[EPStatement]
+    val results=stmt.iterator.map{i=>
+      esperQuery.projectionXprs.keys.map(key=>i.get(key)).toArray
+    }
+    
+    //val data=Array(Array("r1","4","5"),Array("r2","4","3"))
+    new EsperResultSet(results.toStream,esperQuery.projectionXprs)
+  }
+  
+  def executeQuery(query:SourceQuery) = {
+    val esperQuery=query.asInstanceOf[EsperQuery]
+    val id=registerQuery(query)
+   	//esper ! ListenQuery(query.serializeQuery,this)
+
+    Thread.sleep(3000)
+    pull(id,query)
+    
+    val map=query.getProjection.map(p=>(p._1,VarXpr(p._2)))
+    val data=Stream(Array("r1","4","5"),Array("r2","4","3"))
+    
+    new EsperResultSet(data.asInstanceOf[Stream[Array[Object]]],esperQuery.projectionXprs) 
+  }
+}
+
+
+class EsperResultSet(val records: Stream[Array[Object]], val metadata: Map[String, Xpr]) extends ResultSet {
   val it = records.iterator
-  var current: Seq[String] = _
+  var current: Seq[Object] = _
 
   override def unwrap[T](iface:Class[T]): T = null.asInstanceOf[T]
   override def isWrapperFor(iface:Class[_]): Boolean = false
@@ -214,7 +265,7 @@ class GsnResultSet(val records: Stream[Array[String]], val metadata: Map[String,
   override def getClob(columnIndex: Int): Clob = null
   override def getArray(columnIndex: Int): java.sql.Array = null
   override def getObject(columnLabel: String, map: java.util.Map[String, java.lang.Class[_]]): Object = null
-  override def getObject[T](columnLabel: String, cl:java.lang.Class[T]): T = null.asInstanceOf[T]
+  override def getObject[T](columnLabel: String, cl: java.lang.Class[T]): T = null.asInstanceOf[T]
   override def getRef(columnLabel: String): Ref = null
   override def getBlob(columnLabel: String): Blob = null
   override def getClob(columnLabel: String): Clob = null
@@ -300,31 +351,3 @@ class GsnResultSet(val records: Stream[Array[String]], val metadata: Map[String,
 
 }
 
-
-class GsnMultiResultSet(resultSets:Array[GsnResultSet]) extends GsnResultSet(Stream(),Map()){
-  val iter=resultSets.iterator
-  var currentRs:GsnResultSet=_
-  override protected def createMetadata=new RowSetMetaDataImpl
-
-  override def next:Boolean={
-    if (currentRs!=null && currentRs.next)
-      true
-    else if (currentRs==null || iter.hasNext){ 
-      currentRs=iter.next
-      currentRs.next
-    }
-    else false
-  }
-  override def findColumn(columnLabel: String): Int = 
-    currentRs.findColumn(columnLabel)
-    
-  
-  override def getObject(columnIndex:Int):Object=  
-    currentRs.getObject(columnIndex)
-  
-  override def getObject(columnLabel:String):Object=
-    currentRs.getObject(columnLabel)
-    
- override def getMetaData=if (currentRs!=null)currentRs.getMetaData
- else super.getMetaData
-}
