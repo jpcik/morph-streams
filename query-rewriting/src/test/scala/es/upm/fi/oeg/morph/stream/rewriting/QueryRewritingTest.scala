@@ -11,7 +11,9 @@ import es.upm.fi.oeg.morph.common.ParameterUtils._
 import es.upm.fi.oeg.sparqlstream.StreamQueryFactory
 import org.apache.log4j.PropertyConfigurator
 import es.upm.fi.oeg.morph.common.ParameterUtils
+import org.junit.Ignore
 
+@Ignore
 class QueryRewritingTest extends JUnitSuite with ShouldMatchersForJUnit with Checkers with Logging {
   PropertyConfigurator.configure(classOf[QueryRewritingTest].getClassLoader().getResource("config/log4j.properties"));
   val queryCCOComplexTide = loadQuery("queries/common/cco_queryPressure.sparql")

@@ -66,6 +66,7 @@ import es.upm.fi.oeg.sparqlstream.syntax.ElementStreamGraph
 import es.upm.fi.oeg.sparqlstream.SparqlStream
 import es.upm.fi.oeg.morph.r2rml.IRIType
 import es.upm.fi.oeg.morph.r2rml.LiteralType
+import es.upm.fi.oeg.morph.r2rml.RefObjectMap
 
 class QueryRewriting(props: Properties,mapping:String) extends Logging {
   logger.debug("mapping is: "+mapping)
@@ -324,6 +325,7 @@ class QueryRewriting(props: Properties,mapping:String) extends Logging {
   }
 
   private def processPOMap(t:Triple,poMap:PredicateObjectMap,tMap:TriplesMap,query:StreamQuery)={
+    logger.debug("Processing triple: "+t)
     logger.debug("Graphs: " + poMap.graphMap)
     val graphstream=if (poMap.graphMap==null)
       tMap.subjectMap.graphMap 
@@ -402,6 +404,7 @@ class QueryRewriting(props: Properties,mapping:String) extends Logging {
               poMaps.foreach {
                 case (poMap, tMap) =>
                   pro=processPOMap(t,poMap,tMap,query)
+                  logger.debug("after poMap "+pro)
                   if (opCurrent != null) opCurrent = union(opCurrent, pro)
                   else opCurrent = pro
               }
@@ -409,13 +412,18 @@ class QueryRewriting(props: Properties,mapping:String) extends Logging {
           }
           if (!skip) {
             if (opCurrent == null) {
+              throw new Exception("too bad")
               return null
             }
             if (pra != null) pra = pra.build(opCurrent)
             else pra = opCurrent
-          } else return null
+          } else {
+                          throw new Exception("bad")
+                          return null
+          }
 
         }
+        logger.debug("We get this "+pra)
         pra;
 
       } else if (op.isInstanceOf[OpProject]) {
@@ -613,7 +621,10 @@ class QueryRewriting(props: Properties,mapping:String) extends Logging {
     logger.debug("Create selection value: "+value )
     val vari = if (nMap.column == null)
       "localVar" + t.getPredicate.getLocalName + t.getSubject.getName
-      else nMap.column;
+      else nMap.column
+    if (nMap.column!=null){
+      return createSelection("=",vari,value,unary)
+    }
     if (nMap.constant!=null && 
         nMap.constant.toString.equals(value))
       //createSelection("=",vari,value,unary)
@@ -621,6 +632,17 @@ class QueryRewriting(props: Properties,mapping:String) extends Logging {
     else null
   }
 
+  private def projectionXprs(tripleNode:Node,roMap:RefObjectMap,sMap:SubjectMap):(String,Xpr)={
+    tripleNode match{
+      case objVar:Var=>        
+        if (roMap.joinCondition!=null)
+          (objVar.getName,new VarXpr(roMap.joinCondition.child))
+        else projectionXprs(objVar,sMap)
+          //(objVar.getName,new VarXpr("identity"))
+        
+      case _=> throw new Exception("Unsupported triple pattern: "+tripleNode)
+    }
+  }
  
   private def projectionXprs(tripleNode:Node,oMap:TermMap):(String,Xpr)={   
     tripleNode match {
@@ -689,7 +711,7 @@ class QueryRewriting(props: Properties,mapping:String) extends Logging {
     val refXprs=if (poMap!=null && poMap.refObjectMap!=null){
       val roMap=poMap.refObjectMap
       val subject = reader.triplesMaps(roMap.parentTriplesMap).subjectMap
-      projectionXprs(t.getObject,subject)
+      projectionXprs(t.getObject,roMap,subject)
     } else null
           
     val xprs=List(subjXprs)++List(objectXprs)++List(refXprs)

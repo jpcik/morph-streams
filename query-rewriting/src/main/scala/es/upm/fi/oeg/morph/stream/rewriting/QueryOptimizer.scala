@@ -282,12 +282,12 @@ class QueryOptimizer extends Logging{
 				selection.selectionVarNames.foreach{varName=>
 					if (proj.expressions.containsKey(varName))
 					{
-						val sel = new SelectionOp(selection.id,null,selection.expressions)
-						proj.build(sel);
-						return proj;
+						val sel = new SelectionOp(selection.id,proj.subOp,selection.expressions)
+						//proj.build(sel);
+						return new ProjectionOp(proj.id,proj.expressions,sel)
 					}
 					else
-						return null;
+						return proj;
 				}
 			}/*
 			else if (op.getSubOp.isInstanceOf[OpUnion])
@@ -321,12 +321,15 @@ class QueryOptimizer extends Logging{
 				union.children.putAll(newChildren);
 				return union;
 			}
-			else if (selection.subOp.isInstanceOf[InnerJoinOp])
-			{
+			else if (selection.subOp.isInstanceOf[InnerJoinOp])	{
 				val join=selection.subOp.asInstanceOf[InnerJoinOp]
+			  logger.debug("selection inside join "+join.toString)
 				val selxprs=selection.expressions.map(_.asInstanceOf[BinaryXpr]).toList
-				join.conditions.addAll(selxprs)
-				return join;
+				//join.conditions.addAll(selxprs)
+				val l=new SelectionOp(selection.id,join.left,selection.expressions)
+				val r=new SelectionOp(selection.id,join.right,selection.expressions)
+				return new InnerJoinOp(staticOptimize(l),staticOptimize(r))
+				//return join;
 				//throw new NotImplementedException("Not done for joins");
 			}
 		return selection

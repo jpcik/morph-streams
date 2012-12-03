@@ -17,23 +17,23 @@ import com.weiglewilczek.slf4s.Logging
 
 trait StreamEvaluatorAdapter{
   def executeQuery(abstractQuery:SourceQuery):ResultSet
+  def registerQuery(abstractQuery:SourceQuery):String
+  def pull(id:String,query:SourceQuery):ResultSet
 }
 
 class QueryEvaluator(config:Properties) extends Logging{
   val props = ParameterUtils.load(getClass.getClassLoader.getResourceAsStream("config/siq.properties"));
   private val adapterconfig=if (config==null) props else config 
-
-  
   val adapterid = props.getProperty("siq.adapter");
   val adapterClass = props.getProperty("siq.adapter."+adapterid+".evaluator")
   
   val theClass=try Class.forName(adapterClass)
 	catch {case e:ClassNotFoundException =>
-	  throw new IllegalArgumentException("Unable to initialize adapter class "+adapterClass, e)
-	}
-  val adapter=  
-    theClass.getDeclaredConstructor(classOf[Properties]).newInstance(adapterconfig).asInstanceOf[StreamEvaluatorAdapter]
-			
+	  throw new IllegalArgumentException("Unable to initialize adapter class "+adapterClass, e)}
+  val adapter=theClass.getDeclaredConstructor(classOf[Properties])
+              .newInstance(adapterconfig).asInstanceOf[StreamEvaluatorAdapter]
+		
+  private val queryids=new collection.mutable.HashMap[String,SourceQuery]
   
   def executeQuery(sparqlstr:String,mappingUri:URI)={
     val query=SparqlStream.parse(sparqlstr)
@@ -57,20 +57,33 @@ class QueryEvaluator(config:Properties) extends Logging{
     }
   }
   
-  def printSparqlResult(sparql:Sparql )
-	{		   
- 		try {
- 			val jax = JAXBContext.newInstance(classOf[Sparql]) ;
- 			val m = jax.createMarshaller();
- 			val sr = new StringWriter();
- 			m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
- 			m.marshal(sparql,sr);
- 			logger.info(sr.toString());
- 			
- 		} catch {case e:JAXBException=>
- 			e.printStackTrace();
- 		}         
-	}
-
+  def registerQuery(sparqlstr:String,mappingUri:URI)={
+    val query=SparqlStream.parse(sparqlstr)
+    val trans = new QueryRewriting(props,mappingUri.toString)
+    val qt= trans.translate(query)
+    val id=adapter.registerQuery(qt)
+    queryids.put(id,qt)
+    id
+  }
+  
+  def pull(id:String)={
+    val qt=queryids(id)
+    val rs=adapter.pull(id,qt)
+    val dt=new DataTranslator(List(rs),qt)
+    val sparql=dt.transform     
+    printSparqlResult(sparql)
+    sparql    
+  }
+     
+  def printSparqlResult(sparql:Sparql )	{		   
+    try {
+ 	  val jax = JAXBContext.newInstance(classOf[Sparql])
+ 	  val m = jax.createMarshaller
+ 	  val sr = new StringWriter
+ 	  m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true)
+ 	  m.marshal(sparql,sr)
+ 	  logger.info(sr.toString)
+ 	} catch {case e:JAXBException=>e.printStackTrace}         
+  }
 
 }

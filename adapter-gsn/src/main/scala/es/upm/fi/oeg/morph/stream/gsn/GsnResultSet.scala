@@ -208,11 +208,13 @@ class GsnResultSet(val records: Stream[Array[String]], val metadata: Map[String,
 
   
   override def getObject(columnIndex: Int, map: java.util.Map[String, java.lang.Class[_]]): Object = null
+  override def getObject[T](columnIndex: Int, cl:java.lang.Class[T]): T = null.asInstanceOf[T]
   override def getRef(columnIndex: Int): Ref = null
   override def getBlob(columnIndex: Int): Blob = null
   override def getClob(columnIndex: Int): Clob = null
   override def getArray(columnIndex: Int): java.sql.Array = null
   override def getObject(columnLabel: String, map: java.util.Map[String, java.lang.Class[_]]): Object = null
+  override def getObject[T](columnLabel: String, cl:java.lang.Class[T]): T = null.asInstanceOf[T]
   override def getRef(columnLabel: String): Ref = null
   override def getBlob(columnLabel: String): Blob = null
   override def getClob(columnLabel: String): Clob = null

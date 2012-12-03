@@ -13,6 +13,7 @@ import es.upm.fi.oeg.morph.stream.query.SourceQuery
 import es.upm.fi.oeg.morph.stream.algebra.RootOp
 import es.upm.fi.oeg.morph.stream.algebra.ProjectionOp
 import es.upm.fi.oeg.morph.stream.algebra.MultiUnionOp
+import org.apache.commons.lang.NotImplementedException
 
 
 class GsnAdapter(props:Properties) extends StreamEvaluatorAdapter with Logging{
@@ -68,6 +69,14 @@ class GsnAdapter(props:Properties) extends StreamEvaluatorAdapter with Logging{
       case proj:ProjectionOp=>multidata(gsnQuery)
     }
   }  
+  
+    def registerQuery(query:SourceQuery)={
+    throw new NotImplementedException    
+  }
+  
+  def pull(id:String,query:SourceQuery)={
+    throw new NotImplementedException
+  }
 }
 
 class StreamExtent(val name:String,fields:Array[Field])
