@@ -25,6 +25,7 @@ resolvers ++= Seq(
   DefaultMavenRepository,
   "Local Maven Repository" at "file://"+Path.userHome.absolutePath+"/.m2/repository",
   "aldebaran-snapshots" at "http://aldebaran.dia.fi.upm.es/artifactory/sstreams-snapshots-local",
+  "aldebaran-releases" at "http://aldebaran.dia.fi.upm.es/artifactory/sstreams-releases-local",  
   "aldebaran-libs" at "http://aldebaran.dia.fi.upm.es/artifactory/sstreams-external-libs-local"  
 )
 
