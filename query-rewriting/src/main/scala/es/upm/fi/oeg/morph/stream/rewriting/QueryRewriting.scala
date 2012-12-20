@@ -96,6 +96,7 @@ class QueryRewriting(props: Properties,mapping:String) extends Logging {
     translate(SparqlStream.parse(queryString))  
 
   def translate(query:StreamQuery): SourceQuery ={
+    
     val opNew = translateToAlgebra(query)
     val pVars=getProjectList(query).map(a=>a._1->a._1).toMap
     transform(opNew,pVars)      
@@ -302,7 +303,7 @@ class QueryRewriting(props: Properties,mapping:String) extends Logging {
           val exp = new VarXpr(vari)
           (vari, exp)
         }.toMap
-        val cProj = new ProjectionOp("mainProjection",xprs, opo)
+        val cProj = new ProjectionOp("mainProjection",xprs, opo,query.isDistinct)
 
         //opNew.setSubOp(cProj)
         new RootOp(null,cProj)
@@ -428,12 +429,13 @@ class QueryRewriting(props: Properties,mapping:String) extends Logging {
 
       } else if (op.isInstanceOf[OpProject]) {
         val project = op.asInstanceOf[OpProject]
+        
         val opo = navigate(project.getSubOp(), query)
         val xprs=project.getVars().map { vari =>
           val exp = UnassignedVarXpr //new VarXpr(vari.getVarName)
           (vari.getVarName, exp)
         }.toMap
-        val proj = new ProjectionOp("mainProjection", xprs,opo)
+        val proj = new ProjectionOp("mainProjection", xprs,opo,query.isDistinct)
         return proj;
       } else if (op.isInstanceOf[com.hp.hpl.jena.sparql.algebra.op.OpJoin]) {
         val opJoin = op.asInstanceOf[com.hp.hpl.jena.sparql.algebra.op.OpJoin]
@@ -689,7 +691,8 @@ class QueryRewriting(props: Properties,mapping:String) extends Logging {
 
   private def createProjection(t:Triple, tMap:TriplesMap, nMap: TermMap, 
       poMap: PredicateObjectMap, stream: ElementStreamGraph, sub: UnaryOp): ProjectionOp =  {
-      
+    if (sub==null) null
+    else {
     val nMapUri = tMap.uri
 
     logger.debug("Creating projection for "+nMap)
@@ -717,11 +720,13 @@ class QueryRewriting(props: Properties,mapping:String) extends Logging {
     val xprs=List(subjXprs)++List(objectXprs)++List(refXprs)
     logger.debug("projection Xprs: "+xprs)
     
+    
     val relation = if (sub.isInstanceOf[RelationOp]) sub else sub.getRelation
-    val projection = new ProjectionOp(id+"-"+relation.id,xprs.filter(_!=null).toMap, sub)
+    val projection = new ProjectionOp(id+"-"+relation.id,xprs.filter(_!=null).toMap, sub,false)
   
     //logger.debug("Created projection: "+projection.toString());
-    return projection
+    projection
+    }
   }
 
   private def createRelation(tMap:TriplesMap,nMap:TermMap, stream: ElementStreamGraph): UnaryOp ={
@@ -753,8 +758,8 @@ class QueryRewriting(props: Properties,mapping:String) extends Logging {
             //win.setFromOffset(sw.getFrom.getOffset)
             //win.setFromUnit(sw.getFrom.getUnit)
             val (to,toU):(Long,TimeUnit)= if (sw.to != null) {
-              (sw.to.time,sw.to.getUnit)
-            }else (null,null)
+              (sw.to.time,sw.to.getUnit)              
+            }else (null,null)            
             /*val (sl,slu):(Long,TimeUnit)= if (sw.getSlide != null) {
               (sw.getSlide.time,sw.getSlide.unit)
             } else ( null,null)*/

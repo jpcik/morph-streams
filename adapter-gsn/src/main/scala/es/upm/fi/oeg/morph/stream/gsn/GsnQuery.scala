@@ -46,12 +46,7 @@ class GsnQuery(projectionVars:Map[String,String]) extends SqlQuery(projectionVar
     case _=>Map[String,Seq[String]]()
   }
   
-  private def varXprs(op:AlgebraOp):Map[String,Xpr]=op match{
-    case root:RootOp=>varXprs(root.subOp)
-    case proj:ProjectionOp=>proj.expressions
-    case union:MultiUnionOp=>varXprs(union.children.last._2)
-    case _=>Map[String,Xpr]()
-  }
+ 
   
   val gconstants = Maps.newHashMap[String,String]
   //val gstaticConstants = Maps.newHashMap[String, Template]();

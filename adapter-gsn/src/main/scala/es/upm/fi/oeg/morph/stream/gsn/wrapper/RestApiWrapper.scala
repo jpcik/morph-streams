@@ -12,7 +12,7 @@ import java.text.SimpleDateFormat
 
 class RestApiWrapper extends AbstractWrapper {
   
-  lazy val params=getActiveAddressBean
+  lazy val params=getActiveAddressBean  
   lazy val rate=params.getPredicateValue("rate").toLong
   lazy val liveRate=rate
   lazy val dateTimeFormat=params.getPredicateValue("dateTimeFormat")

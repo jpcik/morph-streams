@@ -1,64 +1,68 @@
 package es.upm.fi.oeg.morph.streams.esper
 import java.net.URI
+
 import org.apache.log4j.PropertyConfigurator
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.scalatest.junit.JUnitSuite
 import org.scalatest.junit.ShouldMatchersForJUnit
 import org.scalatest.prop.Checkers
-import com.weiglewilczek.slf4s.Logging
-import es.upm.fi.oeg.morph.common.ParameterUtils.loadQuery
-import es.upm.fi.oeg.morph.stream.esper.DemoStreamer
-import es.upm.fi.oeg.morph.stream.esper.EsperEngine
-import es.upm.fi.oeg.morph.stream.esper.QueryMsg
-import es.upm.fi.oeg.morph.stream.esper.RegisteredStream
-import es.upm.fi.oeg.morph.stream.evaluate.QueryEvaluator
-import es.upm.fi.oeg.morph.common.ParameterUtils
-import es.upm.fi.oeg.morph.stream.esper.EsperAdapter
-import org.junit.After
-import scala.actors.SuspendActorControl
-import scala.util.control.ControlThrowable
 
-class Stream (val windspeed:Double) {
-  private val inTime=System.nanoTime
-  val time=inTime
-}
+import com.weiglewilczek.slf4s.Logging
+
+import es.upm.fi.oeg.morph.common.ParameterUtils.loadQuery
+import es.upm.fi.oeg.morph.common.ParameterUtils
+import es.upm.fi.oeg.morph.esper.EsperProxy
+import es.upm.fi.oeg.morph.esper.EsperServer
+import es.upm.fi.oeg.morph.stream.esper.DemoStreamer
+import es.upm.fi.oeg.morph.stream.evaluate.QueryEvaluator
 
 class QueryExecutionTest extends JUnitSuite with ShouldMatchersForJUnit with Checkers with Logging {
-
+  
+  lazy val esper=new EsperServer
   val props = ParameterUtils.load(getClass.getClassLoader.getResourceAsStream("config/siq.properties"))
-  val eval = new QueryEvaluator(props)
-  val adapter=eval.adapter.asInstanceOf[EsperAdapter]
-  val demo = new DemoStreamer("ISANGALL2","wunderground",1,adapter.esper) 
+  val eval = new QueryEvaluator(props,esper.system)
+  
+  private def srbench(q:String)=loadQuery("queries/srbench/"+q)
+  private val srbenchR2rml=new URI("mappings/srbench.ttl")
   
   @Before def setUpBeforeClass() 	{
     PropertyConfigurator.configure(getClass.getResource("/config/log4j.properties"))
-    demo.start
+    esper.startup()
+    val demo = new DemoStreamer("ISANGALL2","wunderground",1,new EsperProxy(esper.system)) 
+    demo.schedule
+    println("finish init")
   }
   
-
-  @Test def basicPetternMatching{ 	 
-    val qid=eval.registerQuery(loadQuery("queries/srbench/basic-pattern-matching.sparql"),
-        new URI("mappings/srbench.ttl"))        
-   Thread.sleep(5000)
-   val bindings=eval.pull(qid)   
+  @Test def basicPatternMatching{    
+    val qid=eval.registerQuery(srbench("basic-pattern-matching.sparql"),srbenchR2rml)        
+    Thread.sleep(8000)
+    val bindings=eval.pull(qid)   
   }
   
   @Test def filterValue{ 	 
-    val qid=eval.registerQuery(loadQuery("queries/srbench/filter-value.sparql"),
-        new URI("mappings/srbench.ttl"))        
-   Thread.sleep(7000)
-   val bindings=eval.pull(qid)   
-  }
+    val qid=eval.registerQuery(srbench("filter-value.sparql"),srbenchR2rml)        
+    Thread.sleep(7000)
+    val bindings=eval.pull(qid)   
+  }    
   
+  @Test def joinPatternMatching{ 	 
+    val qid=eval.registerQuery(srbench("join-pattern-matching.sparql"),srbenchR2rml)        
+    Thread.sleep(7000)
+    val bindings=eval.pull(qid)   
+  }    
+
+  @Test def filterUriValue{ 	 
+    val qid=eval.registerQuery(srbench("filter-uri-value.sparql"),srbenchR2rml)        
+    Thread.sleep(4000)
+    val bindings=eval.pull(qid)   
+  }    
+
   
-  
-  @After def destroyAfter(){
+  @After def after(){
     logger.debug("exiting now================================")
-    try{adapter.esper.stop
-    }catch {case e:ControlThrowable=>println("finished")}
-    try{demo.stop
-    }catch {case e:ControlThrowable=>println("finished")}
+    esper.shutdown
   }
 
 }

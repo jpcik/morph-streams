@@ -5,7 +5,7 @@ SELECT DISTINCT ?sensor ?value ?uom
 FROM NAMED STREAM <http://cwi.nl/SRBench/observations> [NOW - 10 S SLIDE 1 S]
 WHERE {
   ?observation om-owl:observedBy ?sensor;
-               a weather:RainfallObservation;
+               a weather:TemperatureObservation;
                om-owl:result ?result.
   ?result om-owl:floatValue ?value;
           om-owl:uom ?uom.

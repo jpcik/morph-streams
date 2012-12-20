@@ -14,6 +14,9 @@ import javax.xml.bind.Marshaller
 import javax.xml.bind.JAXBException
 import es.upm.fi.oeg.morph.voc.RDFFormat
 import com.weiglewilczek.slf4s.Logging
+import akka.actor.Actor
+import akka.actor.ActorSystem
+import com.typesafe.config.ConfigFactory
 
 trait StreamEvaluatorAdapter{
   def executeQuery(abstractQuery:SourceQuery):ResultSet
@@ -21,7 +24,9 @@ trait StreamEvaluatorAdapter{
   def pull(id:String,query:SourceQuery):ResultSet
 }
 
-class QueryEvaluator(config:Properties) extends Logging{
+class QueryEvaluator(config:Properties,actorSystem:ActorSystem=null) extends Logging{
+  val system=if (actorSystem!=null) actorSystem
+    else null//ActorSystem("MorphStreams", ConfigFactory.load.getConfig("morphstreams")) 
   val props = ParameterUtils.load(getClass.getClassLoader.getResourceAsStream("config/siq.properties"));
   private val adapterconfig=if (config==null) props else config 
   val adapterid = props.getProperty("siq.adapter");
@@ -30,8 +35,8 @@ class QueryEvaluator(config:Properties) extends Logging{
   val theClass=try Class.forName(adapterClass)
 	catch {case e:ClassNotFoundException =>
 	  throw new IllegalArgumentException("Unable to initialize adapter class "+adapterClass, e)}
-  val adapter=theClass.getDeclaredConstructor(classOf[Properties])
-              .newInstance(adapterconfig).asInstanceOf[StreamEvaluatorAdapter]
+  val adapter=theClass.getDeclaredConstructor(classOf[Properties],classOf[ActorSystem])
+              .newInstance(adapterconfig,system).asInstanceOf[StreamEvaluatorAdapter]
 		
   private val queryids=new collection.mutable.HashMap[String,SourceQuery]
   
@@ -87,3 +92,7 @@ class QueryEvaluator(config:Properties) extends Logging{
   }
 
 }
+
+/*object QueryEvaluator{
+  def apply(config:Properties)=new QueryEvaluator(config,null)
+}*/

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<esper-configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://www.espertech.com/schema/esper"
+    xsi:schemaLocation="
+http://www.espertech.com/schema/esper
+http://www.espertech.com/schema/esper/esper-configuration-2.0.xsd">
+<event-type name="wunderground">
+  <java-util-map>
+    <map-property name="stationId" class="string"/>
+    <map-property name="internalTime" class="long"/>
+    <map-property name="observationTime" class="string"/>
+    <map-property name="temperature" class="double"/>    
+    <map-property name="relativeHumidity" class="double"/>    
+    <map-property name="windDirection" class="double"/>    
+    <map-property name="windSpeed" class="double"/>    
+    <map-property name="airPressure" class="double"/>    
+  </java-util-map>
+</event-type>
+</esper-configuration>	

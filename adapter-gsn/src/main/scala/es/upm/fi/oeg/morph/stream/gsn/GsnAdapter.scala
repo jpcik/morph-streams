@@ -14,9 +14,10 @@ import es.upm.fi.oeg.morph.stream.algebra.RootOp
 import es.upm.fi.oeg.morph.stream.algebra.ProjectionOp
 import es.upm.fi.oeg.morph.stream.algebra.MultiUnionOp
 import org.apache.commons.lang.NotImplementedException
+import akka.actor.ActorSystem
 
 
-class GsnAdapter(props:Properties) extends StreamEvaluatorAdapter with Logging{
+class GsnAdapter(props:Properties,actorSystem:ActorSystem) extends StreamEvaluatorAdapter with Logging{
   private val timeAttribute="timed"  
   private val c = Client.create 
   val gsnUrl=props.getProperty("gsn.endpoint")
@@ -88,7 +89,7 @@ object GsnConsole{
     val query=loadQuery(args(0))
     val mappingUri=
       new URI(args(1))
-    val gsn = new GsnAdapter(null)
+    val gsn = new GsnAdapter(null,null)
     //gsn.executeQuery(query,mappingUri)
     println("")
   }

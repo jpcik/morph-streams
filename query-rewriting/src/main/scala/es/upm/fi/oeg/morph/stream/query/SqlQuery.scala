@@ -32,7 +32,7 @@ class SqlQuery(val projectionVars:Map[String,String]) extends SourceQuery{
   val inner= new HashMap[String,Map[String,SqlQuery]]();
   private var aliasGen=0
   private val niceAlias=new collection.mutable.HashMap[String,String]
-  protected var varsX:Map[String,Xpr]=_
+   var varsX:Map[String,Xpr]=_
   
   
   protected def getAlias(name:String)={
@@ -150,7 +150,7 @@ class SqlQuery(val projectionVars:Map[String,String]) extends SourceQuery{
 	  case bi:BinaryOp=>projVarNames(bi.left)++projVarNames(bi.right)
 	}
 
-  private def varXprs(op:AlgebraOp):Map[String,Xpr]=op match{
+  protected def varXprs(op:AlgebraOp):Map[String,Xpr]=op match{
     case root:RootOp=>varXprs(root.subOp)
     case proj:ProjectionOp=>proj.expressions
     case union:MultiUnionOp=>varXprs(union.children.last._2)
@@ -158,6 +158,7 @@ class SqlQuery(val projectionVars:Map[String,String]) extends SourceQuery{
   }
   
 	
+  
 	private def unAliasXpr(join:BinaryOp,xpr:BinaryXpr):String=
 	  unAliasXpr(join.left,xpr.left)+xpr.op+unAliasXpr(join.right,xpr.right)
 

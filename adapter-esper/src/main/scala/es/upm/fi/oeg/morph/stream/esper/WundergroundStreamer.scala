@@ -1,11 +1,11 @@
 package es.upm.fi.oeg.morph.stream.esper
 import es.upm.fi.oeg.morph.stream.wrapper.Wunderground
 
-class WundergroundStreamer(stationid:String,extent:String,rate:Int,esper:EsperEngine) 
-  extends EsperStreamer(extent,rate,esper){
+class WundergroundStreamer(stationid:String,extent:String,rate:Int) {
+  //extends DemoStreamer(extent,rate,esper){
   private val wund=new Wunderground(stationid)
   private var latestTime:Long=0
-  override def generateData={
+   def generateData={
     val data=wund.getData
     if (data.internalTime>latestTime){
       latestTime=data.internalTime

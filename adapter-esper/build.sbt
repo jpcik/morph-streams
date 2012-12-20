@@ -9,7 +9,8 @@ scalaVersion := "2.9.1"
 crossPaths := false
 
 libraryDependencies ++= Seq(
-  "es.upm.fi.oeg.morph" % "query-rewriting" % "1.0.0",
+  "es.upm.fi.oeg.morph" % "query-rewriting" % "1.0.1",
+  "es.upm.fi.oeg.morph.streams" % "esper-engine" % "1.0.0",
   "com.espertech" % "esper" % "4.3.0",
   "org.scalatest" % "scalatest_2.9.1" % "1.7.2" % "test",
   "org.scalacheck" % "scalacheck_2.9.1" % "1.9" % "test",
@@ -26,6 +27,8 @@ resolvers ++= Seq(
   "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/"  
 )
 
+javacOptions ++= Seq("-source", "1.7", "-target", "1.6")
+
 scalacOptions += "-deprecation"
 
 EclipseKeys.createSrc := EclipseCreateSrc.Default + EclipseCreateSrc.Resource
@@ -33,3 +36,6 @@ EclipseKeys.createSrc := EclipseCreateSrc.Default + EclipseCreateSrc.Resource
 unmanagedSourceDirectories in Compile <<= (scalaSource in Compile)(Seq(_))
 
 unmanagedSourceDirectories in Test <<= (scalaSource in Test)(Seq(_))
+
+parallelExecution in Test := false
+

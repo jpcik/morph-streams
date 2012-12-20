@@ -12,7 +12,7 @@
 
 :tempObsResult a rr:TriplesMap;
   rr:logicalTable [rr:tableName "wunderground"];
-  rr:subjectMap   [ rr:template "http://meteo.us/{stationId}/rainfall/observation/{observationTime}"; 
+  rr:subjectMap   [ rr:template "http://meteo.us/{stationId}/temperature/observation/{observationTime}"; 
                     rr:class om-owl:Result; rr:graph srbench:observations ];
   rr:predicateObjectMap [ rr:predicate om-owl:floatValue; rr:objectMap	[ rr:column "temperature" ] ];     		   		  
   rr:predicateObjectMap [ rr:predicate om-owl:uom; rr:objectMap	[ rr:constant morph:celsius ] ];     		   		  
@@ -21,11 +21,12 @@
 :tempObs a rr:TriplesMap;
   rr:logicalTable [ rr:tableName "wunderground"];
   rr:subjectMap   [ rr:template "http://meteo.us/{stationId}/temperature/observation/{observationTime}"; 
-                    rr:class weather:RainfallObservation; rr:graph srbench:observations ];
+                    rr:class weather:TemperatureObservation; rr:graph srbench:observations ];
   rr:predicateObjectMap [ rr:predicate om-owl:result;
                           rr:objectMap [ rr:parentTriplesMap :tempObsResult; 
                                          rr:joinCondition [rr:parent "stationId";rr:child "stationId"] ]];
   rr:predicateObjectMap [ rr:predicate om-owl:observedBy; rr:objectMap [ rr:column "stationId"] ];
+  rr:predicateObjectMap [ rr:predicate om-owl:observedProperty; rr:objectMap [ rr:constant weather:AirTemperature] ];
 .   
  
  

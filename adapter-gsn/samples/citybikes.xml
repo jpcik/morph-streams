@@ -1,0 +1,35 @@
+<virtual-sensor name="citybikes" priority="8">
+  <processing-class>
+    <class-name>gsn.vsensor.BridgeVirtualSensor</class-name>
+    <output-structure>
+      <field name="SYSTEMID" type="varchar(20)" />
+      <field name="ID" type="varchar(20)" />
+      <field name="NAME" type="varchar(100)" />
+      <field name="TIMESTAMP" type="varchar(30)" />
+      <field name="BIKES" type="int" />
+      <field name="FREE" type="int" />
+    </output-structure>
+  </processing-class>
+  <description>City Bikes</description>
+  <life-cycle pool-size="10"/>
+  <addressing>
+  </addressing>
+  <storage history-size="1h"/>
+  <streams>
+    <stream name="input1">
+      <source alias="source1" sampling-rate="1" storage-size="1">
+        <address wrapper="citybikes">
+          <predicate key="rate">20000</predicate>
+          <predicate key="dateTimeFormat">yyyy-MM-dd'T'HH:mm:ss.SSS</predicate>
+          <predicate key="systemids">sevici,valenbisi,bizi,dublin,bicing</predicate>
+          <predicate key="url">http://api.citybik.es/</predicate>
+          <predicate key="fields">systemid,id,name,timestamp,bikes,free</predicate>
+          <predicate key="types">varchar(20),varchar(20),varchar(100),varchar(30),int,int</predicate>
+        </address> 
+        <query>select TIMED,ID,SYSTEMID,NAME,TIMESTAMP,BIKES,FREE from wrapper</query>
+      </source>
+      <query>SELECT * from source1</query>
+    </stream>
+  </streams>
+</virtual-sensor>
+

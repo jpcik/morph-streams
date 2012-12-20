@@ -22,6 +22,8 @@ resolvers ++= Seq(
   "Local ivy Repository" at "file://"+Path.userHome.absolutePath+"/.ivy2/local"
 )
 
+javacOptions ++= Seq("-source", "1.6", "-target", "1.6")
+
 scalacOptions += "-deprecation"
 
 EclipseKeys.createSrc := EclipseCreateSrc.Default + EclipseCreateSrc.Resource
@@ -30,6 +32,9 @@ EclipseKeys.createSrc := EclipseCreateSrc.Default + EclipseCreateSrc.Resource
 
 //unmanagedSourceDirectories in Test <<= (scalaSource in Test)(Seq(_))
 
-publishTo := Some(Resolver.file("jpc repo",new File(Path.userHome.absolutePath+"/git/jpc-repo/repo")))
+//publishTo := Some(Resolver.file("jpc repo",new File(Path.userHome.absolutePath+"/git/jpc-repo/repo")))
+publishTo := Some("Artifactory Realm" at "http://aldebaran.dia.fi.upm.es/artifactory/sstreams-releases-local")
+
+credentials += Credentials(Path.userHome / ".ivy2" / ".credentials")
 
 publishMavenStyle := true

@@ -13,6 +13,7 @@ import es.upm.fi.oeg.morph.common.ParameterUtils._
 import es.upm.fi.oeg.morph.common.ParameterUtils
 
 
+
 class SwissExQueryTest extends JUnitSuite with ShouldMatchersForJUnit with Checkers with Logging {
   PropertyConfigurator.configure(getClass.getClassLoader().getResource("config/log4j.properties"));
   private val df=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")

@@ -8,7 +8,7 @@ import es.upm.fi.oeg.morph.stream.algebra.xpr.BinaryXpr
 import es.upm.fi.oeg.morph.stream.algebra.xpr.OperationXpr
 import es.upm.fi.oeg.morph.stream.algebra.xpr.FunctionXpr
 
-class ProjectionOp(id:String,val expressions:Map[String,Xpr], subOp:AlgebraOp) 
+class ProjectionOp(id:String,val expressions:Map[String,Xpr], subOp:AlgebraOp, val distinct:Boolean) 
   extends UnaryOp(id,"projection",subOp) with Logging{
 	
   def includes(proj:ProjectionOp)=
@@ -33,7 +33,7 @@ class ProjectionOp(id:String,val expressions:Map[String,Xpr], subOp:AlgebraOp)
   override def copyOp():ProjectionOp=	{		
 	val op=if (subOp!=null) subOp.copyOp
 	  else null					
-	new ProjectionOp(id, expressions, op)		
+	new ProjectionOp(id, expressions, op,distinct)		
   }
 
   override def merge(op:AlgebraOp,xprs:Seq[Xpr]):AlgebraOp={
@@ -44,7 +44,7 @@ class ProjectionOp(id:String,val expressions:Map[String,Xpr], subOp:AlgebraOp)
 	  case _=>
 		val newXprs=expressions++op.vars.entrySet.filter(e=> !expressions.contains(e.getKey)).map{e=>
 		  e.getKey->e.getValue}.toMap
-		new ProjectionOp(id,newXprs,subOp)
+		new ProjectionOp(id,newXprs,subOp,distinct)
 	}
   }
   
@@ -52,7 +52,7 @@ class ProjectionOp(id:String,val expressions:Map[String,Xpr], subOp:AlgebraOp)
     // Use the more complex subop
     val sub=if (!proj.subOp.isInstanceOf[RelationOp]) proj.subOp
       else subOp
-    new ProjectionOp(id,expressions++proj.expressions,sub)
+    new ProjectionOp(id,expressions++proj.expressions,sub,distinct)
   }
 
   def merge(proj:ProjectionOp,xprs:Seq[Xpr]):AlgebraOp={
@@ -102,7 +102,7 @@ class ProjectionOp(id:String,val expressions:Map[String,Xpr], subOp:AlgebraOp)
 	private def add(proj: ProjectionOp)={
 	  val newXprs=expressions++proj.vars.entrySet.filter(e=> !expressions.contains(e.getKey)).map{e=>
 			    e.getKey->e.getValue}.toMap
-	 new ProjectionOp(id,newXprs,subOp.copyOp)
+	 new ProjectionOp(id,newXprs,subOp.copyOp,distinct)
 	}
 	
 	override def build(newOp:AlgebraOp):AlgebraOp=
@@ -121,7 +121,7 @@ class ProjectionOp(id:String,val expressions:Map[String,Xpr], subOp:AlgebraOp)
 		if (sel.subOp == null) //only for empty selections!
 		{
 		  val newSel=new SelectionOp(sel.id,subOp,sel.expressions)
-		  return new ProjectionOp(id,expressions,newSel)
+		  return new ProjectionOp(id,expressions,newSel,distinct)
 		}
 		return this
 	  case join:InnerJoinOp=>

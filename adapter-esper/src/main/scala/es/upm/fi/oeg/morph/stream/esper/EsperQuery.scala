@@ -16,6 +16,8 @@ import es.upm.fi.oeg.morph.stream.algebra.JoinOp
 import es.upm.fi.oeg.morph.stream.algebra.xpr.UnassignedVarXpr
 import es.upm.fi.oeg.morph.common.TimeUnit
 import es.upm.fi.oeg.morph.stream.algebra.xpr.VarXpr
+import es.upm.fi.oeg.morph.stream.algebra.xpr.Xpr
+import es.upm.fi.oeg.morph.stream.algebra.xpr.ReplaceXpr
 
 class EsperQuery (projectionVars:Map[String,String]) extends SqlQuery(projectionVars) {
   val projectionXprs=projectionVars.map(p=>(p._1,VarXpr(p._2))) 
@@ -23,10 +25,12 @@ class EsperQuery (projectionVars:Map[String,String]) extends SqlQuery(projection
   val from=new ArrayBuffer[String]
   val where=new ArrayBuffer[String]
   val unions=new ArrayBuffer[String]
-
-  def serializeSelect=
-    "SELECT "+ selectXprs.map(s=>s._2 +" AS "+s._1).mkString(",")
+  var distinct:Boolean=false
   
+  def serializeSelect=
+    "SELECT "+ (if (distinct) "DISTINCT " else "") + 
+      selectXprs.map(s=>s._2 +" AS "+s._1).mkString(",")
+      
   def generateWhere(op:AlgebraOp,vars:Map[String,Xpr]):Unit=generateWhere(op,vars,true)
   def generateWhere(op:AlgebraOp,vars:Map[String,Xpr],joinConditions:Boolean):Unit=op match{
     case root:RootOp=>generateWhere(root.subOp,Map())
@@ -95,10 +99,20 @@ class EsperQuery (projectionVars:Map[String,String]) extends SqlQuery(projection
       generateSelectVars(root.subOp)
     case proj:ProjectionOp=>
       val isroot=selectXprs.isEmpty
+      if (isroot){
+        distinct=proj.distinct
+      }
       proj.expressions.foreach{e=>
         val xpr=if (e._2==UnassignedVarXpr) null
           else e._2 
-        if (isroot) selectXprs.put(e._1,xpr)
+        if (isroot) {
+          println("new proj: "+xpr)
+          xpr match{
+            case rep:ReplaceXpr=>rep.varNames.foreach(v=>selectXprs.put(v,VarXpr(v)))
+            case x:Xpr=>selectXprs.put(e._1,xpr)
+          }
+           
+        }
         else if (selectXprs.contains(e._1)) selectXprs.put(e._1,repExpr(e._2,proj.subOp))
       }
       generateSelectVars(proj.subOp)

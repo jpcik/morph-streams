@@ -1,0 +1,35 @@
+<virtual-sensor name="emt" priority="8">
+  <processing-class>
+    <class-name>gsn.vsensor.BridgeVirtualSensor</class-name>
+    <output-structure>
+      <field name="STOPID" type="varchar(20)" />
+      <field name="LINEID" type="varchar(20)" />
+      <field name="TIMETOBUS" type="int" />
+      <field name="DISTANCETOBUS" type="int" />
+    </output-structure>
+  </processing-class>
+  <description>EMT</description>
+  <life-cycle pool-size="10"/>
+  <addressing>
+  </addressing>
+  <storage history-size="1h"/>
+  <streams>
+    <stream name="input1">
+      <source alias="source1" sampling-rate="1" storage-size="1">
+        <address wrapper="pull">
+          <predicate key="rate">5000</predicate>
+          <predicate key="dateTimeFormat">yyyy-MM-dd'T'HH:mm:ss.SSS</predicate>
+          <predicate key="systemids">320,321,322</predicate>
+          <predicate key="url">url</predicate>
+          <predicate key="user">user</predicate>
+          <predicate key="key">key</predicate>
+          <predicate key="fields">stopid,lineid,timetobus,distancetobus</predicate>
+          <predicate key="types">varchar(20),varchar(20),varchar(100),varchar(30),int,int</predicate>
+        </address> 
+        <query>select TIMED,STOPID,LINEID,TIMETOBUS,DISTANCETOBUS from wrapper</query>
+      </source>
+      <query>SELECT * from source1</query>
+    </stream>
+  </streams>
+</virtual-sensor>
+

@@ -1,0 +1,1435 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://tempuri.org/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/">
+      <s:element name="GetStreet">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="idClient" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="passKey" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="description" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="streetNumber" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="Radius" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="Stops" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="statistics" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="cultureInfo" type="s:string"/>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetStreetResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetStreetResult">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any/>
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="getStopsFromStop">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="idClient" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="passKey" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="idStop" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="Radius" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="statistics" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="cultureInfo" type="s:string"/>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="getStopsFromStopResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="getStopsFromStopResult">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any/>
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="getStopsFromXY">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="idClient" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="passKey" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="coordinateX" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="coordinateY" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="Radius" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="statistics" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="cultureInfo" type="s:string"/>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="getStopsFromXYResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="getStopsFromXYResult">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any/>
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="getArriveStop">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="idClient" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="passKey" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="idStop" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="statistics" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="cultureInfo" type="s:string"/>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="getArriveStopResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="getArriveStopResult">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any/>
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetArriveInterchangeLine">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="idClient" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="passKey" type="s:string"/>
+            <s:element minOccurs="1" maxOccurs="1" name="idIntercambiador" type="s:int"/>
+            <s:element minOccurs="1" maxOccurs="1" name="idLinea" type="s:int"/>
+            <s:element minOccurs="0" maxOccurs="1" name="statistics" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="cultureInfo" type="s:string"/>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetArriveInterchangeLineResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetArriveInterchangeLineResult">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any/>
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="getArriveClient">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="idClient" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="passKey" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="Client" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="statistics" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="cultureInfo" type="s:string"/>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="getArriveClientResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="getArriveClientResult">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any/>
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="getPointsOfInterest">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="idClient" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="passKey" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="coordinateX" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="coordinateY" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="tipos" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="Radius" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="moreInfo" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="statistics" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="cultureInfo" type="s:string"/>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="getPointsOfInterestResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="getPointsOfInterestResult">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any/>
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="getPointsOfInterestTypes">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="idClient" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="passKey" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="statistics" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="cultureInfo" type="s:string"/>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="getPointsOfInterestTypesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="getPointsOfInterestTypesResult">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any/>
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="getStreetFromXY">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="idClient" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="passKey" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="coordinateX" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="coordinateY" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="Radius" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="statistics" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="cultureInfo" type="s:string"/>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="getStreetFromXYResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="getStreetFromXYResult">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any/>
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="getInfoLine">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="idClient" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="passKey" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="fecha" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="line" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="statistics" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="cultureInfo" type="s:string"/>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="getInfoLineResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="getInfoLineResult">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any/>
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="getStopsLine">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="idClient" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="passKey" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="line" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="direction" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="statistics" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="cultureInfo" type="s:string"/>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="getStopsLineResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="getStopsLineResult">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any/>
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="getGroups">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="idClient" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="passKey" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="statistics" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="cultureInfo" type="s:string"/>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="getGroupsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="getGroupsResult">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any/>
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetRouteLinesRoute">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="idClient" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="PassKey" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="SelectDate" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="Lines" type="s:string"/>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetRouteLinesRouteResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetRouteLinesRouteResult">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any/>
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="EstadisticaCache">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="password" type="s:string"/>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="EstadisticaCacheResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="EstadisticaCacheResult">
+              <s:complexType mixed="true">
+                <s:sequence>
+                  <s:any/>
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="GetStreetSoapIn">
+    <wsdl:part name="parameters" element="tns:GetStreet"/>
+  </wsdl:message>
+  <wsdl:message name="GetStreetSoapOut">
+    <wsdl:part name="parameters" element="tns:GetStreetResponse"/>
+  </wsdl:message>
+  <wsdl:message name="getStopsFromStopSoapIn">
+    <wsdl:part name="parameters" element="tns:getStopsFromStop"/>
+  </wsdl:message>
+  <wsdl:message name="getStopsFromStopSoapOut">
+    <wsdl:part name="parameters" element="tns:getStopsFromStopResponse"/>
+  </wsdl:message>
+  <wsdl:message name="getStopsFromXYSoapIn">
+    <wsdl:part name="parameters" element="tns:getStopsFromXY"/>
+  </wsdl:message>
+  <wsdl:message name="getStopsFromXYSoapOut">
+    <wsdl:part name="parameters" element="tns:getStopsFromXYResponse"/>
+  </wsdl:message>
+  <wsdl:message name="getArriveStopSoapIn">
+    <wsdl:part name="parameters" element="tns:getArriveStop"/>
+  </wsdl:message>
+  <wsdl:message name="getArriveStopSoapOut">
+    <wsdl:part name="parameters" element="tns:getArriveStopResponse"/>
+  </wsdl:message>
+  <wsdl:message name="GetArriveInterchangeLineSoapIn">
+    <wsdl:part name="parameters" element="tns:GetArriveInterchangeLine"/>
+  </wsdl:message>
+  <wsdl:message name="GetArriveInterchangeLineSoapOut">
+    <wsdl:part name="parameters" element="tns:GetArriveInterchangeLineResponse"/>
+  </wsdl:message>
+  <wsdl:message name="getArriveClientSoapIn">
+    <wsdl:part name="parameters" element="tns:getArriveClient"/>
+  </wsdl:message>
+  <wsdl:message name="getArriveClientSoapOut">
+    <wsdl:part name="parameters" element="tns:getArriveClientResponse"/>
+  </wsdl:message>
+  <wsdl:message name="getPointsOfInterestSoapIn">
+    <wsdl:part name="parameters" element="tns:getPointsOfInterest"/>
+  </wsdl:message>
+  <wsdl:message name="getPointsOfInterestSoapOut">
+    <wsdl:part name="parameters" element="tns:getPointsOfInterestResponse"/>
+  </wsdl:message>
+  <wsdl:message name="getPointsOfInterestTypesSoapIn">
+    <wsdl:part name="parameters" element="tns:getPointsOfInterestTypes"/>
+  </wsdl:message>
+  <wsdl:message name="getPointsOfInterestTypesSoapOut">
+    <wsdl:part name="parameters" element="tns:getPointsOfInterestTypesResponse"/>
+  </wsdl:message>
+  <wsdl:message name="getStreetFromXYSoapIn">
+    <wsdl:part name="parameters" element="tns:getStreetFromXY"/>
+  </wsdl:message>
+  <wsdl:message name="getStreetFromXYSoapOut">
+    <wsdl:part name="parameters" element="tns:getStreetFromXYResponse"/>
+  </wsdl:message>
+  <wsdl:message name="getInfoLineSoapIn">
+    <wsdl:part name="parameters" element="tns:getInfoLine"/>
+  </wsdl:message>
+  <wsdl:message name="getInfoLineSoapOut">
+    <wsdl:part name="parameters" element="tns:getInfoLineResponse"/>
+  </wsdl:message>
+  <wsdl:message name="getStopsLineSoapIn">
+    <wsdl:part name="parameters" element="tns:getStopsLine"/>
+  </wsdl:message>
+  <wsdl:message name="getStopsLineSoapOut">
+    <wsdl:part name="parameters" element="tns:getStopsLineResponse"/>
+  </wsdl:message>
+  <wsdl:message name="getGroupsSoapIn">
+    <wsdl:part name="parameters" element="tns:getGroups"/>
+  </wsdl:message>
+  <wsdl:message name="getGroupsSoapOut">
+    <wsdl:part name="parameters" element="tns:getGroupsResponse"/>
+  </wsdl:message>
+  <wsdl:message name="GetRouteLinesRouteSoapIn">
+    <wsdl:part name="parameters" element="tns:GetRouteLinesRoute"/>
+  </wsdl:message>
+  <wsdl:message name="GetRouteLinesRouteSoapOut">
+    <wsdl:part name="parameters" element="tns:GetRouteLinesRouteResponse"/>
+  </wsdl:message>
+  <wsdl:message name="EstadisticaCacheSoapIn">
+    <wsdl:part name="parameters" element="tns:EstadisticaCache"/>
+  </wsdl:message>
+  <wsdl:message name="EstadisticaCacheSoapOut">
+    <wsdl:part name="parameters" element="tns:EstadisticaCacheResponse"/>
+  </wsdl:message>
+  <wsdl:message name="GetStreetHttpGetIn">
+    <wsdl:part name="idClient" type="s:string"/>
+    <wsdl:part name="passKey" type="s:string"/>
+    <wsdl:part name="description" type="s:string"/>
+    <wsdl:part name="streetNumber" type="s:string"/>
+    <wsdl:part name="Radius" type="s:string"/>
+    <wsdl:part name="Stops" type="s:string"/>
+    <wsdl:part name="statistics" type="s:string"/>
+    <wsdl:part name="cultureInfo" type="s:string"/>
+  </wsdl:message>
+  <wsdl:message name="GetStreetHttpGetOut">
+    <wsdl:part name="Body"/>
+  </wsdl:message>
+  <wsdl:message name="getStopsFromStopHttpGetIn">
+    <wsdl:part name="idClient" type="s:string"/>
+    <wsdl:part name="passKey" type="s:string"/>
+    <wsdl:part name="idStop" type="s:string"/>
+    <wsdl:part name="Radius" type="s:string"/>
+    <wsdl:part name="statistics" type="s:string"/>
+    <wsdl:part name="cultureInfo" type="s:string"/>
+  </wsdl:message>
+  <wsdl:message name="getStopsFromStopHttpGetOut">
+    <wsdl:part name="Body"/>
+  </wsdl:message>
+  <wsdl:message name="getStopsFromXYHttpGetIn">
+    <wsdl:part name="idClient" type="s:string"/>
+    <wsdl:part name="passKey" type="s:string"/>
+    <wsdl:part name="coordinateX" type="s:string"/>
+    <wsdl:part name="coordinateY" type="s:string"/>
+    <wsdl:part name="Radius" type="s:string"/>
+    <wsdl:part name="statistics" type="s:string"/>
+    <wsdl:part name="cultureInfo" type="s:string"/>
+  </wsdl:message>
+  <wsdl:message name="getStopsFromXYHttpGetOut">
+    <wsdl:part name="Body"/>
+  </wsdl:message>
+  <wsdl:message name="getArriveStopHttpGetIn">
+    <wsdl:part name="idClient" type="s:string"/>
+    <wsdl:part name="passKey" type="s:string"/>
+    <wsdl:part name="idStop" type="s:string"/>
+    <wsdl:part name="statistics" type="s:string"/>
+    <wsdl:part name="cultureInfo" type="s:string"/>
+  </wsdl:message>
+  <wsdl:message name="getArriveStopHttpGetOut">
+    <wsdl:part name="Body"/>
+  </wsdl:message>
+  <wsdl:message name="GetArriveInterchangeLineHttpGetIn">
+    <wsdl:part name="idClient" type="s:string"/>
+    <wsdl:part name="passKey" type="s:string"/>
+    <wsdl:part name="idIntercambiador" type="s:string"/>
+    <wsdl:part name="idLinea" type="s:string"/>
+    <wsdl:part name="statistics" type="s:string"/>
+    <wsdl:part name="cultureInfo" type="s:string"/>
+  </wsdl:message>
+  <wsdl:message name="GetArriveInterchangeLineHttpGetOut">
+    <wsdl:part name="Body"/>
+  </wsdl:message>
+  <wsdl:message name="getArriveClientHttpGetIn">
+    <wsdl:part name="idClient" type="s:string"/>
+    <wsdl:part name="passKey" type="s:string"/>
+    <wsdl:part name="Client" type="s:string"/>
+    <wsdl:part name="statistics" type="s:string"/>
+    <wsdl:part name="cultureInfo" type="s:string"/>
+  </wsdl:message>
+  <wsdl:message name="getArriveClientHttpGetOut">
+    <wsdl:part name="Body"/>
+  </wsdl:message>
+  <wsdl:message name="getPointsOfInterestHttpGetIn">
+    <wsdl:part name="idClient" type="s:string"/>
+    <wsdl:part name="passKey" type="s:string"/>
+    <wsdl:part name="coordinateX" type="s:string"/>
+    <wsdl:part name="coordinateY" type="s:string"/>
+    <wsdl:part name="tipos" type="s:string"/>
+    <wsdl:part name="Radius" type="s:string"/>
+    <wsdl:part name="moreInfo" type="s:string"/>
+    <wsdl:part name="statistics" type="s:string"/>
+    <wsdl:part name="cultureInfo" type="s:string"/>
+  </wsdl:message>
+  <wsdl:message name="getPointsOfInterestHttpGetOut">
+    <wsdl:part name="Body"/>
+  </wsdl:message>
+  <wsdl:message name="getPointsOfInterestTypesHttpGetIn">
+    <wsdl:part name="idClient" type="s:string"/>
+    <wsdl:part name="passKey" type="s:string"/>
+    <wsdl:part name="statistics" type="s:string"/>
+    <wsdl:part name="cultureInfo" type="s:string"/>
+  </wsdl:message>
+  <wsdl:message name="getPointsOfInterestTypesHttpGetOut">
+    <wsdl:part name="Body"/>
+  </wsdl:message>
+  <wsdl:message name="getStreetFromXYHttpGetIn">
+    <wsdl:part name="idClient" type="s:string"/>
+    <wsdl:part name="passKey" type="s:string"/>
+    <wsdl:part name="coordinateX" type="s:string"/>
+    <wsdl:part name="coordinateY" type="s:string"/>
+    <wsdl:part name="Radius" type="s:string"/>
+    <wsdl:part name="statistics" type="s:string"/>
+    <wsdl:part name="cultureInfo" type="s:string"/>
+  </wsdl:message>
+  <wsdl:message name="getStreetFromXYHttpGetOut">
+    <wsdl:part name="Body"/>
+  </wsdl:message>
+  <wsdl:message name="getInfoLineHttpGetIn">
+    <wsdl:part name="idClient" type="s:string"/>
+    <wsdl:part name="passKey" type="s:string"/>
+    <wsdl:part name="fecha" type="s:string"/>
+    <wsdl:part name="line" type="s:string"/>
+    <wsdl:part name="statistics" type="s:string"/>
+    <wsdl:part name="cultureInfo" type="s:string"/>
+  </wsdl:message>
+  <wsdl:message name="getInfoLineHttpGetOut">
+    <wsdl:part name="Body"/>
+  </wsdl:message>
+  <wsdl:message name="getStopsLineHttpGetIn">
+    <wsdl:part name="idClient" type="s:string"/>
+    <wsdl:part name="passKey" type="s:string"/>
+    <wsdl:part name="line" type="s:string"/>
+    <wsdl:part name="direction" type="s:string"/>
+    <wsdl:part name="statistics" type="s:string"/>
+    <wsdl:part name="cultureInfo" type="s:string"/>
+  </wsdl:message>
+  <wsdl:message name="getStopsLineHttpGetOut">
+    <wsdl:part name="Body"/>
+  </wsdl:message>
+  <wsdl:message name="getGroupsHttpGetIn">
+    <wsdl:part name="idClient" type="s:string"/>
+    <wsdl:part name="passKey" type="s:string"/>
+    <wsdl:part name="statistics" type="s:string"/>
+    <wsdl:part name="cultureInfo" type="s:string"/>
+  </wsdl:message>
+  <wsdl:message name="getGroupsHttpGetOut">
+    <wsdl:part name="Body"/>
+  </wsdl:message>
+  <wsdl:message name="GetRouteLinesRouteHttpGetIn">
+    <wsdl:part name="idClient" type="s:string"/>
+    <wsdl:part name="PassKey" type="s:string"/>
+    <wsdl:part name="SelectDate" type="s:string"/>
+    <wsdl:part name="Lines" type="s:string"/>
+  </wsdl:message>
+  <wsdl:message name="GetRouteLinesRouteHttpGetOut">
+    <wsdl:part name="Body"/>
+  </wsdl:message>
+  <wsdl:message name="EstadisticaCacheHttpGetIn">
+    <wsdl:part name="password" type="s:string"/>
+  </wsdl:message>
+  <wsdl:message name="EstadisticaCacheHttpGetOut">
+    <wsdl:part name="Body"/>
+  </wsdl:message>
+  <wsdl:message name="GetStreetHttpPostIn">
+    <wsdl:part name="idClient" type="s:string"/>
+    <wsdl:part name="passKey" type="s:string"/>
+    <wsdl:part name="description" type="s:string"/>
+    <wsdl:part name="streetNumber" type="s:string"/>
+    <wsdl:part name="Radius" type="s:string"/>
+    <wsdl:part name="Stops" type="s:string"/>
+    <wsdl:part name="statistics" type="s:string"/>
+    <wsdl:part name="cultureInfo" type="s:string"/>
+  </wsdl:message>
+  <wsdl:message name="GetStreetHttpPostOut">
+    <wsdl:part name="Body"/>
+  </wsdl:message>
+  <wsdl:message name="getStopsFromStopHttpPostIn">
+    <wsdl:part name="idClient" type="s:string"/>
+    <wsdl:part name="passKey" type="s:string"/>
+    <wsdl:part name="idStop" type="s:string"/>
+    <wsdl:part name="Radius" type="s:string"/>
+    <wsdl:part name="statistics" type="s:string"/>
+    <wsdl:part name="cultureInfo" type="s:string"/>
+  </wsdl:message>
+  <wsdl:message name="getStopsFromStopHttpPostOut">
+    <wsdl:part name="Body"/>
+  </wsdl:message>
+  <wsdl:message name="getStopsFromXYHttpPostIn">
+    <wsdl:part name="idClient" type="s:string"/>
+    <wsdl:part name="passKey" type="s:string"/>
+    <wsdl:part name="coordinateX" type="s:string"/>
+    <wsdl:part name="coordinateY" type="s:string"/>
+    <wsdl:part name="Radius" type="s:string"/>
+    <wsdl:part name="statistics" type="s:string"/>
+    <wsdl:part name="cultureInfo" type="s:string"/>
+  </wsdl:message>
+  <wsdl:message name="getStopsFromXYHttpPostOut">
+    <wsdl:part name="Body"/>
+  </wsdl:message>
+  <wsdl:message name="getArriveStopHttpPostIn">
+    <wsdl:part name="idClient" type="s:string"/>
+    <wsdl:part name="passKey" type="s:string"/>
+    <wsdl:part name="idStop" type="s:string"/>
+    <wsdl:part name="statistics" type="s:string"/>
+    <wsdl:part name="cultureInfo" type="s:string"/>
+  </wsdl:message>
+  <wsdl:message name="getArriveStopHttpPostOut">
+    <wsdl:part name="Body"/>
+  </wsdl:message>
+  <wsdl:message name="GetArriveInterchangeLineHttpPostIn">
+    <wsdl:part name="idClient" type="s:string"/>
+    <wsdl:part name="passKey" type="s:string"/>
+    <wsdl:part name="idIntercambiador" type="s:string"/>
+    <wsdl:part name="idLinea" type="s:string"/>
+    <wsdl:part name="statistics" type="s:string"/>
+    <wsdl:part name="cultureInfo" type="s:string"/>
+  </wsdl:message>
+  <wsdl:message name="GetArriveInterchangeLineHttpPostOut">
+    <wsdl:part name="Body"/>
+  </wsdl:message>
+  <wsdl:message name="getArriveClientHttpPostIn">
+    <wsdl:part name="idClient" type="s:string"/>
+    <wsdl:part name="passKey" type="s:string"/>
+    <wsdl:part name="Client" type="s:string"/>
+    <wsdl:part name="statistics" type="s:string"/>
+    <wsdl:part name="cultureInfo" type="s:string"/>
+  </wsdl:message>
+  <wsdl:message name="getArriveClientHttpPostOut">
+    <wsdl:part name="Body"/>
+  </wsdl:message>
+  <wsdl:message name="getPointsOfInterestHttpPostIn">
+    <wsdl:part name="idClient" type="s:string"/>
+    <wsdl:part name="passKey" type="s:string"/>
+    <wsdl:part name="coordinateX" type="s:string"/>
+    <wsdl:part name="coordinateY" type="s:string"/>
+    <wsdl:part name="tipos" type="s:string"/>
+    <wsdl:part name="Radius" type="s:string"/>
+    <wsdl:part name="moreInfo" type="s:string"/>
+    <wsdl:part name="statistics" type="s:string"/>
+    <wsdl:part name="cultureInfo" type="s:string"/>
+  </wsdl:message>
+  <wsdl:message name="getPointsOfInterestHttpPostOut">
+    <wsdl:part name="Body"/>
+  </wsdl:message>
+  <wsdl:message name="getPointsOfInterestTypesHttpPostIn">
+    <wsdl:part name="idClient" type="s:string"/>
+    <wsdl:part name="passKey" type="s:string"/>
+    <wsdl:part name="statistics" type="s:string"/>
+    <wsdl:part name="cultureInfo" type="s:string"/>
+  </wsdl:message>
+  <wsdl:message name="getPointsOfInterestTypesHttpPostOut">
+    <wsdl:part name="Body"/>
+  </wsdl:message>
+  <wsdl:message name="getStreetFromXYHttpPostIn">
+    <wsdl:part name="idClient" type="s:string"/>
+    <wsdl:part name="passKey" type="s:string"/>
+    <wsdl:part name="coordinateX" type="s:string"/>
+    <wsdl:part name="coordinateY" type="s:string"/>
+    <wsdl:part name="Radius" type="s:string"/>
+    <wsdl:part name="statistics" type="s:string"/>
+    <wsdl:part name="cultureInfo" type="s:string"/>
+  </wsdl:message>
+  <wsdl:message name="getStreetFromXYHttpPostOut">
+    <wsdl:part name="Body"/>
+  </wsdl:message>
+  <wsdl:message name="getInfoLineHttpPostIn">
+    <wsdl:part name="idClient" type="s:string"/>
+    <wsdl:part name="passKey" type="s:string"/>
+    <wsdl:part name="fecha" type="s:string"/>
+    <wsdl:part name="line" type="s:string"/>
+    <wsdl:part name="statistics" type="s:string"/>
+    <wsdl:part name="cultureInfo" type="s:string"/>
+  </wsdl:message>
+  <wsdl:message name="getInfoLineHttpPostOut">
+    <wsdl:part name="Body"/>
+  </wsdl:message>
+  <wsdl:message name="getStopsLineHttpPostIn">
+    <wsdl:part name="idClient" type="s:string"/>
+    <wsdl:part name="passKey" type="s:string"/>
+    <wsdl:part name="line" type="s:string"/>
+    <wsdl:part name="direction" type="s:string"/>
+    <wsdl:part name="statistics" type="s:string"/>
+    <wsdl:part name="cultureInfo" type="s:string"/>
+  </wsdl:message>
+  <wsdl:message name="getStopsLineHttpPostOut">
+    <wsdl:part name="Body"/>
+  </wsdl:message>
+  <wsdl:message name="getGroupsHttpPostIn">
+    <wsdl:part name="idClient" type="s:string"/>
+    <wsdl:part name="passKey" type="s:string"/>
+    <wsdl:part name="statistics" type="s:string"/>
+    <wsdl:part name="cultureInfo" type="s:string"/>
+  </wsdl:message>
+  <wsdl:message name="getGroupsHttpPostOut">
+    <wsdl:part name="Body"/>
+  </wsdl:message>
+  <wsdl:message name="GetRouteLinesRouteHttpPostIn">
+    <wsdl:part name="idClient" type="s:string"/>
+    <wsdl:part name="PassKey" type="s:string"/>
+    <wsdl:part name="SelectDate" type="s:string"/>
+    <wsdl:part name="Lines" type="s:string"/>
+  </wsdl:message>
+  <wsdl:message name="GetRouteLinesRouteHttpPostOut">
+    <wsdl:part name="Body"/>
+  </wsdl:message>
+  <wsdl:message name="EstadisticaCacheHttpPostIn">
+    <wsdl:part name="password" type="s:string"/>
+  </wsdl:message>
+  <wsdl:message name="EstadisticaCacheHttpPostOut">
+    <wsdl:part name="Body"/>
+  </wsdl:message>
+  <wsdl:portType name="ServiceGEOSoap">
+    <wsdl:operation name="GetStreet">
+      <wsdl:input message="tns:GetStreetSoapIn"/>
+      <wsdl:output message="tns:GetStreetSoapOut"/>
+    </wsdl:operation>
+    <wsdl:operation name="getStopsFromStop">
+      <wsdl:input message="tns:getStopsFromStopSoapIn"/>
+      <wsdl:output message="tns:getStopsFromStopSoapOut"/>
+    </wsdl:operation>
+    <wsdl:operation name="getStopsFromXY">
+      <wsdl:input message="tns:getStopsFromXYSoapIn"/>
+      <wsdl:output message="tns:getStopsFromXYSoapOut"/>
+    </wsdl:operation>
+    <wsdl:operation name="getArriveStop">
+      <wsdl:input message="tns:getArriveStopSoapIn"/>
+      <wsdl:output message="tns:getArriveStopSoapOut"/>
+    </wsdl:operation>
+    <wsdl:operation name="GetArriveInterchangeLine">
+      <wsdl:input message="tns:GetArriveInterchangeLineSoapIn"/>
+      <wsdl:output message="tns:GetArriveInterchangeLineSoapOut"/>
+    </wsdl:operation>
+    <wsdl:operation name="getArriveClient">
+      <wsdl:input message="tns:getArriveClientSoapIn"/>
+      <wsdl:output message="tns:getArriveClientSoapOut"/>
+    </wsdl:operation>
+    <wsdl:operation name="getPointsOfInterest">
+      <wsdl:input message="tns:getPointsOfInterestSoapIn"/>
+      <wsdl:output message="tns:getPointsOfInterestSoapOut"/>
+    </wsdl:operation>
+    <wsdl:operation name="getPointsOfInterestTypes">
+      <wsdl:input message="tns:getPointsOfInterestTypesSoapIn"/>
+      <wsdl:output message="tns:getPointsOfInterestTypesSoapOut"/>
+    </wsdl:operation>
+    <wsdl:operation name="getStreetFromXY">
+      <wsdl:input message="tns:getStreetFromXYSoapIn"/>
+      <wsdl:output message="tns:getStreetFromXYSoapOut"/>
+    </wsdl:operation>
+    <wsdl:operation name="getInfoLine">
+      <wsdl:input message="tns:getInfoLineSoapIn"/>
+      <wsdl:output message="tns:getInfoLineSoapOut"/>
+    </wsdl:operation>
+    <wsdl:operation name="getStopsLine">
+      <wsdl:input message="tns:getStopsLineSoapIn"/>
+      <wsdl:output message="tns:getStopsLineSoapOut"/>
+    </wsdl:operation>
+    <wsdl:operation name="getGroups">
+      <wsdl:input message="tns:getGroupsSoapIn"/>
+      <wsdl:output message="tns:getGroupsSoapOut"/>
+    </wsdl:operation>
+    <wsdl:operation name="GetRouteLinesRoute">
+      <wsdl:input message="tns:GetRouteLinesRouteSoapIn"/>
+      <wsdl:output message="tns:GetRouteLinesRouteSoapOut"/>
+    </wsdl:operation>
+    <wsdl:operation name="EstadisticaCache">
+      <wsdl:input message="tns:EstadisticaCacheSoapIn"/>
+      <wsdl:output message="tns:EstadisticaCacheSoapOut"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:portType name="ServiceGEOHttpGet">
+    <wsdl:operation name="GetStreet">
+      <wsdl:input message="tns:GetStreetHttpGetIn"/>
+      <wsdl:output message="tns:GetStreetHttpGetOut"/>
+    </wsdl:operation>
+    <wsdl:operation name="getStopsFromStop">
+      <wsdl:input message="tns:getStopsFromStopHttpGetIn"/>
+      <wsdl:output message="tns:getStopsFromStopHttpGetOut"/>
+    </wsdl:operation>
+    <wsdl:operation name="getStopsFromXY">
+      <wsdl:input message="tns:getStopsFromXYHttpGetIn"/>
+      <wsdl:output message="tns:getStopsFromXYHttpGetOut"/>
+    </wsdl:operation>
+    <wsdl:operation name="getArriveStop">
+      <wsdl:input message="tns:getArriveStopHttpGetIn"/>
+      <wsdl:output message="tns:getArriveStopHttpGetOut"/>
+    </wsdl:operation>
+    <wsdl:operation name="GetArriveInterchangeLine">
+      <wsdl:input message="tns:GetArriveInterchangeLineHttpGetIn"/>
+      <wsdl:output message="tns:GetArriveInterchangeLineHttpGetOut"/>
+    </wsdl:operation>
+    <wsdl:operation name="getArriveClient">
+      <wsdl:input message="tns:getArriveClientHttpGetIn"/>
+      <wsdl:output message="tns:getArriveClientHttpGetOut"/>
+    </wsdl:operation>
+    <wsdl:operation name="getPointsOfInterest">
+      <wsdl:input message="tns:getPointsOfInterestHttpGetIn"/>
+      <wsdl:output message="tns:getPointsOfInterestHttpGetOut"/>
+    </wsdl:operation>
+    <wsdl:operation name="getPointsOfInterestTypes">
+      <wsdl:input message="tns:getPointsOfInterestTypesHttpGetIn"/>
+      <wsdl:output message="tns:getPointsOfInterestTypesHttpGetOut"/>
+    </wsdl:operation>
+    <wsdl:operation name="getStreetFromXY">
+      <wsdl:input message="tns:getStreetFromXYHttpGetIn"/>
+      <wsdl:output message="tns:getStreetFromXYHttpGetOut"/>
+    </wsdl:operation>
+    <wsdl:operation name="getInfoLine">
+      <wsdl:input message="tns:getInfoLineHttpGetIn"/>
+      <wsdl:output message="tns:getInfoLineHttpGetOut"/>
+    </wsdl:operation>
+    <wsdl:operation name="getStopsLine">
+      <wsdl:input message="tns:getStopsLineHttpGetIn"/>
+      <wsdl:output message="tns:getStopsLineHttpGetOut"/>
+    </wsdl:operation>
+    <wsdl:operation name="getGroups">
+      <wsdl:input message="tns:getGroupsHttpGetIn"/>
+      <wsdl:output message="tns:getGroupsHttpGetOut"/>
+    </wsdl:operation>
+    <wsdl:operation name="GetRouteLinesRoute">
+      <wsdl:input message="tns:GetRouteLinesRouteHttpGetIn"/>
+      <wsdl:output message="tns:GetRouteLinesRouteHttpGetOut"/>
+    </wsdl:operation>
+    <wsdl:operation name="EstadisticaCache">
+      <wsdl:input message="tns:EstadisticaCacheHttpGetIn"/>
+      <wsdl:output message="tns:EstadisticaCacheHttpGetOut"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:portType name="ServiceGEOHttpPost">
+    <wsdl:operation name="GetStreet">
+      <wsdl:input message="tns:GetStreetHttpPostIn"/>
+      <wsdl:output message="tns:GetStreetHttpPostOut"/>
+    </wsdl:operation>
+    <wsdl:operation name="getStopsFromStop">
+      <wsdl:input message="tns:getStopsFromStopHttpPostIn"/>
+      <wsdl:output message="tns:getStopsFromStopHttpPostOut"/>
+    </wsdl:operation>
+    <wsdl:operation name="getStopsFromXY">
+      <wsdl:input message="tns:getStopsFromXYHttpPostIn"/>
+      <wsdl:output message="tns:getStopsFromXYHttpPostOut"/>
+    </wsdl:operation>
+    <wsdl:operation name="getArriveStop">
+      <wsdl:input message="tns:getArriveStopHttpPostIn"/>
+      <wsdl:output message="tns:getArriveStopHttpPostOut"/>
+    </wsdl:operation>
+    <wsdl:operation name="GetArriveInterchangeLine">
+      <wsdl:input message="tns:GetArriveInterchangeLineHttpPostIn"/>
+      <wsdl:output message="tns:GetArriveInterchangeLineHttpPostOut"/>
+    </wsdl:operation>
+    <wsdl:operation name="getArriveClient">
+      <wsdl:input message="tns:getArriveClientHttpPostIn"/>
+      <wsdl:output message="tns:getArriveClientHttpPostOut"/>
+    </wsdl:operation>
+    <wsdl:operation name="getPointsOfInterest">
+      <wsdl:input message="tns:getPointsOfInterestHttpPostIn"/>
+      <wsdl:output message="tns:getPointsOfInterestHttpPostOut"/>
+    </wsdl:operation>
+    <wsdl:operation name="getPointsOfInterestTypes">
+      <wsdl:input message="tns:getPointsOfInterestTypesHttpPostIn"/>
+      <wsdl:output message="tns:getPointsOfInterestTypesHttpPostOut"/>
+    </wsdl:operation>
+    <wsdl:operation name="getStreetFromXY">
+      <wsdl:input message="tns:getStreetFromXYHttpPostIn"/>
+      <wsdl:output message="tns:getStreetFromXYHttpPostOut"/>
+    </wsdl:operation>
+    <wsdl:operation name="getInfoLine">
+      <wsdl:input message="tns:getInfoLineHttpPostIn"/>
+      <wsdl:output message="tns:getInfoLineHttpPostOut"/>
+    </wsdl:operation>
+    <wsdl:operation name="getStopsLine">
+      <wsdl:input message="tns:getStopsLineHttpPostIn"/>
+      <wsdl:output message="tns:getStopsLineHttpPostOut"/>
+    </wsdl:operation>
+    <wsdl:operation name="getGroups">
+      <wsdl:input message="tns:getGroupsHttpPostIn"/>
+      <wsdl:output message="tns:getGroupsHttpPostOut"/>
+    </wsdl:operation>
+    <wsdl:operation name="GetRouteLinesRoute">
+      <wsdl:input message="tns:GetRouteLinesRouteHttpPostIn"/>
+      <wsdl:output message="tns:GetRouteLinesRouteHttpPostOut"/>
+    </wsdl:operation>
+    <wsdl:operation name="EstadisticaCache">
+      <wsdl:input message="tns:EstadisticaCacheHttpPostIn"/>
+      <wsdl:output message="tns:EstadisticaCacheHttpPostOut"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="ServiceGEOSoap" type="tns:ServiceGEOSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="GetStreet">
+      <soap:operation soapAction="http://tempuri.org/GetStreet" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getStopsFromStop">
+      <soap:operation soapAction="http://tempuri.org/getStopsFromStop" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getStopsFromXY">
+      <soap:operation soapAction="http://tempuri.org/getStopsFromXY" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getArriveStop">
+      <soap:operation soapAction="http://tempuri.org/getArriveStop" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetArriveInterchangeLine">
+      <soap:operation soapAction="http://tempuri.org/GetArriveInterchangeLine" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getArriveClient">
+      <soap:operation soapAction="http://tempuri.org/getArriveClient" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getPointsOfInterest">
+      <soap:operation soapAction="http://tempuri.org/getPointsOfInterest" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getPointsOfInterestTypes">
+      <soap:operation soapAction="http://tempuri.org/getPointsOfInterestTypes" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getStreetFromXY">
+      <soap:operation soapAction="http://tempuri.org/getStreetFromXY" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getInfoLine">
+      <soap:operation soapAction="http://tempuri.org/getInfoLine" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getStopsLine">
+      <soap:operation soapAction="http://tempuri.org/getStopsLine" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getGroups">
+      <soap:operation soapAction="http://tempuri.org/getGroups" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetRouteLinesRoute">
+      <soap:operation soapAction="http://tempuri.org/GetRouteLinesRoute" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="EstadisticaCache">
+      <soap:operation soapAction="http://tempuri.org/EstadisticaCache" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="ServiceGEOSoap12" type="tns:ServiceGEOSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="GetStreet">
+      <soap12:operation soapAction="http://tempuri.org/GetStreet" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getStopsFromStop">
+      <soap12:operation soapAction="http://tempuri.org/getStopsFromStop" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getStopsFromXY">
+      <soap12:operation soapAction="http://tempuri.org/getStopsFromXY" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getArriveStop">
+      <soap12:operation soapAction="http://tempuri.org/getArriveStop" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetArriveInterchangeLine">
+      <soap12:operation soapAction="http://tempuri.org/GetArriveInterchangeLine" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getArriveClient">
+      <soap12:operation soapAction="http://tempuri.org/getArriveClient" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getPointsOfInterest">
+      <soap12:operation soapAction="http://tempuri.org/getPointsOfInterest" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getPointsOfInterestTypes">
+      <soap12:operation soapAction="http://tempuri.org/getPointsOfInterestTypes" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getStreetFromXY">
+      <soap12:operation soapAction="http://tempuri.org/getStreetFromXY" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getInfoLine">
+      <soap12:operation soapAction="http://tempuri.org/getInfoLine" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getStopsLine">
+      <soap12:operation soapAction="http://tempuri.org/getStopsLine" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getGroups">
+      <soap12:operation soapAction="http://tempuri.org/getGroups" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetRouteLinesRoute">
+      <soap12:operation soapAction="http://tempuri.org/GetRouteLinesRoute" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="EstadisticaCache">
+      <soap12:operation soapAction="http://tempuri.org/EstadisticaCache" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="ServiceGEOHttpGet" type="tns:ServiceGEOHttpGet">
+    <http:binding verb="GET"/>
+    <wsdl:operation name="GetStreet">
+      <http:operation location="/GetStreet"/>
+      <wsdl:input>
+        <http:urlEncoded/>
+      </wsdl:input>
+      <wsdl:output>
+        <mime:content part="Body" type="text/xml"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getStopsFromStop">
+      <http:operation location="/getStopsFromStop"/>
+      <wsdl:input>
+        <http:urlEncoded/>
+      </wsdl:input>
+      <wsdl:output>
+        <mime:content part="Body" type="text/xml"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getStopsFromXY">
+      <http:operation location="/getStopsFromXY"/>
+      <wsdl:input>
+        <http:urlEncoded/>
+      </wsdl:input>
+      <wsdl:output>
+        <mime:content part="Body" type="text/xml"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getArriveStop">
+      <http:operation location="/getArriveStop"/>
+      <wsdl:input>
+        <http:urlEncoded/>
+      </wsdl:input>
+      <wsdl:output>
+        <mime:content part="Body" type="text/xml"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetArriveInterchangeLine">
+      <http:operation location="/GetArriveInterchangeLine"/>
+      <wsdl:input>
+        <http:urlEncoded/>
+      </wsdl:input>
+      <wsdl:output>
+        <mime:content part="Body" type="text/xml"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getArriveClient">
+      <http:operation location="/getArriveClient"/>
+      <wsdl:input>
+        <http:urlEncoded/>
+      </wsdl:input>
+      <wsdl:output>
+        <mime:content part="Body" type="text/xml"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getPointsOfInterest">
+      <http:operation location="/getPointsOfInterest"/>
+      <wsdl:input>
+        <http:urlEncoded/>
+      </wsdl:input>
+      <wsdl:output>
+        <mime:content part="Body" type="text/xml"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getPointsOfInterestTypes">
+      <http:operation location="/getPointsOfInterestTypes"/>
+      <wsdl:input>
+        <http:urlEncoded/>
+      </wsdl:input>
+      <wsdl:output>
+        <mime:content part="Body" type="text/xml"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getStreetFromXY">
+      <http:operation location="/getStreetFromXY"/>
+      <wsdl:input>
+        <http:urlEncoded/>
+      </wsdl:input>
+      <wsdl:output>
+        <mime:content part="Body" type="text/xml"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getInfoLine">
+      <http:operation location="/getInfoLine"/>
+      <wsdl:input>
+        <http:urlEncoded/>
+      </wsdl:input>
+      <wsdl:output>
+        <mime:content part="Body" type="text/xml"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getStopsLine">
+      <http:operation location="/getStopsLine"/>
+      <wsdl:input>
+        <http:urlEncoded/>
+      </wsdl:input>
+      <wsdl:output>
+        <mime:content part="Body" type="text/xml"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getGroups">
+      <http:operation location="/getGroups"/>
+      <wsdl:input>
+        <http:urlEncoded/>
+      </wsdl:input>
+      <wsdl:output>
+        <mime:content part="Body" type="text/xml"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetRouteLinesRoute">
+      <http:operation location="/GetRouteLinesRoute"/>
+      <wsdl:input>
+        <http:urlEncoded/>
+      </wsdl:input>
+      <wsdl:output>
+        <mime:content part="Body" type="text/xml"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="EstadisticaCache">
+      <http:operation location="/EstadisticaCache"/>
+      <wsdl:input>
+        <http:urlEncoded/>
+      </wsdl:input>
+      <wsdl:output>
+        <mime:content part="Body" type="text/xml"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="ServiceGEOHttpPost" type="tns:ServiceGEOHttpPost">
+    <http:binding verb="POST"/>
+    <wsdl:operation name="GetStreet">
+      <http:operation location="/GetStreet"/>
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded"/>
+      </wsdl:input>
+      <wsdl:output>
+        <mime:content part="Body" type="text/xml"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getStopsFromStop">
+      <http:operation location="/getStopsFromStop"/>
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded"/>
+      </wsdl:input>
+      <wsdl:output>
+        <mime:content part="Body" type="text/xml"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getStopsFromXY">
+      <http:operation location="/getStopsFromXY"/>
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded"/>
+      </wsdl:input>
+      <wsdl:output>
+        <mime:content part="Body" type="text/xml"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getArriveStop">
+      <http:operation location="/getArriveStop"/>
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded"/>
+      </wsdl:input>
+      <wsdl:output>
+        <mime:content part="Body" type="text/xml"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetArriveInterchangeLine">
+      <http:operation location="/GetArriveInterchangeLine"/>
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded"/>
+      </wsdl:input>
+      <wsdl:output>
+        <mime:content part="Body" type="text/xml"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getArriveClient">
+      <http:operation location="/getArriveClient"/>
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded"/>
+      </wsdl:input>
+      <wsdl:output>
+        <mime:content part="Body" type="text/xml"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getPointsOfInterest">
+      <http:operation location="/getPointsOfInterest"/>
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded"/>
+      </wsdl:input>
+      <wsdl:output>
+        <mime:content part="Body" type="text/xml"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getPointsOfInterestTypes">
+      <http:operation location="/getPointsOfInterestTypes"/>
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded"/>
+      </wsdl:input>
+      <wsdl:output>
+        <mime:content part="Body" type="text/xml"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getStreetFromXY">
+      <http:operation location="/getStreetFromXY"/>
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded"/>
+      </wsdl:input>
+      <wsdl:output>
+        <mime:content part="Body" type="text/xml"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getInfoLine">
+      <http:operation location="/getInfoLine"/>
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded"/>
+      </wsdl:input>
+      <wsdl:output>
+        <mime:content part="Body" type="text/xml"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getStopsLine">
+      <http:operation location="/getStopsLine"/>
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded"/>
+      </wsdl:input>
+      <wsdl:output>
+        <mime:content part="Body" type="text/xml"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getGroups">
+      <http:operation location="/getGroups"/>
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded"/>
+      </wsdl:input>
+      <wsdl:output>
+        <mime:content part="Body" type="text/xml"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetRouteLinesRoute">
+      <http:operation location="/GetRouteLinesRoute"/>
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded"/>
+      </wsdl:input>
+      <wsdl:output>
+        <mime:content part="Body" type="text/xml"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="EstadisticaCache">
+      <http:operation location="/EstadisticaCache"/>
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded"/>
+      </wsdl:input>
+      <wsdl:output>
+        <mime:content part="Body" type="text/xml"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ServiceGEO">
+    <wsdl:port name="ServiceGEOSoap" binding="tns:ServiceGEOSoap">
+      <soap:address location="https://servicios.emtmadrid.es:8443/geo/servicegeo.asmx"/>
+    </wsdl:port>
+    <wsdl:port name="ServiceGEOSoap12" binding="tns:ServiceGEOSoap12">
+      <soap12:address location="https://servicios.emtmadrid.es:8443/geo/servicegeo.asmx"/>
+    </wsdl:port>
+    <wsdl:port name="ServiceGEOHttpGet" binding="tns:ServiceGEOHttpGet">
+      <http:address location="https://servicios.emtmadrid.es:8443/geo/servicegeo.asmx"/>
+    </wsdl:port>
+    <wsdl:port name="ServiceGEOHttpPost" binding="tns:ServiceGEOHttpPost">
+      <http:address location="https://servicios.emtmadrid.es:8443/geo/servicegeo.asmx"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
