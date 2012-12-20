@@ -66,7 +66,8 @@ class DataTranslator(results:Seq[ResultSet],query:SourceQuery) extends Logging{
 	  b.setUri(value.toString)
 	}*/
 	//else
-	  if (value.toString().startsWith("http://"))
+	if (value!=null){
+	if (value.toString().startsWith("http://"))
 	  b.setUri(value.toString)//.replace(" ","%20"))
 	else try 
 	  b.setLiteral(createLiteral(value, rs.findColumn(columnName), rs.getMetaData))
@@ -74,7 +75,9 @@ class DataTranslator(results:Seq[ResultSet],query:SourceQuery) extends Logging{
 	    case e:SQLException=>throw new QueryException("Cannot find column for "+columnName,e)
 	  }
 								
-	return b
+	 b
+	}
+	else null
   }
 	
   private def newSparql(varNames:Seq[String])={
@@ -114,7 +117,7 @@ class DataTranslator(results:Seq[ResultSet],query:SourceQuery) extends Logging{
 		  val projectList=query.getProjection
 		  projectList.keySet.foreach{columnName=> 	
 			val b=createBinding(rs,columnName,temps.toMap)
-			result.getBinding.add(b)
+			if (b!=null) result.getBinding.add(b)
 		  }													
 		  res.getResult.add(result)
 		  temps.clear

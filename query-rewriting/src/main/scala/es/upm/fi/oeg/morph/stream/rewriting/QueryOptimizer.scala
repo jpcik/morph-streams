@@ -188,7 +188,7 @@ class QueryOptimizer extends Logging{
 							if (vali.value.equals((oper.param.asInstanceOf[ValueXpr]).value))
 							{								
 								//proj.setSubOp(sel.getSubOp());
-								return new ProjectionOp(proj.id,proj.expressions,sel.subOp)
+								return new ProjectionOp(proj.id,proj.expressions,sel.subOp,proj.distinct)
 							}
 							else
 							{
@@ -223,7 +223,7 @@ class QueryOptimizer extends Logging{
 				  case _=>throw new Exception("unsupported optimization")
 				}
 				//should simplify here!!!!
-				return	new ProjectionOp(proj.id,proj.expressions,newBin)
+				return	new ProjectionOp(proj.id,proj.expressions,newBin,proj.distinct)
 				//return newBin
 			
 				//return union;
@@ -233,7 +233,7 @@ class QueryOptimizer extends Logging{
 				val union =o.asInstanceOf[MultiUnionOp]
 				val newChildren = 
 				union.children.entrySet.map{col=>
-				  val copy= new ProjectionOp(proj.id,proj.expressions, col.getValue)
+				  val copy= new ProjectionOp(proj.id,proj.expressions, col.getValue,proj.distinct)
 				  val newOp=staticOptimize(copy)
 				  col.getKey->newOp
 				}.toMap
@@ -252,7 +252,7 @@ class QueryOptimizer extends Logging{
 						else //inner projection doesn't cover the attributes of the outer one
 							(key, NullValueXpr)
 					}.toMap
-					return new ProjectionOp(proj.id,proj.expressions++xprs,innerProj.subOp)
+					return new ProjectionOp(proj.id,proj.expressions++xprs,innerProj.subOp,proj.distinct)
 						//proj.setSubOp(innerProj.getSubOp());
 				}
 				//else if (o.isInstanceOf[OpUnion])
@@ -267,7 +267,7 @@ class QueryOptimizer extends Logging{
 					return union;*/
 				//}
 				else if (o!=null)  
-					return new ProjectionOp(proj.id,proj.expressions,o)
+					return new ProjectionOp(proj.id,proj.expressions,o,proj.distinct)
 				else   // if projection has no relation to project!!!
 					return null;
 				return proj;
@@ -284,7 +284,7 @@ class QueryOptimizer extends Logging{
 					{
 						val sel = new SelectionOp(selection.id,proj.subOp,selection.expressions)
 						//proj.build(sel);
-						return new ProjectionOp(proj.id,proj.expressions,sel)
+						return new ProjectionOp(proj.id,proj.expressions,sel,proj.distinct)
 					}
 					else
 						return proj;
@@ -343,7 +343,7 @@ class QueryOptimizer extends Logging{
 		{
 			
 			val proj = op.asInstanceOf[ProjectionOp]
-		  return optimizeProjection(new ProjectionOp(proj.id,proj.expressions,o))
+		  return optimizeProjection(new ProjectionOp(proj.id,proj.expressions,o,proj.distinct))
 		}
 		else if (op.isInstanceOf[SelectionOp])
 		{
