@@ -2,11 +2,7 @@ name := "query-rewriting"
 
 organization := "es.upm.fi.oeg.morph"
 
-version := "1.0.1"
-
-scalaVersion := "2.9.1"
-
-crossPaths := false
+version := "1.0.2"
 
 libraryDependencies ++= Seq(
   "xml-apis" % "xml-apis" % "1.3.04",
@@ -25,24 +21,8 @@ libraryDependencies ++= Seq(
 )
 
 resolvers ++= Seq(
-  DefaultMavenRepository,
-  "aldebaran-releases" at "http://aldebaran.dia.fi.upm.es/artifactory/sstreams-releases-local",
-  "Local ivy Repository" at "file://"+Path.userHome.absolutePath+"/.ivy2/local"
+  "aldebaran-releases" at "http://aldebaran.dia.fi.upm.es/artifactory/sstreams-releases-local"
 )
 
 javacOptions ++= Seq("-source", "1.7", "-target", "1.6")
 
-scalacOptions += "-deprecation"
-
-EclipseKeys.createSrc := EclipseCreateSrc.Default + EclipseCreateSrc.Resource
-
-unmanagedSourceDirectories in Compile <<= (scalaSource in Compile)(Seq(_))
-
-unmanagedSourceDirectories in Test <<= (scalaSource in Test)(Seq(_))
-
-//publishTo := Some(Resolver.file("jpc repo",new File(Path.userHome.absolutePath+"/git/jpc-repo/repo")))
-publishTo := Some("Artifactory Realm" at "http://aldebaran.dia.fi.upm.es/artifactory/sstreams-releases-local")
-
-credentials += Credentials(Path.userHome / ".ivy2" / ".credentials")
-
-publishMavenStyle := true

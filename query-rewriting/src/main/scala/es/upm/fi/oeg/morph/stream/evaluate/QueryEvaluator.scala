@@ -1,7 +1,6 @@
 package es.upm.fi.oeg.morph.stream.evaluate
 import java.net.URI
 import es.upm.fi.oeg.sparqlstream.SparqlStream
-import es.upm.fi.oeg.morph.common.ParameterUtils
 import es.upm.fi.oeg.morph.stream.rewriting.QueryRewriting
 import es.upm.fi.oeg.morph.stream.query.SourceQuery
 import java.sql.ResultSet
@@ -17,12 +16,25 @@ import com.weiglewilczek.slf4s.Logging
 import akka.actor.Actor
 import akka.actor.ActorSystem
 import com.typesafe.config.ConfigFactory
+import akka.actor.ActorRef
+import akka.actor.Actor._
+import akka.actor.Props
+import es.upm.fi.oeg.siq.tools.ParameterUtils
 
-trait StreamEvaluatorAdapter{
+trait StreamEvaluatorAdapter {
   def executeQuery(abstractQuery:SourceQuery):ResultSet
   def registerQuery(abstractQuery:SourceQuery):String
   def pull(id:String,query:SourceQuery):ResultSet
+  def listenQuery(abstractQuery:SourceQuery,receiver:StreamReceiver):Unit
+  
 }
+case class Data(cosas:String)
+
+trait StreamReceiver {
+  def receiveData(s:String):Unit
+}
+
+
 
 class QueryEvaluator(config:Properties,actorSystem:ActorSystem=null) extends Logging{
   val system=if (actorSystem!=null) actorSystem
@@ -70,6 +82,12 @@ class QueryEvaluator(config:Properties,actorSystem:ActorSystem=null) extends Log
     queryids.put(id,qt)
     id
   }
+  def listenToQuery(sparqlstr:String,mappingUri:URI,receiver:StreamReceiver)={
+    val query=SparqlStream.parse(sparqlstr)
+    val trans = new QueryRewriting(props,mappingUri.toString)
+    val qt= trans.translate(query)
+    adapter.listenQuery(qt,receiver)
+  }
   
   def pull(id:String)={
     val qt=queryids(id)
@@ -80,17 +98,34 @@ class QueryEvaluator(config:Properties,actorSystem:ActorSystem=null) extends Log
     sparql    
   }
      
+ 
   def printSparqlResult(sparql:Sparql )	{		   
-    try {
+    /*try {
  	  val jax = JAXBContext.newInstance(classOf[Sparql])
  	  val m = jax.createMarshaller
  	  val sr = new StringWriter
  	  m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true)
  	  m.marshal(sparql,sr)
  	  logger.info(sr.toString)
- 	} catch {case e:JAXBException=>e.printStackTrace}         
+ 	} catch {case e:JAXBException=>e.printStackTrace}*/
+    logger.info(EvaluatorUtils.sparqlString(sparql))
   }
 
+}
+
+object EvaluatorUtils{
+   def sparqlString(sparql:Sparql)={
+   try {
+ 	  val jax = JAXBContext.newInstance(classOf[Sparql])
+ 	  val m = jax.createMarshaller
+ 	  val sr = new StringWriter
+ 	  m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true)
+ 	  m.marshal(sparql,sr)
+ 	  sr.toString
+ 	} catch {case e:JAXBException=>e.printStackTrace
+ 	  null}         
+  }
+  
 }
 
 /*object QueryEvaluator{
