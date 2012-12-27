@@ -15,6 +15,12 @@ import es.upm.fi.oeg.morph.esper.PullData
 import akka.actor.ActorSystem
 import es.upm.fi.oeg.morph.esper.EsperProxy
 import es.upm.fi.oeg.morph.stream.algebra.xpr.VarXpr
+import es.upm.fi.oeg.morph.stream.evaluate.StreamReceiver
+import es.upm.fi.oeg.morph.esper.ListenQuery
+import akka.actor.ActorRef
+import akka.actor.Actor
+import es.upm.fi.oeg.morph.stream.translate.DataTranslator
+import es.upm.fi.oeg.morph.stream.evaluate.EvaluatorUtils
 
 class EsperAdapter(props:Properties,system:ActorSystem) extends  StreamEvaluatorAdapter {
   lazy val proxy=new EsperProxy(system,props.getProperty("siq.adapter.esper.url"))
@@ -33,6 +39,27 @@ class EsperAdapter(props:Properties,system:ActorSystem) extends  StreamEvaluator
     val res=Await.result(fut,timeout.duration).asInstanceOf[Array[Array[Object]]]
     println("tatata"+esperQuery.selectXprs)
     new EsperResultSet(res.toStream,esperQuery.varsX,esperQuery.selectXprs.values.map(_.toString).toArray)
+  }
+  
+  class StreamRec(rec:StreamReceiver,esperQuery:EsperQuery) extends Actor{
+    def receive={
+      case data:Array[Array[Object]]=>println("array intercepted")
+        val rs=new EsperResultSet(data.toStream,esperQuery.varsX,esperQuery.selectXprs.values.map(_.toString).toArray)
+        val dt=new DataTranslator(List(rs),esperQuery)
+        val sparql=dt.transform     
+        rec.receiveData(EvaluatorUtils.sparqlString(sparql))
+      case m=>println("got "+m)
+        rec.receiveData(m.toString)
+    }
+  }
+  
+  def listenQuery(query:SourceQuery,receiver:StreamReceiver){
+    val esperQuery=query.asInstanceOf[EsperQuery]
+    println("sending query now")
+    val acrf=proxy.system.actorOf(Props(new StreamRec(receiver,esperQuery)),"reci")
+
+    proxy.engine ! ListenQuery(query.serializeQuery,acrf)
+    
   }
   
   def executeQuery(query:SourceQuery) = {

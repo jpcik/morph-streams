@@ -15,6 +15,7 @@ import es.upm.fi.oeg.morph.stream.algebra.ProjectionOp
 import es.upm.fi.oeg.morph.stream.algebra.MultiUnionOp
 import org.apache.commons.lang.NotImplementedException
 import akka.actor.ActorSystem
+import es.upm.fi.oeg.morph.stream.evaluate.StreamReceiver
 
 
 class GsnAdapter(props:Properties,actorSystem:ActorSystem) extends StreamEvaluatorAdapter with Logging{
@@ -71,7 +72,11 @@ class GsnAdapter(props:Properties,actorSystem:ActorSystem) extends StreamEvaluat
     }
   }  
   
-    def registerQuery(query:SourceQuery)={
+  def listenQuery(query:SourceQuery,receiver:StreamReceiver){
+    throw new NotImplementedException
+  }
+  
+  def registerQuery(query:SourceQuery)={
     throw new NotImplementedException    
   }
   

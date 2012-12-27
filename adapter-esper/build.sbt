@@ -2,11 +2,7 @@ name := "adapter-esper"
 
 organization := "es.upm.fi.oeg.morph.streams"
 
-version := "1.0.1"
-
-scalaVersion := "2.9.1"
-
-crossPaths := false
+version := "1.0.2"
 
 libraryDependencies ++= Seq(
   "es.upm.fi.oeg.morph" % "query-rewriting" % "1.0.1",
@@ -20,22 +16,9 @@ libraryDependencies ++= Seq(
 )
 
 resolvers ++= Seq(
-  DefaultMavenRepository,
-  "Local Maven Repository" at "file://"+Path.userHome.absolutePath+"/.m2/repository",
-  "aldebaran-snapshots" at "http://aldebaran.dia.fi.upm.es/artifactory/sstreams-snapshots-local",
   "aldebaran-releases" at "http://aldebaran.dia.fi.upm.es/artifactory/sstreams-releases-local",
   "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/"  
 )
 
 javacOptions ++= Seq("-source", "1.7", "-target", "1.6")
-
-scalacOptions += "-deprecation"
-
-EclipseKeys.createSrc := EclipseCreateSrc.Default + EclipseCreateSrc.Resource
-
-unmanagedSourceDirectories in Compile <<= (scalaSource in Compile)(Seq(_))
-
-unmanagedSourceDirectories in Test <<= (scalaSource in Test)(Seq(_))
-
-parallelExecution in Test := false
 

@@ -4,6 +4,8 @@ import com.espertech.esper.client.Configuration
 import com.espertech.esper.client.EPServiceProviderManager
 import collection.JavaConversions._
 import com.espertech.esper.client.EPRuntime
+import com.espertech.esper.client.UpdateListener
+import com.espertech.esper.client.EventBean
 
 class EsperEngine extends Actor{
   val configuration = new Configuration
@@ -32,7 +34,16 @@ class EsperEngine extends Actor{
         i.get("temperature")}
       sender ! pal.toArray   	  
     case RegisterQuery(query)=>
-      val ref=epAdministrator.createEPL(query)   	  
+      val ref=epAdministrator.createEPL(query)
+  	  sender ! ref.getName
+    case ListenQuery(query,actor)=>
+      val ref=epAdministrator.createEPL(query)
+   	  val propNames=ref.getEventType.getPropertyNames
+      ref.addListener(new UpdateListener{
+        def update(newData:Array[EventBean],oldData:Array[EventBean]){
+          actor ! newData.map{i=>propNames.map(key=>i.get(key))}
+        }
+      })
   	  sender ! ref.getName
 	case PullData(id)=>
 	  val r=epAdministrator.getStatement(id)
