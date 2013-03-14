@@ -2,7 +2,7 @@ name := "query-rewriting"
 
 organization := "es.upm.fi.oeg.morph"
 
-version := "1.0.2"
+version := "1.0.3"
 
 libraryDependencies ++= Seq(
   "xml-apis" % "xml-apis" % "1.3.04",
@@ -21,7 +21,8 @@ libraryDependencies ++= Seq(
 )
 
 resolvers ++= Seq(
-  "aldebaran-releases" at "http://aldebaran.dia.fi.upm.es/artifactory/sstreams-releases-local"
+  "aldebaran-releases" at "http://aldebaran.dia.fi.upm.es/artifactory/sstreams-releases-local",
+  "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/"    
 )
 
 javacOptions ++= Seq("-source", "1.7", "-target", "1.6")

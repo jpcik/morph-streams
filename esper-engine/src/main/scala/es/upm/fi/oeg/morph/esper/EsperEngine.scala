@@ -22,7 +22,7 @@ class EsperEngine extends Actor{
       println(msg)
     case Event(name,attributes)=>
       //throw new Exception("papas")
-	  println("data arrival "+attributes.mkString)
+	  //println("data arrival "+attributes.mkString)
       epRuntime.sendEvent(attributes,name)
     case CreateWindow(name,window,duration)=>
       epAdministrator.createEPL("create window "+window+".win:keepall() as "+name)

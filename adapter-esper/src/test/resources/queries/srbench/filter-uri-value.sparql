@@ -8,5 +8,5 @@ WHERE {
                om-owl:observedProperty weather:AirTemperature;
                om-owl:result ?result.
   ?result om-owl:floatValue ?value;
-  FILTER (?value > 5.3)  
+  FILTER (?value > 0.5)  
 }

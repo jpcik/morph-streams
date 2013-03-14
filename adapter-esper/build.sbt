@@ -2,7 +2,7 @@ name := "adapter-esper"
 
 organization := "es.upm.fi.oeg.morph.streams"
 
-version := "1.0.2"
+version := "1.0.3"
 
 libraryDependencies ++= Seq(
   "es.upm.fi.oeg.morph" % "query-rewriting" % "1.0.1",

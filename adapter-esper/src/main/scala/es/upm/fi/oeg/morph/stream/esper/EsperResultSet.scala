@@ -8,6 +8,28 @@ import java.sql.ResultSetMetaData
 import es.upm.fi.oeg.morph.stream.algebra.xpr.ReplaceXpr
 import es.upm.fi.oeg.morph.stream.algebra.xpr.VarXpr
 import es.upm.fi.oeg.morph.stream.algebra.xpr.NullValueXpr
+import es.upm.fi.oeg.morph.stream.algebra.xpr.OperationXpr
+
+class EsperCompResultSet(rss:Seq[EsperResultSet]) extends StreamResultSet{
+  private val it=rss.iterator
+  private var current:EsperResultSet=null
+  override def next:Boolean = {
+    if (current==null) current=it.next
+    val nxt=current.next
+    if (nxt) nxt
+    else if (it.hasNext){
+      current=it.next
+      current.next
+    }
+    else false       
+  }
+  
+  override def findColumn(columnLabel:String):Int =rss.head.findColumn(columnLabel)    
+  override def getMetaData:ResultSetMetaData=rss.head.getMetaData
+  override def getObject(columnIndex:Int):Object=current.getObject(columnIndex)
+  override def getObject(columnLabel:String):Object=current.getObject(columnLabel)  
+  override def getString(columnLabel:String):String = current.getString(columnLabel)
+}
 
 class EsperResultSet(val records: collection.immutable.Stream[Array[Object]], 
     val metadata: Map[String, Xpr],queryVars:Array[String]) extends StreamResultSet {
@@ -50,6 +72,15 @@ class EsperResultSet(val records: collection.immutable.Stream[Array[Object]],
     //println(vars.mkString("::::::::"))
     vars//.zipWithIndex.toMap
   }
+  private val compoundLabels={
+    val spk=internalLabels.keys.toArray.filter(k=>k.contains('_')).map{k=>
+      val sp=k.split('_')
+      (sp(0),sp(1))      
+    }
+    val grouped=spk.groupBy(_._1).map(v=>(v._1,v._2.map(v2=>v2._2)))
+    grouped
+  }
+  
   private val labelPos=
     (1 to metaData.getColumnCount).map(i=>metaData.getColumnLabel(i)->i).toMap
     
@@ -63,18 +94,27 @@ class EsperResultSet(val records: collection.immutable.Stream[Array[Object]],
   }
 
   override def getObject(columnLabel:String):Object={ 
+            println(internalLabels)
+
     metadata(columnLabel) match{
       case rep:ReplaceXpr=>
+        
         //val replaceVals=rep.vars.map(v=>v.varName->current(internalLabels(v.varName))).toMap
-        println(internalLabels)
-        rep.evaluate(internalLabels.map(l=>l._1->current(l._2)).toMap)
+        //rep.evaluate(internalLabels.map(l=>l._1->current(l._2)).toMap)
+        //compoundLabels(columnLabel)
+        val repl=internalLabels.map(l=>l._1.replace(columnLabel+"_","")->current(l._2))
+        rep.evaluate(repl)
+
       case v:VarXpr=>
         println("we get this: "+v)
-        current(internalLabels(v.varName))
+        //current(internalLabels(v.varName))
+        current(internalLabels(columnLabel))
       case NullValueXpr=>null
+      case op:OperationXpr=>op.evaluate
     }
   }
 
-  override def getString(columnLabel: String): String = getObject(columnLabel: String).toString
+  override def getString(columnLabel:String):String = 
+    getObject(columnLabel:String).toString
 }
 

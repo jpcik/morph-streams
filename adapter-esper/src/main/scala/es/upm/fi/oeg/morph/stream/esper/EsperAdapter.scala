@@ -21,24 +21,41 @@ import akka.actor.ActorRef
 import akka.actor.Actor
 import es.upm.fi.oeg.morph.stream.translate.DataTranslator
 import es.upm.fi.oeg.morph.stream.evaluate.EvaluatorUtils
+import scala.collection.mutable.ArrayBuffer
 
 class EsperAdapter(props:Properties,system:ActorSystem) extends  StreamEvaluatorAdapter {
   lazy val proxy=new EsperProxy(system,props.getProperty("siq.adapter.esper.url"))
   implicit val timeout = Timeout(5 seconds) // needed for `?` below
+  private val ids=new collection.mutable.HashMap[String,Seq[String]]
   
   def registerQuery(query:SourceQuery)={
     val esperQuery=query.asInstanceOf[EsperQuery]
-    val d=(proxy.engine ? RegisterQuery(query.serializeQuery))
-    val id= Await.result(d,timeout.duration).asInstanceOf[String]
-    id
+    val qs:Seq[EsperQuery]=if (esperQuery.unions.size>0)
+    	esperQuery.unions
+    	else Array(esperQuery)
+    val queryIds=qs.map{q =>    	
+      val d=(proxy.engine ? RegisterQuery(q.serializeQuery))
+      val id= Await.result(d,timeout.duration).asInstanceOf[String]
+      id
+    }
+    if (queryIds.size>1)
+      ids.+=((queryIds.head,queryIds))
+    queryIds.head
   }
   
   def pull(id:String,query:SourceQuery)={
     val esperQuery=query.asInstanceOf[EsperQuery]
-    val fut=(proxy.engine ? PullData(id))
-    val res=Await.result(fut,timeout.duration).asInstanceOf[Array[Array[Object]]]
-    println("tatata"+esperQuery.selectXprs)
-    new EsperResultSet(res.toStream,esperQuery.varsX,esperQuery.selectXprs.values.map(_.toString).toArray)
+    val queries:Seq[EsperQuery]=if (esperQuery.unions.size>0) esperQuery.unions
+      else Array(esperQuery) 
+    val queryIds=ids.getOrElse(id,Seq(id)).zip(queries)
+    val results=queryIds.map{qid=>
+      val fut=(proxy.engine ? PullData(qid._1))
+      val res=Await.result(fut,timeout.duration).asInstanceOf[Array[Array[Object]]]
+      println("tatata"+qid._2.allXprs)
+      println("mm"+qid._2.allXprs.keys.toList.map(_.toString).toArray.mkString)
+      new EsperResultSet(res.toStream,qid._2.varsX,qid._2.allXprs.keys.toList.map(_.toString).toArray)
+    }
+    new EsperCompResultSet(results)
   }
   
   class StreamRec(rec:StreamReceiver,esperQuery:EsperQuery) extends Actor{
@@ -47,9 +64,9 @@ class EsperAdapter(props:Properties,system:ActorSystem) extends  StreamEvaluator
         val rs=new EsperResultSet(data.toStream,esperQuery.varsX,esperQuery.selectXprs.values.map(_.toString).toArray)
         val dt=new DataTranslator(List(rs),esperQuery)
         val sparql=dt.transform     
-        rec.receiveData(EvaluatorUtils.sparqlString(sparql))
+        rec.receiveData(sparql)
       case m=>println("got "+m)
-        rec.receiveData(m.toString)
+        rec.receiveData(null)
     }
   }
   

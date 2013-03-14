@@ -18,22 +18,31 @@ import es.upm.fi.oeg.morph.common.TimeUnit
 import es.upm.fi.oeg.morph.stream.algebra.xpr.VarXpr
 import es.upm.fi.oeg.morph.stream.algebra.xpr.Xpr
 import es.upm.fi.oeg.morph.stream.algebra.xpr.ReplaceXpr
+import scala.reflect.BeanProperty
+import com.hp.hpl.jena.query.QueryExecutionFactory
+import com.hp.hpl.jena.rdf.model.ModelFactory
+import com.hp.hpl.jena.rdf.model.RDFReader
+import java.io.FileInputStream
+import collection.JavaConversions._
+import com.hp.hpl.jena.query.QuerySolution
+import es.upm.fi.oeg.morph.voc.RDFFormat
 
 class EsperQuery (projectionVars:Map[String,String]) extends SqlQuery(projectionVars) {
   val projectionXprs=projectionVars.map(p=>(p._1,VarXpr(p._2))) 
   val selectXprs=new collection.mutable.HashMap[String,Xpr]
+  val allXprs=new collection.mutable.HashMap[String,Xpr]
   val from=new ArrayBuffer[String]
   val where=new ArrayBuffer[String]
-  val unions=new ArrayBuffer[String]
+  val unions=new ArrayBuffer[EsperQuery]
   var distinct:Boolean=false
   
   def serializeSelect=
     "SELECT "+ (if (distinct) "DISTINCT " else "") + 
-      selectXprs.map(s=>s._2 +" AS "+s._1).mkString(",")
+      allXprs.map(s=>s._2 +" AS "+s._1).mkString(",")
       
   def generateWhere(op:AlgebraOp,vars:Map[String,Xpr]):Unit=generateWhere(op,vars,true)
   def generateWhere(op:AlgebraOp,vars:Map[String,Xpr],joinConditions:Boolean):Unit=op match{
-    case root:RootOp=>generateWhere(root.subOp,Map())
+    case root:RootOp=>generateWhere(root.subOp,vars)
     case group:GroupOp=>generateWhere(group.subOp,Map())
     case join:InnerJoinOp=>
       val joinXpr = get(join).mkString(",") 
@@ -45,9 +54,10 @@ class EsperQuery (projectionVars:Map[String,String]) extends SqlQuery(projection
 	  generateWhere(join.left,vars)
 	  generateWhere(join.right,vars)
     case sel:SelectionOp=>
+      println("generate select "+sel+":"+vars)
       where++=conditions(sel,vars)
       generateWhere(sel.subOp,vars)
-    case proj:ProjectionOp=>generateWhere(proj.subOp,proj.expressions)
+    case proj:ProjectionOp=>generateWhere(proj.subOp,vars)//proj.expressions)
     case win:WindowOp=>      
       //where+=getAlias(win.id)+ window(win)
     case rel:RelationOp=>      
@@ -58,7 +68,9 @@ class EsperQuery (projectionVars:Map[String,String]) extends SqlQuery(projection
     case union:MultiUnionOp=>
       val un=union.children.values.map{opi=>
         val q=new EsperQuery(projectionVars)
-        q.build(new RootOp("",opi))                
+        q.load(new RootOp("",opi))
+        //q.build(new RootOp("",opi))   
+        q
       }
       unions++=un
   }
@@ -99,49 +111,81 @@ class EsperQuery (projectionVars:Map[String,String]) extends SqlQuery(projection
       generateSelectVars(root.subOp)
     case proj:ProjectionOp=>
       val isroot=selectXprs.isEmpty
-      if (isroot){
+      if (isroot)
         distinct=proj.distinct
-      }
       proj.expressions.foreach{e=>
         val xpr=if (e._2==UnassignedVarXpr) null
-          else e._2 
-        if (isroot) {
-          println("new proj: "+xpr)
-          xpr match{
-            case rep:ReplaceXpr=>rep.varNames.foreach(v=>selectXprs.put(v,VarXpr(v)))
-            case x:Xpr=>selectXprs.put(e._1,xpr)
-          }
-           
+          else e._2
+        if (isroot && xpr==null) {
+          selectXprs.put(e._1,UnassignedVarXpr)
         }
-        else if (selectXprs.contains(e._1)) selectXprs.put(e._1,repExpr(e._2,proj.subOp))
+        /*else 
+        if (isroot && xpr!=null) {
+          println("new proj: "+xpr)
+          xpr match {
+            case rep:ReplaceXpr=>rep.varNames.foreach(v=>selectXprs.put(e._1,repExpr(VarXpr(v),proj)))
+            case x:Xpr=>selectXprs.put(e._1,xpr)
+          }           
+        }*/
+        else if (selectXprs.contains(e._1)) {
+          xpr match {
+            case rep:ReplaceXpr=>
+              rep.varNames.foreach(v=>selectXprs.put(e._1+"_"+v,repExpr(VarXpr(v),proj)))
+            case x:Xpr=>selectXprs.put(e._1,xpr)  
+          }
+          //selectXprs.put(e._1,repExpr(e._2,proj.subOp)) 
+        }
+        xpr match {
+            case rep:ReplaceXpr=>
+              rep.varNames.foreach(v=>allXprs.put(e._1+"_"+v,repExpr(VarXpr(v),proj)))
+            case v:VarXpr=>allXprs.put(e._1,v)  
+            case null=>
+            case _=>  
+		}
       }
       generateSelectVars(proj.subOp)
     case group:GroupOp=>
       group.aggs.foreach{agg=>
-        if (selectXprs.contains(agg._1)) selectXprs.put(agg._1,repExpr(agg._2,group))
+        //if (selectXprs.contains(agg._1)) selectXprs.put(agg._1,repExpr(agg._2,group))
+        allXprs.put(agg._1,repExpr(agg._2,group))
       }
       generateSelectVars(group.subOp)
     case join:JoinOp=>
       generateSelectVars(join.left)
-      generateSelectVars(join.right)   
+      generateSelectVars(join.right)
+    case selec:SelectionOp=>
+      generateSelectVars(selec.subOp)
     case _=>
   }
   override def getProjection:Map[String,String]={
     projectionVars.map(p=>p._1->null)
   }
+  
+  //tests for static triples: remove 
+  def fakeQuery(q:String)=
+    "SELECT 'pelsius' AS uom,temperature AS value,stationId AS stationId " +
+    "FROM method:SparqlGet.getData('"+q+"') AS sp, wunderground.win:time(10 sec) " +
+    "WHERE stationId=sp.p1"
+  
   override def build(op:AlgebraOp):String={
 	if (op == null)	return "";
 	else op match{
 	  case root:RootOp=>
+	      //val q="PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#> " +
+    	  // "SELECT ?lat ?lon WHERE { ?s wgs84:lat ?lat." +
+    	  // " ?s wgs84:lon ?lon. }"
+	    //return fakeQuery(q)
 	    if (root.subOp.isInstanceOf[MultiUnionOp]){
 	      generateUnion(root.subOp)
-	      return unions.mkString(" UNION ")
+	      return unions.map(q=>q.serializeQuery).mkString(" UNION ")
 	    }
 	    else {
 	    generateSelectVars(op)
 	    generateFrom(op)
-	    generateWhere(op,Map())
+	    //generateWhere(op,Map())
+	    generateWhere(op,allXprs.toMap)
 	    val wherestr=if (where.isEmpty) "" else " WHERE "+where.mkString(" AND ")
+	    //return fakeQuery(q)
 	    return serializeSelect+" FROM "+from.mkString(",")+wherestr//+ build(root.subOp)+";"
 	    }
 	  //case union:OpUnion=>return build(union.left)+" UNION  "+build(union.getRight)			
@@ -184,5 +228,39 @@ class EsperQuery (projectionVars:Map[String,String]) extends SqlQuery(projection
     val from=interval(spec.from,spec.fromUnit)
     ".win:time("+from+")"      
   }
+  
 }
 
+case class TripleData(@BeanProperty p1:String,@BeanProperty p2:String,@BeanProperty p3:String,
+    @BeanProperty p4:String,@BeanProperty p5:String,@BeanProperty p6:String)
+
+object SparqlGet {
+
+  def getvar(sol:QuerySolution,vari:String)=
+    if (vari==null) null
+    else sol.getLiteral(vari).getString
+
+  def getData(query:String):Array[TripleData] ={
+    println("best query: "+query)
+  
+    val model = ModelFactory.createDefaultModel
+    val arp:RDFReader= model.getReader(RDFFormat.TTL)
+	arp.read(model,getClass.getClassLoader.getResourceAsStream("sensordata.ttl"),"")    	   
+    val qexec = QueryExecutionFactory.create(query, model)
+    val res=qexec.execSelect
+    val tt:Seq[String]=(1 to 10).map(_=>null)
+    val vars:Seq[String]=res.getResultVars.toSeq++tt
+    
+    res.map{sol=>      
+      TripleData(getvar(sol,vars(0)),
+          getvar(sol,vars(1)),
+          getvar(sol,vars(2)),
+          getvar(sol,vars(3)),
+          getvar(sol,vars(4)),
+          getvar(sol,vars(5)))
+          
+    }.toArray
+    //Array(TripleData("ISANGALL2","rata","topo"),
+      //  TripleData("gata","tapa","topo"))
+  }
+}

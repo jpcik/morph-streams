@@ -4,6 +4,7 @@
     xsi:schemaLocation="
 http://www.espertech.com/schema/esper
 http://www.espertech.com/schema/esper/esper-configuration-2.0.xsd">
+<auto-import import-name="es.upm.fi.oeg.morph.stream.esper.SparqlGet"/>
 <event-type name="wunderground">
   <java-util-map>
     <map-property name="stationId" class="string"/>
@@ -14,6 +15,12 @@ http://www.espertech.com/schema/esper/esper-configuration-2.0.xsd">
     <map-property name="windDirection" class="double"/>    
     <map-property name="windSpeed" class="double"/>    
     <map-property name="airPressure" class="double"/>    
+  </java-util-map>
+</event-type>
+<event-type name="polimi">
+  <java-util-map>
+    <map-property name="individualId" class="long"/>
+    <map-property name="roomId" class="long"/>
   </java-util-map>
 </event-type>
 </esper-configuration>	

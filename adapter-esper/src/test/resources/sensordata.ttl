@@ -1,0 +1,26 @@
+@prefix rr: <http://www.w3.org/ns/r2rml#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix ssn: <http://purl.oclc.org/NET/ssnx/ssn#> . 
+@prefix dul: <http://www.loa-cnr.it/ontologies/DUL.owl#> .
+@prefix time: <http://www.w3.org/2006/time#> .
+@prefix morph: <http://es.upm.fi.dia.oeg/morph#> .
+@prefix om-owl: <http://knoesis.wright.edu/ssw/ont/sensor-observation.owl#> .
+@prefix weather: <http://knoesis.wright.edu/ssw/ont/weather.owl#> .
+@prefix srbench: <http://cwi.nl/SRBench/> .
+@prefix wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+@prefix : <http://es.upm.fi.dia.oeg/sensordata#> . 
+
+:sensor1 wgs84:lon 34.456 ;
+         wgs84:lat 98.345 ;
+         om-owl:id "ISANGALL2".
+
+
+:sensor2 wgs84:lon 24.456 ;
+         wgs84:lat 88.345 ;
+         om-owl:id "ERDA2".
+
+:sensor3 wgs84:lon 33.456 ;
+         wgs84:lat 90.345 ;
+         om-owl:id "BALBO2".
+         
