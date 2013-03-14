@@ -1,6 +1,7 @@
 package es.upm.fi.oeg.morph.stream.algebra.xpr
 import es.upm.fi.oeg.morph.r2rml.R2rmlUtils
 import es.upm.fi.oeg.siq.tools.URLTools
+import org.apache.commons.lang.NotImplementedException
 
 trait Xpr {
   def copy:Xpr 
@@ -67,10 +68,13 @@ class ReplaceXpr(val template:String,val vars:Seq[FunctionXpr])
 }
 
 class PercentEncodeXpr(val vari:VarXpr) extends FunctionXpr("pencode",Seq(vari)){
-  override def evaluate(values:Map[String,Any])=
-    URLTools.encode(values(vari.varName).toString)  
+  override def evaluate(values:Map[String,Any])={
+    println("getting variable "+vari.varName)
+    URLTools.encode(values(vari.varName).toString) 
+  }
 }
 
+class ConstantXpr(par:String) extends OperationXpr("constant",ValueXpr(par))
 
 case class OperationXpr(op:String,param:Xpr) extends Xpr{
   override def toString=
@@ -85,6 +89,9 @@ case class OperationXpr(op:String,param:Xpr) extends Xpr{
 	
   override def varNames=param.varNames
   override def copy=new OperationXpr(op, param.copy)
+  
+  def evaluate=if (op.equals("constant")) param.toString
+    else throw new NotImplementedException("evaluation of operation not impl. "+op) 
 }
 
 

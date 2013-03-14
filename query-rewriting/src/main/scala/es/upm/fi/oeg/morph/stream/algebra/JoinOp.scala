@@ -11,8 +11,7 @@ abstract class JoinOp(opname:String,l:AlgebraOp,r:AlgebraOp) extends BinaryOp(nu
      val keys=left.vars.keySet.filter(_!=null).toList
      keys.map{ key=>				
 	   if (right!=null && right.vars!=null && 
-	       right.vars.containsKey(key) 
-	       )
+	       right.vars.containsKey(key)  )
 		 new BinaryXpr("=",left.vars(key),right.vars(key))					
 	   else null
 	 }.filter(_!=null)

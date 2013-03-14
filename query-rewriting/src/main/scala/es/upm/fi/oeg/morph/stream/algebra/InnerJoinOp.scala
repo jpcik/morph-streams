@@ -12,8 +12,21 @@ class InnerJoinOp (left:AlgebraOp,right:AlgebraOp)
 	  conditions.filter(_.isInstanceOf[BinaryXpr]).forall(bi=>
 		bi.op.equals("=") && bi.left.isEqual(bi.right))		
   }
-  
-  
+      
+  def isJoinOnPk:Boolean={
+    (left,right) match {
+      case (lProj:ProjectionOp,rProj:ProjectionOp)=>
+        val varMaps=lProj.getVarMappings++rProj.getVarMappings
+        val pks=lProj.getRelation.pk ++ rProj.getRelation.pk
+        val condVars=this.conditions.map{cond=>
+          cond.varNames.map(v=>varMaps(v)).flatten
+        }.flatten.toSet
+        println("condition vars "+condVars+ "--"+pks+"--"+(pks==condVars))
+        pks==condVars
+        //true
+      case _ => false
+    }
+  }
   
   def isCompatible=(left,right) match{
     case (p1:ProjectionOp,p2:ProjectionOp)=>

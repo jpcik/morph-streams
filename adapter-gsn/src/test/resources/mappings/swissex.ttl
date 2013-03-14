@@ -12,6 +12,7 @@
 @prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix cf-feature: <http://purl.oclc.org/NET/ssnx/cf/cf-feature#> .
 @prefix cf-property: <http://purl.oclc.org/NET/ssnx/cf/cf-property#> .
+@prefix morph: <http://oeg-upm.net/ns/morph#> .
 @prefix : <http://es.upm.fi.dia.oeg/R2RMapping#> .
 
 :device a rr:TriplesMap;
@@ -22,7 +23,7 @@
   rr:predicateObjectMap [rr:predicate ssn:featureOfInterest;rr:objectMap [rr:constant cf-feature:humidity]]
 .
 
-:wan4bTable rr:tableName "wannengrat_wan4b".
+:wan4bTable rr:tableName "wannengrat_wan4b"; morph:pk "timed".
 
 :wan4bHumidityValue a rr:TriplesMap;
   rr:logicalTable :wan4bTable;
@@ -60,7 +61,7 @@
     		             rr:objectMap	 [ rr:parentTriplesMap :wan4bHumidityResultTime; rr:joinCondition "" ]]
  .
  
-:wan7Table rr:tableName "wannengrat_wan7".
+:wan7Table rr:tableName "wannengrat_wan7"; morph:pk "timed".
 
 :wan7HumidityValue a rr:TriplesMap;
   rr:logicalTable :wan7Table;

@@ -81,4 +81,18 @@ class MultiUnionOp(val id:String,childrenOps:Map[String,AlgebraOp])
 		throw new NotImplementedException("Merge implementation missing: "+op.toString());
 		
   }
+  
+  def simplify=
+    if (children.isEmpty) null
+    else if (children.size==1) children.head._2
+	else this
+	
+}
+
+object MultiUnionOp{
+  def apply(id:String,childrenOps:Map[String,AlgebraOp])={
+    val validChildren=childrenOps.filter(c=>c._2!=null)
+    if (validChildren.size>0) new MultiUnionOp(id,childrenOps)
+    else null
+  }
 }

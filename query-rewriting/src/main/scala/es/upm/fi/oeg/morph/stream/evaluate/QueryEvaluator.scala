@@ -31,7 +31,7 @@ trait StreamEvaluatorAdapter {
 case class Data(cosas:String)
 
 trait StreamReceiver {
-  def receiveData(s:String):Unit
+  def receiveData(s:Sparql):Unit
 }
 
 

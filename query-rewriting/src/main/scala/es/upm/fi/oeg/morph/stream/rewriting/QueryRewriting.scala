@@ -67,11 +67,21 @@ import es.upm.fi.oeg.sparqlstream.SparqlStream
 import es.upm.fi.oeg.morph.r2rml.IRIType
 import es.upm.fi.oeg.morph.r2rml.LiteralType
 import es.upm.fi.oeg.morph.r2rml.RefObjectMap
+import com.hp.hpl.jena.sparql.algebra.op.OpGraph
+import es.upm.fi.oeg.morph.stream.algebra.PatternOp
+import es.upm.fi.oeg.morph.stream.algebra.xpr.ConstantXpr
 
 class QueryRewriting(props: Properties,mapping:String) extends Logging {
   logger.debug("mapping is: "+mapping)
   private val reader = R2rmlReader(mapping)
-
+  private var aliasCount=0
+  
+  private def getAlias={
+    val value=aliasCount
+    aliasCount+=1
+    value
+  }
+  
   //private LinksetProcessor linker;
   //private boolean metadataMappings = false;
   private var bindings: ProjectionOp = null
@@ -340,6 +350,10 @@ class QueryRewriting(props: Properties,mapping:String) extends Logging {
       val selection = createSelection(t,poMap.objectMap,t.getObject.toString,unary)
       createProjection(t,tMap,poMap.objectMap,poMap, stream, selection)
     } 
+    else if (t.getSubject.isURI){
+      val selection = createSelection(t,tMap.subjectMap,t.getSubject.toString,unary)
+      createProjection(t,tMap,poMap.objectMap,poMap, stream, selection)
+    }
     else createProjection(t, tMap, poMap.objectMap, poMap, stream,unary)  
     
   }
@@ -526,7 +540,19 @@ class QueryRewriting(props: Properties,mapping:String) extends Logging {
             navigate(group.getSubOp,query))
         return g
       }
-      
+      else if (op.isInstanceOf[OpGraph]){
+        val graph=op.asInstanceOf[OpGraph]
+        val bgp=graph.getSubOp().asInstanceOf[OpBGP]
+        val vars=
+        bgp.getPattern().map{tr=>
+          val obj=tr.getObject match{case v:Var=>v.getVarName}
+          val sub=tr.getSubject match{case v:Var=>v.getVarName}
+          Array(obj,sub)
+        }.flatten.toSet
+        val varMap=vars.map(t=>t->VarXpr(t)).toMap
+        val pattern=new PatternOp("sparql",graph.getName,bgp.getPattern.toString)
+        return new ProjectionOp("dict",varMap,pattern,false)
+      }
       else {
         //Binding b = BindingFactory.create();
         //b.add(var, node)
@@ -578,7 +604,9 @@ class QueryRewriting(props: Properties,mapping:String) extends Logging {
         }*/
         u
       }
-    new MultiUnionOp(union.id,union.children++List(right.id+right.asInstanceOf[ProjectionOp].getRelation.extentName->right).toMap)
+    val rightTerm=if (right==null) Map()
+      else List(right.id+right.asInstanceOf[ProjectionOp].getRelation.extentName->right).toMap
+    new MultiUnionOp(union.id,union.children++rightTerm).simplify
 /*
       val proj = right.asInstanceOf[OpProjection];
       if (proj.getId() == null)
@@ -621,25 +649,32 @@ class QueryRewriting(props: Properties,mapping:String) extends Logging {
   
   private def createSelection(t: Triple, nMap: TermMap, value: String,unary:UnaryOp):UnaryOp={
     logger.debug("Create selection value: "+value )
-    val vari = if (nMap.column == null)
-      "localVar" + t.getPredicate.getLocalName + t.getSubject.getName
+    val vari = if (nMap.column == null)      
+      "localVar" + t.getPredicate.getLocalName +value//+ t.getSubject.getName
       else nMap.column
     if (nMap.column!=null){
-      return createSelection("=",vari,value,unary)
+      createSelection("=",vari,value,unary)
     }
-    if (nMap.constant!=null && 
+    else if (nMap.constant!=null && 
         nMap.constant.toString.equals(value))
       //createSelection("=",vari,value,unary)
       unary
+    else if (nMap.template!=null){
+       val columns=R2rmlUtils.extractTemplateVals(nMap.template)
+       val rep=new ReplaceXpr(nMap.template,columns.map(VarXpr(_)))
+       val setXpr:Set[Xpr]=Set(BinaryXpr("=",rep,new ConstantXpr(value)))
+       new SelectionOp("selct",unary,setXpr)
+    } 
     else null
   }
 
   private def projectionXprs(tripleNode:Node,roMap:RefObjectMap,sMap:SubjectMap):(String,Xpr)={
     tripleNode match{
       case objVar:Var=>        
-        if (roMap.joinCondition!=null)
-          (objVar.getName,new VarXpr(roMap.joinCondition.child))
-        else projectionXprs(objVar,sMap)
+        //if (roMap.joinCondition!=null)
+          //(objVar.getName,new VarXpr(roMap.joinCondition.child))
+        //else 
+        projectionXprs(objVar,sMap)
           //(objVar.getName,new VarXpr("identity"))
         
       case _=> throw new Exception("Unsupported triple pattern: "+tripleNode)
@@ -735,14 +770,15 @@ class QueryRewriting(props: Properties,mapping:String) extends Logging {
      
     val uri=new URI(tMap.uri).getFragment
     
-    logger.debug("Creating relation: " + nMap +" table: " + tMap.logicalTable.sqlQuery);
+    logger.debug("Creating relation: " + nMap +" table: " + tMap.logicalTable)
+    logger.debug("pks: "+tMap.logicalTable.pk)
     if (nMap!=null && nMap.constant != null) {
       tableid = nMap.constant.toString
       extentName = tMap.logicalTable.tableName
     } 
     else if (tMap.logicalTable.tableName != null) {
       tableid = tMap.logicalTable.tableName
-      extentName = tableid;
+      extentName = tableid
     } 
     else if (tMap.logicalTable.sqlQuery != null) {
       tableid = SQLParser.tableAlias(tMap.logicalTable.sqlQuery)      
@@ -755,26 +791,17 @@ class QueryRewriting(props: Properties,mapping:String) extends Logging {
         val sw = stream.window.asInstanceOf[ElementTimeWindow]
         val wn=
           if (sw != null) {
-            //win.setFromOffset(sw.getFrom.getOffset)
-            //win.setFromUnit(sw.getFrom.getUnit)
             val (to,toU):(Long,TimeUnit)= if (sw.to != null) {
               (sw.to.time,sw.to.getUnit)              
             }else (null,null)            
-            /*val (sl,slu):(Long,TimeUnit)= if (sw.getSlide != null) {
-              (sw.getSlide.time,sw.getSlide.unit)
-            } else ( null,null)*/
-            /*val win = new WindowSpec("",sw.getFrom.offset,TimeUnit.toTimeUnit(sw.getFrom.unit),
-                to,TimeUnit.toTimeUnit(toU),sl,TimeUnit.toTimeUnit(slu))*/
             val win = new WindowSpec("",sw.from.time,sw.from.unit,
-                0,null,0,null)
-            
-            win
-           
+                0,null,0,null)            
+            win           
           } else null
           
-          new WindowOp(tableid+uri, extentName,wn)
+          new WindowOp(tableid+getAlias+uri, extentName,tMap.logicalTable.pk,wn)
         } else {
-          new RelationOp(tableid+"genId",extentName)
+          new RelationOp(tableid+"genId",extentName,tMap.logicalTable.pk)
         }
       
       logger.debug("Created relation: " + relation.extentName)
