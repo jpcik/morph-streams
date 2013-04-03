@@ -6,14 +6,15 @@ organization := "es.upm.fi.oeg.morph.streams"
 
 version := "1.0.1"
 
-scalaVersion := "2.9.1"
+scalaVersion := "2.10.1"
 
 crossPaths := false
 
 libraryDependencies ++= Seq(
   "net.databinder.dispatch" %% "dispatch-core" % "0.9.5",
-  "org.scalatest" % "scalatest_2.9.1" % "1.7.2" % "test",
-  "org.scalacheck" % "scalacheck_2.9.1" % "1.9" % "test",
+  "com.typesafe.akka" %% "akka-actor" % "2.1.2",
+  "org.scalatest" %% "scalatest" % "1.9.1" % "test",
+  "org.scalacheck" %% "scalacheck" % "1.10.0" % "test",
   "log4j" % "log4j" % "1.2.17",
   "org.jibx" % "jibx-bind" % "1.2.2",
   "commons-collections" % "commons-collections" % "3.2.1",  

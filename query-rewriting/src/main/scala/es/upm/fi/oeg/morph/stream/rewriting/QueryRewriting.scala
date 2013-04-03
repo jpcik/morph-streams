@@ -1,3 +1,14 @@
+/**
+   Copyright 2010-2013 Ontology Engineering Group, Universidad Politécnica de Madrid, Spain
+
+   Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in 
+   compliance with the License. You may obtain a copy of the License at
+       http://www.apache.org/licenses/LICENSE-2.0
+   Unless required by applicable law or agreed to in writing, software distributed under the License is 
+   distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+   See the License for the specific language governing permissions and limitations under the License.
+**/
+
 package es.upm.fi.oeg.morph.stream.rewriting
 
 import java.io.StringReader
@@ -7,7 +18,6 @@ import collection.JavaConversions._
 import scala.collection.JavaConversions.asScalaBuffer
 import scala.collection.JavaConversions.asScalaSet
 import org.apache.commons.lang.NotImplementedException
-import com.google.common.collect.HashMultimap
 import com.hp.hpl.jena.graph.Triple
 import com.hp.hpl.jena.query.QueryExecutionFactory
 import com.hp.hpl.jena.query.QuerySolution
@@ -19,7 +29,6 @@ import com.hp.hpl.jena.sparql.algebra.Algebra
 import com.hp.hpl.jena.sparql.algebra.Op
 import com.hp.hpl.jena.sparql.algebra.OpAsQuery
 import com.hp.hpl.jena.sparql.expr.ExprFunction2
-import com.weiglewilczek.slf4s.Logging
 import es.upm.fi.oeg.morph.r2rml.PredicateObjectMap
 import es.upm.fi.oeg.morph.r2rml.R2rmlReader
 import es.upm.fi.oeg.morph.r2rml.TermMap
@@ -34,7 +43,6 @@ import es.upm.fi.oeg.morph.stream.query.SqlQuery
 import es.upm.fi.oeg.morph.stream.algebra.InnerJoinOp
 import es.upm.fi.oeg.morph.stream.algebra.MultiUnionOp
 import es.upm.fi.oeg.morph.stream.algebra.ProjectionOp
-import com.google.common.collect.Maps
 import com.hp.hpl.jena.sparql.algebra.op.OpExtend
 import com.hp.hpl.jena.sparql.algebra.op.OpLeftJoin
 import com.hp.hpl.jena.sparql.algebra.op.OpGroup
@@ -52,7 +60,6 @@ import es.upm.fi.oeg.morph.stream.algebra.WindowOp
 import es.upm.fi.oeg.morph.stream.query.SourceQuery
 import es.upm.fi.oeg.morph.r2rml.SubjectMap
 import es.upm.fi.oeg.morph.r2rml.RefObjectMap
-import com.hp.hpl.jena.graph.query.Expression.Variable
 import es.upm.fi.oeg.morph.r2rml.ObjectMap
 import com.hp.hpl.jena.sparql.core.Var
 import com.hp.hpl.jena.graph.Node
@@ -70,8 +77,11 @@ import es.upm.fi.oeg.morph.r2rml.RefObjectMap
 import com.hp.hpl.jena.sparql.algebra.op.OpGraph
 import es.upm.fi.oeg.morph.stream.algebra.PatternOp
 import es.upm.fi.oeg.morph.stream.algebra.xpr.ConstantXpr
+import org.slf4j.LoggerFactory
 
-class QueryRewriting(props: Properties,mapping:String) extends Logging {
+class QueryRewriting(props: Properties,mapping:String) {
+  private val logger= LoggerFactory.getLogger(this.getClass)
+
   logger.debug("mapping is: "+mapping)
   private val reader = R2rmlReader(mapping)
   private var aliasCount=0
@@ -791,12 +801,10 @@ class QueryRewriting(props: Properties,mapping:String) extends Logging {
         val sw = stream.window.asInstanceOf[ElementTimeWindow]
         val wn=
           if (sw != null) {
-            val (to,toU):(Long,TimeUnit)= if (sw.to != null) {
-              (sw.to.time,sw.to.getUnit)              
-            }else (null,null)            
-            val win = new WindowSpec("",sw.from.time,sw.from.unit,
-                0,null,0,null)            
-            win           
+            /*val (to,toU):(Long,TimeUnit)= 
+              if (sw.to != null)  (sw.to.time,sw.to.getUnit)              
+              else (null,null)  */          
+            new WindowSpec("",sw.from.time,sw.from.unit,0,null,0,null)                                   
           } else null
           
           new WindowOp(tableid+getAlias+uri, extentName,tMap.logicalTable.pk,wn)

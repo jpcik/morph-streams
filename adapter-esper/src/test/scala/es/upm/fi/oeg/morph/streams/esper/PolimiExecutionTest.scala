@@ -10,10 +10,8 @@ import org.scalatest.junit.ShouldMatchersForJUnit
 import org.scalatest.prop.Checkers
 import org.slf4j.LoggerFactory
 
-import com.weiglewilczek.slf4s.Logging
-
 import akka.actor.actorRef2Scala
-import akka.util.duration.intToDurationInt
+import concurrent.duration._
 import es.upm.fi.oeg.morph.common.ParameterUtils.loadQuery
 import es.upm.fi.oeg.morph.common.ParameterUtils
 import es.upm.fi.oeg.morph.esper.EsperProxy
@@ -22,8 +20,9 @@ import es.upm.fi.oeg.morph.esper.Event
 import es.upm.fi.oeg.morph.stream.evaluate.QueryEvaluator
 
 
-class PolimiExecutionTest extends JUnitSuite with ShouldMatchersForJUnit with Checkers with Logging {
-  
+class PolimiExecutionTest extends JUnitSuite with ShouldMatchersForJUnit with Checkers  {
+  private val logger= LoggerFactory.getLogger(this.getClass)
+
   lazy val esper = new EsperServer
   val props = ParameterUtils.load(getClass.getClassLoader.getResourceAsStream("config/siq.properties"))
   val eval = new QueryEvaluator(props,esper.system)
@@ -71,6 +70,7 @@ class PolimiStreamer(extent:String,data:List[Map[String,Int]],dataTimestamps:Lis
   def schedule{
     val eng=proxy.engine
     var i = 0
+    import proxy.system.dispatcher
     proxy.system.scheduler.scheduleOnce(1 seconds){
       dataTimestamps.foreach{delay =>
         	println("sleeping for "+delay)

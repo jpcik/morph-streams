@@ -2,15 +2,14 @@ package es.upm.fi.oeg.siq.wrapper
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
-
 import scala.Array.canBuildFrom
-import scala.actors.Actor
-import scala.actors.TIMEOUT
 import scala.xml.Elem
-
 import es.emt.wsdl.ServiceGEOSoap12Bindings
 import gsn.beans.DataField
 import gsn.wrappers.AbstractWrapper
+import akka.actor.ReceiveTimeout
+import akka.actor.Actor
+import concurrent.duration._
 
 class PollWrapper extends AbstractWrapper {
   
@@ -46,7 +45,7 @@ class PollWrapper extends AbstractWrapper {
   override def run{
     systemids.foreach{systemid=>
       val sc=new EmtCaller(this,systemid)
-      sc.start
+      //sc.start
     }
     while (isActive){
       Thread.sleep(liveRate)
@@ -103,11 +102,13 @@ abstract class SystemCaller(who:PollWrapper,systemid:String) extends Actor{
     } catch {case e:Exception=>e.printStackTrace}
   }
   
-  def act(){
-    loop{      
-      reactWithin(who.rate){
-        case TIMEOUT=>callRest
-      }
-    }
+  context.setReceiveTimeout(who.rate millisecond) 
+  def receive={
+    //loop{      
+      //reactWithin(who.rate){
+        //case TIMEOUT=>callRest
+         case ReceiveTimeout=>callRest
+      //}
+    //}
   }
 }

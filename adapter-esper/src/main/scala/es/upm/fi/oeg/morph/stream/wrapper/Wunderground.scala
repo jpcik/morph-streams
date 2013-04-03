@@ -6,6 +6,7 @@ import com.sun.jersey.core.util.MultivaluedMapImpl
 import java.text.DateFormat
 import java.util.Locale
 import java.util.TimeZone
+import scala.language.postfixOps
 
 class Wunderground(id:String) {
   private val client = Client.create

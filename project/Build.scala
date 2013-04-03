@@ -8,7 +8,7 @@ object HelloBuild extends Build {
     unmanagedSourceDirectories in Test <<= (scalaSource in Test)(Seq(_))
   )
   val projSettings = Seq (
-    scalaVersion := "2.9.1",
+    scalaVersion := "2.10.1",
     crossPaths := false,
     scalacOptions += "-deprecation",
     parallelExecution in Test := false,

@@ -28,7 +28,7 @@
   rr:predicateObjectMap [ rr:predicate om-owl:result;
                           rr:objectMap [ rr:parentTriplesMap :tempObsResult; 
                                          rr:joinCondition [rr:parent "stationId";rr:child "stationId"] ]];
-  rr:predicateObjectMap [ rr:predicate om-owl:observedBy; rr:objectMap [ rr:template "http://meteo.us/sensor/id/{stationId}_temperature"] ];
+  rr:predicateObjectMap [ rr:predicate om-owl:observedBy; rr:objectMap [ rr:template "http://meteo.us/sensor/id/{stationId}_sens"] ];
   rr:predicateObjectMap [ rr:predicate om-owl:observedProperty; rr:objectMap [ rr:constant weather:AirTemperature] ];
 .   
  
@@ -48,7 +48,7 @@
   rr:predicateObjectMap [ rr:predicate om-owl:result;
                           rr:objectMap [ rr:parentTriplesMap :humObsResult; 
                                          rr:joinCondition [rr:parent "stationId";rr:child "stationId"] ]];
-  rr:predicateObjectMap [ rr:predicate om-owl:observedBy; rr:objectMap [ rr:template "http://meteo.us/sensor/id/{stationId}_humidity"] ];
+  rr:predicateObjectMap [ rr:predicate om-owl:observedBy; rr:objectMap [ rr:template "http://meteo.us/sensor/id/{stationId}_sens"] ];
   rr:predicateObjectMap [ rr:predicate om-owl:observedProperty; rr:objectMap [ rr:constant weather:RelativeHumidity] ];
 .   
  

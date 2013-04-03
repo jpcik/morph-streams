@@ -1,7 +1,6 @@
 package es.upm.fi.oeg.morph.stream.query
 import collection.JavaConversions._
 import org.apache.commons.lang.NotImplementedException
-import com.google.common.collect.Maps
 import scala.collection.mutable.HashMap
 import es.upm.fi.oeg.morph.stream.algebra.LeftOuterJoinOp
 import es.upm.fi.oeg.morph.stream.algebra.MultiUnionOp
@@ -30,12 +29,12 @@ import es.upm.fi.oeg.morph.stream.algebra.xpr.ConstantXpr
 
 class SqlQuery(val projectionVars:Map[String,String]) extends SourceQuery{
   protected var innerQuery:String=null
-  val projectList = new HashMap[String,String]();
-  val inner= new HashMap[String,Map[String,SqlQuery]]();
+  //val projectList = new HashMap[String,String]()
+  //val inner= new HashMap[String,Map[String,SqlQuery]]()
   private var aliasGen=0
   private val niceAlias=new collection.mutable.HashMap[String,String]
-   var varsX:Map[String,Xpr]=_
-  
+  private var varsX:Map[String,Xpr]=_
+  lazy val queryExpressions=varsX  
   
   protected def getAlias(name:String)={
     if (name==null) ""
@@ -184,9 +183,7 @@ class SqlQuery(val projectionVars:Map[String,String]) extends SourceQuery{
     case union:MultiUnionOp=>varXprs(union.children.last._2)
     case _=>Map[String,Xpr]()
   }
-  
-	
-  
+  	  
 	private def unAliasXpr(join:BinaryOp,xpr:BinaryXpr):String=
 	  unAliasXpr(join.left,xpr.left)+xpr.op+unAliasXpr(join.right,xpr.right)
 
@@ -343,7 +340,7 @@ class SqlQuery(val projectionVars:Map[String,String]) extends SourceQuery{
 	
 
 	
-	def getAugmentedProjectList():Map[String,String]={		
+	private def getAugmentedProjectList():Map[String,String]={		
 		/*projectList.values.foreach{att=>			
 			val map = inner(extractExtent(att))
 			map.values.foreach{q=>
@@ -351,7 +348,7 @@ class SqlQuery(val projectionVars:Map[String,String]) extends SourceQuery{
 				att.getInnerNames().add(at.getName.toLowerCase)
 			}
 		}*/
-		return projectList.toMap;		
+		return null;//projectList.toMap;		
 	}
 	
 	protected def trimExtent(field:String):String={

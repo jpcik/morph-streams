@@ -1,5 +1,4 @@
 package es.upm.fi.oeg.morph.stream.gsn
-import com.weiglewilczek.slf4s.Logging
 import org.scalatest.prop.Checkers
 import org.scalatest.junit.JUnitSuite
 import org.scalatest.junit.ShouldMatchersForJUnit
@@ -11,10 +10,13 @@ import org.junit.Before
 import org.junit.Test
 import es.upm.fi.oeg.morph.common.ParameterUtils._
 import es.upm.fi.oeg.morph.common.ParameterUtils
+import org.slf4j.LoggerFactory
 
 
 
-class SwissExQueryTest extends JUnitSuite with ShouldMatchersForJUnit with Checkers with Logging {
+class SwissExQueryTest extends JUnitSuite with ShouldMatchersForJUnit with Checkers {
+  private val logger= LoggerFactory.getLogger(this.getClass)
+
   PropertyConfigurator.configure(getClass.getClassLoader().getResource("config/log4j.properties"));
   private val df=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
   val mappingUri=new URI("mappings/swissex.ttl")

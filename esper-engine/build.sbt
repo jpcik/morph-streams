@@ -2,16 +2,17 @@ name := "esper-engine"
 
 organization := "es.upm.fi.oeg.morph.streams"
 
-version := "1.0.0"
+version := "1.0.1"
 
 libraryDependencies ++= Seq(
   "junit" % "junit" % "4.7",
+  "ch.qos.logback" % "logback-classic" % "1.0.9",  
   "com.espertech" % "esper" % "4.3.0",
-  "org.scalatest" % "scalatest_2.9.1" % "1.7.2" % "test",
-  "org.scalacheck" % "scalacheck_2.9.1" % "1.9" % "test",
-  "com.typesafe.akka" % "akka-actor" % "2.0.2",
-  "com.typesafe.akka" % "akka-remote" % "2.0.2",
-  "com.typesafe.akka" % "akka-kernel" % "2.0.2"
+  "org.scalatest" % "scalatest_2.10" % "1.9.1" % "test",
+  "org.scalacheck" % "scalacheck_2.10" % "1.10.0" % "test",
+  "com.typesafe.akka" %% "akka-actor" % "2.1.2",
+  "com.typesafe.akka" %% "akka-remote" % "2.1.2",
+  "com.typesafe.akka" %% "akka-kernel" % "2.1.2"
 )
 
 resolvers ++= Seq(

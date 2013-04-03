@@ -2,10 +2,12 @@ package es.upm.fi.oeg.morph.stream.rewriting
 import org.scalatest.prop.Checkers
 import org.scalatest.junit.ShouldMatchersForJUnit
 import org.scalatest.junit.JUnitSuite
-import com.weiglewilczek.slf4s.Logging
 import org.junit.Test
+import org.slf4j.LoggerFactory
 
-class SQLParserTest  extends JUnitSuite with ShouldMatchersForJUnit with Checkers with Logging {
+class SQLParserTest  extends JUnitSuite with ShouldMatchersForJUnit with Checkers {
+  private val logger= LoggerFactory.getLogger(this.getClass)
+
   @Test def parseProjections{
     val p=SQLParser.projections("SELECT s,p,o FROM datacell.srbin WHERE o=RainfallObservation")
     p.foreach(println)

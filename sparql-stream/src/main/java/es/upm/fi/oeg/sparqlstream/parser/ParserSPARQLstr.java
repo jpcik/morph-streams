@@ -8,14 +8,14 @@ import com.hp.hpl.jena.query.QueryException;
 import com.hp.hpl.jena.query.QueryParseException;
 import com.hp.hpl.jena.query.Syntax;
 import com.hp.hpl.jena.shared.JenaException;
-import com.hp.hpl.jena.sparql.lang.Parser;
+import com.hp.hpl.jena.sparql.lang.SPARQLParser;
 import com.hp.hpl.jena.sparql.lang.arq.ParseException;
 import com.hp.hpl.jena.sparql.lang.arq.TokenMgrError;
 
 import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.syntax.Template;
 
-public class ParserSPARQLstr extends Parser {
+public class ParserSPARQLstr extends SPARQLParser {
 
 
     private interface Action { void exec(SPARQLStrParser parser) throws Exception ; }

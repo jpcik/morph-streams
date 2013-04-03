@@ -5,52 +5,15 @@ import es.upm.fi.oeg.morph.stream.algebra.xpr.XprUtils
 
 class InnerJoinOp (left:AlgebraOp,right:AlgebraOp)   
   extends JoinOp("join",left,right) {
-  
-  def hasEqualConditions:Boolean={
-	if (conditions.isEmpty) return false
-	else
-	  conditions.filter(_.isInstanceOf[BinaryXpr]).forall(bi=>
-		bi.op.equals("=") && bi.left.isEqual(bi.right))		
-  }
-      
-  def isJoinOnPk:Boolean={
-    (left,right) match {
-      case (lProj:ProjectionOp,rProj:ProjectionOp)=>
-        val varMaps=lProj.getVarMappings++rProj.getVarMappings
-        val pks=lProj.getRelation.pk ++ rProj.getRelation.pk
-        val condVars=this.conditions.map{cond=>
-          cond.varNames.map(v=>varMaps(v)).flatten
-        }.flatten.toSet
-        println("condition vars "+condVars+ "--"+pks+"--"+(pks==condVars))
-        pks==condVars
-        //true
-      case _ => false
-    }
-  }
-  
-  def isCompatible=(left,right) match{
-    case (p1:ProjectionOp,p2:ProjectionOp)=>
-      val varnames=conditions.map(c=>c.varNames).flatten
-      logger.debug("compatible: "+varnames)
-      
-      varnames.forall{v=>println(p1.expressions(v));  
-        XprUtils.canbeEqual(p1.expressions(v),p2.expressions(v))}
-    case (_,_)=>true
-  }
-	
+    
+/*	
   def includes(join:InnerJoinOp):Boolean=(join.left,join.right) match {
     case (lp:ProjectionOp,rp:ProjectionOp)=>left.asInstanceOf[ProjectionOp].includes(lp) &&
       right.asInstanceOf[ProjectionOp].includes(rp)
     case _=>false
   }
-	/*
-  def merge(join:InnerJoinOp, xprs:Seq[Xpr])={
-		((OpProjection)this.getLeft()) .merge((OpProjection)join.getLeft(),xprs);
-		((OpProjection)this.getRight()).merge((OpProjection)join.getRight(),xprs);		
-	}
-	*/
-	def includesLeft(op:AlgebraOp):Boolean={		
-		return	op.isInstanceOf[ProjectionOp] &&
+  def includesLeft(op:AlgebraOp):Boolean={		
+	return	op.isInstanceOf[ProjectionOp] &&
 		this.left.isInstanceOf[ProjectionOp] &&
 		( this.left.asInstanceOf[ProjectionOp].includes(op.asInstanceOf[ProjectionOp]) ||
 		(	this.left.id.equals(op.asInstanceOf[ProjectionOp].id) 
@@ -62,28 +25,8 @@ class InnerJoinOp (left:AlgebraOp,right:AlgebraOp)
 		this.right.isInstanceOf[ProjectionOp] &&
 		(this.right.asInstanceOf[ProjectionOp]).includes(op.asInstanceOf[ProjectionOp]);
 	}	
-	/*
-	@Override
-	public OpJoin copyOp()
-	{
-		OpInterface leftCopy = null;
-		OpInterface rightCopy = null;
-		if (getLeft()!=null) 
-			leftCopy = getLeft();//.copyOp();
-		if (getRight()!=null)
-			rightCopy = getRight();//.copyOp();
-		OpJoin copy = new OpJoin(this.getId(),leftCopy,rightCopy);
-		copy.conditions = Lists.newArrayList();
-		copy.conditions.addAll(conditions);
-		return copy;
-	}
-	
-	public OpInterface build(OpUnion union)
-	{
-		OpJoin join = new OpJoin(this, union);
-		return join;
-	}
-	*/
+*/
+  /*
   def build(join:InnerJoinOp):AlgebraOp={
 	if (!this.left.isInstanceOf[ProjectionOp]){
 	  return new InnerJoinOp(left.build(join),right)
@@ -105,21 +48,16 @@ class InnerJoinOp (left:AlgebraOp,right:AlgebraOp)
 	}
 	else return this;
   }
+	*/
+  def build(proj:ProjectionOp):AlgebraOp={
+	if (this.left==null) new InnerJoinOp(proj,right)
+	else if (this.right==null) new InnerJoinOp(left,proj)
+	else new InnerJoinOp(this, proj)				
+  }
 	
-	def build(proj:ProjectionOp):AlgebraOp={
-		if (this.left==null)
-		  return new InnerJoinOp(proj,right)
-		else if (this.right==null)
-		  return new InnerJoinOp(left,proj)
-		else{
-		  val join = new InnerJoinOp(this, proj)			
-		  return join
-		}
-	}
-	
-	override def build(newOp:AlgebraOp):AlgebraOp =newOp match{
-	  case join:InnerJoinOp=>return build(join)															 
-	  case proj:ProjectionOp=>return build(proj)
+  override def build(newOp:AlgebraOp):AlgebraOp =newOp match{
+	  case join:InnerJoinOp=> build(join)															 
+	  case proj:ProjectionOp=> build(proj)
 	  case sel:SelectionOp=>
 		if (sel.id.equals(this.left.id)){
 		  val inter = this.left.build(newOp)
@@ -131,23 +69,15 @@ class InnerJoinOp (left:AlgebraOp,right:AlgebraOp)
 		  new InnerJoinOp(left,inter)
 		  //this.setRight(inter)
 		}
-		return this
+		else this
 			
 	  //case union:OpUnion=>return build(union)
 	  case union:MultiUnionOp=>
-	    val join = new InnerJoinOp(this,union)
-		return join		
+	    new InnerJoinOp(this,union)
+			
 	  case _=>throw new NotImplementedException("not implemented for "+newOp)
 			
 	}
-
-	/*
-	private OpJoin merge (OpJoin j,OpInterface j2)
-	{
-		//TODO fix silly merge strategy
-		j.setLeft(j2);
-		return j;
-	}*/
 	
 	/*
 	@Override

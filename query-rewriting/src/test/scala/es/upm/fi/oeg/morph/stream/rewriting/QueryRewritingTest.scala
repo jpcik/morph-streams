@@ -6,16 +6,17 @@ import org.scalatest.junit.JUnitSuite
 import org.scalatest.junit.ShouldMatchersForJUnit
 import org.scalatest.prop.Checkers
 import com.hp.hpl.jena.sparql.algebra.Algebra
-import com.weiglewilczek.slf4s.Logging
 import es.upm.fi.oeg.morph.common.ParameterUtils._
 import es.upm.fi.oeg.sparqlstream.StreamQueryFactory
-import org.apache.log4j.PropertyConfigurator
 import es.upm.fi.oeg.morph.common.ParameterUtils
 import org.junit.Ignore
+import org.slf4j.LoggerFactory
 
 @Ignore
-class QueryRewritingTest extends JUnitSuite with ShouldMatchersForJUnit with Checkers with Logging {
-  PropertyConfigurator.configure(classOf[QueryRewritingTest].getClassLoader().getResource("config/log4j.properties"));
+class QueryRewritingTest extends JUnitSuite with ShouldMatchersForJUnit with Checkers {
+  private val logger= LoggerFactory.getLogger(this.getClass)
+
+  //PropertyConfigurator.configure(classOf[QueryRewritingTest].getClassLoader().getResource("config/log4j.properties"));
   val queryCCOComplexTide = loadQuery("queries/common/cco_queryPressure.sparql")
   val testQuery = loadQuery("queries/testQuery.sparql")
   val testQuerySimple = loadQuery("queries/testQuerySimple.sparql")

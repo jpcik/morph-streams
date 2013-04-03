@@ -7,7 +7,6 @@ import org.junit.Test
 import org.scalatest.junit.JUnitSuite
 import org.scalatest.junit.ShouldMatchersForJUnit
 import org.scalatest.prop.Checkers
-import com.weiglewilczek.slf4s.Logging
 import es.upm.fi.oeg.morph.common.ParameterUtils.loadQuery
 import es.upm.fi.oeg.morph.common.ParameterUtils
 import es.upm.fi.oeg.morph.esper.EsperProxy
@@ -16,9 +15,10 @@ import es.upm.fi.oeg.morph.stream.esper.DemoStreamer
 import es.upm.fi.oeg.morph.stream.evaluate.QueryEvaluator
 import es.upm.fi.oeg.morph.stream.evaluate.EvaluatorUtils
 import org.junit.Ignore
+import org.slf4j.LoggerFactory
 
-class QueryExecutionTest extends JUnitSuite with ShouldMatchersForJUnit with Checkers with Logging {
-  
+class QueryExecutionTest extends JUnitSuite with ShouldMatchersForJUnit with Checkers {
+  private val logger= LoggerFactory.getLogger(this.getClass)
   lazy val esper=new EsperServer
   val props = ParameterUtils.load(getClass.getClassLoader.getResourceAsStream("config/siq.properties"))
   val eval = new QueryEvaluator(props,esper.system)
@@ -37,7 +37,7 @@ class QueryExecutionTest extends JUnitSuite with ShouldMatchersForJUnit with Che
 
   @Test def filterUriDiff{    
     val qid=eval.registerQuery(srbench("filter-uri-diff.sparql"),srbenchR2rml)        
-    Thread.sleep(8000)
+    Thread.sleep(4000)
     val bindings=eval.pull(qid)   
   }
 
@@ -65,32 +65,44 @@ class QueryExecutionTest extends JUnitSuite with ShouldMatchersForJUnit with Che
     val bindings=eval.pull(qid)   
   }    
 
+  @Test def optionalPatternMatching{ 	 
+    val qid=eval.registerQuery(srbench("optional-pattern-matching.sparql"),srbenchR2rml)        
+    Thread.sleep(7000)
+    val bindings=eval.pull(qid)   
+  }    
+
+  @Test def optionalJoinObservations{ 	 
+    val qid=eval.registerQuery(srbench("optional-join-observations.sparql"),srbenchR2rml)        
+    Thread.sleep(7000)
+    val bindings=eval.pull(qid)   
+  }    
+
   @Test def filterUriValue{ 	 
     val qid=eval.registerQuery(srbench("filter-uri-value.sparql"),srbenchR2rml)        
     Thread.sleep(4000)
     val bindings=eval.pull(qid)
-    EvaluatorUtils.sparqlString(bindings)
+    EvaluatorUtils.serialize(bindings)
   }    
 
   @Test def variablePredicate{ 	 
     val qid=eval.registerQuery(srbench("variable-predicate.sparql"),srbenchR2rml)        
     Thread.sleep(4000)
     val bindings=eval.pull(qid)
-    EvaluatorUtils.sparqlString(bindings)
+    EvaluatorUtils.serialize(bindings)
   }    
 
   @Test def maxAggregate{ 	 
     val qid=eval.registerQuery(srbench("max-aggregate.sparql"),srbenchR2rml)        
     Thread.sleep(4000)
     val bindings=eval.pull(qid)
-    EvaluatorUtils.sparqlString(bindings)
+    EvaluatorUtils.serialize(bindings)
   }    
 
   @Test@Ignore def staticJoin{ 	 
     val qid=eval.registerQuery(srbench("static-join.sparql"),srbenchR2rml)        
     Thread.sleep(4000)
     val bindings=eval.pull(qid)
-    EvaluatorUtils.sparqlString(bindings)
+    EvaluatorUtils.serialize(bindings)
   }    
 
   

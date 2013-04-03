@@ -6,7 +6,6 @@ import es.upm.fi.oeg.morph.stream.algebra.ProjectionOp
 import collection.JavaConversions._
 import es.upm.fi.oeg.morph.stream.algebra.MultiUnionOp
 import org.apache.commons.lang.NotImplementedException
-import com.google.common.collect.Maps
 import es.upm.fi.oeg.morph.stream.algebra.AlgebraOp
 import es.upm.fi.oeg.morph.stream.algebra.xpr.OperationXpr
 import es.upm.fi.oeg.morph.stream.algebra.RootOp
@@ -48,7 +47,7 @@ class GsnQuery(projectionVars:Map[String,String]) extends SqlQuery(projectionVar
   
  
   
-  val gconstants = Maps.newHashMap[String,String]
+  //val gconstants = Maps.newHashMap[String,String]
   //val gstaticConstants = Maps.newHashMap[String, Template]();
   //val gtemplates =  Maps.newHashMap[String, Template]
 
@@ -71,8 +70,9 @@ class GsnQuery(projectionVars:Map[String,String]) extends SqlQuery(projectionVar
 				if (entry.getValue().isInstanceOf[OperationXpr])
 				{
 					val opXpr = entry.getValue().asInstanceOf[OperationXpr]
-					if (opXpr.op.equals("postproc"))
-						gconstants.put(entry.getKey().toLowerCase(), opXpr.param.toString());
+					if (opXpr.op.equals("postproc")){
+					//	gconstants.put(entry.getKey().toLowerCase(), opXpr.param.toString());
+					}
 					else if (opXpr.op.equals("constant"))
 					{
 					  /*

@@ -4,11 +4,11 @@ import gsn.beans.DataField
 import com.sun.jersey.api.client.Client
 import com.google.gson.Gson
 import java.util.Calendar
-import scala.actors.Actor
-import scala.actors._
-import scala.actors.Actor._
 import gsn.beans.StreamElement
 import java.text.SimpleDateFormat
+import akka.actor.Actor
+import concurrent.duration._
+import akka.actor.ReceiveTimeout
 
 class RestApiWrapper extends AbstractWrapper {
   
@@ -40,7 +40,7 @@ class RestApiWrapper extends AbstractWrapper {
   override def run{
     systemids.foreach{systemid=>
       val sc=new SystemCaller(this,systemid)
-      sc.start
+      //sc.start
     }
     while (isActive){
       Thread.sleep(liveRate)
@@ -69,12 +69,14 @@ class SystemCaller(who:RestApiWrapper,systemid:String) extends Actor{
       }
     } catch {case e:Exception=>e.printStackTrace}
   }
-  
-  def act(){
-    loop{      
-    reactWithin(who.rate){
-      case TIMEOUT=>callRest
-    }
-    }
+ val tiemout=(who.rate millisecond)
+ context.setReceiveTimeout(tiemout) 
+ def receive={
+//def act(){
+    //loop{      
+    //reactWithin(who.rate){
+      case ReceiveTimeout=>callRest
+    
+    
   }
 }

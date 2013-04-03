@@ -1,7 +1,6 @@
 package es.upm.fi.oeg.morph.stream.gsn
 import org.scalatest.junit.ShouldMatchersForJUnit
 import org.scalatest.prop.Checkers
-import com.weiglewilczek.slf4s.Logging
 import org.scalatest.junit.JUnitSuite
 import org.apache.log4j.PropertyConfigurator
 import es.upm.fi.oeg.morph.common.ParameterUtils._
@@ -16,10 +15,12 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import es.upm.fi.oeg.morph.stream.evaluate.QueryEvaluator
 import org.junit.Ignore
+import org.slf4j.LoggerFactory
 
-class CityBikesQueryTest extends JUnitSuite with ShouldMatchersForJUnit with Checkers with Logging {
+class CityBikesQueryTest extends JUnitSuite with ShouldMatchersForJUnit with Checkers {
   PropertyConfigurator.configure(getClass.getClassLoader().getResource("config/log4j.properties"));
   private val df=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS")
+  private val logger= LoggerFactory.getLogger(this.getClass)
   val mappingUri=new URI("mappings/citybikes.ttl")
   val gsn=new QueryEvaluator(null)
   

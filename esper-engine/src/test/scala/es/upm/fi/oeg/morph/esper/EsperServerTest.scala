@@ -8,9 +8,10 @@ import org.junit.After
 import akka.actor.ActorSystem
 import com.typesafe.config.ConfigFactory
 import akka.actor.Props
+import scala.util.{Try, Success, Failure}
 import akka.pattern.{ ask, pipe }
 import akka.util.Timeout
-import akka.util.duration._
+import concurrent.duration._
 
 
 class EsperServerTest  extends JUnitSuite with ShouldMatchersForJUnit with Checkers {
@@ -21,6 +22,7 @@ class EsperServerTest  extends JUnitSuite with ShouldMatchersForJUnit with Check
     
   @Before def before{
     esper.startup 
+    import proxy.system.dispatcher
     proxy.system.scheduler.schedule(0 seconds, 1 seconds){
     proxy.engine ! Event("wunderground",Map("temperature"->9.4,"stationId"->"ABT08"))}
   }
@@ -34,10 +36,13 @@ class EsperServerTest  extends JUnitSuite with ShouldMatchersForJUnit with Check
 
     val d=(proxy.engine ? ExecQuery("select * from wund"))
     //d.foreach(println)
+    import proxy.system.dispatcher
     d onComplete {
-      case Right(v)=>
+      case Success(v)=>
         val list=v.asInstanceOf[Array[Object]]
         println("value "+list.mkString)
+      case Failure(e)=>
+        println("failed")
     }
     
     Thread.sleep(6000)
