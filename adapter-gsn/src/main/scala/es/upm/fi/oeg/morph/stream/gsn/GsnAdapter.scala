@@ -6,7 +6,6 @@ import scala.io.Source
 import com.sun.jersey.api.client.Client
 import com.sun.jersey.api.client.UniformInterfaceException
 import com.sun.jersey.core.util.MultivaluedMapImpl
-import com.weiglewilczek.slf4s.Logging
 import es.upm.fi.oeg.morph.common.ParameterUtils.loadQuery
 import es.upm.fi.oeg.morph.stream.evaluate.StreamEvaluatorAdapter
 import es.upm.fi.oeg.morph.stream.query.SourceQuery
@@ -18,7 +17,7 @@ import akka.actor.ActorSystem
 import es.upm.fi.oeg.morph.stream.evaluate.StreamReceiver
 
 
-class GsnAdapter(props:Properties,actorSystem:ActorSystem) extends StreamEvaluatorAdapter with Logging{
+class GsnAdapter(props:Properties,actorSystem:ActorSystem) extends StreamEvaluatorAdapter {
   private val timeAttribute="timed"  
   private val c = Client.create 
   val gsnUrl=props.getProperty("gsn.endpoint")

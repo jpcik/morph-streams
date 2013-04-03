@@ -1,7 +1,7 @@
 package es.upm.fi.oeg.morph.stream.algebra
 import es.upm.fi.oeg.morph.stream.algebra.xpr.Xpr
 import org.apache.commons.lang.NotImplementedException
-import com.weiglewilczek.slf4s.Logging
+import org.slf4j.LoggerFactory
 
 trait AlgebraOp {
   val id:String
@@ -14,7 +14,8 @@ trait AlgebraOp {
   def vars:Map[String,Xpr]	
 }
 
-class UnaryOp(val id:String,val name:String,val subOp:AlgebraOp) extends AlgebraOp with Logging{
+class UnaryOp(val id:String,val name:String,val subOp:AlgebraOp) extends AlgebraOp {
+  private val logger= LoggerFactory.getLogger(this.getClass)
 
   protected def tab(level:Int):String=
 	(0 until level).map(_=>"\t").mkString	
@@ -54,7 +55,9 @@ class UnaryOp(val id:String,val name:String,val subOp:AlgebraOp) extends Algebra
 	else null
 }
 
-class BinaryOp(val id:String,val name:String,val left:AlgebraOp,val right:AlgebraOp) extends AlgebraOp with Logging{
+class BinaryOp(val id:String,val name:String,val left:AlgebraOp,val right:AlgebraOp) extends AlgebraOp {
+  private val logger= LoggerFactory.getLogger(this.getClass)
+
   private def tab(level:Int)=
 	(0 until level).map(_=>"\t").mkString	      	
 	

@@ -1,16 +1,16 @@
 package es.upm.fi.oeg.morph.stream.algebra
-import com.weiglewilczek.slf4s.Logging
-import com.google.common.collect.Maps
 import collection.JavaConversions._
 import es.upm.fi.oeg.morph.stream.algebra.xpr.Xpr
 import es.upm.fi.oeg.morph.stream.algebra.xpr.VarXpr
 import es.upm.fi.oeg.morph.stream.algebra.xpr.BinaryXpr
 import es.upm.fi.oeg.morph.stream.algebra.xpr.OperationXpr
 import es.upm.fi.oeg.morph.stream.algebra.xpr.FunctionXpr
+import org.slf4j.LoggerFactory
 
 class ProjectionOp(id:String,val expressions:Map[String,Xpr], subOp:AlgebraOp, val distinct:Boolean) 
-  extends UnaryOp(id,"projection",subOp) with Logging{
-	
+  extends UnaryOp(id,"projection",subOp) {
+  private val logger= LoggerFactory.getLogger(this.getClass)
+
   def includes(proj:ProjectionOp)=
 	proj.expressions.keySet.forall{exp=>
       this.expressions.contains(exp) && this.expressions(exp).isEqual(proj.expressions(exp))

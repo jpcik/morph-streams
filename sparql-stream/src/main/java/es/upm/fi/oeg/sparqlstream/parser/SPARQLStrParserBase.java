@@ -6,13 +6,15 @@
 
 package es.upm.fi.oeg.sparqlstream.parser;
 
-import com.hp.hpl.jena.sparql.lang.ParserQueryBase;
+//import com.hp.hpl.jena.sparql.lang.ParserQueryBase;
+import com.hp.hpl.jena.sparql.lang.SPARQLParserBase;
+
 import es.upm.fi.oeg.sparqlstream.parser.SPARQLStrParserConstants;
 import es.upm.fi.oeg.sparqlstream.StreamQuery;
 
 
 class SPARQLStrParserBase
-        extends ParserQueryBase
+        extends SPARQLParserBase//ParserQueryBase
         implements SPARQLStrParserConstants
 {
 	public StreamQuery getStreamQuery()

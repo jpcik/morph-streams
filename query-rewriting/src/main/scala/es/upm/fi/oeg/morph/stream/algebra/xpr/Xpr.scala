@@ -68,10 +68,8 @@ class ReplaceXpr(val template:String,val vars:Seq[FunctionXpr])
 }
 
 class PercentEncodeXpr(val vari:VarXpr) extends FunctionXpr("pencode",Seq(vari)){
-  override def evaluate(values:Map[String,Any])={
-    println("getting variable "+vari.varName)
+  override def evaluate(values:Map[String,Any])=
     URLTools.encode(values(vari.varName).toString) 
-  }
 }
 
 class ConstantXpr(par:String) extends OperationXpr("constant",ValueXpr(par))

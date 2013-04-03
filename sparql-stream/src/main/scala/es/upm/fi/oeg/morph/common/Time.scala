@@ -2,7 +2,7 @@ package es.upm.fi.oeg.morph.common
 
 
 class TimeUnit(val factor:Double,val name:String){
-  override def toString="TimeUnit("+factor+")"
+  override def toString=s"TimeUnit($factor)"
 }
 
 object TimeUnit {

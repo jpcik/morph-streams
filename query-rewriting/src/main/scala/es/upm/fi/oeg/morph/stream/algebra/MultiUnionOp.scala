@@ -1,19 +1,18 @@
 package es.upm.fi.oeg.morph.stream.algebra
 import org.apache.commons.lang.NotImplementedException
-import com.weiglewilczek.slf4s.Logging
 import scala.collection.immutable.TreeMap
-import com.google.common.collect.Multimap
 import java.util.HashMap
-//import org.apache.commons.collections.CollectionUtils
 import collection.JavaConversions._
 import es.upm.fi.oeg.morph.stream.algebra.xpr.Xpr
+import org.slf4j.LoggerFactory
 
 class MultiUnionOp(val id:String,childrenOps:Map[String,AlgebraOp]) 
-  extends AlgebraOp with Logging{
-	
+  extends AlgebraOp {
+
+  private val logger= LoggerFactory.getLogger(this.getClass)
   val children=childrenOps.filter(_._2!=null)
   override val name="multiunion"
-  val index:Map[String,Multimap[String,String]]=new TreeMap[String,Multimap[String,String]]
+  //val index:Map[String,Multimap[String,String]]=new TreeMap[String,Multimap[String,String]]
   
   override def build(op:AlgebraOp):AlgebraOp=op match{
 	case multi:MultiUnionOp=>
@@ -32,7 +31,7 @@ class MultiUnionOp(val id:String,childrenOps:Map[String,AlgebraOp])
   private def tab(level:Int)=(0 until level).map(_=>"\t").mkString  
 	
   override def display(level:Int)	{
-	logger.warn(tab(level)+name+" "+id+" "+index.keySet.mkString)
+	logger.warn(tab(level)+name+" "+id+" ")//+index.keySet.mkString)
 	children.values.take(30).foreach(op=>op.display(level+1))
   }
 
@@ -46,7 +45,7 @@ class MultiUnionOp(val id:String,childrenOps:Map[String,AlgebraOp])
   override def merge(op:AlgebraOp,xprs:Seq[Xpr]):AlgebraOp={
 	if (op.isInstanceOf[MultiUnionOp]){
 	  val union = op.asInstanceOf[MultiUnionOp];
-	  val seti = index.keySet & union.index.keySet
+	  //val seti = index.keySet & union.index.keySet
 	  logger.debug("merge unions: "+children.keySet+"--"+union.children.keySet)
 		
 	  val set =  this.children.keySet //CollectionUtils.intersection(this.children.keySet(), union.children.keySet());			
@@ -85,6 +84,12 @@ class MultiUnionOp(val id:String,childrenOps:Map[String,AlgebraOp])
   def simplify=
     if (children.isEmpty) null
     else if (children.size==1) children.head._2
+    else if (children.forall(c=>c._2.isInstanceOf[MultiUnionOp]))
+      MultiUnionOp(id,children.map{c=>
+        val u=c._2.asInstanceOf[MultiUnionOp]
+        u.children.map(ch=>(c._1+ch._1,ch._2))
+      }.flatten.toMap )
+      
 	else this
 	
 }
