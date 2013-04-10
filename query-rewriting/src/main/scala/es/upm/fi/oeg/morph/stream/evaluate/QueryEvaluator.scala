@@ -66,12 +66,12 @@ class QueryEvaluator(config:Properties,actorSystem:ActorSystem=null) {
       //val json=new Gson().toJson(sparql)
       //println(json)
       
-      printSparqlResult(sparql)
+      //printSparqlResult(sparql)
       sparql
     }
     else {
       val model=dt.translateToModel(query.getConstructTemplate)
-      model.write(System.out,RDFFormat.TTL)
+      //model.write(System.out,RDFFormat.TTL)
       model
     }
   }
@@ -96,7 +96,7 @@ class QueryEvaluator(config:Properties,actorSystem:ActorSystem=null) {
     val rs=adapter.pull(id,qt)
     val dt=new DataTranslator(List(rs),qt)
     val sparql=dt.transform     
-    printSparqlResult(sparql)
+    //printSparqlResult(sparql)
     sparql    
   }
      
