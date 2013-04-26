@@ -78,6 +78,7 @@ import com.hp.hpl.jena.sparql.algebra.op.OpGraph
 import es.upm.fi.oeg.morph.stream.algebra.PatternOp
 import es.upm.fi.oeg.morph.stream.algebra.xpr.ConstantXpr
 import org.slf4j.LoggerFactory
+import es.upm.fi.oeg.morph.stream.query.Modifiers
 
 class QueryRewriting(props: Properties,mapping:String) {
   private val logger= LoggerFactory.getLogger(this.getClass)
@@ -119,10 +120,20 @@ class QueryRewriting(props: Properties,mapping:String) {
     
     val opNew = translateToAlgebra(query)
     val pVars=getProjectList(query).map(a=>a._1->a._1).toMap
-    transform(opNew,pVars)      
+    transform(opNew,pVars,modifiers(query))      
   }
 
-  def transform(algebra: AlgebraOp,projectVars:Map[String,String]):SourceQuery={
+  def modifiers(query:StreamQuery)={
+    val list=new collection.mutable.ArrayBuffer[Modifiers.OutputModifier]
+    if (query.isDstream) list+=Modifiers.Dstream
+    if (query.isIstream) list+=Modifiers.Istream
+    if (query.isRstream) list+=Modifiers.Rstream
+
+    list.toArray
+  }
+  
+  def transform(algebra: AlgebraOp,projectVars:Map[String,String],
+      mods:Array[Modifiers.OutputModifier]):SourceQuery={
     val adapter = props.getProperty("siq.adapter")
     val queryClass = props.getProperty("siq.adapter" + "." + adapter + ".query")
     logger.info("Using query adapter: "+queryClass)
@@ -133,13 +144,14 @@ class QueryRewriting(props: Properties,mapping:String) {
           case e: ClassNotFoundException =>throw new QueryRewritingException("Unable to use adapter query", e)
         }
         try 
-          theClass.getDeclaredConstructor(classOf[Map[String,String]]).newInstance(projectVars).asInstanceOf[SourceQuery]
+          theClass.getDeclaredConstructor(classOf[Map[String,String]],classOf[Array[Modifiers.OutputModifier]])
+            .newInstance(projectVars,mods).asInstanceOf[SourceQuery]
         catch {
           case e: InstantiationException =>throw new QueryRewritingException("Unable to instantiate query", e)
           case e: IllegalAccessException =>throw new QueryRewritingException("Unable to instantiate query", e)
         }
       } 
-      else new SqlQuery(projectVars)
+      else new SqlQuery(projectVars,mods)
         
     resquery.load(algebra)
     logger.info(resquery.serializeQuery)
@@ -294,12 +306,6 @@ class QueryRewriting(props: Properties,mapping:String) {
     val ini = System.currentTimeMillis      
     val op = Algebra.compile(query)
     val span1 = System.currentTimeMillis() - ini
-    /*
-    if (mappingUri != null) {
-      //try reader.read(mappingUri)
-      //catch {case e: Exception => throw new QueryRewritingException(e)}
-    }*/
-    //linker = new LinksetProcessor(mappingUri.toString());
     val span2 = System.currentTimeMillis() - ini;
 
     val binds = null //partition(op).asInstanceOf[OpProjection]
@@ -478,7 +484,6 @@ class QueryRewriting(props: Properties,mapping:String) {
         return join;        
       }  else if (op.isInstanceOf[OpFilter]) {
         val filter = op.asInstanceOf[OpFilter]
-        val it = filter.getExprs().iterator();
         val inner = navigate(filter.getSubOp(), query);
 
         val selXprs:Set[Xpr]=filter.getExprs.iterator.map{ex=>
@@ -492,13 +497,9 @@ class QueryRewriting(props: Properties,mapping:String) {
               new BinaryXpr(function.getOpName,VarXpr(expr.getArg1.getVarName),                
                 VarXpr(expr.getArg2.getVarName))
           xpr
-          //selection.addExpression(xpr);
-          //function.
-          //logger.debug("filter " + selection);
+        
         }.toSet
-        //logger.debug("Filter "+filter.toString());
-
-        //selection.setSubOp(inner);
+        
         val selection = new SelectionOp("selec", inner,selXprs);
         return selection;
       } else if (op.isInstanceOf[OpService]) {
@@ -599,62 +600,20 @@ class QueryRewriting(props: Properties,mapping:String) {
       else {
         val proj = left.asInstanceOf[ProjectionOp]
         val ch=List(proj.id + proj.getRelation.extentName-> proj).toMap
-        val u = new MultiUnionOp("multiunion",ch)
-
-        //u.getChildren().put(proj.getId + proj.getRelation.getExtentName, proj)
-/*
-        val map = HashMultimap.create[String, String]();
-
-        map.put(proj.getId(), proj.getId() + proj.getRelation.getExtentName)
-        u.index.put(proj.triple.getSubject.getName, map)
-        if (proj.triple.getObject.isVariable && proj.link != null) {
-          val map2 = HashMultimap.create[String, String]()
-          map2.put(proj.link, proj.getId + proj.getRelation.getExtentName)
-          u.index.put(proj.triple.getObject.getName, map2)
-        }*/
-        u
+        new MultiUnionOp("multiunion",ch)
       }
     val rightTerm=if (right==null) Map()
       else List(right.id+right.asInstanceOf[ProjectionOp].getRelation.extentName->right).toMap
     new MultiUnionOp(union.id,union.children++rightTerm).simplify
-/*
-      val proj = right.asInstanceOf[OpProjection];
-      if (proj.getId() == null)
-        logger.debug("is null" + proj);
-      union.getChildren().put(proj.getId() + proj.getRelation().getExtentName(), proj); //+proj.getRelation().getExtentName(), proj);
-
-      var map = union.index.get(proj.triple.getSubject().getName());
-      if (map == null) {
-        map = HashMultimap.create();
-        union.index.put(proj.triple.getSubject().getName(), map);
-      }
-      map.put(proj.getId(), proj.getId() + proj.getRelation().getExtentName());
-
-      if (proj.triple.getObject().isVariable() && proj.link != null) {
-        map = union.index.get(proj.triple.getObject().getName());
-        if (map == null) {
-          map = HashMultimap.create();
-          union.index.put(proj.triple.getObject().getName(), map);
-        }
-        map.put(proj.link, proj.getId() + proj.getRelation().getExtentName());
-        logger.debug("index map" + proj.link + "--" + proj.getId());
-
-      }*/
-      //return union;
   }
 
   private def createSelection(xprs:Seq[(String,String,String)],subOp:AlgebraOp):UnaryOp={
     val varName=xprs.map(_._2).mkString("-")
     val selXprs:Set[Xpr]=xprs.map{x=>
       new BinaryXpr(x._2, VarXpr(x._1),ValueXpr(x._3))
-      //selection.addExpression(xpr)
     }.toSet
     val selection = new SelectionOp(varName, subOp,selXprs)
     selection
-  }
-  
-  private def createSelection(operation:String,varName:String,value:String,unary:AlgebraOp):UnaryOp={
-    createSelection(Array((varName,operation,value)),unary)
   }
   
   private def createSelection(t: Triple, nMap: TermMap, value: String,unary:UnaryOp):UnaryOp={
@@ -663,7 +622,7 @@ class QueryRewriting(props: Properties,mapping:String) {
       "localVar" + t.getPredicate.getLocalName +value//+ t.getSubject.getName
       else nMap.column
     if (nMap.column!=null){
-      createSelection("=",vari,value,unary)
+      createSelection(Array((vari,"=",value)),unary)
     }
     else if (nMap.constant!=null && 
         nMap.constant.toString.equals(value))

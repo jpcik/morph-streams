@@ -27,7 +27,7 @@ import es.upm.fi.oeg.morph.stream.algebra.xpr.AggXpr
 import es.upm.fi.oeg.morph.stream.algebra.xpr.ReplaceXpr
 import es.upm.fi.oeg.morph.stream.algebra.xpr.ConstantXpr
 
-class SqlQuery(val projectionVars:Map[String,String]) extends SourceQuery{
+class SqlQuery(val projectionVars:Map[String,String],val outputMods:Array[Modifiers.OutputModifier]) extends SourceQuery{
   protected var innerQuery:String=null
   //val projectList = new HashMap[String,String]()
   //val inner= new HashMap[String,Map[String,SqlQuery]]()
@@ -47,6 +47,10 @@ class SqlQuery(val projectionVars:Map[String,String]) extends SourceQuery{
     niceAlias(name)
     }
   }
+  
+  lazy val isRstream:Boolean=outputMods.exists(_==Modifiers.Rstream)
+  lazy val isIstream:Boolean=outputMods.exists(_==Modifiers.Istream)
+  lazy val isDstream:Boolean=outputMods.exists(_==Modifiers.Dstream)
   
   override def load(op:AlgebraOp){
 	//super.load(op)
@@ -68,28 +72,32 @@ class SqlQuery(val projectionVars:Map[String,String]) extends SourceQuery{
         case _=>xpr
       }
     }*/
-  protected def condExpr(xpr:Xpr,op:AlgebraOp,vars:Map[String,Xpr]):Xpr={
+  protected def condExpr(xpr:Xpr,op:AlgebraOp,vars:Map[String,Xpr],alias:String):Xpr={
     xpr match {
       case varXpr:VarXpr=>
-        if (vars.contains(varXpr.varName)) VarXpr(""+vars(varXpr.varName))
+        if (vars.contains(varXpr.varName)) 
+          condExpr(vars(varXpr.varName),op,vars,getAlias(attRelation(op,varXpr.varName)))
+          //VarXpr(""+vars(varXpr.varName))
         else if (vars.keys.exists(vr=>vr.startsWith(varXpr.varName))){
           val k=vars.keys.find(vr=>vr.startsWith(varXpr.varName)).get          
           VarXpr(vars(k)+"")
         } 
-        else VarXpr(varXpr.varName)
-      case bin:BinaryXpr=>BinaryXpr(bin.op,condExpr(bin.left,op,vars),condExpr(bin.right,op,vars))
-      case fun:AggXpr=>new AggXpr(fun.aggOp,getAlias(attRelation(op,fun.varName))+"."+fun.varName)
-      case rep:ReplaceXpr=>ValueXpr(concatXpr(rep,op))
+        else VarXpr(getAlias(attRelation(op,varXpr.varName))+"."+varXpr.varName)
+      case bin:BinaryXpr=>BinaryXpr(bin.op,condExpr(bin.left,op,vars,alias),condExpr(bin.right,op,vars,alias))
+      case fun:AggXpr=>new AggXpr(fun.aggOp,getAlias(attRelation(op,fun.varName))+"."+vars(fun.varName))
+      case rep:ReplaceXpr=>
+        println("this is the concat experience")
+        ValueXpr(concatXpr(rep,alias))
       case _=>xpr
     }
   }
   
-  private def concatXpr(rep:ReplaceXpr,op:AlgebraOp)={
-    val repVars=rep.varNames.map(v=>(v,getAlias(attRelation(op,v))+"."+v)).toMap
+  private def concatXpr(rep:ReplaceXpr,alias:String)={
+    val repVars=rep.varNames.map(v=>(v,alias+"."+v)).toMap
     val str=rep.template.split('{').map{s=>
       if (s.contains('}')){
         val sp=s.split('}')
-        if (sp.size>1) repVars(sp(0))+" || "+sp(1)
+        if (sp.size>1) repVars(sp(0))+" || '"+sp(1)+"'"
         else "cast("+repVars(sp(0))+",string)"
       }
       else "'"+s+"'"
@@ -106,7 +114,17 @@ class SqlQuery(val projectionVars:Map[String,String]) extends SourceQuery{
       case _=>xpr
     }
   }
-    
+
+  
+    protected def repExpr(xpr:Xpr,op:AlgebraOp,vars:Map[String,Xpr]):Xpr={
+    xpr match {
+      case varXpr:VarXpr=>VarXpr(getAlias(attRelation(op,varXpr.varName))+"."+vars(varXpr.varName))
+      case bin:BinaryXpr=>BinaryXpr(bin.op,repExpr(bin.left,op),repExpr(bin.right,op))
+      case fun:AggXpr=>new AggXpr(fun.aggOp,""+vars(fun.varName))
+      case _=>xpr
+    }
+  }
+  
     def extentAlias(relation:RelationOp)=
       relation.extentName+" AS "+getAlias(relation.id)
     
@@ -125,7 +143,7 @@ class SqlQuery(val projectionVars:Map[String,String]) extends SourceQuery{
 	protected def conditions(op:AlgebraOp,vars:Map[String,Xpr]):Seq[String]=op match{
 	  case join:InnerJoinOp=>conditions(join)
 	  case join:LeftOuterJoinOp=>conditions(join)
-	  case sel:SelectionOp=>sel.expressions.map(e=>condExpr(e,sel,vars).toString).toSeq
+	  case sel:SelectionOp=>sel.expressions.map(e=>condExpr(e,sel,vars,null).toString).toSeq
 	  case _=>List()
 	}
 	protected def conditions(join:BinaryOp):Seq[String]=(join.left,join.right) match{
@@ -381,10 +399,11 @@ class SqlQuery(val projectionVars:Map[String,String]) extends SourceQuery{
         else null
       case sel:SelectionOp=>
         if (sel.getRelation!=null) sel.getRelation.id
-        else null
+        else attRelation(sel.subOp,varName)
       case group:GroupOp=>
         group.getRelation.id
         //attRelation(group.subOp,varName)
     }
     //else null
+  
 }

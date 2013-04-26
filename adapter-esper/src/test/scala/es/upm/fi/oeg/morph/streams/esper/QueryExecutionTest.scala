@@ -27,7 +27,7 @@ class QueryExecutionTest extends JUnitSuite with ShouldMatchersForJUnit with Che
   private val srbenchR2rml=new URI("mappings/srbench.ttl")
   
   @Before def setUpBeforeClass() {
-    PropertyConfigurator.configure(getClass.getResource("/config/log4j.properties"))
+    //PropertyConfigurator.configure(getClass.getResource("/config/log4j.properties"))
     esper.startup()
     val demo = new DemoStreamer("ISANGALL2","wunderground",1,new EsperProxy(esper.system)) 
     demo.schedule
@@ -38,7 +38,8 @@ class QueryExecutionTest extends JUnitSuite with ShouldMatchersForJUnit with Che
   @Test def filterUriDiff{    
     val qid=eval.registerQuery(srbench("filter-uri-diff.sparql"),srbenchR2rml)        
     Thread.sleep(4000)
-    val bindings=eval.pull(qid)   
+    val bindings=eval.pull(qid)
+    logger.debug(EvaluatorUtils.serialize(bindings))
   }
 
   @Test def joinPatternObjects{    
@@ -52,6 +53,8 @@ class QueryExecutionTest extends JUnitSuite with ShouldMatchersForJUnit with Che
     Thread.sleep(8000)
     val bindings=eval.pull(qid)   
   }
+  
+  
   
   @Test def filterValue{ 	 
     val qid=eval.registerQuery(srbench("filter-value.sparql"),srbenchR2rml)        
@@ -95,7 +98,7 @@ class QueryExecutionTest extends JUnitSuite with ShouldMatchersForJUnit with Che
     val qid=eval.registerQuery(srbench("max-aggregate.sparql"),srbenchR2rml)        
     Thread.sleep(4000)
     val bindings=eval.pull(qid)
-    EvaluatorUtils.serialize(bindings)
+    logger.info(EvaluatorUtils.serialize(bindings))
   }    
 
   @Test@Ignore def staticJoin{ 	 

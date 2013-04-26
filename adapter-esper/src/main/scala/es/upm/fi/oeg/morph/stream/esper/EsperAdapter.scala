@@ -64,7 +64,7 @@ class EsperAdapter(props:Properties,system:ActorSystem) extends  StreamEvaluator
     val results=queryIds.map{qid=>
       val fut=(proxy.engine ? PullData(qid._1))
       val res=Await.result(fut,timeout.duration).asInstanceOf[Array[Array[Object]]]
-      new EsperResultSet(res.toStream,qid._2.queryExpressions,qid._2.allXprs.keys.toList.map(_.toString).toArray)
+      new EsperResultSet(res.toStream,qid._2.queryExpressions,qid._2.selectXprs.keys.toList.map(_.toString).toArray)
     }
     new EsperCompResultSet(results)
   }
@@ -91,7 +91,7 @@ class EsperAdapter(props:Properties,system:ActorSystem) extends  StreamEvaluator
 
 class StreamRec(rec:StreamReceiver,esperQuery:EsperQuery) extends Actor{
   private val logger = LoggerFactory.getLogger(this.getClass)
-  private val xprNames=esperQuery.allXprs.keys.toList.map(_.toString).toArray
+  private val xprNames=esperQuery.selectXprs.keys.toList.map(_.toString).toArray
   private val varsX=esperQuery.queryExpressions
     
   def receive={

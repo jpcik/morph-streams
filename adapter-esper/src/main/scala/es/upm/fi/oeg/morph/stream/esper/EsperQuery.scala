@@ -26,10 +26,10 @@ import java.io.FileInputStream
 import collection.JavaConversions._
 import com.hp.hpl.jena.query.QuerySolution
 import es.upm.fi.oeg.morph.voc.RDFFormat
+import es.upm.fi.oeg.morph.stream.query.Modifiers
 
-class EsperQuery (projectionVars:Map[String,String]) extends SqlQuery(projectionVars) {
-  //val projectionXprs=projectionVars.map(p=>(p._1,VarXpr(p._2))) 
-  private val selectXprs=new collection.mutable.HashMap[String,Xpr]
+class EsperQuery (projectionVars:Map[String,String],mods:Array[Modifiers.OutputModifier]) extends SqlQuery(projectionVars,mods) {
+  val selectXprs=new collection.mutable.HashMap[String,Xpr]
   val allXprs=new collection.mutable.HashMap[String,Xpr]
   private val from=new ArrayBuffer[String]
   private val where=new ArrayBuffer[String]
@@ -37,15 +37,19 @@ class EsperQuery (projectionVars:Map[String,String]) extends SqlQuery(projection
   private var distinct:Boolean=false
   
   def serializeSelect=
-    "SELECT "+ (if (distinct) "DISTINCT " else "") + 
-      allXprs.map(s=>s._2 +" AS "+s._1).mkString(",")
+    "SELECT "+ 
+    (if (mods.contains(Modifiers.Dstream)) "RSTREAM " else "") +
+    (if (mods.contains(Modifiers.Istream)) "ISTREAM " else "") +
+    (if (mods.contains(Modifiers.Rstream)) "IRSTREAM " else "") +
+    (if (distinct) "DISTINCT " else "") +
+      selectXprs.map(s=>s._2 +" AS "+s._1).mkString(",")
       
   def generateWhere(op:AlgebraOp,vars:Map[String,Xpr]):Unit=
     generateWhere(op,vars,true)
   
   def generateWhere(op:AlgebraOp,vars:Map[String,Xpr],joinConditions:Boolean):Unit=op match{
     case root:RootOp=>generateWhere(root.subOp,vars)
-    case group:GroupOp=>generateWhere(group.subOp,Map())
+    case group:GroupOp=>generateWhere(group.subOp,vars)
     case join:InnerJoinOp=>
       val joinXpr = get(join).mkString(",") 
       if (joinConditions && !join.conditions.isEmpty) 			  
@@ -55,7 +59,8 @@ class EsperQuery (projectionVars:Map[String,String]) extends SqlQuery(projection
     case join:LeftOuterJoinOp=>
 	  generateWhere(join.left,vars)
 	  generateWhere(join.right,vars)
-    case sel:SelectionOp=>      
+    case sel:SelectionOp=>  
+      println("alll "+vars.keys)
       where++=conditions(sel,vars)
       generateWhere(sel.subOp,vars)
     case proj:ProjectionOp=>generateWhere(proj.subOp,vars)
@@ -66,7 +71,7 @@ class EsperQuery (projectionVars:Map[String,String]) extends SqlQuery(projection
   def generateUnion(op:AlgebraOp):Unit=op match{
     case union:MultiUnionOp=>
       val un=union.children.values.map{opi=>
-        val q=new EsperQuery(projectionVars)
+        val q=new EsperQuery(projectionVars,mods)
         q.load(new RootOp("",opi))
         q
       }
@@ -88,7 +93,7 @@ class EsperQuery (projectionVars:Map[String,String]) extends SqlQuery(projection
     case rel:RelationOp=> from+=extentAlias(rel)
     case union:MultiUnionOp=>
       val un=union.children.values.map{opi=>
-        val q=new EsperQuery(projectionVars)
+        val q=new EsperQuery(projectionVars,mods)
         q.build(new RootOp("",opi))                
       }
       from+=un.mkString(" union ")
@@ -106,24 +111,17 @@ class EsperQuery (projectionVars:Map[String,String]) extends SqlQuery(projection
           else e._2
         if (isroot && xpr==null) 
           selectXprs.put(e._1,UnassignedVarXpr)        
-        else if (selectXprs.contains(e._1)) xpr match {
+        else if (selectXprs.contains(e._1) || (isroot && xpr!=null) ) xpr match {
           case rep:ReplaceXpr=>
             rep.varNames.foreach(v=>selectXprs.put(e._1+"_"+v,repExpr(VarXpr(v),proj)))
+          case v:VarXpr=>selectXprs.put(e._1,repExpr(v,proj))
           case x:Xpr=>selectXprs.put(e._1,xpr)  
-        } 
-        
-        xpr match {
-          case rep:ReplaceXpr=>
-            rep.varNames.foreach(v=>allXprs.put(e._1+"_"+v,repExpr(VarXpr(v),proj)))
-          case v:VarXpr=>allXprs.put(e._1,repExpr(v,proj))  
-          case null=>
-          case _=>  
-		}
+        }              
       }
       generateSelectVars(proj.subOp)
     case group:GroupOp=>
-      group.aggs.foreach{agg=>
-        allXprs.put(agg._1,repExpr(agg._2,group))
+      group.aggs.foreach{agg=>       
+        selectXprs.put(agg._1,repExpr(agg._2,group,allXprs.toMap))
       }
       generateSelectVars(group.subOp)
     case join:JoinOp=>
@@ -133,7 +131,37 @@ class EsperQuery (projectionVars:Map[String,String]) extends SqlQuery(projection
       generateSelectVars(selec.subOp)
     case _=>
   }
-  
+
+  def generateAllVars(op:AlgebraOp):Unit= op match{
+    case root:RootOp=>generateAllVars(root.subOp)
+    case proj:ProjectionOp=>
+      proj.expressions.foreach{e=>
+        val xpr=
+          if (e._2==UnassignedVarXpr) null
+          else e._2        
+        xpr match {
+          case rep:ReplaceXpr=>
+            rep.varNames.foreach(v=>allXprs.put(e._1+"_"+v,repExpr(VarXpr(v),proj)))
+            allXprs.put(e._1,rep)
+          case v:VarXpr=>allXprs.put(e._1,repExpr(v,proj))  
+          case null=>
+          case _=>  
+		}
+      }
+      generateAllVars(proj.subOp)
+    case group:GroupOp=>
+      group.aggs.foreach{agg=>
+        //allXprs.put(agg._1,repExpr(agg._2,group))
+      }
+      generateAllVars(group.subOp)
+    case join:JoinOp=>
+      generateAllVars(join.left)
+      generateAllVars(join.right)
+    case selec:SelectionOp=>
+      generateAllVars(selec.subOp)
+    case _=>
+  }
+
   override def getProjection:Map[String,String]={
     projectionVars.map(p=>p._1->null)
   }
@@ -153,7 +181,9 @@ class EsperQuery (projectionVars:Map[String,String]) extends SqlQuery(projection
 	      unions.map(q=>q.serializeQuery).mkString(" UNION ")
 	    }
 	    else {
+	      generateAllVars(op)
 	      generateSelectVars(op)
+	      selectXprs.filter(_._2==UnassignedVarXpr).foreach(t=>selectXprs.remove(t._1))
 	      generateFrom(op)
     	  generateWhere(op,allXprs.toMap)
 	      val wherestr=if (where.isEmpty) "" else " WHERE "+where.mkString(" AND ")
@@ -167,6 +197,7 @@ class EsperQuery (projectionVars:Map[String,String]) extends SqlQuery(projection
   
   private def interval(time:Double,unit:TimeUnit)=
     if (unit !=null && time>0) time+" "+unit.name
+    else if (time==0) "1 "+TimeUnit.MILLISECOND.name //unit.name
     else "NOW()"
   
   private def window(win:WindowOp)={
@@ -174,6 +205,7 @@ class EsperQuery (projectionVars:Map[String,String]) extends SqlQuery(projection
     val to=interval(spec.to,spec.toUnit)
     val from=interval(spec.from,spec.fromUnit)
     ".win:time("+from+")"      
+    //".win:time_batch("+from+", 3000L )"
   }
  
 }

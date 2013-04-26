@@ -10,7 +10,7 @@ libraryDependencies ++= Seq(
   "com.sun.jersey" % "jersey-core" % "1.8",
   "com.google.code.gson" % "gson" % "1.7.1",
   "es.upm.fi.oeg.morph" % "query-rewriting" % "1.0.4",
-  "es.upm.fi.oeg.morph.streams" % "esper-engine" % "1.0.1",
+//  "es.upm.fi.oeg.morph.streams" % "esper-engine" % "1.0.1",
   "org.scalatest" % "scalatest_2.10" % "1.9.1" % "test",
   "org.scalacheck" % "scalacheck_2.10" % "1.10.0" % "test",
   "org.jibx" % "jibx-bind" % "1.2.2",

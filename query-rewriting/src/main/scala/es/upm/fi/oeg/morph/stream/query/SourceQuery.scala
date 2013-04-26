@@ -9,3 +9,11 @@ trait SourceQuery {
   def getProjection:Map[String, String]
   def getConstruct:Template
 }
+
+//class OutputModifier
+object Modifiers{
+  trait OutputModifier
+  object Rstream extends OutputModifier
+  object Istream extends OutputModifier
+  object Dstream extends OutputModifier
+}

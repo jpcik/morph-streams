@@ -7,4 +7,5 @@ WHERE {
   ?observation om-owl:result ?result;
                om-owl:observedProperty weather:AirTemperature. 
   ?result om-owl:floatValue ?value.
+  FILTER (?value < 0.3)
 }

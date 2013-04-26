@@ -14,6 +14,7 @@ import es.upm.fi.oeg.sparqlstream.syntax.ElementTimeWindow;
 import es.upm.fi.oeg.sparqlstream.syntax.ElementTripleWindow;
 import es.upm.fi.oeg.sparqlstream.syntax.ElementWindow;
 import es.upm.fi.oeg.sparqlstream.syntax.ElementTimeValue;
+import es.upm.fi.oeg.sparqlstream.syntax.ElementNamedStream;
 import es.upm.fi.oeg.morph.common.TimeUnit;
 
 /** Token Manager. */

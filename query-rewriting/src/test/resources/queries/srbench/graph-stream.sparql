@@ -1,13 +1,11 @@
-
 PREFIX om-owl: <http://knoesis.wright.edu/ssw/ont/sensor-observation.owl#>
 PREFIX weather: <http://knoesis.wright.edu/ssw/ont/weather.owl#>
 
-SELECT DISTINCT ?sensor ?value ?uom 
-FROM NAMED STREAM <http://cwi.nl/SRBench/observations> [NOW - 1 HOURS SLIDE 1 HOURS]
+SELECT DISTINCT ?sensor ?value
 WHERE {
+ STREAM <http://cwi.nl/SRBench/observations> [NOW - 1 HOURS]{
   ?observation om-owl:procedure ?sensor;
                a weather:RainfallObservation;
-               om-owl:result ?result.
-  ?result om-owl:floatValue ?value;
-          om-owl:uom ?uom.
-}
+               om-owl:result ?result.              
+  ?result om-owl:floatValue ?value.
+}}

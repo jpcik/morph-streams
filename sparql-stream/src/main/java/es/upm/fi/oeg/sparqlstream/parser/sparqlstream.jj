@@ -47,6 +47,7 @@ import es.upm.fi.oeg.sparqlstream.syntax.ElementTimeWindow;
 import es.upm.fi.oeg.sparqlstream.syntax.ElementTripleWindow;
 import es.upm.fi.oeg.sparqlstream.syntax.ElementWindow;
 import es.upm.fi.oeg.sparqlstream.syntax.ElementTimeValue;
+import es.upm.fi.oeg.sparqlstream.syntax.ElementNamedStream;
 import es.upm.fi.oeg.morph.common.TimeUnit;
 
 @SuppressWarnings({"unused","serial"})
@@ -120,7 +121,10 @@ void SelectClause() : { Var v ; Expr expr ; Node n ; }
 {
   <SELECT>
     { getQuery().setQuerySelectType() ; }
-    (<RSTREAM> | <DSTREAM> | <ISTREAM>)?
+  ( <RSTREAM> { getStreamQuery().setRstream(true);}
+  | <DSTREAM> { getStreamQuery().setDstream(true);}
+  | <ISTREAM> { getStreamQuery().setIstream(true);}
+  )?
   ( <DISTINCT> { getQuery().setDistinct(true);}
   | <REDUCED> { getQuery().setReduced(true); }
   )?
@@ -742,6 +746,8 @@ Element GraphPatternNotTriples() : { Element el = null ; }
  |
    el = GraphGraphPattern()
  |
+   el = StreamGraphPattern()
+ |
    el = ServiceGraphPattern()
  |
    el = Filter()
@@ -759,6 +765,11 @@ Element GraphGraphPattern() : { Element el ; Node n ;}
 {
   <GRAPH> n = VarOrIri() el = GroupGraphPattern()
     { return new ElementNamedGraph(n, el) ; }
+}
+Element StreamGraphPattern() : { Element el ; Node n ; ElementWindow w;}
+{
+  <STREAM> n = VarOrIri() <LBRACKET> w = Window() <RBRACKET> el = GroupGraphPattern()
+    { return new ElementNamedStream(n, el, w) ; }
 }
 Element ServiceGraphPattern() : { Element el ; Node n ; boolean silent = false ; }
 {

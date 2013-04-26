@@ -1,26 +1,15 @@
-/*
- * (c) Copyright 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
- * All rights reserved.
- * [See end of file]
- */
 
 package es.upm.fi.oeg.sparqlstream.parser;
 
-//import com.hp.hpl.jena.sparql.lang.ParserQueryBase;
 import com.hp.hpl.jena.sparql.lang.SPARQLParserBase;
-
 import es.upm.fi.oeg.sparqlstream.parser.SPARQLStrParserConstants;
 import es.upm.fi.oeg.sparqlstream.StreamQuery;
 
 
-class SPARQLStrParserBase
-        extends SPARQLParserBase//ParserQueryBase
-        implements SPARQLStrParserConstants
-{
-	public StreamQuery getStreamQuery()
-	{
-		return (StreamQuery)query;
-	}
+class SPARQLStrParserBase extends SPARQLParserBase implements SPARQLStrParserConstants{
+  public StreamQuery getStreamQuery(){
+	return (StreamQuery)query;
+  }
 }
 
 
