@@ -5,7 +5,7 @@ import es.upm.fi.oeg.morph.stream.algebra.xpr.Xpr
 import es.upm.fi.oeg.morph.stream.algebra.xpr.UnassignedVarXpr
 import scala.collection.mutable.ArrayBuffer
 
-class DatacellQuery(projectionVars:Map[String,String]) extends SqlQuery(projectionVars) {
+class DatacellQuery(projectionVars:Map[String,String]) extends SqlQuery(projectionVars,Array()) {
   
   val selectXprs=new collection.mutable.HashMap[String,Xpr]
   val from=new ArrayBuffer[String]

@@ -12,7 +12,6 @@ import es.upm.fi.oeg.morph.common.ParameterUtils
 import org.junit.Ignore
 import org.slf4j.LoggerFactory
 
-@Ignore
 class QueryRewritingTest extends JUnitSuite with ShouldMatchersForJUnit with Checkers {
   private val logger= LoggerFactory.getLogger(this.getClass)
 
@@ -177,6 +176,11 @@ class QueryRewritingTest extends JUnitSuite with ShouldMatchersForJUnit with Che
   {
     val trans = new QueryRewriting(props,"mappings/wannengrat.r2r");
     trans.translate(queryWannengratMetadataTemp);
+  }
+
+  @Test def testGraphStream()  {
+    val trans = new QueryRewriting(props,"mappings/srbench.ttl");
+    trans.translate(loadQuery("queries/srbench/graph-stream.sparql"))
   }
 
   @Test //@Ignore

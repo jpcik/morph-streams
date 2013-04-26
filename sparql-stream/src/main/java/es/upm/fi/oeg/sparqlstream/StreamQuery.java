@@ -10,6 +10,9 @@ import es.upm.fi.oeg.sparqlstream.syntax.ElementStreamGraph;
 public class StreamQuery extends Query 
 {
 	private List<ElementStreamGraph> streams;
+	private boolean rstream=false;
+	private boolean istream=false;
+	private boolean dstream=false;
 	
 	public StreamQuery()
 	{
@@ -40,6 +43,30 @@ public class StreamQuery extends Query
 			if (stream.getUri().equals(uri)) return stream;
 		}
 		return null;
+	}
+
+	public boolean isRstream() {
+		return rstream;
+	}
+
+	public void setRstream(boolean rstream) {
+		this.rstream = rstream;
+	}
+
+	public boolean isIstream() {
+		return istream;
+	}
+
+	public void setIstream(boolean istream) {
+		this.istream = istream;
+	}
+
+	public boolean isDstream() {
+		return dstream;
+	}
+
+	public void setDstream(boolean dstream) {
+		this.dstream = dstream;
 	}
 	
 }

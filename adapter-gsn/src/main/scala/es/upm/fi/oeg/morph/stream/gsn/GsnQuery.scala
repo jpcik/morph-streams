@@ -17,8 +17,10 @@ import es.upm.fi.oeg.morph.stream.algebra.xpr.Xpr
 import java.util.Calendar
 import es.upm.fi.oeg.morph.common.TimeUnit
 import java.text.SimpleDateFormat
+import es.upm.fi.oeg.morph.stream.query.Modifiers
 
-class GsnQuery(projectionVars:Map[String,String]) extends SqlQuery(projectionVars){   
+class GsnQuery(projectionVars:Map[String,String],mods:Array[Modifiers.OutputModifier]) 
+  extends SqlQuery(projectionVars,mods){   
   
   var vars:Map[String,Seq[String]]=_
   var expressions:Map[String,Xpr]=_

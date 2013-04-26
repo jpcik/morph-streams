@@ -60,7 +60,7 @@ class GsnAdapter(props:Properties,actorSystem:ActorSystem) extends StreamEvaluat
         case proj:ProjectionOp=>multidata(gsnQuery)
         case union:MultiUnionOp=>
           val streams=union.children.values.map{op=>                    
-            val q=new GsnQuery(gsnQuery.projectionVars)
+            val q=new GsnQuery(gsnQuery.projectionVars,gsnQuery.outputMods)
             q.load(op)
             multidata(q)
           }
