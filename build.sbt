@@ -2,7 +2,7 @@ name := "morph-streams"
 
 organization := "es.upm.fi.oeg.morph"
 
-version := "1.0.1"
+version := "1.0.5"
 
 scalaVersion := "2.9.1"
 
