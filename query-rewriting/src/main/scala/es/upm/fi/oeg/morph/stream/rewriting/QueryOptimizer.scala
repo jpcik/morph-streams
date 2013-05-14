@@ -91,7 +91,7 @@ class QueryOptimizer{
         logger.debug(join.hasEqualConditions+ join.isCompatible.toString+op1.getRelation)
         if (join.hasEqualConditions && join.isCompatible && 
             op1.getRelation.extentName.equals(op2.getRelation.extentName) &&
-            op1.subOp.isInstanceOf[RelationOp] && op2.subOp.isInstanceOf[RelationOp] &&
+            //op1.subOp.isInstanceOf[RelationOp] && op2.subOp.isInstanceOf[RelationOp] &&
             join.isJoinOnPk  ){
           logger.debug("merging projs")
           op1.merge(op2)

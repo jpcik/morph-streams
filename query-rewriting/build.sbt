@@ -2,17 +2,13 @@ name := "query-rewriting"
 
 organization := "es.upm.fi.oeg.morph"
 
-version := "1.0.4"
+version := "1.0.5"
 
 libraryDependencies ++= Seq(
-  //"xml-apis" % "xml-apis" % "1.3.04",
   "net.sf" % "jsqlparser" % "0.0.1",
   "ch.qos.logback" % "logback-classic" % "1.0.9",  
-  //"es.upm.fi.dia.oeg.sparql" % "resultbindings" % "0.0.1",
-  //"commons-lang" % "commons-lang" % "2.4",
-  //"com.google.guava" % "guava" % "r09",
-  "es.upm.fi.oeg.morph" % "morph-core" % "1.0.2",
-  "es.upm.fi.oeg.morph" % "morph-querygen" % "1.0.2",
+  "es.upm.fi.oeg.morph" % "morph-core" % "1.0.3",
+  "es.upm.fi.oeg.morph" % "morph-querygen" % "1.0.3",
   "com.typesafe.akka" %% "akka-actor" % "2.1.2",
   "org.apache.ws.commons.axiom" % "axiom-api" % "1.2.11",
   "org.apache.ws.commons.axiom" % "axiom-impl" % "1.2.11",  
