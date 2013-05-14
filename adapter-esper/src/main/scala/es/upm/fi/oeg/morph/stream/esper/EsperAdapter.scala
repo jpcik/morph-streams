@@ -43,7 +43,7 @@ class EsperAdapter(props:Properties,system:ActorSystem) extends  StreamEvaluator
   def registerQuery(query:SourceQuery)={
     val esperQuery=query.asInstanceOf[EsperQuery]
     val qs:Seq[EsperQuery]=
-      if (esperQuery.unions.size>0) esperQuery.unions
+      if (esperQuery.unions.size>0) esperQuery.unionQueries
       else Array(esperQuery)
     val queryIds=qs.map{q =>    	
       val d=(proxy.engine ? RegisterQuery(q.serializeQuery))
@@ -58,7 +58,7 @@ class EsperAdapter(props:Properties,system:ActorSystem) extends  StreamEvaluator
   def pull(id:String,query:SourceQuery)={
     val esperQuery=query.asInstanceOf[EsperQuery]
     val queries:Seq[EsperQuery]=
-      if (esperQuery.unions.size>0) esperQuery.unions
+      if (esperQuery.unions.size>0) esperQuery.unionQueries
       else Array(esperQuery) 
     val queryIds=ids.getOrElse(id,Seq(id)).zip(queries)
     val results=queryIds.map{qid=>
@@ -72,7 +72,7 @@ class EsperAdapter(props:Properties,system:ActorSystem) extends  StreamEvaluator
   def listenQuery(query:SourceQuery,receiver:StreamReceiver){
     val esperQuery=query.asInstanceOf[EsperQuery]
     val queries:Seq[EsperQuery]=
-      if (esperQuery.unions.size>0) esperQuery.unions
+      if (esperQuery.unions.size>0) esperQuery.unionQueries
       else Array(esperQuery)
       
     queries.foreach{q=>

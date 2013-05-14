@@ -5,12 +5,12 @@ import es.upm.fi.oeg.morph.stream.algebra.xpr.Xpr
 import es.upm.fi.oeg.morph.stream.algebra.xpr.UnassignedVarXpr
 import scala.collection.mutable.ArrayBuffer
 
-class DatacellQuery(projectionVars:Map[String,String]) extends SqlQuery(projectionVars,Array()) {
+class DatacellQuery(op:AlgebraOp,projectionVars:Map[String,String]) extends SqlQuery(op,projectionVars,Array()) {
   
-  val selectXprs=new collection.mutable.HashMap[String,Xpr]
-  val from=new ArrayBuffer[String]
-  val where=new ArrayBuffer[String]
-  val unions=new ArrayBuffer[String]
+  //val selectXprs=new collection.mutable.HashMap[String,Xpr]
+  //val from=new ArrayBuffer[String]
+  //val where=new ArrayBuffer[String]
+  //override val unions=new ArrayBuffer[String]
   
   def serializeSelect=
     "SELECT "+ selectXprs.map(s=>s._2 +" AS "+s._1).mkString(",")
@@ -41,10 +41,10 @@ class DatacellQuery(projectionVars:Map[String,String]) extends SqlQuery(projecti
   def generateUnion(op:AlgebraOp):Unit=op match{
     case union:MultiUnionOp=>
       val un=union.children.values.map{opi=>
-        val q=new DatacellQuery(projectionVars)
+        val q=new DatacellQuery(op,projectionVars)
         q.build(new RootOp("",opi))                
       }
-      unions++=un
+      //unions++=un
   }
   
   def generateFrom(op:AlgebraOp):Unit=op match{
@@ -71,7 +71,7 @@ class DatacellQuery(projectionVars:Map[String,String]) extends SqlQuery(projecti
       from+=extentAlias(rel)
     case union:MultiUnionOp=>
       val un=union.children.values.map{opi=>
-        val q=new DatacellQuery(projectionVars)
+        val q=new DatacellQuery(opi,projectionVars)
         q.build(new RootOp("",opi))                
       }
       from+=un.mkString(" union ")
@@ -116,19 +116,19 @@ class DatacellQuery(projectionVars:Map[String,String]) extends SqlQuery(projecti
 	    }
 	  //case union:OpUnion=>return build(union.left)+" UNION  "+build(union.getRight)			
       case proj:ProjectionOp=>
-        return "(SELECT "+ serializeSelect(proj)+" FROM "+build(proj.subOp)+")";
+        return "(SELECT "//+ serializeSelect(proj)+" FROM "+build(proj.subOp)+")";
 	  case win:WindowOp=>
 	    return win.extentName+ " WHERE ts " + window(win) //+ " "+win.extentName
       case rel:RelationOp=>return rel.extentName
 	  case sel:SelectionOp=>
 		return build(sel.subOp)+ " AND "+serializeExpressions(sel.expressions.toSeq,null)
 	  case join:LeftOuterJoinOp=>
-	    var select = "SELECT "+projVars(join)+" FROM "+ get(join).mkString(",") 
+	    var select = "SELECT "//+projVars(join)+" FROM "+ get(join).mkString(",") 
 		if (!join.conditions.isEmpty)
 			select+=" WHERE "+joinXprs(join).mkString(" AND ")+" "+conditions(join).mkString(" AND ")
 	    select
 	  case join:InnerJoinOp=>
-		var select = "SELECT "+projVars(join)+//serializeSelect(opLeft,"",true)+ ", "+serializeSelect(opRight,"2",true) +
+		var select = "SELECT "+//projVars(join)+//serializeSelect(opLeft,"",true)+ ", "+serializeSelect(opRight,"2",true) +
 				" FROM "+ get(join).mkString(",") //build(opLeft.getSubOp())+","+build(opRight.getSubOp());
 		if (!join.conditions.isEmpty)
 			select+=" WHERE "+joinXprs(join).mkString(" AND ")+" "+conditions(join).mkString(" AND ");

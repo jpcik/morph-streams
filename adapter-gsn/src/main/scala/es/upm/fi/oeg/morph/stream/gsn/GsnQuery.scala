@@ -19,13 +19,14 @@ import es.upm.fi.oeg.morph.common.TimeUnit
 import java.text.SimpleDateFormat
 import es.upm.fi.oeg.morph.stream.query.Modifiers
 
-class GsnQuery(projectionVars:Map[String,String],mods:Array[Modifiers.OutputModifier]) 
-  extends SqlQuery(projectionVars,mods){   
+class GsnQuery(op:AlgebraOp,projectionVars:Map[String,String],mods:Array[Modifiers.OutputModifier]) 
+  extends SqlQuery(op,projectionVars,mods){   
   
   var vars:Map[String,Seq[String]]=_
   var expressions:Map[String,Xpr]=_
   var algebra:AlgebraOp=_
   
+  /*
   override def load(op:AlgebraOp){
 	super.load(op)
 	this.innerQuery = build(op)
@@ -33,7 +34,7 @@ class GsnQuery(projectionVars:Map[String,String],mods:Array[Modifiers.OutputModi
 	loadModifiers(op)
 	vars=varMappings(op)
 	expressions=varXprs(op)
-  }
+  }*/
 
   override def getProjection:Map[String,String]={
     projectionVars.map(p=>p._1->null)
@@ -149,7 +150,7 @@ class GsnQuery(projectionVars:Map[String,String],mods:Array[Modifiers.OutputModi
 	  case root:RootOp=>return build(root.subOp)
 	  //case union:OpUnion=>return build(union.getLeft)+" UNION  "+build(union.getRight)			
       case proj:ProjectionOp=>
-        println("proj vars: "+projVars(proj))
+        //println("proj vars: "+projVars(proj))
         "field[0]="+projVarNames(proj).map(trimExtent(_)).filterNot(_.equals("timed")).mkString(",")+"&"+build(proj.subOp)
 	  case win:WindowOp=> 
 	    val dt= Calendar.getInstance()

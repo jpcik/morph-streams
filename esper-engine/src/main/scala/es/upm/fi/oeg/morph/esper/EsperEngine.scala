@@ -41,9 +41,16 @@ class EsperEngine extends Actor{
    	  val propNames=ref.getEventType.getPropertyNames
       ref.addListener(new UpdateListener{
         def update(newData:Array[EventBean],oldData:Array[EventBean]){  
-          if (logger.isTraceEnabled)
-            logger.trace("Sending events: "+newData.map(i=>propNames.map(i.get(_)).mkString(",")).mkString)
-          actor ! newData.map{i=>propNames.map(key=>i.get(key))}
+                      
+          /*if (oldData!=null){  
+            logger.debug("Sending old events: "+oldData.map(i=>propNames.map(i.get(_)).mkString(",")).mkString)
+            actor ! oldData.map{i=>propNames.map(key=>i.get(key))}
+          }*/
+          if (newData!=null){
+            if (logger.isTraceEnabled)
+              logger.trace("Sending events: "+newData.map(i=>propNames.map(i.get(_)).mkString(",")).mkString)
+            actor ! newData.map{i=>propNames.map(key=>i.get(key))}
+          }
         }
       })
   	  sender ! ref.getName

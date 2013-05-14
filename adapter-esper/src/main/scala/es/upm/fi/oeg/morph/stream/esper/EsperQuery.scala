@@ -28,13 +28,11 @@ import com.hp.hpl.jena.query.QuerySolution
 import es.upm.fi.oeg.morph.voc.RDFFormat
 import es.upm.fi.oeg.morph.stream.query.Modifiers
 
-class EsperQuery (projectionVars:Map[String,String],mods:Array[Modifiers.OutputModifier]) extends SqlQuery(projectionVars,mods) {
-  val selectXprs=new collection.mutable.HashMap[String,Xpr]
-  val allXprs=new collection.mutable.HashMap[String,Xpr]
-  private val from=new ArrayBuffer[String]
-  private val where=new ArrayBuffer[String]
-  val unions=new ArrayBuffer[EsperQuery]
-  private var distinct:Boolean=false
+class EsperQuery (op:AlgebraOp,projectionVars:Map[String,String],mods:Array[Modifiers.OutputModifier]) 
+  extends SqlQuery(op,projectionVars,mods) {
+  
+  lazy val unionQueries:Seq[EsperQuery]=unions.asInstanceOf[Seq[EsperQuery]]
+  var outputevery=""
   
   def serializeSelect=
     "SELECT "+ 
@@ -71,8 +69,8 @@ class EsperQuery (projectionVars:Map[String,String],mods:Array[Modifiers.OutputM
   def generateUnion(op:AlgebraOp):Unit=op match{
     case union:MultiUnionOp=>
       val un=union.children.values.map{opi=>
-        val q=new EsperQuery(projectionVars,mods)
-        q.load(new RootOp("",opi))
+        val q=new EsperQuery(new RootOp("",opi),projectionVars,mods)
+        //q.load(new RootOp("",opi))
         q
       }
       unions++=un
@@ -93,8 +91,9 @@ class EsperQuery (projectionVars:Map[String,String],mods:Array[Modifiers.OutputM
     case rel:RelationOp=> from+=extentAlias(rel)
     case union:MultiUnionOp=>
       val un=union.children.values.map{opi=>
-        val q=new EsperQuery(projectionVars,mods)
-        q.build(new RootOp("",opi))                
+        val q=new EsperQuery(new RootOp("",opi),projectionVars,mods)
+        q.serializeQuery
+        //q.build(new RootOp("",opi))                
       }
       from+=un.mkString(" union ")
   }
@@ -188,7 +187,7 @@ class EsperQuery (projectionVars:Map[String,String],mods:Array[Modifiers.OutputM
     	  generateWhere(op,allXprs.toMap)
 	      val wherestr=if (where.isEmpty) "" else " WHERE "+where.mkString(" AND ")
 	      //return fakeQuery(q)
-	      serializeSelect+" FROM "+from.mkString(",")+wherestr
+	      serializeSelect+" FROM "+from.mkString(",")+wherestr+ outputevery
 	    }
 	  
 	  case _=>throw new Exception("Unsupported operator: "+op)
@@ -204,8 +203,17 @@ class EsperQuery (projectionVars:Map[String,String],mods:Array[Modifiers.OutputM
     val spec=win.windowSpec
     val to=interval(spec.to,spec.toUnit)
     val from=interval(spec.from,spec.fromUnit)
-    ".win:time("+from+")"      
-    //".win:time_batch("+from+", 3000L )"
+    if (spec.slideUnit!=null){
+      val percent=spec.slide*2d/100
+      val every=if (spec.slideUnit==TimeUnit.MILLISECOND && spec.slide<=500) spec.slide-percent
+      else spec.slide-percent     
+      outputevery=" output snapshot every "+interval(every,spec.slideUnit)
+    }
+    //  
+    //if (spec.from==spec.slide && spec.fromUnit==spec.slideUnit)
+    //  ".win:time_batch("+from+")"
+    //else
+    ".win:time("+from+")" 
   }
  
 }

@@ -23,7 +23,8 @@ import es.upm.fi.oeg.morph.stream.algebra.xpr.Xpr
 import es.upm.fi.oeg.morph.stream.algebra.xpr.ReplaceXpr
 import es.upm.fi.oeg.morph.stream.algebra.xpr.VarXpr
 
-class GsnResultSet(val records: Stream[Array[String]], val metadata: Map[String, Xpr]) extends ResultSet {
+class GsnResultSet(val records: Stream[Array[String]], val metadata: Map[String, Xpr]) 
+  extends ResultSet {
   val it = records.iterator
   var current: Seq[String] = _
 

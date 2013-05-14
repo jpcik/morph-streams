@@ -1,24 +1,32 @@
 package es.upm.fi.oeg.morph.stream.wrapper
 
 import scala.xml._
-import com.sun.jersey.api.client.Client
-import com.sun.jersey.core.util.MultivaluedMapImpl
+//import com.sun.jersey.api.client.Client
+//import com.sun.jersey.core.util.MultivaluedMapImpl
+import dispatch._
 import java.text.DateFormat
 import java.util.Locale
 import java.util.TimeZone
 import scala.language.postfixOps
 
 class Wunderground(id:String) {
-  private val client = Client.create
+     
+
+  //private val client = Client.create
   private val webResource = {
-    val wundurl="http://api.wunderground.com/weatherstation/WXCurrentObXML.asp"
-    val queryParams = new MultivaluedMapImpl
-    queryParams.add("ID",id) 
-    client.resource(wundurl).queryParams(queryParams)    
+    val svc = url("http://api.wunderground.com/weatherstation/WXCurrentObXML.asp")
+    svc.addQueryParameter("ID", id)
+    svc
+    //val resp = Http(svc OK as.String)
+    //val wundurl="http://api.wunderground.com/weatherstation/WXCurrentObXML.asp"
+    //val queryParams = new MultivaluedMapImpl
+    //queryParams.add("ID",id) 
+    //client.resource(wundurl).queryParams(queryParams)    
   }
   def getData={
-	val res= webResource.get(classOf[String])
-	val obs=Observation.fromXml(XML.loadString(res))
+    val res=Http(webResource OK as.String)
+	//val res= webResource.get(classOf[String])
+	val obs=Observation.fromXml(XML.loadString(res()))
 	println(obs)
 	obs
   }

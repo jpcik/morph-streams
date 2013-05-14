@@ -79,6 +79,10 @@ import es.upm.fi.oeg.morph.stream.algebra.PatternOp
 import es.upm.fi.oeg.morph.stream.algebra.xpr.ConstantXpr
 import org.slf4j.LoggerFactory
 import es.upm.fi.oeg.morph.stream.query.Modifiers
+import com.hp.hpl.jena.sparql.expr.Expr
+import com.hp.hpl.jena.sparql.expr.ExprVar
+import com.hp.hpl.jena.sparql.expr.ExprFunction0
+import com.hp.hpl.jena.sparql.expr.NodeValue
 
 class QueryRewriting(props: Properties,mapping:String) {
   private val logger= LoggerFactory.getLogger(this.getClass)
@@ -144,16 +148,18 @@ class QueryRewriting(props: Properties,mapping:String) {
           case e: ClassNotFoundException =>throw new QueryRewritingException("Unable to use adapter query", e)
         }
         try 
-          theClass.getDeclaredConstructor(classOf[Map[String,String]],classOf[Array[Modifiers.OutputModifier]])
-            .newInstance(projectVars,mods).asInstanceOf[SourceQuery]
+          theClass.getDeclaredConstructor(classOf[AlgebraOp],
+                                          classOf[Map[String,String]],
+                                          classOf[Array[Modifiers.OutputModifier]])
+            .newInstance(algebra,projectVars,mods).asInstanceOf[SourceQuery]
         catch {
           case e: InstantiationException =>throw new QueryRewritingException("Unable to instantiate query", e)
           case e: IllegalAccessException =>throw new QueryRewritingException("Unable to instantiate query", e)
         }
       } 
-      else new SqlQuery(projectVars,mods)
+      else new SqlQuery(algebra,projectVars,mods)
         
-    resquery.load(algebra)
+    //resquery.load(algebra)
     logger.info(resquery.serializeQuery)
     return resquery
   }
@@ -487,21 +493,11 @@ class QueryRewriting(props: Properties,mapping:String) {
         val inner = navigate(filter.getSubOp(), query);
 
         val selXprs:Set[Xpr]=filter.getExprs.iterator.map{ex=>
-          val expr = ex.asInstanceOf[ExprFunction2];
-          val function = expr.getFunction
-          val xpr =
-            if (expr.getArg2().getConstant() != null)
-              new BinaryXpr(function.getOpName,VarXpr(expr.getArg1.getVarName) ,ValueXpr(
-                expr.getArg2.getConstant.toString))
-            else
-              new BinaryXpr(function.getOpName,VarXpr(expr.getArg1.getVarName),                
-                VarXpr(expr.getArg2.getVarName))
-          xpr
-        
+          decodeXpr(ex)        
         }.toSet
         
-        val selection = new SelectionOp("selec", inner,selXprs);
-        return selection;
+        val selection = new SelectionOp("selec", inner,selXprs)
+        return selection
       } else if (op.isInstanceOf[OpService]) {
         val service = op.asInstanceOf[OpService];
         
@@ -580,6 +576,17 @@ class QueryRewriting(props: Properties,mapping:String) {
       alias.get._1.getVarName
     else varname
     
+  }
+
+  private def decodeXpr(ex:Expr):Xpr=ex match{
+    case expr:ExprFunction2=>
+      val function = expr.getFunction
+      BinaryXpr(function.getOpName,decodeXpr(expr.getArg1),decodeXpr(expr.getArg2))      
+    case vxpr:ExprVar=>VarXpr(vxpr.getVarName)
+    case const:ExprFunction0=>ValueXpr(const.getConstant.toString)
+    case vale:NodeValue=>ValueXpr(vale.asString)
+    case _=>throw new NotImplementedException("Not implemented expression: "+ex)
+      
   }
   
   private def aggregator(varName:String,agg:Aggregator)={
@@ -759,11 +766,10 @@ class QueryRewriting(props: Properties,mapping:String) {
         logger.debug("Create window: " + stream.getUri)
         val sw = stream.window.asInstanceOf[ElementTimeWindow]
         val wn=
-          if (sw != null) {
-            /*val (to,toU):(Long,TimeUnit)= 
-              if (sw.to != null)  (sw.to.time,sw.to.getUnit)              
-              else (null,null)  */          
-            new WindowSpec("",sw.from.time,sw.from.unit,0,null,0,null)                                   
+          if (sw != null) {         
+            val (slide,slunit)=if (sw.slide==null) (0L,null) 
+              else (sw.slide.time,sw.slide.unit)
+            new WindowSpec("",sw.from.time,sw.from.unit,0,null,slide,slunit)                                   
           } else null
           
           new WindowOp(tableid+getAlias+uri, extentName,tMap.logicalTable.pk,wn)
