@@ -7,8 +7,8 @@ abstract class SourceQuery(op:AlgebraOp) {
   protected def build(op:AlgebraOp):String
   def serializeQuery:String
   def supportsPostProc:Boolean
-  def getProjection:Map[String, String]
-  def getConstruct:Template
+  def projectionVars:Array[String]
+  def construct:Template
 }
 
 //class OutputModifier

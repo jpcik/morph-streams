@@ -5,7 +5,7 @@ import es.upm.fi.oeg.morph.stream.algebra.xpr.Xpr
 import es.upm.fi.oeg.morph.stream.algebra.xpr.UnassignedVarXpr
 import scala.collection.mutable.ArrayBuffer
 
-class DatacellQuery(op:AlgebraOp,projectionVars:Map[String,String]) extends SqlQuery(op,projectionVars,Array()) {
+class DatacellQuery(op:AlgebraOp,projectionVars:Map[String,String]) extends SqlQuery(op,Array()) {
   
   //val selectXprs=new collection.mutable.HashMap[String,Xpr]
   //val from=new ArrayBuffer[String]
@@ -20,7 +20,7 @@ class DatacellQuery(op:AlgebraOp,projectionVars:Map[String,String]) extends SqlQ
     case root:RootOp=>generateWhere(root.subOp)
     case group:GroupOp=>generateWhere(group.subOp)
     case join:InnerJoinOp=>
-      val joinXpr = get(join).mkString(",") 
+      //val joinXpr = get(join).mkString(",") 
       if (joinConditions && !join.conditions.isEmpty) 			  
 		where+=joinXprs(join).mkString(" RAND ")		
 	  generateWhere(join.left,false)
@@ -29,7 +29,7 @@ class DatacellQuery(op:AlgebraOp,projectionVars:Map[String,String]) extends SqlQ
 	  generateWhere(join.left)
 	  generateWhere(join.right)
     case sel:SelectionOp=>
-      where++=conditions(sel,Map())
+      where++=conditions(sel)
       generateWhere(sel.subOp)
     case proj:ProjectionOp=>generateWhere(proj.subOp)
     case win:WindowOp=>      
@@ -50,11 +50,11 @@ class DatacellQuery(op:AlgebraOp,projectionVars:Map[String,String]) extends SqlQ
   def generateFrom(op:AlgebraOp):Unit=op match{
     case root:RootOp=>generateFrom(root.subOp)
     case join:LeftOuterJoinOp=>
-      from++=get(join)
+      //from++=get(join)
 	  //generateFrom(join.left)
 	  //generateFrom(join.right)
     case join:JoinOp=>
-      val joinXpr = get(join).mkString(",") 
+      //val joinXpr = get(join).mkString(",") 
       //if (!join.conditions.isEmpty) 			  
 	  //  where+=joinXprs(join).mkString		
 	  generateFrom(join.left)
@@ -86,12 +86,12 @@ class DatacellQuery(op:AlgebraOp,projectionVars:Map[String,String]) extends SqlQ
         val xpr=if (e._2==UnassignedVarXpr) null
           else e._2 
         if (isroot) selectXprs.put(e._1,xpr)
-        else if (selectXprs.contains(e._1)) selectXprs.put(e._1,repExpr(e._2,proj.subOp))
+        else if (selectXprs.contains(e._1)) selectXprs.put(e._1,condExpr(e._2,proj.subOp))
       }
       generateSelectVars(proj.subOp)
     case group:GroupOp=>
       group.aggs.foreach{agg=>
-        if (selectXprs.contains(agg._1)) selectXprs.put(agg._1,repExpr(agg._2,group))
+        if (selectXprs.contains(agg._1)) selectXprs.put(agg._1,condExpr(agg._2,group))
       }
       generateSelectVars(group.subOp)
     case join:JoinOp=>
@@ -121,7 +121,7 @@ class DatacellQuery(op:AlgebraOp,projectionVars:Map[String,String]) extends SqlQ
 	    return win.extentName+ " WHERE ts " + window(win) //+ " "+win.extentName
       case rel:RelationOp=>return rel.extentName
 	  case sel:SelectionOp=>
-		return build(sel.subOp)+ " AND "+serializeExpressions(sel.expressions.toSeq,null)
+		return build(sel.subOp)+ " AND "//+serializeExpressions(sel.expressions.toSeq,null)
 	  case join:LeftOuterJoinOp=>
 	    var select = "SELECT "//+projVars(join)+" FROM "+ get(join).mkString(",") 
 		if (!join.conditions.isEmpty)
@@ -129,7 +129,7 @@ class DatacellQuery(op:AlgebraOp,projectionVars:Map[String,String]) extends SqlQ
 	    select
 	  case join:InnerJoinOp=>
 		var select = "SELECT "+//projVars(join)+//serializeSelect(opLeft,"",true)+ ", "+serializeSelect(opRight,"2",true) +
-				" FROM "+ get(join).mkString(",") //build(opLeft.getSubOp())+","+build(opRight.getSubOp());
+				" FROM "//+ get(join).mkString(",") //build(opLeft.getSubOp())+","+build(opRight.getSubOp());
 		if (!join.conditions.isEmpty)
 			select+=" WHERE "+joinXprs(join).mkString(" AND ")+" "+conditions(join).mkString(" AND ");
 			

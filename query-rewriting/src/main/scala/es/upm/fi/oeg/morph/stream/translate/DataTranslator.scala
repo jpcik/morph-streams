@@ -49,7 +49,7 @@ class DataTranslator(results:Seq[ResultSet],query:SourceQuery) {
 	  catch {
 	    case e:SQLException =>throw new QueryException("Cannot get value for "+columnName,e)
 		case e:NumberFormatException=>throw new QueryException("Cannot get value for "+columnName,e)
-		case e:ArrayIndexOutOfBoundsException=>throw new QueryException("Result Set inconsistent, column "+columnName,e)
+		case e:ArrayIndexOutOfBoundsException=>throw new QueryException("Result Set inconsistent, column "+columnName+".",e)
 	  }
 	logger.trace("value as is: "+value)
 	if (value!=null){
@@ -67,8 +67,8 @@ class DataTranslator(results:Seq[ResultSet],query:SourceQuery) {
   }
   
   def transform:SparqlResults =	{
-    val vars=query.getProjection.keys.toList
-    val projListKeys=query.getProjection.keySet
+    val vars=query.projectionVars.toList
+    //val projListKeys=query.projectionVars
     
 	if (results == null)
 	  return new SparqlResults(vars,Iterator()) 
@@ -76,7 +76,7 @@ class DataTranslator(results:Seq[ResultSet],query:SourceQuery) {
 	results.foreach{rs=>
 	  try {
 		while (rs.next) {		 
-		  val bndng=projListKeys.map{columnName=>createBinding(rs,columnName)}
+		  val bndng=vars.map{columnName=>createBinding(rs,columnName)}
 		    .filter(_!=null)
 		  	
  		  val bndgs=new SparqlBinding(bndng.toMap)

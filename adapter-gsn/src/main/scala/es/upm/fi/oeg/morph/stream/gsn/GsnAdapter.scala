@@ -50,7 +50,7 @@ class GsnAdapter(props:Properties,actorSystem:ActorSystem) extends StreamEvaluat
 	}
 	val stream = Stream.continually(it.next).takeWhile(_=>it.hasNext).map(_.split(','))
 	println("stream created")
-	new GsnResultSet(stream,query.expressions)
+	new GsnResultSet(stream,query.queryExpressions)
   }
   
   def executeQuery(query:SourceQuery)={
@@ -60,7 +60,7 @@ class GsnAdapter(props:Properties,actorSystem:ActorSystem) extends StreamEvaluat
         case proj:ProjectionOp=>multidata(gsnQuery)
         case union:MultiUnionOp=>
           val streams=union.children.values.map{op=>                    
-            val q=new GsnQuery(op,gsnQuery.projectionVars,gsnQuery.outputMods)
+            val q=new GsnQuery(op,gsnQuery.outputMods)
             //q.load(op)
             multidata(q)
           }

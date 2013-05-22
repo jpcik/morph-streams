@@ -72,12 +72,15 @@ class PercentEncodeXpr(val vari:VarXpr) extends FunctionXpr("pencode",Seq(vari))
     URLTools.encode(values(vari.varName).toString) 
 }
 
-class ConstantXpr(par:String) extends OperationXpr("constant",ValueXpr(par))
+class ConstantXpr(par:String) extends OperationXpr("constant",ValueXpr(par)) {
+  override def toString="'"+par+"'"
+  override def evaluate=par
+}
 
 case class OperationXpr(op:String,param:Xpr) extends Xpr{
   override def toString=
-    if (op.equals("constant")) "'"+param.toString+"'"
-	else op+"("+param.toString+")"
+    //if (op.equals("constant")) "'"+param.toString+"'"
+	op+"("+param.toString+")"
 	
   override def isEqual(other:Xpr)=other match{
 	case oper:OperationXpr=> 
@@ -88,8 +91,7 @@ case class OperationXpr(op:String,param:Xpr) extends Xpr{
   override def varNames=param.varNames
   override def copy=new OperationXpr(op, param.copy)
   
-  def evaluate=if (op.equals("constant")) param.toString
-    else throw new NotImplementedException("evaluation of operation not impl. "+op) 
+  def evaluate:Object= throw new NotImplementedException("evaluation of operation not impl. "+op) 
 }
 
 

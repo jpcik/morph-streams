@@ -19,12 +19,12 @@ import es.upm.fi.oeg.morph.common.TimeUnit
 import java.text.SimpleDateFormat
 import es.upm.fi.oeg.morph.stream.query.Modifiers
 
-class GsnQuery(op:AlgebraOp,projectionVars:Map[String,String],mods:Array[Modifiers.OutputModifier]) 
-  extends SqlQuery(op,projectionVars,mods){   
+class GsnQuery(op:AlgebraOp,mods:Array[Modifiers.OutputModifier]) 
+  extends SqlQuery(op,mods){   
   
-  var vars:Map[String,Seq[String]]=_
-  var expressions:Map[String,Xpr]=_
-  var algebra:AlgebraOp=_
+  val vars:Map[String,Seq[String]]=varMappings(op)
+  //val expressions:Map[String,Xpr]=_
+  val algebra:AlgebraOp=op
   
   /*
   override def load(op:AlgebraOp){
@@ -35,10 +35,10 @@ class GsnQuery(op:AlgebraOp,projectionVars:Map[String,String],mods:Array[Modifie
 	vars=varMappings(op)
 	expressions=varXprs(op)
   }*/
-
+/*
   override def getProjection:Map[String,String]={
     projectionVars.map(p=>p._1->null)
-  }
+  }*/
   
   override def supportsPostProc=false
   
@@ -151,7 +151,8 @@ class GsnQuery(op:AlgebraOp,projectionVars:Map[String,String],mods:Array[Modifie
 	  //case union:OpUnion=>return build(union.getLeft)+" UNION  "+build(union.getRight)			
       case proj:ProjectionOp=>
         //println("proj vars: "+projVars(proj))
-        "field[0]="+projVarNames(proj).map(trimExtent(_)).filterNot(_.equals("timed")).mkString(",")+"&"+build(proj.subOp)
+        val projvars=proj.getVarMappings.values.flatten.toSet.filterNot(_.equals("timed"))
+        "field[0]="+projvars.mkString(",")+"&"+build(proj.subOp)
 	  case win:WindowOp=> 
 	    val dt= Calendar.getInstance()
 	    val from=win.windowSpec.from
@@ -166,7 +167,7 @@ class GsnQuery(op:AlgebraOp,projectionVars:Map[String,String],mods:Array[Modifie
 	    "vs[0]="+win.extentName+"&from="+df.format(dt.getTime)+"&gogog="+t
       case rel:RelationOp=> "vs[0]="+rel.extentName
 	  case sel:SelectionOp=>
-		return build(sel.subOp)+ " WHERE "+serializeExpressions(sel.expressions.toSeq,null)
+		return build(sel.subOp)+ " WHERE "//+serializeExpressions(sel.expressions.toSeq,null)
 	  case join:LeftOuterJoinOp=>throw new NotImplementedException("NYI Left Join")
 	  /*
 	    var select = "SELECT "+projVars(join)+" FROM "+ get(join).mkString(",") 

@@ -1,5 +1,9 @@
 package es.upm.fi.oeg.morph.stream.algebra
 import es.upm.fi.oeg.morph.common.TimeUnit
+import com.hp.hpl.jena.sparql.algebra.op.OpBGP
+import collection.JavaConversions._
+import com.hp.hpl.jena.util.PrintUtil
+import com.hp.hpl.jena.sparql.sse.SSE
 
 class RelationOp(relationId:String,val extentName:String, val pk:Set[String]) 
   extends UnaryOp(relationId,"relation",null){
@@ -22,10 +26,15 @@ class WindowOp(windowId:String,extentName:String,pk:Set[String],val windowSpec:W
 	
 }
 
-class PatternOp(patternId:String, extentName:String, val pattern:String)
+class PatternOp(patternId:String, extentName:String, val pattern:OpBGP)
   extends RelationOp(patternId,extentName,null){
   override def copyOp=new PatternOp(id, extentName,pattern)
-  override def toString="pattern"+" "+ extentName+ " "+pattern
+  override def toString="pattern"+" "+ extentName+ " "+pattern.getPattern.toString
+  def patternString={
+    pattern.getPattern.iterator.map{t=>
+      t.getSubject.toString + " <"+t.getPredicate.toString +"> "+t.getObject.toString+"."
+    }.mkString
+  }  
 }
 
 

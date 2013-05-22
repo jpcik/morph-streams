@@ -27,82 +27,79 @@ import es.upm.fi.oeg.morph.stream.algebra.xpr.AggXpr
 import es.upm.fi.oeg.morph.stream.algebra.xpr.ReplaceXpr
 import es.upm.fi.oeg.morph.stream.algebra.xpr.ConstantXpr
 import scala.collection.mutable.ArrayBuffer
+import org.slf4j.LoggerFactory
 
-class SqlQuery(op:AlgebraOp,val projectionVars:Map[String,String],val outputMods:Array[Modifiers.OutputModifier]) 
+class SqlQuery(op:AlgebraOp, val outputMods:Array[Modifiers.OutputModifier]) 
   extends SourceQuery(op){
+  private val logger = LoggerFactory.getLogger(this.getClass)
   private val niceAlias=new collection.mutable.HashMap[String,String]
   private var aliasGen=0
-  private val varsX:Map[String,Xpr]=varXprs(op)
-  val selectXprs=new collection.mutable.HashMap[String,Xpr]
-  val allXprs=new collection.mutable.HashMap[String,Xpr]
+  val selectXprs=new collection.mutable.HashMap[String,Xpr]  
   protected val from=new ArrayBuffer[String]
   protected val where=new ArrayBuffer[String]
   val unions=new ArrayBuffer[SqlQuery]
   protected var distinct:Boolean=false
 
   protected val innerQuery:String=build(op)
-  lazy val queryExpressions=varsX  
+  lazy val queryExpressions=varXprs(op)
+  lazy val rootVarNames=rootVars(op)
   
-  protected def getAlias(name:String)={
+  protected def getAlias(name:String)=
     if (name==null) ""
     else{
       if (!niceAlias.contains(name)){
-        println("for name: "+name)
+        logger.trace("Alias for name: "+name)
         niceAlias.put(name,"rel"+aliasGen)
         aliasGen+=1      
       }
-    niceAlias(name)
+      niceAlias(name)
     }
-  }
   
   lazy val isRstream:Boolean=outputMods.exists(_==Modifiers.Rstream)
   lazy val isIstream:Boolean=outputMods.exists(_==Modifiers.Istream)
   lazy val isDstream:Boolean=outputMods.exists(_==Modifiers.Dstream)
   
-  /*
-  override def load(op:AlgebraOp){
-	//super.load(op)
-    varsX=varXprs(op)
-	this.innerQuery = build(op)
-  }*/
-  
   override def build(op:AlgebraOp)=""
 
-    override def serializeQuery():String=innerQuery
-    override def supportsPostProc=true
+  override def serializeQuery:String=innerQuery
+  override def supportsPostProc=true
     
-    override def getProjection:Map[String,String]=
-		return getAugmentedProjectList();
-    override def getConstruct=null
+  override def projectionVars=rootVarNames.toArray
+  override def construct=null
 
-    protected def condExpr(xpr:Xpr,op:AlgebraOp,vars:Map[String,Xpr],alias:String):Xpr={
+  protected def condExpr(xpr:Xpr,op:AlgebraOp):Xpr={
+    val vars=varXprs(op)
     xpr match {
       case varXpr:VarXpr=>
         if (vars.contains(varXpr.varName)) 
-          condExpr(vars(varXpr.varName),op,vars,getAlias(attRelation(op,varXpr.varName)))
-          //VarXpr(""+vars(varXpr.varName))
+          substXpr(vars(varXpr.varName),getAlias(attRelation(op,varXpr.varName)))
         else if (vars.keys.exists(vr=>vr.startsWith(varXpr.varName))){
           val k=vars.keys.find(vr=>vr.startsWith(varXpr.varName)).get          
           VarXpr(vars(k)+"")
         }         
-        else {
-          val rel=attRelation(op,varXpr.varName)
-          if (rel!=null) VarXpr(getAlias(rel)+"."+varXpr.varName)
-          else VarXpr(varXpr.varName)
-        }
-      case bin:BinaryXpr=>BinaryXpr(bin.op,condExpr(bin.left,op,vars,alias),condExpr(bin.right,op,vars,alias))
-      case fun:AggXpr=>new AggXpr(fun.aggOp,getAlias(attRelation(op,fun.varName))+"."+vars(fun.varName))
-      case rep:ReplaceXpr=>
-        println("this is the concat experience")
-        val al=if (alias!=null) alias
-          else getAlias(attRelation(op,rep.varNames.head)) 
-        ValueXpr(concatXpr(rep,al))
+        else 
+          substXpr(varXpr,getAlias(attRelation(op,varXpr.varName)))      
+      case bin:BinaryXpr=>BinaryXpr(bin.op,condExpr(bin.left,op),condExpr(bin.right,op))
+      case fun:AggXpr=>substXpr(new AggXpr(fun.aggOp,vars(fun.varName).toString),getAlias(attRelation(op,fun.varName)))
+      //case rep:ReplaceXpr=>substReplaceXpr(rep,alias)
+    
       case _=>xpr
     }
   }
   
-  private def concatXpr(rep:ReplaceXpr,alias:String)={
-    val repVars=rep.varNames.map(v=>(v,alias+"."+v)).toMap
+  private def substXpr(xpr:Xpr,alias:String)={
+    val prefix=if (alias==null) "" else alias+"."
+    xpr match{
+    case rep:ReplaceXpr=>println("this is the concat experience")
+      ValueXpr(concatXpr(rep,prefix))
+    case v:VarXpr=>VarXpr(prefix+v.varName)
+    case agg:AggXpr=>new AggXpr(agg.aggOp,prefix+agg.param)
+    case _=>xpr
+    }
+  }
+  
+  private def concatXpr(rep:ReplaceXpr,prefix:String)={
+    val repVars=rep.varNames.map(v=>(v,prefix+v)).toMap
     val str=rep.template.split('{').map{s=>
       if (s.contains('}')){
         val sp=s.split('}')
@@ -114,65 +111,43 @@ class SqlQuery(op:AlgebraOp,val projectionVars:Map[String,String],val outputMods
     "("+str+")"
   }
     
+  def extentAlias(relation:RelationOp)=
+    relation.extentName+" AS "+getAlias(relation.id)
     
-  protected def repExpr(xpr:Xpr,op:AlgebraOp):Xpr={
-    xpr match {
-      case varXpr:VarXpr=>VarXpr(getAlias(attRelation(op,varXpr.varName))+"."+varXpr.varName)
-      case bin:BinaryXpr=>BinaryXpr(bin.op,repExpr(bin.left,op),repExpr(bin.right,op))
-      case fun:AggXpr=>new AggXpr(fun.aggOp,getAlias(attRelation(op,fun.varName))+"."+fun.varName)
-      case _=>xpr
-    }
+  def projExtentAlias(proj:ProjectionOp)=
+    proj.getRelation.extentName+" AS "+ getAlias(proj.getRelation.id) 
+                  
+  def projConditions(proj:ProjectionOp)=proj.subOp match{
+	case sel:SelectionOp=>sel.expressions.map(e=>condExpr(e,proj).toString).mkString(" ")
+	case _=>""	    
   }
-
-  
-    protected def repExpr(xpr:Xpr,op:AlgebraOp,vars:Map[String,Xpr]):Xpr={
-    xpr match {
-      case varXpr:VarXpr=>VarXpr(getAlias(attRelation(op,varXpr.varName))+"."+vars(varXpr.varName))
-      case bin:BinaryXpr=>BinaryXpr(bin.op,repExpr(bin.left,op),repExpr(bin.right,op))
-      case fun:AggXpr=>new AggXpr(fun.aggOp,""+vars(fun.varName))
-      case _=>xpr
-    }
-  }
-  
-    def extentAlias(relation:RelationOp)=
-      relation.extentName+" AS "+getAlias(relation.id)
-    
-    def projExtentAlias(proj:ProjectionOp)=
-      proj.getRelation.extentName+" AS "+ getAlias(proj.getRelation.id) 
-      
-      
-    def projConditions(proj:ProjectionOp)=proj.subOp match{
-	  case sel:SelectionOp=>sel.expressions.map(e=>repExpr(e,proj).toString).mkString(" ")
-	  case _=>""
-	}
-	def joinConditions(join:InnerJoinOp)=join.conditions.map(c=>unAliasXpr(join,c)).mkString(" AND ")
-	def joinConditions(join:LeftOuterJoinOp)=join.conditions.map(c=>unAliasXpr(join,c)).mkString(" AND ")
-
-		
-	protected def conditions(op:AlgebraOp,vars:Map[String,Xpr]):Seq[String]=op match{
-	  case join:InnerJoinOp=>conditions(join)
-	  case join:LeftOuterJoinOp=>conditions(join)
-	  case sel:SelectionOp=>sel.expressions.map(e=>condExpr(e,sel,vars,null).toString).toSeq
-	  case _=>List()
-	}
-	protected def conditions(join:BinaryOp):Seq[String]=(join.left,join.right) match{
-	  case (lp:ProjectionOp,rp:ProjectionOp)=>List(projConditions(lp),projConditions(rp))
-	  case (lp:ProjectionOp,a) =>List(projConditions(lp))++conditions(a,Map())
-	  case (a,rp:ProjectionOp) =>List(projConditions(rp))++conditions(a,Map()) 
-	}
-
-	protected def joinXprs(op:AlgebraOp):Seq[String]=op match{
-	  case join:InnerJoinOp=>List(joinConditions(join))++joinXprs(join.left)++joinXprs(join.right)
-	  case _=>List()
-	}
 	
+  def joinConditions(join:InnerJoinOp)=join.conditions.map(c=>unAliasXpr(join,c)).mkString(" AND ")
+  def joinConditions(join:LeftOuterJoinOp)=join.conditions.map(c=>unAliasXpr(join,c)).mkString(" AND ")
+		
+  protected def conditions(op:AlgebraOp):Seq[String]=op match{
+	case join:InnerJoinOp=>conditions(join)
+	case join:LeftOuterJoinOp=>conditions(join)
+	case sel:SelectionOp=>sel.expressions.map(e=>condExpr(e,sel).toString).toSeq
+	case proj:ProjectionOp=>conditions(proj.subOp)
+	case binary:BinaryOp=>conditions(binary.left)++conditions(binary.right)
+	case _=>List()
+  }
+
+  protected def joinXprs(op:AlgebraOp):Seq[String]=op match{
+	case join:InnerJoinOp=>List(joinConditions(join))++joinXprs(join.left)++joinXprs(join.right)
+	case _=>List()
+  }
+
+  private def getNotNull(p1:String,p2:String)=if (p1==null) p2 else p1
+
+	/*
 	protected def get(op:AlgebraOp):Seq[String]=op match{
 	  case join:InnerJoinOp=>get(join)
 	  case outerJoin:LeftOuterJoinOp=>get(outerJoin)
 	  case _=>List()
 	}
 	
-	private def getNotNull(p1:String,p2:String)=if (p1==null) p2 else p1
 	
 	protected def get(join:LeftOuterJoinOp):Seq[String]= (join.left,join.right) match {
 	  case (lp:ProjectionOp,rp:ProjectionOp)=>
@@ -186,36 +161,36 @@ class SqlQuery(op:AlgebraOp,val projectionVars:Map[String,String],val outputMods
 	  case (lp:ProjectionOp,a) =>List(projExtentAlias(lp))++get(a)
 	  case (a,rp:ProjectionOp) =>List(projExtentAlias(rp))++get(a)
 	}
-	protected def projVarNames(op:AlgebraOp):Seq[String]=op match{
-	  case proj:ProjectionOp=>
-	    //serializeSelect(proj)
-	    proj.getVarMappings.filter(_._2!=null).map(v=>v._2.map(s=>proj.getRelation.extentName+"."+s)).flatten.toList
-	    //proj.getVarMappings().keys.toList
-	  case bi:BinaryOp=>projVarNames(bi.left)++projVarNames(bi.right)
-	}
-
+	*/
   protected def varXprs(op:AlgebraOp):Map[String,Xpr]=op match{
     case root:RootOp=>varXprs(root.subOp)
     case proj:ProjectionOp=>proj.expressions++varXprs(proj.subOp)
     case join:InnerJoinOp=>varXprs(join.left)++varXprs(join.right)
     case selec:SelectionOp=>varXprs(selec.subOp)
     case union:MultiUnionOp=>varXprs(union.children.last._2)
+    case group:GroupOp=>group.aggs++varXprs(group.subOp)
     case _=>Map[String,Xpr]()
+  }
+  
+  private def rootVars(op:AlgebraOp):Seq[String]=op match{
+    case root:RootOp=>rootVars(root.subOp)
+    case proj:ProjectionOp=>proj.expressions.keys.toSeq
+    case union:MultiUnionOp=>rootVars(union.children.last._2)
   }
   	  
 	private def unAliasXpr(join:BinaryOp,xpr:BinaryXpr):String=
-	  unAliasXpr(join.left,xpr.left)+xpr.op+unAliasXpr(join.right,xpr.right)
+	  condExpr(xpr.left,join.left)+xpr.op+unAliasXpr(join.right,xpr.right)
 
 	private def unAliasXpr(op:AlgebraOp,xpr:Xpr):String=(op,xpr) match {
 	  case (join:BinaryOp,bi:BinaryXpr)=>unAliasXpr(join,bi)
 	  case (join:BinaryOp,varXpr:VarXpr)=>getNotNull(unAliasXpr(join.left,xpr), unAliasXpr(join.right,xpr))	  
-	  case (proj:ProjectionOp,varXpr:VarXpr)=> 
+	  case (proj:ProjectionOp,varXpr:VarXpr)=>
 	    if (proj.getVarMappings.containsKey(varXpr.varName))
 	      getAlias(proj.getRelation.id)+"."+proj.getVarMappings(varXpr.varName).head else null
 	  case _=>throw new Exception("Not supported "+op.toString + xpr.toString)
 	}
 	
-	
+	/*
 	protected def serializeExpressions(join:InnerJoinOp):String={
 		val varMappings = new HashMap[String,Seq[String]]();
 		if (join.left.isInstanceOf[ProjectionOp])
@@ -225,34 +200,9 @@ class SqlQuery(op:AlgebraOp,val projectionVars:Map[String,String],val outputMods
 		
 		return serializeExpressions(join.conditions, varMappings.toMap);
 	}
+	*/
 	
-	private def unAlias(xpr:Xpr,varMappings:Map[String,String]):String={
-		if (varMappings == null)
-			return xpr.toString();
-		val unalias = 
-		if (xpr.isInstanceOf[BinaryXpr])
-		{
-			val binary = xpr.asInstanceOf[BinaryXpr];
-			unAlias(binary.left,varMappings)+" "+binary.op+" "+
-					unAlias(binary.right,varMappings);
-		}
-		else if (xpr.isInstanceOf[VarXpr])
-		{
-			val vari = xpr.asInstanceOf[VarXpr];
-			if (varMappings.containsKey(vari.varName))
-			   varMappings(vari.varName);
-			else
-			   vari.varName
-		}
-		else if (xpr.isInstanceOf[ValueXpr])
-		{
-			val vali = xpr.asInstanceOf[ValueXpr]
-			vali.value
-		}
-		else ""
-		return unalias;
-	}
-	
+	/*
 	protected def serializeExpressions(xprs:Seq[Xpr],varMappings:Map[String,Seq[String]]):String={
 		var exprs = "";
 		//var i=0;
@@ -262,71 +212,26 @@ class SqlQuery(op:AlgebraOp,val projectionVars:Map[String,String],val outputMods
 			//i+=1;
 		}.mkString("AND")
 		//return exprs;
-	}
-	
-	
-	private def serializeWindowSpec(window:WindowSpec):String={
-		if (window == null) return "";
-		var ser = "[FROM NOW - "+window.from+" "+serializeTimeUnit(window.fromUnit)
-		if  (window.toUnit != null)
-			ser += " TO NOW - "+window.to+" "+serializeTimeUnit(window.toUnit);
-		if (window.slideUnit!=null)
-			ser +=	" SLIDE "+window.slide+ " "+serializeTimeUnit(window.slideUnit);
-		return ser+"]";
-	}
-	
-	private def serializeTimeUnit(tu:TimeUnit):String={
-		return tu.toString()+"S";
-	}
-	
-
-	
-	private def getAugmentedProjectList():Map[String,String]={		
-		/*projectList.values.foreach{att=>			
-			val map = inner(extractExtent(att))
-			map.values.foreach{q=>
-				val at = q.projectList(att.getAlias)
-				att.getInnerNames().add(at.getName.toLowerCase)
-			}
-		}*/
-		return null;//projectList.toMap;		
-	}
-	
-	protected def trimExtent(field:String):String={
-		val m = field.indexOf('.')		
-	    return field.substring(m+1)		
-	}
-	
-	private def extractExtent(field:String):String={
-		val m = field.indexOf('.')		
-		return field.substring(0,m)		
-	}
-	
-	private def replaceExtent(field:String, extent:String):String={
-		val m = field.indexOf('.')		
-		return extent+field.substring(m)		
-	}
-		
-  protected def attRelation(op:AlgebraOp,varName:String):String= 
-    op match{    
-      case root:RootOp=>attRelation(root.subOp,varName)
-      case join:JoinOp=>
-        val rel=attRelation(join.left,varName)
-        if (rel==null) attRelation(join.right,varName)
-        else rel
-      case proj:ProjectionOp=>
-        if (proj.expressions.contains(varName) && proj.getRelation!=null) 
-          proj.getRelation.id
-        else if (proj.getVarMappings.map(vars=>vars._2).flatten.contains(varName))
-          proj.getRelation.id
-        else null
-      case sel:SelectionOp=>
-        if (sel.getRelation!=null) sel.getRelation.id
-        else attRelation(sel.subOp,varName)
-      case group:GroupOp=>
-        group.getRelation.id
+	}*/
+					
+  protected def attRelation(op:AlgebraOp,varName:String):String=op match{    
+    case root:RootOp=>attRelation(root.subOp,varName)
+    case join:JoinOp=>
+      val rel=attRelation(join.left,varName)
+      if (rel==null) attRelation(join.right,varName)
+      else rel
+    case proj:ProjectionOp=>
+      if (proj.expressions.contains(varName) && proj.getRelation!=null) 
+        proj.getRelation.id
+      else if (proj.getVarMappings.map(vars=>vars._2).flatten.contains(varName))
+        proj.getRelation.id
+      else null
+    case sel:SelectionOp=>
+      if (sel.getRelation!=null) sel.getRelation.id
+      else attRelation(sel.subOp,varName)
+    case group:GroupOp=>
+      group.getRelation.id
         //attRelation(group.subOp,varName)
-    }
-    //else null
+  }   
   
 }

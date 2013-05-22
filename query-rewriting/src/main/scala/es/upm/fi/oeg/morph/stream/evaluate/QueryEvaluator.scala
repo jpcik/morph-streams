@@ -45,18 +45,31 @@ class QueryEvaluator(config:Properties,actorSystem:ActorSystem=null) {
   private val adapterconfig=if (config==null) props else config 
   val adapterid = props.getProperty("siq.adapter");
   val adapterClass = props.getProperty("siq.adapter."+adapterid+".evaluator")
+  val rewriterClassName = props.getProperty("siq.rewriter")
   
   val theClass=try Class.forName(adapterClass)
 	catch {case e:ClassNotFoundException =>
 	  throw new IllegalArgumentException("Unable to initialize adapter class "+adapterClass, e)}
   val adapter=theClass.getDeclaredConstructor(classOf[Properties],classOf[ActorSystem])
               .newInstance(adapterconfig,system).asInstanceOf[StreamEvaluatorAdapter]
-		
+	
+  private val rewriterClass=
+    if (rewriterClassName!=null)
+      try Class.forName(rewriterClassName) catch { case e:ClassNotFoundException =>
+	  throw new IllegalArgumentException("Unable to initialize rewriter class "+rewriterClassName, e)}
+    else null
+  
   private val queryids=new collection.mutable.HashMap[String,SourceQuery]
+  
+  private def rewriter(mappingUri:URI)={
+    if (rewriterClass==null) new QueryRewriting(props,mappingUri.toString)
+    else rewriterClass.getDeclaredConstructor(classOf[Properties],classOf[String])
+      .newInstance(props,mappingUri.toString).asInstanceOf[QueryRewriting]
+  }
   
   def executeQuery(sparqlstr:String,mappingUri:URI)={
     val query=SparqlStream.parse(sparqlstr)
-    val trans = new QueryRewriting(props,mappingUri.toString)
+    val trans = rewriter(mappingUri)
     val qt= trans.translate(query)
     
     val rs=adapter.executeQuery(qt)
@@ -78,7 +91,7 @@ class QueryEvaluator(config:Properties,actorSystem:ActorSystem=null) {
   
   def registerQuery(sparqlstr:String,mappingUri:URI)={
     val query=SparqlStream.parse(sparqlstr)
-    val trans = new QueryRewriting(props,mappingUri.toString)
+    val trans = rewriter(mappingUri)
     val qt= trans.translate(query)
     val id=adapter.registerQuery(qt)
     queryids.put(id,qt)
@@ -86,7 +99,7 @@ class QueryEvaluator(config:Properties,actorSystem:ActorSystem=null) {
   }
   def listenToQuery(sparqlstr:String,mappingUri:URI,receiver:StreamReceiver)={
     val query=SparqlStream.parse(sparqlstr)
-    val trans = new QueryRewriting(props,mappingUri.toString)
+    val trans = rewriter(mappingUri)
     val qt= trans.translate(query)
     adapter.listenQuery(qt,receiver)
   }

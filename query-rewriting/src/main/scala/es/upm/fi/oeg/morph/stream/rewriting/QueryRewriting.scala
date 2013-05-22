@@ -120,8 +120,7 @@ class QueryRewriting(props: Properties,mapping:String) {
   def translate(queryString: String): SourceQuery =
     translate(SparqlStream.parse(queryString))  
 
-  def translate(query:StreamQuery): SourceQuery ={
-    
+  def translate(query:StreamQuery): SourceQuery ={    
     val opNew = translateToAlgebra(query)
     val pVars=getProjectList(query).map(a=>a._1->a._1).toMap
     transform(opNew,pVars,modifiers(query))      
@@ -149,165 +148,22 @@ class QueryRewriting(props: Properties,mapping:String) {
         }
         try 
           theClass.getDeclaredConstructor(classOf[AlgebraOp],
-                                          classOf[Map[String,String]],
+                                          //classOf[Map[String,String]],
                                           classOf[Array[Modifiers.OutputModifier]])
-            .newInstance(algebra,projectVars,mods).asInstanceOf[SourceQuery]
+            .newInstance(algebra,mods).asInstanceOf[SourceQuery]
         catch {
           case e: InstantiationException =>throw new QueryRewritingException("Unable to instantiate query", e)
           case e: IllegalAccessException =>throw new QueryRewritingException("Unable to instantiate query", e)
         }
       } 
-      else new SqlQuery(algebra,projectVars,mods)
+      else new SqlQuery(algebra,mods)
         
     //resquery.load(algebra)
     logger.info(resquery.serializeQuery)
     return resquery
   }
-  /*
-	private AlgebraOp partition(Op op)
-	
-	{
-		if (props.get(SemanticIntegrator.INTEGRATOR_METADATA_MAPPINGS_ENABLED).equals("false"))
-			return null;
-		if (op instanceof OpBGP)
-		{
-			List<Triple> triples = new ArrayList<Triple>();
-			OpBGP bgp = (OpBGP)op;
-			for (Triple t:bgp.getPattern().getList())
-			{
-				if (t.getSubject().getName().startsWith("prop"))
-				{
-					triples.add(t);
-					continue;
-				}
-				else
-					continue;
-				/*
-				if (t.getPredicate().getURI().equals(RDF.type.getURI()))
-				{
-					Collection<TriplesMap> tMaps = r2r.getTriplesMapForUri(t.getObject().getURI());
-					if (tMaps.isEmpty())
-					{
-						System.out.println(t.getObject().getURI());
-						triples.add(t);
-					}
-					else
-						System.out.println(t.getObject().getURI());
-				
-					
-				}
-				else
-				{
-					Collection<PredicateObjectMap> poMaps = r2r.getPredicateObjectMapForUri(t.getPredicate().getURI());
-					//Collection<RefPredicateObjectMap> rpoMaps = r2r.getRefPredicateObjectMapForUri(t.getPredicate().getURI());
-					if (poMaps.isEmpty())// && rpoMaps.isEmpty())
-					{
-						System.out.println(t.getPredicate().getURI());
-						triples.add(t);
-					}
-					else
-						System.out.println(t.getPredicate().getURI());
-				}*/
-			}
-			
-			
-			if (triples.isEmpty())				return null;
-			
-			Set<String> vars = new HashSet<String>();
-			String select = " SELECT ";
-			String where = " WHERE { ";
-			
-			for (Triple t:triples)
-			{
-				//where+= t.toString()+". ";
-				if (t.getSubject().isVariable()) 
-				{
-					if (!vars.contains(t.getSubject().getName()))
-					{
-						vars.add(t.getSubject().getName());
-						select+="?"+t.getSubject().getName()+" ";
-					}
-					where+="?"+t.getSubject().getName();
-				}
-				else
-				{
-					where+="<"+t.getSubject().getURI()+">";
-				}
-				where += " <"+t.getPredicate().getURI()+"> ";
-				if (t.getObject().isVariable())
-				{
-					if ( !vars.contains(t.getObject().getName()))
-					{
-						vars.add(t.getObject().getName());
-						select+="?"+t.getObject().getName()+" ";
-					}
-					where+="?"+t.getObject().getName()+" .";
-				}
-				else
-				{
-					where+="<"+t.getObject().getURI()+"> .";
-				}
-			}
-			String querystring = select+where+" }";
-			logger.debug(querystring);
-			Query query = QueryFactory.create(querystring) ;
-
-			QueryExecution qexec = QueryExecutionFactory.sparqlService("http://localhost:8080/openrdf-workbench/repositories/wannengrat/query", query);
-		
-		OpRelation relation = new OpRelation("bindings");
-		relation.setExtentName("constants");
-		OpProjection p = new OpProjection("Bindings", relation );
-
-		ValueSetXpr vs = new ValueSetXpr();
-
-		ResultSet res = null;
-		try
-		{
-		res = qexec.execSelect();
-		}
-		catch (ResultSetException e)
-		{
-			logger.info("No results from metadata");
-			vs.getValueSet().add("NULL");
-			//p.addExpression(t.getSubject().getName(), vs);
-			return p;
-		}
-		for (String v:vars)
-		{
-			p.addExpression(v, new ValueSetXpr());
-		}
-		while (res.hasNext())
-		{
-			QuerySolution qs = res.next();
-			logger.debug(qs);
-			Iterator<String> it=qs.varNames();
-			while (it.hasNext())
-			{
-				String var = it.next();
-				ValueSetXpr vsx = (ValueSetXpr) p.getExpressions().get(var);
-				vsx.getValueSet().add(qs.get(var).toString());
-			}
-			//p.addBinding(t.getSubject().getName(), qs.getResource("var").getURI());
-			//vs.getValueSet().add(qs.getResource("var").getURI());
-		}
-		//p.addExpression(t.getSubject().getName(), vs);
-
-		return p;	
-			
-		}
-		else if (op instanceof OpProject)
-		{
-			OpProject proj = (OpProject)op;
-			return partition(proj.getSubOp());
-		}
-		else if (op instanceof OpFilter)
-		{
-			OpFilter filter = (OpFilter)op;
-			return partition(filter.getSubOp());
-		}
-		return null;
-	}
-	*/
+  
+  
   def translateToAlgebra(query: StreamQuery):AlgebraOp={
     val ini = System.currentTimeMillis      
     val op = Algebra.compile(query)
@@ -554,10 +410,10 @@ class QueryRewriting(props: Properties,mapping:String) {
         bgp.getPattern().map{tr=>
           val obj=tr.getObject match{case v:Var=>v.getVarName}
           val sub=tr.getSubject match{case v:Var=>v.getVarName}
-          Array(obj,sub)
+          Array(sub,obj)
         }.flatten.toSet
-        val varMap=vars.map(t=>t->VarXpr(t)).toMap
-        val pattern=new PatternOp("sparql",graph.getName,bgp.getPattern.toString)
+        val varMap=vars.zipWithIndex.map(t=>t._1->VarXpr("p"+(t._2+1))).toMap
+        val pattern=new PatternOp("sparql",graph.getName,bgp)
         return new ProjectionOp("dict",varMap,pattern,false)
       }
       else {
@@ -660,23 +516,15 @@ class QueryRewriting(props: Properties,mapping:String) {
   private def projectionXprs(tripleNode:Node,oMap:TermMap):(String,Xpr)={   
     tripleNode match {
       case objVar:Var=>
-        if (oMap.constant!=null){
-          val op = new OperationXpr("constant",ValueXpr(oMap.constant.toString))
-          (objVar.getName,op)
-        }
-        else if (oMap.column!=null){
-          val varExp = new VarXpr(oMap.column)        
-          (objVar.getName,varExp)
-        }
+        if (oMap.constant!=null)        
+          (objVar.getName,new ConstantXpr(oMap.constant.toString))
+        else if (oMap.column!=null)          
+          (objVar.getName,VarXpr(oMap.column))        
         else if (oMap.template!=null){
           val columns=R2rmlUtils.extractTemplateVals(oMap.template)
-          //val replace=new ReplaceXpr(oMap.template,columns.map(new VarXpr(_)))
-          val fun=if (termType(oMap)==IRIType){
-            new ReplaceXpr(oMap.template,columns.map(c=>new PercentEncodeXpr(VarXpr(c))))
-          }
-          else new ReplaceXpr(oMap.template,columns.map(VarXpr(_)))
-          
-          
+          val fun=if (termType(oMap)==IRIType)
+            new ReplaceXpr(oMap.template,columns.map(c=>new PercentEncodeXpr(VarXpr(c))))          
+          else new ReplaceXpr(oMap.template,columns.map(VarXpr(_)))                    
           (objVar.getName,fun)
         }
         else null
