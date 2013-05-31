@@ -19,4 +19,7 @@ class SelectionOp(selectionId:String,subOp:AlgebraOp,val expressions:Set[Xpr])
   override def build(newOp:AlgebraOp)=
 	new SelectionOp(id,subOp.build(newOp),expressions)
 	
+  def simplify=
+    if (subOp==null) null
+    else this
 }

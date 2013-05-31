@@ -1,0 +1,16 @@
+PREFIX om-owl: <http://knoesis.wright.edu/ssw/ont/sensor-observation.owl#>
+PREFIX weather: <http://knoesis.wright.edu/ssw/ont/weather.owl#>
+PREFIX ssn: <http://purl.oclc.org/NET/ssnx/ssn#>
+PREFIX qu: <http://purl.oclc.org/NET/ssnx/qu/qu#>
+PREFIX cf-property: <http://purl.oclc.org/NET/ssnx/cf/cf-property#>
+
+SELECT DISTINCT ?observation ?value  
+FROM NAMED STREAM <http://cwi.nl/SRBench/observations> [NOW - 1 HOURS]
+WHERE {
+  ?observation ssn:observedBy ?sensor;
+               ssn:observedProperty cf-property:air_temperature;
+               ssn:observationResult ?result.
+ ?result ssn:hasValue ?obsValue.
+ ?obsValue qu:numericalValue ?value.
+ FILTER (?value > 0.5)  
+}

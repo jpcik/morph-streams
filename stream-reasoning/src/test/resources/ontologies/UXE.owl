@@ -1,0 +1,744 @@
+<?xml version="1.0"?>
+
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
+    <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
+    <!ENTITY owl2xml "http://www.w3.org/2006/12/owl2-xml#" >
+    <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+    <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+    <!ENTITY univ-bench "http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#" >
+]>
+
+
+<rdf:RDF xmlns="http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#"
+     xml:base="http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:owl2xml="http://www.w3.org/2006/12/owl2-xml#"
+     xmlns:univ-bench="http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+    <owl:Ontology rdf:about="http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl">
+        <rdfs:label rdf:datatype="&xsd;string">Univ-bench Ontology</rdfs:label>
+        <rdfs:comment rdf:datatype="&xsd;string"></rdfs:comment>
+        <rdfs:comment rdf:datatype="&xsd;string">An university ontology for benchmark tests</rdfs:comment>
+        <owl:versionInfo rdf:datatype="&xsd;string">univ-bench-ontology-owl, ver April 1, 2004</owl:versionInfo>
+    </owl:Ontology>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Annotation properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    <owl:AnnotationProperty rdf:about="&owl;versionInfo"/>
+    <owl:AnnotationProperty rdf:about="&rdfs;label"/>
+    <owl:AnnotationProperty rdf:about="&rdfs;comment"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Object Properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#AUX0 -->
+
+    <owl:ObjectProperty rdf:about="&univ-bench;AUX0">
+        <rdfs:subPropertyOf rdf:resource="&univ-bench;headOf"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#AUX1 -->
+
+    <owl:ObjectProperty rdf:about="&univ-bench;AUX1">
+        <rdfs:subPropertyOf rdf:resource="&univ-bench;worksFor"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#AUX2 -->
+
+    <owl:ObjectProperty rdf:about="&univ-bench;AUX2">
+        <rdfs:subPropertyOf rdf:resource="&univ-bench;headOf"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#AUX3 -->
+
+    <owl:ObjectProperty rdf:about="&univ-bench;AUX3">
+        <rdfs:subPropertyOf rdf:resource="&univ-bench;takesCourse"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#AUX4 -->
+
+    <owl:ObjectProperty rdf:about="&univ-bench;AUX4">
+        <rdfs:subPropertyOf rdf:resource="&univ-bench;takesCourse"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#advisor -->
+
+    <owl:ObjectProperty rdf:about="&univ-bench;advisor">
+        <rdfs:label rdf:datatype="&xsd;string">is being advised by</rdfs:label>
+        <rdfs:domain rdf:resource="&univ-bench;Person"/>
+        <rdfs:range rdf:resource="&univ-bench;Professor"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#affiliateOf -->
+
+    <owl:ObjectProperty rdf:about="&univ-bench;affiliateOf">
+        <rdfs:label rdf:datatype="&xsd;string">is affiliated with</rdfs:label>
+        <rdfs:domain rdf:resource="&univ-bench;Organization"/>
+        <rdfs:range rdf:resource="&univ-bench;Person"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#affiliatedOrganizationOf -->
+
+    <owl:ObjectProperty rdf:about="&univ-bench;affiliatedOrganizationOf">
+        <rdfs:label rdf:datatype="&xsd;string">is affiliated with</rdfs:label>
+        <rdfs:domain rdf:resource="&univ-bench;Organization"/>
+        <rdfs:range rdf:resource="&univ-bench;Organization"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#degreeFrom -->
+
+    <owl:ObjectProperty rdf:about="&univ-bench;degreeFrom">
+        <rdfs:label rdf:datatype="&xsd;string">has a degree from</rdfs:label>
+        <rdfs:domain rdf:resource="&univ-bench;Person"/>
+        <rdfs:range rdf:resource="&univ-bench;University"/>
+        <owl:inverseOf rdf:resource="&univ-bench;hasAlumnus"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#doctoralDegreeFrom -->
+
+    <owl:ObjectProperty rdf:about="&univ-bench;doctoralDegreeFrom">
+        <rdfs:label rdf:datatype="&xsd;string">has a doctoral degree from</rdfs:label>
+        <rdfs:domain rdf:resource="&univ-bench;Person"/>
+        <rdfs:range rdf:resource="&univ-bench;University"/>
+        <rdfs:subPropertyOf rdf:resource="&univ-bench;degreeFrom"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#hasAlumnus -->
+
+    <owl:ObjectProperty rdf:about="&univ-bench;hasAlumnus">
+        <rdfs:label rdf:datatype="&xsd;string">has as an alumnus</rdfs:label>
+        <rdfs:range rdf:resource="&univ-bench;Person"/>
+        <rdfs:domain rdf:resource="&univ-bench;University"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#hasExamRecord -->
+
+    <owl:ObjectProperty rdf:about="&univ-bench;hasExamRecord">
+        <rdfs:range rdf:resource="&univ-bench;ExamRecord"/>
+        <rdfs:domain rdf:resource="&univ-bench;Student"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#hasFaculty -->
+
+    <owl:ObjectProperty rdf:about="&univ-bench;hasFaculty">
+        <rdfs:range rdf:resource="&univ-bench;Faculty"/>
+        <rdfs:domain rdf:resource="&univ-bench;University"/>
+        <owl:inverseOf rdf:resource="&univ-bench;isPartOfUniversity"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#headOf -->
+
+    <owl:ObjectProperty rdf:about="&univ-bench;headOf">
+        <rdfs:label rdf:datatype="&xsd;string">is the head of</rdfs:label>
+        <rdfs:subPropertyOf rdf:resource="&univ-bench;worksFor"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#isPartOfUniversity -->
+
+    <owl:ObjectProperty rdf:about="&univ-bench;isPartOfUniversity">
+        <rdfs:domain rdf:resource="&univ-bench;Faculty"/>
+        <rdfs:range rdf:resource="&univ-bench;University"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#mastersDegreeFrom -->
+
+    <owl:ObjectProperty rdf:about="&univ-bench;mastersDegreeFrom">
+        <rdfs:label rdf:datatype="&xsd;string">has a masters degree from</rdfs:label>
+        <rdfs:domain rdf:resource="&univ-bench;Person"/>
+        <rdfs:range rdf:resource="&univ-bench;University"/>
+        <rdfs:subPropertyOf rdf:resource="&univ-bench;degreeFrom"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#member -->
+
+    <owl:ObjectProperty rdf:about="&univ-bench;member">
+        <rdfs:label rdf:datatype="&xsd;string">has as a member</rdfs:label>
+        <rdfs:domain rdf:resource="&univ-bench;Organization"/>
+        <rdfs:range rdf:resource="&univ-bench;Person"/>
+        <owl:inverseOf rdf:resource="&univ-bench;memberOf"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#memberOf -->
+
+    <owl:ObjectProperty rdf:about="&univ-bench;memberOf">
+        <rdfs:label rdf:datatype="&xsd;string">member of</rdfs:label>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#orgPublication -->
+
+    <owl:ObjectProperty rdf:about="&univ-bench;orgPublication">
+        <rdfs:label rdf:datatype="&xsd;string">publishes</rdfs:label>
+        <rdfs:domain rdf:resource="&univ-bench;Organization"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#publicationAuthor -->
+
+    <owl:ObjectProperty rdf:about="&univ-bench;publicationAuthor">
+        <rdfs:label rdf:datatype="&xsd;string">was written by</rdfs:label>
+        <rdfs:range rdf:resource="&univ-bench;Person"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#publicationDate -->
+
+    <owl:ObjectProperty rdf:about="&univ-bench;publicationDate">
+        <rdfs:label rdf:datatype="&xsd;string">was written on</rdfs:label>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#publicationResearch -->
+
+    <owl:ObjectProperty rdf:about="&univ-bench;publicationResearch">
+        <rdfs:label rdf:datatype="&xsd;string">is about</rdfs:label>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#researchProject -->
+
+    <owl:ObjectProperty rdf:about="&univ-bench;researchProject">
+        <rdfs:label rdf:datatype="&xsd;string">has as a research project</rdfs:label>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#softwareDocumentation -->
+
+    <owl:ObjectProperty rdf:about="&univ-bench;softwareDocumentation">
+        <rdfs:label rdf:datatype="&xsd;string">is documented in</rdfs:label>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#softwareVersion -->
+
+    <owl:ObjectProperty rdf:about="&univ-bench;softwareVersion">
+        <rdfs:label rdf:datatype="&xsd;string">is version</rdfs:label>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#takesCourse -->
+
+    <owl:ObjectProperty rdf:about="&univ-bench;takesCourse">
+        <rdfs:label rdf:datatype="&xsd;string">is taking</rdfs:label>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#teacherOf -->
+
+    <owl:ObjectProperty rdf:about="&univ-bench;teacherOf">
+        <rdfs:label rdf:datatype="&xsd;string">teaches</rdfs:label>
+        <rdfs:range rdf:resource="&univ-bench;Course"/>
+        <rdfs:domain rdf:resource="&univ-bench;FacultyStaff"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#teachingAssistantOf -->
+
+    <owl:ObjectProperty rdf:about="&univ-bench;teachingAssistantOf">
+        <rdfs:label rdf:datatype="&xsd;string">is a teaching assistant for</rdfs:label>
+        <rdfs:range rdf:resource="&univ-bench;Course"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#tenured -->
+
+    <owl:ObjectProperty rdf:about="&univ-bench;tenured">
+        <rdfs:label rdf:datatype="&xsd;string">is tenured:</rdfs:label>
+        <rdfs:domain rdf:resource="&univ-bench;Professor"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#undergraduateDegreeFrom -->
+
+    <owl:ObjectProperty rdf:about="&univ-bench;undergraduateDegreeFrom">
+        <rdfs:label rdf:datatype="&xsd;string">has an undergraduate degree from</rdfs:label>
+        <rdfs:domain rdf:resource="&univ-bench;Person"/>
+        <rdfs:range rdf:resource="&univ-bench;University"/>
+        <rdfs:subPropertyOf rdf:resource="&univ-bench;degreeFrom"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#worksFor -->
+
+    <owl:ObjectProperty rdf:about="&univ-bench;worksFor">
+        <rdfs:label rdf:datatype="&xsd;string">Works For</rdfs:label>
+        <rdfs:subPropertyOf rdf:resource="&univ-bench;memberOf"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Classes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#AdministrativeStaff -->
+
+    <owl:Class rdf:about="&univ-bench;AdministrativeStaff">
+        <rdfs:label rdf:datatype="&xsd;string">administrative staff worker</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&univ-bench;Employee"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#AssistantProfessor -->
+
+    <owl:Class rdf:about="&univ-bench;AssistantProfessor">
+        <rdfs:label rdf:datatype="&xsd;string">assistant professor</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&univ-bench;Professor"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#AssociateProfessor -->
+
+    <owl:Class rdf:about="&univ-bench;AssociateProfessor">
+        <rdfs:label rdf:datatype="&xsd;string">associate professor</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&univ-bench;Professor"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#BachelorExam -->
+
+    <owl:Class rdf:about="&univ-bench;BachelorExam">
+        <rdfs:subClassOf rdf:resource="&univ-bench;Exam"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#Career -->
+
+    <owl:Class rdf:about="&univ-bench;Career">
+        <rdfs:subClassOf rdf:resource="&univ-bench;Work"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#Chair -->
+
+    <owl:Class rdf:about="&univ-bench;Chair">
+        <rdfs:label rdf:datatype="&xsd;string">chair</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&univ-bench;Professor"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#ClericalStaff -->
+
+    <owl:Class rdf:about="&univ-bench;ClericalStaff">
+        <rdfs:label rdf:datatype="&xsd;string">clerical staff worker</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&univ-bench;AdministrativeStaff"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#College -->
+
+    <owl:Class rdf:about="&univ-bench;College">
+        <rdfs:label rdf:datatype="&xsd;string">school</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&univ-bench;Organization"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#Course -->
+
+    <owl:Class rdf:about="&univ-bench;Course">
+        <rdfs:label rdf:datatype="&xsd;string">teaching course</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&univ-bench;Work"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#Dean -->
+
+    <owl:Class rdf:about="&univ-bench;Dean">
+        <rdfs:subClassOf rdf:resource="&univ-bench;Professor"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&univ-bench;AUX2"/>
+                <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#Degree -->
+
+    <owl:Class rdf:about="&univ-bench;Degree">
+        <rdfs:subClassOf rdf:resource="&univ-bench;Work"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#Director -->
+
+    <owl:Class rdf:about="&univ-bench;Director">
+        <rdfs:label rdf:datatype="&xsd;string">director</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&univ-bench;Person"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&univ-bench;AUX0"/>
+                <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#Employee -->
+
+    <owl:Class rdf:about="&univ-bench;Employee">
+        <rdfs:label rdf:datatype="&xsd;string">Employee</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&univ-bench;Person"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&univ-bench;AUX1"/>
+                <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#ExDean -->
+
+    <owl:Class rdf:about="&univ-bench;ExDean">
+        <rdfs:subClassOf rdf:resource="&univ-bench;Professor"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#Exam -->
+
+    <owl:Class rdf:about="&univ-bench;Exam">
+        <rdfs:subClassOf rdf:resource="&univ-bench;Work"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#ExamRecord -->
+
+    <owl:Class rdf:about="&univ-bench;ExamRecord">
+        <rdfs:subClassOf rdf:resource="&univ-bench;Work"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#Faculty -->
+
+    <owl:Class rdf:about="&univ-bench;Faculty">
+        <rdfs:subClassOf rdf:resource="&univ-bench;Organization"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#FacultyStaff -->
+
+    <owl:Class rdf:about="&univ-bench;FacultyStaff">
+        <rdfs:label rdf:datatype="&xsd;string">faculty member</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&univ-bench;Employee"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#FullProfessor -->
+
+    <owl:Class rdf:about="&univ-bench;FullProfessor">
+        <rdfs:label rdf:datatype="&xsd;string">full professor</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&univ-bench;Professor"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#GraduateCourse -->
+
+    <owl:Class rdf:about="&univ-bench;GraduateCourse">
+        <rdfs:label rdf:datatype="&xsd;string">Graduate Level Courses</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&univ-bench;Course"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#GraduateStudent -->
+
+    <owl:Class rdf:about="&univ-bench;GraduateStudent">
+        <rdfs:label rdf:datatype="&xsd;string">graduate student</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&univ-bench;Person"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&univ-bench;AUX3"/>
+                <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#Lecturer -->
+
+    <owl:Class rdf:about="&univ-bench;Lecturer">
+        <rdfs:label rdf:datatype="&xsd;string">lecturer</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&univ-bench;FacultyStaff"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#Organization -->
+
+    <owl:Class rdf:about="&univ-bench;Organization">
+        <rdfs:label rdf:datatype="&xsd;string">organization</rdfs:label>
+    </owl:Class>
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#Person -->
+
+    <owl:Class rdf:about="&univ-bench;Person">
+        <rdfs:label rdf:datatype="&xsd;string">person</rdfs:label>
+    </owl:Class>
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#PostDoc -->
+
+    <owl:Class rdf:about="&univ-bench;PostDoc">
+        <rdfs:label rdf:datatype="&xsd;string">post doctorate</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&univ-bench;FacultyStaff"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#Professor -->
+
+    <owl:Class rdf:about="&univ-bench;Professor">
+        <rdfs:label rdf:datatype="&xsd;string">professor</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&univ-bench;FacultyStaff"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#Program -->
+
+    <owl:Class rdf:about="&univ-bench;Program">
+        <rdfs:label rdf:datatype="&xsd;string">program</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&univ-bench;Organization"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#ResearchAssistant -->
+
+    <owl:Class rdf:about="&univ-bench;ResearchAssistant">
+        <rdfs:label rdf:datatype="&xsd;string">university research assistant</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&univ-bench;Student"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#Student -->
+
+    <owl:Class rdf:about="&univ-bench;Student">
+        <rdfs:label rdf:datatype="&xsd;string">student</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&univ-bench;Person"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&univ-bench;AUX4"/>
+                <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#SystemsStaff -->
+
+    <owl:Class rdf:about="&univ-bench;SystemsStaff">
+        <rdfs:label rdf:datatype="&xsd;string">systems staff worker</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&univ-bench;AdministrativeStaff"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#UndergraduateStudent -->
+
+    <owl:Class rdf:about="&univ-bench;UndergraduateStudent">
+        <rdfs:label rdf:datatype="&xsd;string">undergraduate student</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&univ-bench;Student"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#University -->
+
+    <owl:Class rdf:about="&univ-bench;University">
+        <rdfs:label rdf:datatype="&xsd;string">university</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&univ-bench;Organization"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#VisitingProfessor -->
+
+    <owl:Class rdf:about="&univ-bench;VisitingProfessor">
+        <rdfs:label rdf:datatype="&xsd;string">visiting professor</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&univ-bench;Professor"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#Work -->
+
+    <owl:Class rdf:about="&univ-bench;Work">
+        <rdfs:label rdf:datatype="&xsd;string">Work</rdfs:label>
+    </owl:Class>
+    
+
+
+    <!-- http://www.w3.org/2002/07/owl#Thing -->
+
+    <owl:Class rdf:about="&owl;Thing"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // General axioms
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    <owl:Restriction>
+        <rdfs:subClassOf rdf:resource="&univ-bench;Program"/>
+        <owl:onProperty>
+            <rdf:Description>
+                <owl:inverseOf rdf:resource="&univ-bench;AUX0"/>
+            </rdf:Description>
+        </owl:onProperty>
+        <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+    </owl:Restriction>
+    <owl:Restriction>
+        <rdfs:subClassOf rdf:resource="&univ-bench;GraduateCourse"/>
+        <owl:onProperty>
+            <rdf:Description>
+                <owl:inverseOf rdf:resource="&univ-bench;AUX3"/>
+            </rdf:Description>
+        </owl:onProperty>
+        <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+    </owl:Restriction>
+    <owl:Restriction>
+        <rdfs:subClassOf rdf:resource="&univ-bench;Organization"/>
+        <owl:onProperty>
+            <rdf:Description>
+                <owl:inverseOf rdf:resource="&univ-bench;AUX1"/>
+            </rdf:Description>
+        </owl:onProperty>
+        <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+    </owl:Restriction>
+    <owl:Restriction>
+        <rdfs:subClassOf rdf:resource="&univ-bench;College"/>
+        <owl:onProperty>
+            <rdf:Description>
+                <owl:inverseOf rdf:resource="&univ-bench;AUX2"/>
+            </rdf:Description>
+        </owl:onProperty>
+        <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+    </owl:Restriction>
+    <owl:Restriction>
+        <rdfs:subClassOf rdf:resource="&univ-bench;Course"/>
+        <owl:onProperty>
+            <rdf:Description>
+                <owl:inverseOf rdf:resource="&univ-bench;AUX4"/>
+            </rdf:Description>
+        </owl:onProperty>
+        <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+    </owl:Restriction>
+    <owl:Restriction>
+        <rdfs:subClassOf rdf:resource="&univ-bench;Student"/>
+        <owl:onProperty rdf:resource="&univ-bench;advisor"/>
+        <owl:someValuesFrom rdf:resource="&univ-bench;FacultyStaff"/>
+    </owl:Restriction>
+</rdf:RDF>
+
+
+
+<!-- Generated by the OWL API (version 3.0.0.1451) http://owlapi.sourceforge.net -->
+

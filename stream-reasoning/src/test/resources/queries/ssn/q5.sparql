@@ -1,0 +1,11 @@
+PREFIX om-owl: <http://knoesis.wright.edu/ssw/ont/sensor-observation.owl#>
+PREFIX oeg-sen: <http://oeg-upm.net/onto/sensordemo/>
+PREFIX ssn: <http://purl.oclc.org/NET/ssnx/ssn#>
+PREFIX qu: <http://purl.oclc.org/NET/ssnx/qu/qu#>
+PREFIX dim: <http://purl.oclc.org/NET/ssnx/qu/dim#>
+
+SELECT DISTINCT ?observation   
+FROM NAMED STREAM <http://cwi.nl/SRBench/observations> [NOW - 1 HOURS]
+WHERE {
+ ?observation ssn:observedProperty [a dim:Temperature].  
+}

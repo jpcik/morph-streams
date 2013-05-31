@@ -1,0 +1,490 @@
+@prefix : <http://oeg-upm.net/onto/sensordemo/> .
+@prefix qu: <http://purl.oclc.org/NET/ssnx/qu/qu#> .
+@prefix dim: <http://purl.oclc.org/NET/ssnx/qu/dim#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix ssn: <http://purl.oclc.org/NET/ssnx/ssn#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix oeg-sen: <http://oeg-upm.net/onto/sensordemo/> .
+@prefix cf-feature: <http://purl.oclc.org/NET/ssnx/cf/cf-feature#> .
+@prefix cf-property: <http://purl.oclc.org/NET/ssnx/cf/cf-property#> .
+@base <http://oeg-upm.net/onto/sensordemo/> .
+
+<http://oeg-upm.net/onto/sensordemo/> rdf:type owl:Ontology .
+
+
+#################################################################
+#
+#    Object Properties
+#
+#################################################################
+
+
+###  http://purl.oclc.org/NET/ssnx/ssn#featureOfInterest
+
+ssn:featureOfInterest rdf:type owl:ObjectProperty .
+
+
+
+###  http://purl.oclc.org/NET/ssnx/ssn#hasProperty
+
+ssn:hasProperty rdf:type owl:ObjectProperty .
+
+
+
+###  http://purl.oclc.org/NET/ssnx/ssn#hasValue
+
+ssn:hasValue rdf:type owl:ObjectProperty .
+
+
+
+###  http://purl.oclc.org/NET/ssnx/ssn#isProducedBy
+
+ssn:isProducedBy rdf:type owl:ObjectProperty .
+
+
+
+###  http://purl.oclc.org/NET/ssnx/ssn#observationResult
+
+ssn:observationResult rdf:type owl:ObjectProperty .
+
+
+
+###  http://purl.oclc.org/NET/ssnx/ssn#observationResultTime
+
+ssn:observationResultTime rdf:type owl:ObjectProperty .
+
+
+
+###  http://purl.oclc.org/NET/ssnx/ssn#observedBy
+
+ssn:observedBy rdf:type owl:ObjectProperty .
+
+
+
+###  http://purl.oclc.org/NET/ssnx/ssn#observedProperty
+
+ssn:observedProperty rdf:type owl:ObjectProperty .
+
+
+
+###  http://purl.oclc.org/NET/ssnx/ssn#observes
+
+ssn:observes rdf:type owl:ObjectProperty .
+
+
+
+
+
+#################################################################
+#
+#    Classes
+#
+#################################################################
+
+
+###  http://oeg-upm.net/onto/sensordemo/TemperatureObservation
+
+:TemperatureObservation rdf:type owl:Class ;
+                        
+                        rdfs:subClassOf ssn:Observation .
+
+
+
+###  http://oeg-upm.net/onto/sensordemo/ThermistorObservation
+
+:ThermistorObservation rdf:type owl:Class ;
+                       
+                       rdfs:subClassOf :TemperatureObservation .
+
+
+
+###  http://purl.oclc.org/NET/ssnx/cf/cf-feature#Humidity
+
+cf-feature:Humidity rdf:type owl:Class ;
+                    
+                    rdfs:subClassOf ssn:FeatureOfInterest .
+
+
+
+###  http://purl.oclc.org/NET/ssnx/cf/cf-feature#Layer
+
+cf-feature:Layer rdf:type owl:Class ;
+                 
+                 rdfs:subClassOf ssn:FeatureOfInterest .
+
+
+
+###  http://purl.oclc.org/NET/ssnx/cf/cf-feature#Medium
+
+cf-feature:Medium rdf:type owl:Class ;
+                  
+                  rdfs:subClassOf ssn:FeatureOfInterest .
+
+
+
+###  http://purl.oclc.org/NET/ssnx/cf/cf-feature#Precipitation
+
+cf-feature:Precipitation rdf:type owl:Class ;
+                         
+                         rdfs:subClassOf ssn:FeatureOfInterest .
+
+
+
+###  http://purl.oclc.org/NET/ssnx/cf/cf-feature#Wind
+
+cf-feature:Wind rdf:type owl:Class ;
+                
+                rdfs:subClassOf ssn:FeatureOfInterest .
+
+
+
+###  http://purl.oclc.org/NET/ssnx/qu/dim#Angle
+
+dim:Angle rdf:type owl:Class ;
+          
+          rdfs:subClassOf qu:QuantityKind .
+
+
+
+###  http://purl.oclc.org/NET/ssnx/qu/dim#Dimensionless
+
+dim:Dimensionless rdf:type owl:Class ;
+                  
+                  rdfs:subClassOf qu:QuantityKind .
+
+
+
+###  http://purl.oclc.org/NET/ssnx/qu/dim#Distance
+
+dim:Distance rdf:type owl:Class ;
+             
+             rdfs:subClassOf qu:QuantityKind .
+
+
+
+###  http://purl.oclc.org/NET/ssnx/qu/dim#StressOrPressure
+
+dim:StressOrPressure rdf:type owl:Class ;
+                     
+                     rdfs:subClassOf qu:QuantityKind .
+
+
+
+###  http://purl.oclc.org/NET/ssnx/qu/dim#Temperature
+
+dim:Temperature rdf:type owl:Class ;
+                
+                rdfs:subClassOf qu:QuantityKind .
+
+
+
+###  http://purl.oclc.org/NET/ssnx/qu/dim#VelocityOrSpeed
+
+dim:VelocityOrSpeed rdf:type owl:Class ;
+                    
+                    rdfs:subClassOf qu:QuantityKind .
+
+
+
+###  http://purl.oclc.org/NET/ssnx/qu/qu#QuantityKind
+
+qu:QuantityKind rdf:type owl:Class .
+
+
+
+###  http://purl.oclc.org/NET/ssnx/ssn#Device
+
+ssn:Device rdf:type owl:Class .
+
+
+
+###  http://purl.oclc.org/NET/ssnx/ssn#FeatureOfInterest
+
+ssn:FeatureOfInterest rdf:type owl:Class ;
+                      
+                      rdfs:subClassOf [ rdf:type owl:Restriction ;
+                                        owl:onProperty ssn:hasProperty ;
+                                        owl:allValuesFrom ssn:Property
+                                      ] ,
+                                      [ rdf:type owl:Restriction ;
+                                        owl:onProperty ssn:hasProperty ;
+                                        owl:someValuesFrom ssn:Property
+                                      ] .
+
+
+
+###  http://purl.oclc.org/NET/ssnx/ssn#Observation
+
+ssn:Observation rdf:type owl:Class ;
+                
+                rdfs:subClassOf [ rdf:type owl:Restriction ;
+                                  owl:onProperty ssn:featureOfInterest ;
+                                  owl:someValuesFrom ssn:FeatureOfInterest
+                                ] ,
+                                [ rdf:type owl:Restriction ;
+                                  owl:onProperty ssn:observedBy ;
+                                  owl:allValuesFrom ssn:Sensor
+                                ] ,
+                                [ rdf:type owl:Restriction ;
+                                  owl:onProperty ssn:observedProperty ;
+                                  owl:someValuesFrom ssn:Property
+                                ] ,
+                                [ rdf:type owl:Restriction ;
+                                  owl:onProperty ssn:observedBy ;
+                                  owl:someValuesFrom ssn:Sensor
+                                ] ,
+                                [ rdf:type owl:Restriction ;
+                                  owl:onProperty ssn:featureOfInterest ;
+                                  owl:allValuesFrom ssn:FeatureOfInterest
+                                ] ,
+                                [ rdf:type owl:Restriction ;
+                                  owl:onProperty ssn:observedProperty ;
+                                  owl:allValuesFrom ssn:Property
+                                ] .
+
+
+
+###  http://purl.oclc.org/NET/ssnx/ssn#ObservationValue
+
+ssn:ObservationValue rdf:type owl:Class .
+
+
+
+###  http://purl.oclc.org/NET/ssnx/ssn#Property
+
+ssn:Property rdf:type owl:Class .
+
+
+
+###  http://purl.oclc.org/NET/ssnx/ssn#SensingDevice
+
+ssn:SensingDevice rdf:type owl:Class ;
+                  
+                  rdfs:subClassOf ssn:Device ,
+                                  ssn:Sensor .
+
+
+
+###  http://purl.oclc.org/NET/ssnx/ssn#Sensor
+
+ssn:Sensor rdf:type owl:Class ;
+           
+           rdfs:subClassOf [ rdf:type owl:Restriction ;
+                             owl:onProperty ssn:observes ;
+                             owl:allValuesFrom ssn:Property
+                           ] .
+
+
+
+###  http://purl.oclc.org/NET/ssnx/ssn#SensorOutput
+
+ssn:SensorOutput rdf:type owl:Class ;
+                 
+                 rdfs:subClassOf [ rdf:type owl:Restriction ;
+                                   owl:onProperty ssn:isProducedBy ;
+                                   owl:someValuesFrom ssn:Sensor
+                                 ] ,
+                                 [ rdf:type owl:Restriction ;
+                                   owl:onProperty ssn:hasValue ;
+                                   owl:someValuesFrom ssn:ObservationValue
+                                 ] .
+
+
+
+
+
+#################################################################
+#
+#    Individuals
+#
+#################################################################
+
+
+###  http://purl.oclc.org/NET/ssnx/cf/cf-feature#air
+
+cf-feature:air rdf:type cf-feature:Medium ,
+                        owl:NamedIndividual .
+
+
+
+###  http://purl.oclc.org/NET/ssnx/cf/cf-feature#atmosphere
+
+cf-feature:atmosphere rdf:type cf-feature:Layer ,
+                               owl:NamedIndividual .
+
+
+
+###  http://purl.oclc.org/NET/ssnx/cf/cf-feature#ground
+
+cf-feature:ground rdf:type cf-feature:Medium ,
+                           owl:NamedIndividual .
+
+
+
+###  http://purl.oclc.org/NET/ssnx/cf/cf-feature#hail
+
+cf-feature:hail rdf:type cf-feature:Precipitation ,
+                         owl:NamedIndividual .
+
+
+
+###  http://purl.oclc.org/NET/ssnx/cf/cf-feature#humidity
+
+cf-feature:humidity rdf:type cf-feature:Humidity ,
+                             owl:NamedIndividual .
+
+
+
+###  http://purl.oclc.org/NET/ssnx/cf/cf-feature#land
+
+cf-feature:land rdf:type cf-feature:Layer ,
+                         owl:NamedIndividual .
+
+
+
+###  http://purl.oclc.org/NET/ssnx/cf/cf-feature#ocean
+
+cf-feature:ocean rdf:type cf-feature:Layer ,
+                          owl:NamedIndividual .
+
+
+
+###  http://purl.oclc.org/NET/ssnx/cf/cf-feature#rainfall
+
+cf-feature:rainfall rdf:type cf-feature:Precipitation ,
+                             owl:NamedIndividual .
+
+
+
+###  http://purl.oclc.org/NET/ssnx/cf/cf-feature#sea
+
+cf-feature:sea rdf:type cf-feature:Layer ,
+                        owl:NamedIndividual .
+
+
+
+###  http://purl.oclc.org/NET/ssnx/cf/cf-feature#snowfall
+
+cf-feature:snowfall rdf:type cf-feature:Precipitation ,
+                             owl:NamedIndividual .
+
+
+
+###  http://purl.oclc.org/NET/ssnx/cf/cf-feature#soil
+
+cf-feature:soil rdf:type cf-feature:Medium ,
+                         owl:NamedIndividual .
+
+
+
+###  http://purl.oclc.org/NET/ssnx/cf/cf-feature#water
+
+cf-feature:water rdf:type cf-feature:Medium ,
+                          owl:NamedIndividual .
+
+
+
+###  http://purl.oclc.org/NET/ssnx/cf/cf-feature#wind
+
+cf-feature:wind rdf:type cf-feature:Wind ,
+                         owl:NamedIndividual .
+
+
+
+###  http://purl.oclc.org/NET/ssnx/cf/cf-property#air_pressure
+
+cf-property:air_pressure rdf:type dim:StressOrPressure ,
+                                  owl:NamedIndividual .
+
+
+
+###  http://purl.oclc.org/NET/ssnx/cf/cf-property#air_temperature
+
+cf-property:air_temperature rdf:type dim:Temperature ,
+                                     owl:NamedIndividual .
+
+
+
+###  http://purl.oclc.org/NET/ssnx/cf/cf-property#rainfall_rate
+
+cf-property:rainfall_rate rdf:type dim:VelocityOrSpeed ,
+                                   owl:NamedIndividual .
+
+
+
+###  http://purl.oclc.org/NET/ssnx/cf/cf-property#relative_humidity
+
+cf-property:relative_humidity rdf:type dim:Dimensionless ,
+                                       owl:NamedIndividual .
+
+
+
+###  http://purl.oclc.org/NET/ssnx/cf/cf-property#sea_surface_wave_significant_height
+
+cf-property:sea_surface_wave_significant_height rdf:type dim:Distance ,
+                                                         owl:NamedIndividual .
+
+
+
+###  http://purl.oclc.org/NET/ssnx/cf/cf-property#snow_temperature
+
+cf-property:snow_temperature rdf:type dim:Temperature ,
+                                      owl:NamedIndividual .
+
+
+
+###  http://purl.oclc.org/NET/ssnx/cf/cf-property#soil_temperature
+
+cf-property:soil_temperature rdf:type dim:Temperature ,
+                                      owl:NamedIndividual .
+
+
+
+###  http://purl.oclc.org/NET/ssnx/cf/cf-property#thickness_of_rainfall_amount
+
+cf-property:thickness_of_rainfall_amount rdf:type dim:Distance ,
+                                                  owl:NamedIndividual .
+
+
+
+###  http://purl.oclc.org/NET/ssnx/cf/cf-property#volume_fraction_of_condensed_water_in_soil
+
+cf-property:volume_fraction_of_condensed_water_in_soil rdf:type dim:Dimensionless ,
+                                                                owl:NamedIndividual .
+
+
+
+###  http://purl.oclc.org/NET/ssnx/cf/cf-property#wind_from_direction
+
+cf-property:wind_from_direction rdf:type dim:Angle ,
+                                         owl:NamedIndividual .
+
+
+
+###  http://purl.oclc.org/NET/ssnx/cf/cf-property#wind_speed
+
+cf-property:wind_speed rdf:type dim:VelocityOrSpeed ,
+                                owl:NamedIndividual .
+
+
+
+###  http://purl.oclc.org/NET/ssnx/cf/cf-property#wind_speed_of_gust
+
+cf-property:wind_speed_of_gust rdf:type dim:VelocityOrSpeed ,
+                                        owl:NamedIndividual .
+
+
+
+###  http://purl.oclc.org/NET/ssnx/cf/cf-property#wind_to_direction
+
+cf-property:wind_to_direction rdf:type dim:Angle ,
+                                       owl:NamedIndividual .
+
+
+
+
+###  Generated by the OWL API (version 3.4.2) http://owlapi.sourceforge.net
+

@@ -7,10 +7,14 @@ import es.upm.fi.oeg.morph.stream.algebra.xpr.OperationXpr
 import es.upm.fi.oeg.morph.stream.algebra.xpr.FunctionXpr
 import org.slf4j.LoggerFactory
 
-class ProjectionOp(id:String,val expressions:Map[String,Xpr], subOp:AlgebraOp, val distinct:Boolean) 
-  extends UnaryOp(id,"projection",subOp) {
+class ProjectionOp(val expressions:Map[String,Xpr], subOp:AlgebraOp, val distinct:Boolean) 
+  extends UnaryOp(null,"projection",subOp) {
   private val logger= LoggerFactory.getLogger(this.getClass)
-
+  override val id={
+    val suf=if (getRelation!=null) getRelation.id else ""
+    expressions.map(e=>e._2.toString)mkString("-")+suf
+  }
+  
   def includes(proj:ProjectionOp)=
 	proj.expressions.keySet.forall{exp=>
       this.expressions.contains(exp) && this.expressions(exp).isEqual(proj.expressions(exp))
@@ -33,7 +37,7 @@ class ProjectionOp(id:String,val expressions:Map[String,Xpr], subOp:AlgebraOp, v
   override def copyOp():ProjectionOp=	{		
 	val op=if (subOp!=null) subOp.copyOp
 	  else null					
-	new ProjectionOp(id, expressions, op,distinct)		
+	new ProjectionOp(expressions, op,distinct)		
   }
 
   override def merge(op:AlgebraOp,xprs:Seq[Xpr]):AlgebraOp={
@@ -44,7 +48,7 @@ class ProjectionOp(id:String,val expressions:Map[String,Xpr], subOp:AlgebraOp, v
 	  case _=>
 		val newXprs=expressions++op.vars.entrySet.filter(e=> !expressions.contains(e.getKey)).map{e=>
 		  e.getKey->e.getValue}.toMap
-		new ProjectionOp(id,newXprs,subOp,distinct)
+		new ProjectionOp(newXprs,subOp,distinct)
 	}
   }
   
@@ -52,7 +56,7 @@ class ProjectionOp(id:String,val expressions:Map[String,Xpr], subOp:AlgebraOp, v
     // Use the more complex subop
     val sub=if (!proj.subOp.isInstanceOf[RelationOp]) proj.subOp
       else subOp
-    new ProjectionOp(id,expressions++proj.expressions,sub,distinct)
+    new ProjectionOp(expressions++proj.expressions,sub,distinct)
   }
 
   def merge(proj:ProjectionOp,xprs:Seq[Xpr]):AlgebraOp={
@@ -102,7 +106,7 @@ class ProjectionOp(id:String,val expressions:Map[String,Xpr], subOp:AlgebraOp, v
 	private def add(proj: ProjectionOp)={
 	  val newXprs=expressions++proj.vars.entrySet.filter(e=> !expressions.contains(e.getKey)).map{e=>
 			    e.getKey->e.getValue}.toMap
-	 new ProjectionOp(id,newXprs,subOp.copyOp,distinct)
+	 new ProjectionOp(newXprs,subOp.copyOp,distinct)
 	}
 	
 	override def build(newOp:AlgebraOp):AlgebraOp=
@@ -121,7 +125,7 @@ class ProjectionOp(id:String,val expressions:Map[String,Xpr], subOp:AlgebraOp, v
 		if (sel.subOp == null) //only for empty selections!
 		{
 		  val newSel=new SelectionOp(sel.id,subOp,sel.expressions)
-		  return new ProjectionOp(id,expressions,newSel,distinct)
+		  return new ProjectionOp(expressions,newSel,distinct)
 		}
 		return this
 	  case join:InnerJoinOp=>

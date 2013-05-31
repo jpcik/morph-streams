@@ -6,13 +6,17 @@ import collection.JavaConversions._
 import es.upm.fi.oeg.morph.stream.algebra.xpr.Xpr
 import org.slf4j.LoggerFactory
 
-class MultiUnionOp(val id:String,childrenOps:Map[String,AlgebraOp]) 
+class MultiUnionOp(childrenOps:Map[String,AlgebraOp]) 
   extends AlgebraOp {
 
   private val logger= LoggerFactory.getLogger(this.getClass)
-  val children=childrenOps.filter(_._2!=null)
   override val name="multiunion"
-  //val index:Map[String,Multimap[String,String]]=new TreeMap[String,Multimap[String,String]]
+  val nodups=childrenOps.filter(_._2!=null).map(c=>c._2.id->c._2).toMap
+  val children=nodups.filter(_._2!=null)
+  
+  override val id={
+    children.map(c=>c._2.id).mkString("-")
+  }
   
   override def build(op:AlgebraOp):AlgebraOp=op match{
 	case multi:MultiUnionOp=>
@@ -36,7 +40,7 @@ class MultiUnionOp(val id:String,childrenOps:Map[String,AlgebraOp])
   }
 
   override def display(){
-		display(0)
+	display(0)
   }
 	
   override def vars=
@@ -44,11 +48,10 @@ class MultiUnionOp(val id:String,childrenOps:Map[String,AlgebraOp])
 	
   override def merge(op:AlgebraOp,xprs:Seq[Xpr]):AlgebraOp={
 	if (op.isInstanceOf[MultiUnionOp]){
-	  val union = op.asInstanceOf[MultiUnionOp];
-	  //val seti = index.keySet & union.index.keySet
+	  val union = op.asInstanceOf[MultiUnionOp];	
 	  logger.debug("merge unions: "+children.keySet+"--"+union.children.keySet)
 		
-	  val set =  this.children.keySet //CollectionUtils.intersection(this.children.keySet(), union.children.keySet());			
+	  val set =  this.children.keySet 			
 	  val ops=set.map{key=>
 		val child =  children(key)
 		union.children.keySet.map{key2=>
@@ -57,47 +60,41 @@ class MultiUnionOp(val id:String,childrenOps:Map[String,AlgebraOp])
 		  key+key2->opnew
 		}.filter(_._2!=null)
 	  }.flatten.toMap	
-	  return new MultiUnionOp(id,ops)
+	  return new MultiUnionOp(ops)
 					
     }
-	/*
-		else if (op.isInstanceOf[OpProjection])
-		{
-			val proj = op.asInstanceOf[OpProjection]
-			logger.debug("extent "+proj.getRelation().getExtentName());
-			Map<String,AlgebraOp> newChildren = new TreeMap<String,AlgebraOp>();
-			for (Entry<String, AlgebraOp> child:children.entrySet())
-			{
-				AlgebraOp ch = child.getValue();
-				AlgebraOp newchild = ch.merge(proj,xprs);
-				if (newchild!=null)
-					newChildren.put(child.getKey(), newchild);
-			}
-			this.setChildren(newChildren);
-			return this;
-		}*/
 	else
 		throw new NotImplementedException("Merge implementation missing: "+op.toString());
 		
   }
   
-  def simplify=
+  def simplify={
+    if (logger.isDebugEnabled)
+      this.display
     if (children.isEmpty) null
     else if (children.size==1) children.head._2
+    else if (children.exists(c=>c._2.isInstanceOf[MultiUnionOp]))
+      MultiUnionOp(children.map{c=>c._2 match{
+        case u:MultiUnionOp=>
+        u.children.map(ch=>(ch._2.id,ch._2))
+        case _=> Seq(c)
+      }
+      }.flatten.toMap) 
+    /*
     else if (children.forall(c=>c._2.isInstanceOf[MultiUnionOp]))
       MultiUnionOp(id,children.map{c=>
         val u=c._2.asInstanceOf[MultiUnionOp]
         u.children.map(ch=>(c._1+ch._1,ch._2))
-      }.flatten.toMap )
+      }.flatten.toMap )*/
       
 	else this
-	
+  }
 }
 
 object MultiUnionOp{
-  def apply(id:String,childrenOps:Map[String,AlgebraOp])={
+  def apply(childrenOps:Map[String,AlgebraOp])={
     val validChildren=childrenOps.filter(c=>c._2!=null)
-    if (validChildren.size>0) new MultiUnionOp(id,childrenOps)
+    if (validChildren.size>0) new MultiUnionOp(childrenOps)
     else null
   }
 }

@@ -2,7 +2,7 @@ name := "query-rewriting"
 
 organization := "es.upm.fi.oeg.morph"
 
-version := "1.0.5"
+version := "1.0.6"
 
 libraryDependencies ++= Seq(
   "net.sf" % "jsqlparser" % "0.0.1",

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<catalog prefer="public" xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
+    <group id="Folder Repository, directory=, recursive=true, Auto-Update=true, version=2" prefer="public" xml:base="">
+        <uri id="Automatically generated entry, Timestamp=1369070852302" name="file:/D:/jpc/src/d4.3/ontologies/serviceDescription.rdf" uri="target/test-classes/mappings/service-descriptions/CCOSouthEastEnglandService.rdf"/>
+        <uri id="Automatically generated entry, Timestamp=1369070852302" name="http://oeg-upm.net/onto/casas/" uri="casas.owl"/>
+        <uri id="Automatically generated entry, Timestamp=1369070852302" name="http://purl.oclc.org/NET/ssnx/qu/qu-rec20" uri="obs.owl"/>
+        <uri id="Automatically generated entry, Timestamp=1369070852302" name="http://www.oeg-upm.net/onto/observations.owl" uri="demo.owl"/>
+        <uri id="Automatically generated entry, Timestamp=1369070852302" name="http://www.w3.org/2002/07/owl" uri="src/test/resources/casas.owl"/>
+        <uri id="Automatically generated entry, Timestamp=1369070852302" name="shadowed:file:/D:/jpc/src/d4.3/ontologies/serviceDescription.rdf" uri="src/test/resources/mappings/service-descriptions/CCOSouthEastEnglandService.rdf"/>
+        <uri id="Automatically generated entry, Timestamp=1369070852302" name="shadowed:http://oeg-upm.net/onto/casas/" uri="target/test-classes/casas.owl"/>
+        <uri id="Automatically generated entry, Timestamp=1369070852302" name="shadowed:http://www.oeg-upm.net/onto/observations.owl" uri="target/test-classes/demo.owl"/>
+        <uri id="Automatically generated entry, Timestamp=1369070852302" name="shadowed:http://www.oeg-upm.net/onto/observations.owl" uri="src/test/resources/demo.owl"/>
+    </group>
+</catalog>

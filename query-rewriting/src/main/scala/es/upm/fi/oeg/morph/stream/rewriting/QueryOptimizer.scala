@@ -43,7 +43,7 @@ class QueryOptimizer{
 	val o = staticOptimize(op.subOp)
 	op match {
 	  case proj:ProjectionOp=>	
-		optimizeProjection(new ProjectionOp(proj.id,proj.expressions,o,proj.distinct))
+		optimizeProjection(new ProjectionOp(proj.expressions,o,proj.distinct))
 	  case selection:SelectionOp=>
 	    optimizeSelection(new SelectionOp(selection.id,o,selection.expressions))
 	  case root:RootOp=> new RootOp(op.id,o)
@@ -66,7 +66,7 @@ class QueryOptimizer{
   def staticOptimize(union:MultiUnionOp):AlgebraOp={
 	logger.trace("optimize: "+union.toString)			
 	val newChildren=union.children.values.map(op=>staticOptimize(op)).filter(_!=null).zipWithIndex
-	val newUnion=new MultiUnionOp(union.id,newChildren.map(c=>c._1.id+c._2->c._1).toMap)
+	val newUnion=new MultiUnionOp(newChildren.map(c=>c._1.id+c._2->c._1).toMap)
 	newUnion.simplify
   }
 	
@@ -100,9 +100,9 @@ class QueryOptimizer{
         else join        
         
       case (op1:MultiUnionOp,op2:AlgebraOp)=>
-        MultiUnionOp(op1.id,op1.children.map(c=>c._1->optimizeJoin(new InnerJoinOp(c._2,op2))))
+        MultiUnionOp(op1.children.map(c=>c._1->optimizeJoin(new InnerJoinOp(c._2,op2))))
       case (op1:AlgebraOp,op2:MultiUnionOp)=>
-        MultiUnionOp(op2.id,op2.children.map(c=>c._1->optimizeJoin(new InnerJoinOp(c._2,op1))))
+        MultiUnionOp(op2.children.map(c=>c._1->optimizeJoin(new InnerJoinOp(c._2,op1))))
 
       case (op1:AlgebraOp,op2:JoinOp)=>
         val optim=optimizeJoin(new InnerJoinOp(op1,op2.left))
@@ -133,9 +133,9 @@ class QueryOptimizer{
         else join        
         
       case (op1:MultiUnionOp,op2:AlgebraOp)=>
-        MultiUnionOp(op1.id,op1.children.map(c=>c._1->optimizeJoin(new InnerJoinOp(c._2,op2))))
+        MultiUnionOp(op1.children.map(c=>c._1->optimizeJoin(new InnerJoinOp(c._2,op2))))
       case (op1:AlgebraOp,op2:MultiUnionOp)=>
-        MultiUnionOp(op2.id,op2.children.map(c=>c._1->optimizeJoin(new InnerJoinOp(c._2,op1))))
+        MultiUnionOp(op2.children.map(c=>c._1->optimizeJoin(new InnerJoinOp(c._2,op1))))
       case _=>join
     }
   }
@@ -187,22 +187,22 @@ class QueryOptimizer{
 		  case _=>throw new Exception("unsupported optimization")
 		}
 		//should simplify here!!!!
-		new ProjectionOp(proj.id,proj.expressions,newBin,proj.distinct)
+		new ProjectionOp(proj.expressions,newBin,proj.distinct)
 	  case union:MultiUnionOp=>	
 		val newChildren = 
 		  union.children.entrySet.map{col=>
-				  val copy= new ProjectionOp(proj.id,proj.expressions, col.getValue,proj.distinct)
+				  val copy= new ProjectionOp(proj.expressions, col.getValue,proj.distinct)
 				  val newOp=staticOptimize(copy)
 				  col.getKey->newOp
 				}.toMap
-		new MultiUnionOp(union.id,newChildren)
+		new MultiUnionOp(newChildren).simplify
 	  case group:GroupOp=>
 		val newExpr=proj.expressions.map{e=>
 		  if (group.aggs.contains(e._1)) 
 			(e._1,VarXpr(e._1))
 		  else e
 		}
-		new ProjectionOp(proj.id,newExpr,o,proj.distinct)
+		new ProjectionOp(newExpr,o,proj.distinct)
 	  case innerProj:ProjectionOp =>//double projection, eat the inner!!!		
 		logger.debug("merge double projections "+proj+"\n"+o);
 		
@@ -213,10 +213,10 @@ class QueryOptimizer{
 			  else //inner projection doesn't cover the attributes of the outer one
 			    (key, NullValueXpr)
 			}.toMap
-		new ProjectionOp(proj.id,proj.expressions++xprs,innerProj.subOp,proj.distinct)				
+		new ProjectionOp(proj.expressions++xprs,innerProj.subOp,proj.distinct)				
 	  case _=>			
 		if (o!=null)  
-		  new ProjectionOp(proj.id,proj.expressions,o,proj.distinct)
+		  new ProjectionOp(proj.expressions,o,proj.distinct)
 		else  null // if projection has no relation to project!!!
 		  				
 	}		
@@ -238,7 +238,7 @@ class QueryOptimizer{
 		if (found.forall(_==true)){	
 		    val newExprs=selection.expressions.map(x=>replaceXpr(x,proj.expressions))
 		    val sel = new SelectionOp(selection.id,proj.subOp,newExprs)
-			new ProjectionOp(proj.id,proj.expressions,sel,proj.distinct)
+			new ProjectionOp(proj.expressions,sel,proj.distinct)
 		}
 		else proj
 	case union:MultiUnionOp=>
@@ -248,7 +248,7 @@ class QueryOptimizer{
 			val newChild = staticOptimize(sel);
 			newChildren.put(col.getKey(), newChild);
 		}
-		new MultiUnionOp(union.id,union.children++ newChildren)			
+		new MultiUnionOp(union.children++ newChildren).simplify	
 	case join:InnerJoinOp=>
 		logger.debug("selection inside join "+join.toString)
 		//val selxprs=selection.expressions.map(_.asInstanceOf[BinaryXpr]).toList

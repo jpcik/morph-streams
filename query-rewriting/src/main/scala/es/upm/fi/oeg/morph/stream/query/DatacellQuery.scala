@@ -5,7 +5,7 @@ import es.upm.fi.oeg.morph.stream.algebra.xpr.Xpr
 import es.upm.fi.oeg.morph.stream.algebra.xpr.UnassignedVarXpr
 import scala.collection.mutable.ArrayBuffer
 
-class DatacellQuery(op:AlgebraOp,projectionVars:Map[String,String]) extends SqlQuery(op,Array()) {
+class DatacellQuery(op:AlgebraOp,ops:Array[Modifiers.OutputModifier]) extends SqlQuery(op,Array()) {
   
   //val selectXprs=new collection.mutable.HashMap[String,Xpr]
   //val from=new ArrayBuffer[String]
@@ -41,7 +41,7 @@ class DatacellQuery(op:AlgebraOp,projectionVars:Map[String,String]) extends SqlQ
   def generateUnion(op:AlgebraOp):Unit=op match{
     case union:MultiUnionOp=>
       val un=union.children.values.map{opi=>
-        val q=new DatacellQuery(op,projectionVars)
+        val q=new DatacellQuery(op,ops)
         q.build(new RootOp("",opi))                
       }
       //unions++=un
@@ -71,7 +71,7 @@ class DatacellQuery(op:AlgebraOp,projectionVars:Map[String,String]) extends SqlQ
       from+=extentAlias(rel)
     case union:MultiUnionOp=>
       val un=union.children.values.map{opi=>
-        val q=new DatacellQuery(opi,projectionVars)
+        val q=new DatacellQuery(opi,ops)
         q.build(new RootOp("",opi))                
       }
       from+=un.mkString(" union ")

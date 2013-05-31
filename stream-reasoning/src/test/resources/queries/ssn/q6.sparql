@@ -1,0 +1,19 @@
+PREFIX om-owl: <http://knoesis.wright.edu/ssw/ont/sensor-observation.owl#>
+PREFIX oeg-sen: <http://oeg-upm.net/onto/sensordemo/>
+PREFIX ssn: <http://purl.oclc.org/NET/ssnx/ssn#>
+PREFIX qu: <http://purl.oclc.org/NET/ssnx/qu/qu#>
+PREFIX quantity: <http://purl.oclc.org/NET/ssnx/qu/quantity#>
+PREFIX dim: <http://purl.oclc.org/NET/ssnx/qu/dim#>
+PREFIX cf-feature: <http://purl.oclc.org/NET/ssnx/cf/cf-feature#>
+
+SELECT DISTINCT ?observation ?value  
+FROM NAMED STREAM <http://cwi.nl/SRBench/observations> [NOW - 1 HOURS]
+WHERE {
+ ?observation ssn:observedProperty 
+                 [qu:generalQuantityKind quantity:temperature;
+                  ssn:isPropertyOf cf-feature:air];
+              ssn:observationResult ?result.
+ ?result ssn:hasValue ?obsValue.               
+ ?obsValue qu:numericalValue ?value.
+ FILTER (?value > 0.5)  
+}

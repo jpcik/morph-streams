@@ -46,5 +46,5 @@ object HelloBuild extends Build {
                               base = file("esper-engine"),settings = buildSettings ++ scalaOnly) 
 
   lazy val streamreasoning = Project(id = "stream-reasoning",
-                             base = file("stream-reasoning"),settings= buildSettings ++ scalaOnly) dependsOn(queryrewriting)
+                             base = file("stream-reasoning"),settings= buildSettings ++ scalaOnly) dependsOn(esper)
 }

@@ -1,0 +1,1032 @@
+<?xml version="1.0"?>
+
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
+    <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
+    <!ENTITY ssn "http://purl.oclc.org/NET/ssnx/ssn#" >
+    <!ENTITY oeg-sen "http://oeg-upm.net/onto/sensordemo/" >
+    <!ENTITY qu "http://purl.oclc.org/NET/ssnx/qu/qu#" >
+    <!ENTITY dim "http://purl.oclc.org/NET/ssnx/qu/dim#" >
+    <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+    <!ENTITY unit "http://purl.oclc.org/NET/ssnx/qu/unit#" >
+    <!ENTITY aws "http://purl.oclc.org/NET/ssnx/meteo/aws#" >
+    <!ENTITY quantity "http://purl.oclc.org/NET/ssnx/qu/quantity#" >
+    <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+    <!ENTITY cf-feature "http://purl.oclc.org/NET/ssnx/cf/cf-feature#" >
+    <!ENTITY cf-property "http://purl.oclc.org/NET/ssnx/cf/cf-property#" >
+]>
+
+
+<rdf:RDF xmlns="http://oeg-upm.net/onto/sensordemo/"
+     xml:base="http://oeg-upm.net/onto/sensordemo/"
+     xmlns:cf-property="http://purl.oclc.org/NET/ssnx/cf/cf-property#"
+     xmlns:ssn="http://purl.oclc.org/NET/ssnx/ssn#"
+     xmlns:dim="http://purl.oclc.org/NET/ssnx/qu/dim#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:unit="http://purl.oclc.org/NET/ssnx/qu/unit#"
+     xmlns:oeg-sen="http://oeg-upm.net/onto/sensordemo/"
+     xmlns:aws="http://purl.oclc.org/NET/ssnx/meteo/aws#"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:qu="http://purl.oclc.org/NET/ssnx/qu/qu#"
+     xmlns:quantity="http://purl.oclc.org/NET/ssnx/qu/quantity#"
+     xmlns:cf-feature="http://purl.oclc.org/NET/ssnx/cf/cf-feature#">
+    <owl:Ontology rdf:about="http://oeg-upm.net/onto/sensordemo/"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Object Properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/qu/qu#generalQuantityKind -->
+
+    <owl:ObjectProperty rdf:about="&qu;generalQuantityKind"/>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/qu/qu#propertyType -->
+
+    <owl:ObjectProperty rdf:about="&qu;propertyType"/>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/qu/qu#quantityKind -->
+
+    <owl:ObjectProperty rdf:about="&qu;quantityKind">
+        <owl:inverseOf rdf:resource="&qu;unitKind"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/qu/qu#referenceUnit -->
+
+    <owl:ObjectProperty rdf:about="&qu;referenceUnit"/>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/qu/qu#unit -->
+
+    <owl:ObjectProperty rdf:about="&qu;unit"/>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/qu/qu#unitKind -->
+
+    <owl:ObjectProperty rdf:about="&qu;unitKind"/>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/ssn#featureOfInterest -->
+
+    <owl:ObjectProperty rdf:about="&ssn;featureOfInterest"/>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/ssn#hasProperty -->
+
+    <owl:ObjectProperty rdf:about="&ssn;hasProperty"/>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/ssn#hasValue -->
+
+    <owl:ObjectProperty rdf:about="&ssn;hasValue"/>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/ssn#isProducedBy -->
+
+    <owl:ObjectProperty rdf:about="&ssn;isProducedBy"/>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/ssn#isPropertyOf -->
+
+    <owl:ObjectProperty rdf:about="&ssn;isPropertyOf"/>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/ssn#observationResult -->
+
+    <owl:ObjectProperty rdf:about="&ssn;observationResult"/>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/ssn#observationResultTime -->
+
+    <owl:ObjectProperty rdf:about="&ssn;observationResultTime"/>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/ssn#observedBy -->
+
+    <owl:ObjectProperty rdf:about="&ssn;observedBy"/>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/ssn#observedProperty -->
+
+    <owl:ObjectProperty rdf:about="&ssn;observedProperty"/>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/ssn#observes -->
+
+    <owl:ObjectProperty rdf:about="&ssn;observes"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Data properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/qu/qu#numericalValue -->
+
+    <owl:DatatypeProperty rdf:about="&qu;numericalValue">
+        <rdfs:range rdf:resource="&xsd;double"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Classes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://oeg-upm.net/onto/sensordemo/TemperatureObservation -->
+
+    <owl:Class rdf:about="&oeg-sen;TemperatureObservation">
+        <rdfs:subClassOf rdf:resource="&ssn;Observation"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&ssn;observedProperty"/>
+                <owl:someValuesFrom rdf:resource="&dim;Temperature"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- http://oeg-upm.net/onto/sensordemo/ThermistorObservation -->
+
+    <owl:Class rdf:about="&oeg-sen;ThermistorObservation">
+        <rdfs:subClassOf rdf:resource="&oeg-sen;TemperatureObservation"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&ssn;observedBy"/>
+                <owl:someValuesFrom rdf:resource="&aws;Thermistor"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/cf/cf-feature#Humidity -->
+
+    <owl:Class rdf:about="&cf-feature;Humidity">
+        <rdfs:subClassOf rdf:resource="&ssn;FeatureOfInterest"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/cf/cf-feature#Layer -->
+
+    <owl:Class rdf:about="&cf-feature;Layer">
+        <rdfs:subClassOf rdf:resource="&ssn;FeatureOfInterest"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/cf/cf-feature#Medium -->
+
+    <owl:Class rdf:about="&cf-feature;Medium">
+        <rdfs:subClassOf rdf:resource="&ssn;FeatureOfInterest"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/cf/cf-feature#Precipitation -->
+
+    <owl:Class rdf:about="&cf-feature;Precipitation">
+        <rdfs:subClassOf rdf:resource="&ssn;FeatureOfInterest"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/cf/cf-feature#Wind -->
+
+    <owl:Class rdf:about="&cf-feature;Wind">
+        <rdfs:subClassOf rdf:resource="&ssn;FeatureOfInterest"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/meteo/aws#AneroidDisplacementTransducer -->
+
+    <owl:Class rdf:about="&aws;AneroidDisplacementTransducer">
+        <rdfs:subClassOf rdf:resource="&aws;AtmosphericPressureSensor"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/meteo/aws#AtmosphericPressureSensor -->
+
+    <owl:Class rdf:about="&aws;AtmosphericPressureSensor">
+        <rdfs:subClassOf rdf:resource="&ssn;SensingDevice"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/meteo/aws#CapacitanceSensor -->
+
+    <owl:Class rdf:about="&aws;CapacitanceSensor">
+        <rdfs:subClassOf rdf:resource="&aws;HumiditySensor"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/meteo/aws#CapacitiveAneroid -->
+
+    <owl:Class rdf:about="&aws;CapacitiveAneroid">
+        <rdfs:subClassOf rdf:resource="&aws;AneroidDisplacementTransducer"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/meteo/aws#CapacitiveBead -->
+
+    <owl:Class rdf:about="&aws;CapacitiveBead">
+        <rdfs:subClassOf rdf:resource="&aws;TemperatureSensor"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/meteo/aws#CapacitiveThinFilmPolymer -->
+
+    <owl:Class rdf:about="&aws;CapacitiveThinFilmPolymer">
+        <rdfs:subClassOf rdf:resource="&aws;CapacitanceSensor"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/meteo/aws#HotWireAnemometer -->
+
+    <owl:Class rdf:about="&aws;HotWireAnemometer">
+        <rdfs:subClassOf rdf:resource="&aws;WindSensor"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/meteo/aws#HumiditySensor -->
+
+    <owl:Class rdf:about="&aws;HumiditySensor">
+        <rdfs:subClassOf rdf:resource="&ssn;SensingDevice"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/meteo/aws#ImpactDisdrometer -->
+
+    <owl:Class rdf:about="&aws;ImpactDisdrometer">
+        <rdfs:subClassOf rdf:resource="&aws;PrecipitationSensor"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/meteo/aws#Lysimeter -->
+
+    <owl:Class rdf:about="&aws;Lysimeter">
+        <rdfs:subClassOf rdf:resource="&aws;HumiditySensor"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/meteo/aws#PrecipitationSensor -->
+
+    <owl:Class rdf:about="&aws;PrecipitationSensor">
+        <rdfs:subClassOf rdf:resource="&ssn;SensingDevice"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/meteo/aws#SnowPillow -->
+
+    <owl:Class rdf:about="&aws;SnowPillow">
+        <rdfs:subClassOf rdf:resource="&aws;PrecipitationSensor"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/meteo/aws#TemperatureSensor -->
+
+    <owl:Class rdf:about="&aws;TemperatureSensor">
+        <rdfs:subClassOf rdf:resource="&ssn;SensingDevice"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/meteo/aws#Tensiometer -->
+
+    <owl:Class rdf:about="&aws;Tensiometer">
+        <rdfs:subClassOf rdf:resource="&aws;HumiditySensor"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/meteo/aws#Thermistor -->
+
+    <owl:Class rdf:about="&aws;Thermistor">
+        <rdfs:subClassOf rdf:resource="&aws;TemperatureSensor"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/meteo/aws#UltrasonicWindSensor -->
+
+    <owl:Class rdf:about="&aws;UltrasonicWindSensor">
+        <rdfs:subClassOf rdf:resource="&aws;WindSensor"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/meteo/aws#WeighingLysimeter -->
+
+    <owl:Class rdf:about="&aws;WeighingLysimeter">
+        <rdfs:subClassOf rdf:resource="&aws;Lysimeter"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/meteo/aws#WindSensor -->
+
+    <owl:Class rdf:about="&aws;WindSensor">
+        <rdfs:subClassOf rdf:resource="&ssn;SensingDevice"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/qu/dim#Angle -->
+
+    <owl:Class rdf:about="&dim;Angle">
+        <rdfs:subClassOf rdf:resource="&qu;QuantityKind"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/qu/dim#AngleUnit -->
+
+    <owl:Class rdf:about="&dim;AngleUnit">
+        <rdfs:subClassOf rdf:resource="&qu;Unit"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/qu/dim#Dimensionless -->
+
+    <owl:Class rdf:about="&dim;Dimensionless">
+        <rdfs:subClassOf rdf:resource="&qu;QuantityKind"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/qu/dim#DimensionlessUnit -->
+
+    <owl:Class rdf:about="&dim;DimensionlessUnit">
+        <rdfs:subClassOf rdf:resource="&qu;Unit"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/qu/dim#Distance -->
+
+    <owl:Class rdf:about="&dim;Distance">
+        <rdfs:subClassOf rdf:resource="&qu;QuantityKind"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/qu/dim#DistanceUnit -->
+
+    <owl:Class rdf:about="&dim;DistanceUnit">
+        <rdfs:subClassOf rdf:resource="&qu;Unit"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/qu/dim#Duration -->
+
+    <owl:Class rdf:about="&dim;Duration">
+        <rdfs:subClassOf rdf:resource="&qu;QuantityKind"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/qu/dim#DurationUnit -->
+
+    <owl:Class rdf:about="&dim;DurationUnit">
+        <rdfs:subClassOf rdf:resource="&qu;Unit"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/qu/dim#StressOrPressure -->
+
+    <owl:Class rdf:about="&dim;StressOrPressure">
+        <rdfs:subClassOf rdf:resource="&qu;QuantityKind"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/qu/dim#StressOrPressureUnit -->
+
+    <owl:Class rdf:about="&dim;StressOrPressureUnit">
+        <rdfs:subClassOf rdf:resource="&qu;Unit"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/qu/dim#Temperature -->
+
+    <owl:Class rdf:about="&dim;Temperature">
+        <rdfs:subClassOf rdf:resource="&qu;QuantityKind"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&qu;unitKind"/>
+                <owl:someValuesFrom rdf:resource="&dim;TemperatureUnit"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/qu/dim#TemperatureUnit -->
+
+    <owl:Class rdf:about="&dim;TemperatureUnit">
+        <rdfs:subClassOf rdf:resource="&qu;Unit"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/qu/dim#VelocityOrSpeed -->
+
+    <owl:Class rdf:about="&dim;VelocityOrSpeed">
+        <rdfs:subClassOf rdf:resource="&qu;QuantityKind"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/qu/dim#VelocityOrSpeedUnit -->
+
+    <owl:Class rdf:about="&dim;VelocityOrSpeedUnit">
+        <rdfs:subClassOf rdf:resource="&qu;Unit"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/qu/qu#QuantityKind -->
+
+    <owl:Class rdf:about="&qu;QuantityKind"/>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/qu/qu#Unit -->
+
+    <owl:Class rdf:about="&qu;Unit">
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&qu;quantityKind"/>
+                <owl:someValuesFrom rdf:resource="&qu;QuantityKind"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&qu;quantityKind"/>
+                <owl:allValuesFrom rdf:resource="&qu;QuantityKind"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/ssn#Device -->
+
+    <owl:Class rdf:about="&ssn;Device"/>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/ssn#FeatureOfInterest -->
+
+    <owl:Class rdf:about="&ssn;FeatureOfInterest">
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&ssn;hasProperty"/>
+                <owl:someValuesFrom rdf:resource="&ssn;Property"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&ssn;hasProperty"/>
+                <owl:allValuesFrom rdf:resource="&ssn;Property"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/ssn#Observation -->
+
+    <owl:Class rdf:about="&ssn;Observation">
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&ssn;featureOfInterest"/>
+                <owl:someValuesFrom rdf:resource="&ssn;FeatureOfInterest"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&ssn;featureOfInterest"/>
+                <owl:allValuesFrom rdf:resource="&ssn;FeatureOfInterest"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&ssn;observedBy"/>
+                <owl:allValuesFrom rdf:resource="&ssn;Sensor"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&ssn;observedProperty"/>
+                <owl:allValuesFrom rdf:resource="&ssn;Property"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&ssn;observedBy"/>
+                <owl:someValuesFrom rdf:resource="&ssn;Sensor"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&ssn;observedProperty"/>
+                <owl:someValuesFrom rdf:resource="&ssn;Property"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/ssn#ObservationValue -->
+
+    <owl:Class rdf:about="&ssn;ObservationValue">
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&qu;unit"/>
+                <owl:someValuesFrom rdf:resource="&qu;Unit"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/ssn#Property -->
+
+    <owl:Class rdf:about="&ssn;Property"/>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/ssn#SensingDevice -->
+
+    <owl:Class rdf:about="&ssn;SensingDevice">
+        <rdfs:subClassOf rdf:resource="&ssn;Device"/>
+        <rdfs:subClassOf rdf:resource="&ssn;Sensor"/>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/ssn#Sensor -->
+
+    <owl:Class rdf:about="&ssn;Sensor">
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&ssn;observes"/>
+                <owl:allValuesFrom rdf:resource="&ssn;Property"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/ssn#SensorOutput -->
+
+    <owl:Class rdf:about="&ssn;SensorOutput">
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&ssn;isProducedBy"/>
+                <owl:someValuesFrom rdf:resource="&ssn;Sensor"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&ssn;hasValue"/>
+                <owl:someValuesFrom rdf:resource="&ssn;ObservationValue"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Individuals
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/cf/cf-feature#air -->
+
+    <owl:NamedIndividual rdf:about="&cf-feature;air">
+        <rdf:type rdf:resource="&cf-feature;Medium"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/cf/cf-feature#atmosphere -->
+
+    <owl:NamedIndividual rdf:about="&cf-feature;atmosphere">
+        <rdf:type rdf:resource="&cf-feature;Layer"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/cf/cf-feature#ground -->
+
+    <owl:NamedIndividual rdf:about="&cf-feature;ground">
+        <rdf:type rdf:resource="&cf-feature;Medium"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/cf/cf-feature#hail -->
+
+    <owl:NamedIndividual rdf:about="&cf-feature;hail">
+        <rdf:type rdf:resource="&cf-feature;Precipitation"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/cf/cf-feature#humidity -->
+
+    <owl:NamedIndividual rdf:about="&cf-feature;humidity">
+        <rdf:type rdf:resource="&cf-feature;Humidity"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/cf/cf-feature#land -->
+
+    <owl:NamedIndividual rdf:about="&cf-feature;land">
+        <rdf:type rdf:resource="&cf-feature;Layer"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/cf/cf-feature#ocean -->
+
+    <owl:NamedIndividual rdf:about="&cf-feature;ocean">
+        <rdf:type rdf:resource="&cf-feature;Layer"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/cf/cf-feature#rainfall -->
+
+    <owl:NamedIndividual rdf:about="&cf-feature;rainfall">
+        <rdf:type rdf:resource="&cf-feature;Precipitation"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/cf/cf-feature#sea -->
+
+    <owl:NamedIndividual rdf:about="&cf-feature;sea">
+        <rdf:type rdf:resource="&cf-feature;Layer"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/cf/cf-feature#snowfall -->
+
+    <owl:NamedIndividual rdf:about="&cf-feature;snowfall">
+        <rdf:type rdf:resource="&cf-feature;Precipitation"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/cf/cf-feature#soil -->
+
+    <owl:NamedIndividual rdf:about="&cf-feature;soil">
+        <rdf:type rdf:resource="&cf-feature;Medium"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/cf/cf-feature#water -->
+
+    <owl:NamedIndividual rdf:about="&cf-feature;water">
+        <rdf:type rdf:resource="&cf-feature;Medium"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/cf/cf-feature#wind -->
+
+    <owl:NamedIndividual rdf:about="&cf-feature;wind">
+        <rdf:type rdf:resource="&cf-feature;Wind"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/cf/cf-property#air_pressure -->
+
+    <owl:NamedIndividual rdf:about="&cf-property;air_pressure">
+        <rdf:type rdf:resource="&dim;StressOrPressure"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/cf/cf-property#air_temperature -->
+
+    <owl:NamedIndividual rdf:about="&cf-property;air_temperature">
+        <rdf:type rdf:resource="&dim;Temperature"/>
+        <ssn:isPropertyOf rdf:resource="&cf-feature;air"/>
+        <qu:generalQuantityKind rdf:resource="&quantity;temperature"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/cf/cf-property#rainfall_rate -->
+
+    <owl:NamedIndividual rdf:about="&cf-property;rainfall_rate">
+        <rdf:type rdf:resource="&dim;VelocityOrSpeed"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/cf/cf-property#relative_humidity -->
+
+    <owl:NamedIndividual rdf:about="&cf-property;relative_humidity">
+        <rdf:type rdf:resource="&dim;Dimensionless"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/cf/cf-property#sea_surface_wave_significant_height -->
+
+    <owl:NamedIndividual rdf:about="&cf-property;sea_surface_wave_significant_height">
+        <rdf:type rdf:resource="&dim;Distance"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/cf/cf-property#snow_temperature -->
+
+    <owl:NamedIndividual rdf:about="&cf-property;snow_temperature">
+        <rdf:type rdf:resource="&dim;Temperature"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/cf/cf-property#soil_temperature -->
+
+    <owl:NamedIndividual rdf:about="&cf-property;soil_temperature">
+        <rdf:type rdf:resource="&dim;Temperature"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/cf/cf-property#thickness_of_rainfall_amount -->
+
+    <owl:NamedIndividual rdf:about="&cf-property;thickness_of_rainfall_amount">
+        <rdf:type rdf:resource="&dim;Distance"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/cf/cf-property#volume_fraction_of_condensed_water_in_soil -->
+
+    <owl:NamedIndividual rdf:about="&cf-property;volume_fraction_of_condensed_water_in_soil">
+        <rdf:type rdf:resource="&dim;Dimensionless"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/cf/cf-property#wind_from_direction -->
+
+    <owl:NamedIndividual rdf:about="&cf-property;wind_from_direction">
+        <rdf:type rdf:resource="&dim;Angle"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/cf/cf-property#wind_speed -->
+
+    <owl:NamedIndividual rdf:about="&cf-property;wind_speed">
+        <rdf:type rdf:resource="&dim;VelocityOrSpeed"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/cf/cf-property#wind_speed_of_gust -->
+
+    <owl:NamedIndividual rdf:about="&cf-property;wind_speed_of_gust">
+        <rdf:type rdf:resource="&dim;VelocityOrSpeed"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/cf/cf-property#wind_to_direction -->
+
+    <owl:NamedIndividual rdf:about="&cf-property;wind_to_direction">
+        <rdf:type rdf:resource="&dim;Angle"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/qu/quantity#distance -->
+
+    <owl:NamedIndividual rdf:about="&quantity;distance">
+        <rdf:type rdf:resource="&dim;Distance"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/qu/quantity#duration -->
+
+    <owl:NamedIndividual rdf:about="&quantity;duration">
+        <rdf:type rdf:resource="&dim;Duration"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/qu/quantity#stressOrPressure -->
+
+    <owl:NamedIndividual rdf:about="&quantity;stressOrPressure">
+        <rdf:type rdf:resource="&dim;StressOrPressure"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/qu/quantity#temperature -->
+
+    <owl:NamedIndividual rdf:about="&quantity;temperature">
+        <rdf:type rdf:resource="&dim;Temperature"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/qu/quantity#velocityOrSpeed -->
+
+    <owl:NamedIndividual rdf:about="&quantity;velocityOrSpeed">
+        <rdf:type rdf:resource="&dim;VelocityOrSpeed"/>
+        <qu:referenceUnit rdf:resource="&unit;pascal"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/qu/unit#degreeCelsius -->
+
+    <owl:NamedIndividual rdf:about="&unit;degreeCelsius">
+        <rdf:type rdf:resource="&dim;TemperatureUnit"/>
+        <qu:quantityKind rdf:resource="&quantity;temperature"/>
+        <qu:referenceUnit rdf:resource="&unit;kelvin"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/qu/unit#degreeUnitOfAngle -->
+
+    <owl:NamedIndividual rdf:about="&unit;degreeUnitOfAngle">
+        <rdf:type rdf:resource="&dim;AngleUnit"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/qu/unit#kelvin -->
+
+    <owl:NamedIndividual rdf:about="&unit;kelvin">
+        <rdf:type rdf:resource="&dim;TemperatureUnit"/>
+        <qu:quantityKind rdf:resource="&quantity;temperature"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/qu/unit#kilopascal -->
+
+    <owl:NamedIndividual rdf:about="&unit;kilopascal">
+        <rdf:type rdf:resource="&dim;StressOrPressureUnit"/>
+        <qu:referenceUnit rdf:resource="&unit;pascal"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/qu/unit#metre -->
+
+    <owl:NamedIndividual rdf:about="&unit;metre">
+        <rdf:type rdf:resource="&dim;DistanceUnit"/>
+        <qu:quantityKind rdf:resource="&quantity;distance"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/qu/unit#metrePerSecond -->
+
+    <owl:NamedIndividual rdf:about="&unit;metrePerSecond">
+        <rdf:type rdf:resource="&dim;VelocityOrSpeedUnit"/>
+        <qu:quantityKind rdf:resource="&quantity;velocityOrSpeed"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/qu/unit#millimetre -->
+
+    <owl:NamedIndividual rdf:about="&unit;millimetre">
+        <rdf:type rdf:resource="&dim;DistanceUnit"/>
+        <qu:referenceUnit rdf:resource="&unit;metre"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/qu/unit#millimetrePerHour -->
+
+    <owl:NamedIndividual rdf:about="&unit;millimetrePerHour">
+        <rdf:type rdf:resource="&dim;VelocityOrSpeedUnit"/>
+        <qu:referenceUnit rdf:resource="&unit;metrePerSecond"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/qu/unit#pascal -->
+
+    <owl:NamedIndividual rdf:about="&unit;pascal">
+        <rdf:type rdf:resource="&dim;StressOrPressureUnit"/>
+        <qu:quantityKind rdf:resource="&quantity;stressOrPressure"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/qu/unit#percent -->
+
+    <owl:NamedIndividual rdf:about="&unit;percent">
+        <rdf:type rdf:resource="&dim;DimensionlessUnit"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/qu/unit#radian -->
+
+    <owl:NamedIndividual rdf:about="&unit;radian">
+        <rdf:type rdf:resource="&dim;AngleUnit"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://purl.oclc.org/NET/ssnx/qu/unit#second -->
+
+    <owl:NamedIndividual rdf:about="&unit;second">
+        <rdf:type rdf:resource="&dim;DurationUnit"/>
+        <qu:quantityKind rdf:resource="&quantity;duration"/>
+    </owl:NamedIndividual>
+</rdf:RDF>
+
+
+
+<!-- Generated by the OWL API (version 3.4.2) http://owlapi.sourceforge.net -->
+

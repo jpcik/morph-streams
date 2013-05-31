@@ -83,6 +83,8 @@ import com.hp.hpl.jena.sparql.expr.Expr
 import com.hp.hpl.jena.sparql.expr.ExprVar
 import com.hp.hpl.jena.sparql.expr.ExprFunction0
 import com.hp.hpl.jena.sparql.expr.NodeValue
+import com.hp.hpl.jena.sparql.algebra.op.OpJoin
+import com.hp.hpl.jena.sparql.algebra.op.OpUnion
 
 class QueryRewriting(props: Properties,mapping:String) {
   private val logger= LoggerFactory.getLogger(this.getClass)
@@ -97,10 +99,6 @@ class QueryRewriting(props: Properties,mapping:String) {
     value
   }
   
-  //private LinksetProcessor linker;
-  //private boolean metadataMappings = false;
-  private var bindings: ProjectionOp = null
-
   private def getProjectList(query: StreamQuery): Map[String,String]= {
     val map = new collection.mutable.HashMap[String, String]
     if (query.isConstructType) {
@@ -144,7 +142,7 @@ class QueryRewriting(props: Properties,mapping:String) {
       if (!adapter.equals("sql")) {
         val theClass =try Class.forName(queryClass)
         catch {
-          case e: ClassNotFoundException =>throw new QueryRewritingException("Unable to use adapter query", e)
+          case e: ClassNotFoundException =>throw new QueryRewritingException("Unable to use adapter query "+queryClass, e)
         }
         try 
           theClass.getDeclaredConstructor(classOf[AlgebraOp],
@@ -170,8 +168,8 @@ class QueryRewriting(props: Properties,mapping:String) {
     val span1 = System.currentTimeMillis() - ini
     val span2 = System.currentTimeMillis() - ini;
 
-    val binds = null //partition(op).asInstanceOf[OpProjection]
-    this.bindings = binds;
+    //val binds = null //partition(op).asInstanceOf[OpProjection]
+    //this.bindings = binds;
     val opo = navigate(op, query);
       /*
       if (binds != null) {
@@ -191,7 +189,7 @@ class QueryRewriting(props: Properties,mapping:String) {
           val exp = new VarXpr(vari)
           (vari, exp)
         }.toMap
-        val cProj = new ProjectionOp("mainProjection",xprs, opo,query.isDistinct)
+        val cProj = new ProjectionOp(xprs, opo,query.isDistinct)
 
         //opNew.setSubOp(cProj)
         new RootOp(null,cProj)
@@ -200,6 +198,7 @@ class QueryRewriting(props: Properties,mapping:String) {
       }
       val span3 = System.currentTimeMillis() - ini;
 
+      logger.debug("before optimization")
       opNew.display
 
       val opt = new QueryOptimizer
@@ -226,204 +225,181 @@ class QueryRewriting(props: Properties,mapping:String) {
     val unary = createRelation(tMap, poMap.objectMap, stream)         
     if (t.getObject.isURI || t.getObject.isLiteral) {
       val selection = createSelection(t,poMap.objectMap,t.getObject.toString,unary)
-      createProjection(t,tMap,poMap.objectMap,poMap, stream, selection)
+      createProjection(t,tMap,poMap.objectMap,poMap, selection)
     } 
     else if (t.getSubject.isURI){
       val selection = createSelection(t,tMap.subjectMap,t.getSubject.toString,unary)
-      createProjection(t,tMap,poMap.objectMap,poMap, stream, selection)
+      createProjection(t,tMap,poMap.objectMap,poMap, selection)
     }
-    else createProjection(t, tMap, poMap.objectMap, poMap, stream,unary)  
+    else createProjection(t, tMap, poMap.objectMap, poMap,unary)  
     
   }
   
-  def navigate(op: Op, query: StreamQuery): AlgebraOp ={
-      if (op.isInstanceOf[OpBGP]) {
-        val bgp = op.asInstanceOf[OpBGP]
-        var opCurrent: AlgebraOp = null
-        var pra: AlgebraOp = null
-        val triples = bgp.getPattern.getList
-        var skip = false
-        triples.foreach { t =>
-          skip = false
-          if (t.getPredicate.isVariable){
-            val poMaps=reader.allPredicates
-            val children=poMaps.map{case (poMap, tMap) =>
-              processPOMap(t,poMap,tMap,query)
-            }
-            val ch=children.map{case proj:ProjectionOp=>
-              proj.getRelation.id->proj}.toMap
-            val union=new MultiUnionOp("multiunion",ch)
-            
-            //children.map{case proj:OpProjection=>              
-            /*
-              val map = HashMultimap.create[String, String]();
-              map.put(proj.getId, proj.getId + proj.getRelation.getExtentName)
-              union.index.put(proj.triple.getSubject.getName, map)
-              if (proj.triple.getObject.isVariable && proj.link != null) {
-                val map2 = HashMultimap.create[String, String]()
-                map2.put(proj.link, proj.getId + proj.getRelation.getExtentName)
-                union.index.put(proj.triple.getObject.getName, map2)*/
-              //}
-            //}
-            
-            opCurrent=union
-          }
-          else if (t.getPredicate.getURI.equals(RDF.typeProp.getURI)) {
-            val tMaps = reader.filterBySubject(t.getObject.getURI) 
-            skip = tMaps.isEmpty
-            if (!skip) {
-              opCurrent = null
-              tMaps.foreach { tMap => //TODO adapt for multiple graphs
-                logger.debug("Mapping graphs for: " + tMap.uri + " - " + tMap.subjectMap.graphMap)
-                val graphs = tMap.subjectMap.graphMap
-                val stream = 
-                  if (graphs != null) 
-                    query.getStream(tMap.subjectMap.graphMap.constant.asResource.getURI) 
-                  else null
-                val projection = createProjection(t, tMap, tMap.subjectMap, null, stream)
-
-                if (opCurrent != null) opCurrent = union(opCurrent, projection)
-                else opCurrent = projection
-              }
-            }
-          } else {
-            val poMaps = reader.filterByPredicate(t.getPredicate.getURI)
-            skip = poMaps.isEmpty
-            if (!skip) //continue;
-            {
-              var pro: AlgebraOp = null
-              opCurrent = null
-
-              poMaps.foreach {
-                case (poMap, tMap) =>
-                  pro=processPOMap(t,poMap,tMap,query)
-                  logger.debug("after poMap "+pro)
-                  if (opCurrent != null) opCurrent = union(opCurrent, pro)
-                  else opCurrent = pro
-              }
-            }
-          }
+  @deprecated("Use processBgp","1.0.6")
+  private def processOldBgp(bgp:OpBGP,query:StreamQuery):AlgebraOp={
+      var opCurrent: AlgebraOp = null
+      var pra: AlgebraOp = null
+      val triples = bgp.getPattern.getList
+      var skip = false
+      triples.foreach { t =>
+        skip = false
+        if (t.getPredicate.isVariable){
+          val poMaps=reader.allPredicates
+          val children=poMaps.map{case (poMap, tMap) =>
+            processPOMap(t,poMap,tMap,query)
+          } 
+          val ch=children.map{case proj:ProjectionOp=>proj.getRelation.id->proj}.toMap          
+          opCurrent=new MultiUnionOp(ch)
+        }
+        else if (t.getPredicate.getURI.equals(RDF.typeProp.getURI)) {
+          val tMaps = reader.filterBySubject(t.getObject.getURI) 
+          skip = tMaps.isEmpty
           if (!skip) {
-            if (opCurrent == null) {
-              throw new Exception("too bad")
-              return null
+            opCurrent = null
+            tMaps.foreach { tMap => //TODO adapt for multiple graphs
+              logger.debug("Mapping graphs for: " + tMap.uri + " - " + tMap.subjectMap.graphMap)
+              val projection = createProjection(t, tMap, tMap.subjectMap, null, query)
+              if (opCurrent != null) opCurrent = union(opCurrent, projection)
+              else opCurrent = projection
             }
-            if (pra != null) pra = pra.build(opCurrent)
-            else pra = opCurrent
-          } else {
-                          throw new Exception("bad")
-                          return null
           }
-
+        } 
+        else {
+          val poMaps = reader.filterByPredicate(t.getPredicate.getURI)
+          logger.debug("Tmaps for "+t.getPredicate+" "+poMaps.size )
+          skip = poMaps.isEmpty
+          if (!skip) {
+            var pro: AlgebraOp = null
+            opCurrent = null
+            poMaps.foreach {
+              case (poMap, tMap) =>
+                pro=processPOMap(t,poMap,tMap,query)
+                logger.debug("after poMap "+pro)
+                if (opCurrent != null) opCurrent = union(opCurrent, pro)
+                else opCurrent = pro
+            }
+          }
         }
-        logger.debug("We get this "+pra)
-        pra;
-
-      } else if (op.isInstanceOf[OpProject]) {
-        val project = op.asInstanceOf[OpProject]
-        
-        val opo = navigate(project.getSubOp(), query)
-        val xprs=project.getVars().map { vari =>
-          val exp = UnassignedVarXpr //new VarXpr(vari.getVarName)
-          (vari.getVarName, exp)
-        }.toMap
-        val proj = new ProjectionOp("mainProjection", xprs,opo,query.isDistinct)
-        return proj;
-      } else if (op.isInstanceOf[com.hp.hpl.jena.sparql.algebra.op.OpJoin]) {
-        val opJoin = op.asInstanceOf[com.hp.hpl.jena.sparql.algebra.op.OpJoin]
-        val l = navigate(opJoin.getLeft, query);
-        val r = navigate(opJoin.getRight, query);
-        val join = new InnerJoinOp(l, r)
-
-        return join
-        
-      }else if (op.isInstanceOf[OpLeftJoin]) {
-        val opJoin = op.asInstanceOf[OpLeftJoin]
-        val l = navigate(opJoin.getLeft, query);
-        val r = navigate(opJoin.getRight, query);
-        val join = new LeftOuterJoinOp(l, r)
-
-        return join;        
-      }  else if (op.isInstanceOf[OpFilter]) {
-        val filter = op.asInstanceOf[OpFilter]
-        val inner = navigate(filter.getSubOp(), query);
-
-        val selXprs:Set[Xpr]=filter.getExprs.iterator.map{ex=>
-          decodeXpr(ex)        
-        }.toSet
-        
-        val selection = new SelectionOp("selec", inner,selXprs)
-        return selection
-      } else if (op.isInstanceOf[OpService]) {
-        val service = op.asInstanceOf[OpService];
-        
-/*
-        val sp = new OpSparql("service");
-        val bgp = service.getSubOp().asInstanceOf[(OpBGP)]
-        //List<Var> vars = new ArrayList<Var>();
-        //vars.add(Var.alloc("sensor"));
-        //OpProject p = new OpProject(bgp,vars);
-        val q = OpAsQuery.asQuery(bgp);
-        //q.addResultVar("pensor", new ExprVar("sensor"));
-        //q.addResultVar("sensor");
-        //QuerySolutionMap qs = new QuerySolutionMap();
-        //qs.
-        //QuerySolution initialBinding =;
-        System.out.println(q.serialize());
-        val e = QueryExecutionFactory.sparqlService("http://localhost:8080/openrdf-workbench/repositories/owlimDemo/query", q.serialize());
-        val rs = e.execSelect();
-        var qs: QuerySolution = null
-        while (rs.hasNext()) {
-          qs = rs.next();
-          qs.get("sensor");
+        if (!skip) {
+          if (opCurrent == null) {
+            throw new Exception("too bad")
+            return null
+          }
+          if (pra != null) pra = pra.build(opCurrent)
+          else pra = opCurrent
+        } 
+        else {
+          throw new Exception("bad")
+          return null
         }
 
-        sp.sparql = service.getService().toString();
-        sp.service = service.getName();
-        return sp;*/
-        throw new NotImplementedException("Query processing for SPARQL operation not supported: " + op.getClass.getName);
-      } else if (op.isInstanceOf[OpDistinct]){
-        return navigate(op.asInstanceOf[OpDistinct].getSubOp(),query)
       }
-      else if (op.isInstanceOf[OpExtend]){
-        val ext=op.asInstanceOf[OpExtend]
-        logger.debug("Extend "+ext.getVarExprList().getExprs()+" "+ext.getSubOp)
-        if (ext.getSubOp.isInstanceOf[OpGroup]){
-        val group=ext.getSubOp.asInstanceOf[OpGroup]
-         return new GroupOp(null,group.getGroupVars.getVars.map(v=>v.getVarName),
+      logger.debug("We get this "+pra)
+      pra
+
+  }
+
+  private def processBgp(bgp:OpBGP,query:StreamQuery):AlgebraOp={       
+    val ops=bgp.getPattern.getList.map { t =>
+      val oper=
+       if (t.getPredicate.isVariable){
+         val poMaps=reader.allPredicates
+         val children=poMaps.map{case (poMap, tMap) =>
+           processPOMap(t,poMap,tMap,query)
+         } 
+         val ch=children.map{case proj:ProjectionOp=>proj.getRelation.id->proj}.toMap          
+         new MultiUnionOp(ch)
+       }
+       else if (t.getPredicate.getURI.equals(RDF.typeProp.getURI)) {
+         val tMaps = reader.filterBySubject(t.getObject.getURI) 
+         val els=  tMaps.map { tMap => //TODO adapt for multiple graphs
+           logger.debug("Mapping graphs for: " + tMap.uri + " - " + tMap.subjectMap.graphMap)
+           createProjection(t, tMap, tMap.subjectMap, null, query)           
+         } 
+         new MultiUnionOp(els.map(p=>p.getRelation.id->p).toMap).simplify
+       } 
+       else {
+         val poMaps = reader.filterByPredicate(t.getPredicate.getURI)
+         val els=poMaps.map {
+           case (poMap, tMap) =>
+             val pro=processPOMap(t,poMap,tMap,query)
+             logger.debug("after poMap "+pro)
+             pro
+         }.filter(_!=null)
+         new MultiUnionOp(els.map{p=>p.getRelation.id->p}.toMap).simplify
+       }
+            
+      logger debug "Step subpattern: "+oper
+      oper
+    }
+    val conj=ops.reduce((a,b)=>conjunction(a,b))    
+    logger.debug("We get this "+conj)
+    conj
+  }
+
+  private def conjunction(op1:AlgebraOp,op2:AlgebraOp)={
+    if (op1==null || op2==null) null
+    else op1.build(op2)
+  }
+  
+  def navigate(op:Op, query:StreamQuery):AlgebraOp=op match{ 
+    case bgp:OpBGP=>      
+      processBgp(bgp, query)
+    case project:OpProject=>        
+      val opo = navigate(project.getSubOp, query)
+      val xprs=project.getVars.map(vari=> (vari.getVarName, UnassignedVarXpr)).toMap
+      new ProjectionOp(xprs,opo,query.isDistinct)
+      
+    case opJoin:OpJoin=>     
+      val l = navigate(opJoin.getLeft, query)
+      val r = navigate(opJoin.getRight, query)
+      new InnerJoinOp(l, r)        
+        
+    case opJoin:OpLeftJoin=>        
+      val l = navigate(opJoin.getLeft, query)
+      val r = navigate(opJoin.getRight, query)
+      new LeftOuterJoinOp(l, r)
+              
+    case filter:OpFilter=>        
+      val inner = navigate(filter.getSubOp,query)
+      val selXprs:Set[Xpr]=filter.getExprs.iterator.map(ex=>decodeXpr(ex)).toSet
+      new SelectionOp("selec", inner,selXprs).simplify      
+    case service:OpService=>
+      throw new NotImplementedException("Query processing for SPARQL operation not supported: " + op.getClass.getName)
+    case distinct:OpDistinct=>
+      navigate(distinct.getSubOp,query)
+    case ext:OpExtend=>  
+      logger.debug("Extend "+ext.getVarExprList.getExprs+" "+ext.getSubOp)
+      ext.getSubOp match {
+        case group:OpGroup=>
+          new GroupOp(null,group.getGroupVars.getVars.map(v=>v.getVarName),
             group.getAggregators.map(a=>aggregator(extendReplace(ext,a.getVar.getVarName),a.getAggregator)).toMap,
             navigate(group.getSubOp,query))          
-        }          
-        else return navigate(ext.getSubOp,query)
+        case _=> navigate(ext.getSubOp,query)
       }
-      else if (op.isInstanceOf[OpGroup]){
-        val group=op.asInstanceOf[OpGroup]
-        val g=new GroupOp(null,group.getGroupVars.getVars.map(v=>v.getVarName),
+    case group:OpGroup=>        
+      new GroupOp(null,group.getGroupVars.getVars.map(v=>v.getVarName),
             group.getAggregators.map(a=>aggregator(a.getVar.getVarName,a.getAggregator)).toMap,
-            navigate(group.getSubOp,query))
-        return g
-      }
-      else if (op.isInstanceOf[OpGraph]){
-        val graph=op.asInstanceOf[OpGraph]
-        val bgp=graph.getSubOp().asInstanceOf[OpBGP]
-        val vars=
+            navigate(group.getSubOp,query))      
+    case union:OpUnion=> 
+      val l = navigate(union.getLeft, query)
+      val r = navigate(union.getRight, query)
+      new MultiUnionOp(Seq(l,r).filter(_!=null).map(opr=>opr.id->opr).toMap).simplify
+    case graph:OpGraph=>       
+      val bgp=graph.getSubOp.asInstanceOf[OpBGP]
+      val vars=
         bgp.getPattern().map{tr=>
           val obj=tr.getObject match{case v:Var=>v.getVarName}
           val sub=tr.getSubject match{case v:Var=>v.getVarName}
           Array(sub,obj)
         }.flatten.toSet
-        val varMap=vars.zipWithIndex.map(t=>t._1->VarXpr("p"+(t._2+1))).toMap
-        val pattern=new PatternOp("sparql",graph.getName,bgp)
-        return new ProjectionOp("dict",varMap,pattern,false)
-      }
-      else {
-        //Binding b = BindingFactory.create();
-        //b.add(var, node)
-        logger.info("None of above: " + op.getClass().getName());
-        throw new NotImplementedException("Query processing for SPARQL operation not supported: " + op.getClass().getName());
-      }
-
-      //return null;	
+      val varMap=vars.zipWithIndex.map(t=>t._1->VarXpr("p"+(t._2+1))).toMap
+      val pattern=new PatternOp("sparql",graph.getName,bgp)
+      new ProjectionOp(varMap,pattern,false)
+      
+    case _=>
+      logger.info("None of above: " + op.getClass.getName)
+      throw new NotImplementedException("Query processing for SPARQL operation not supported: " + op.getClass.getName)
   }
   
   private def extendReplace(extend:OpExtend,varname:String)={
@@ -463,11 +439,11 @@ class QueryRewriting(props: Properties,mapping:String) {
       else {
         val proj = left.asInstanceOf[ProjectionOp]
         val ch=List(proj.id + proj.getRelation.extentName-> proj).toMap
-        new MultiUnionOp("multiunion",ch)
+        new MultiUnionOp(ch)
       }
     val rightTerm=if (right==null) Map()
       else List(right.id+right.asInstanceOf[ProjectionOp].getRelation.extentName->right).toMap
-    new MultiUnionOp(union.id,union.children++rightTerm).simplify
+    new MultiUnionOp(union.children++rightTerm).simplify
   }
 
   private def createSelection(xprs:Seq[(String,String,String)],subOp:AlgebraOp):UnaryOp={
@@ -475,8 +451,7 @@ class QueryRewriting(props: Properties,mapping:String) {
     val selXprs:Set[Xpr]=xprs.map{x=>
       new BinaryXpr(x._2, VarXpr(x._1),ValueXpr(x._3))
     }.toSet
-    val selection = new SelectionOp(varName, subOp,selXprs)
-    selection
+    new SelectionOp(varName, subOp,selXprs)    
   }
   
   private def createSelection(t: Triple, nMap: TermMap, value: String,unary:UnaryOp):UnaryOp={
@@ -543,13 +518,17 @@ class QueryRewriting(props: Properties,mapping:String) {
   
     
     
-  private def createProjection(t:Triple,tMap:TriplesMap,nMap:TermMap,poMap:PredicateObjectMap,stream:ElementStreamGraph):ProjectionOp ={
+  private def createProjection(t:Triple,tMap:TriplesMap,nMap:TermMap,poMap:PredicateObjectMap,query:StreamQuery):ProjectionOp ={
+    val graphs = tMap.subjectMap.graphMap
+    val stream = 
+      if (graphs != null) query.getStream(tMap.subjectMap.graphMap.constant.asResource.getURI) 
+      else null
     val unary = createRelation(tMap, nMap, stream)           
-    createProjection(t, tMap, nMap, poMap, stream, unary)
+    createProjection(t, tMap, nMap, poMap, unary)
   }
 
   private def createProjection(t:Triple, tMap:TriplesMap, nMap: TermMap, 
-      poMap: PredicateObjectMap, stream: ElementStreamGraph, sub: UnaryOp): ProjectionOp =  {
+      poMap: PredicateObjectMap, sub: UnaryOp): ProjectionOp =  {
     if (sub==null) null
     else {
     val nMapUri = tMap.uri
@@ -581,33 +560,28 @@ class QueryRewriting(props: Properties,mapping:String) {
     
     
     val relation = if (sub.isInstanceOf[RelationOp]) sub else sub.getRelation
-    val projection = new ProjectionOp(id+"-"+relation.id,xprs.filter(_!=null).toMap, sub,false)
+    val projection = new ProjectionOp(xprs.filter(_!=null).toMap, sub,false)
   
     //logger.debug("Created projection: "+projection.toString());
     projection
     }
   }
 
-  private def createRelation(tMap:TriplesMap,nMap:TermMap, stream: ElementStreamGraph): UnaryOp ={
-    var tableid = "";
-    var extentName = "";
-     
+  private def createRelation(tMap:TriplesMap,nMap:TermMap, stream: ElementStreamGraph): UnaryOp ={     
     val uri=new URI(tMap.uri).getFragment
     
     logger.debug("Creating relation: " + nMap +" table: " + tMap.logicalTable)
     logger.debug("pks: "+tMap.logicalTable.pk)
-    if (nMap!=null && nMap.constant != null) {
-      tableid = nMap.constant.toString
-      extentName = tMap.logicalTable.tableName
-    } 
-    else if (tMap.logicalTable.tableName != null) {
-      tableid = tMap.logicalTable.tableName
-      extentName = tableid
-    } 
-    else if (tMap.logicalTable.sqlQuery != null) {
-      tableid = SQLParser.tableAlias(tMap.logicalTable.sqlQuery)      
-      extentName=tableid
-    }    
+    val (tableid,extentName)=
+      if (nMap!=null && nMap.constant != null) 
+        (nMap.constant.toString,tMap.logicalTable.tableName)
+      else if (tMap.logicalTable.tableName != null) 
+        (tMap.logicalTable.tableName,tMap.logicalTable.tableName)
+      else if (tMap.logicalTable.sqlQuery != null) {
+        val parsedTableid = SQLParser.tableAlias(tMap.logicalTable.sqlQuery)
+        (parsedTableid,parsedTableid)     
+      }    
+      else throw new QueryRewritingException("Unable to create relation "+tMap.toString,null)
     
     val relation =
       if (stream != null) {
@@ -618,22 +592,20 @@ class QueryRewriting(props: Properties,mapping:String) {
             val (slide,slunit)=if (sw.slide==null) (0L,null) 
               else (sw.slide.time,sw.slide.unit)
             new WindowSpec("",sw.from.time,sw.from.unit,0,null,slide,slunit)                                   
-          } else null
-          
+          } 
+          else null        
           new WindowOp(tableid+getAlias+uri, extentName,tMap.logicalTable.pk,wn)
-        } else {
-          new RelationOp(tableid+"genId",extentName,tMap.logicalTable.pk)
-        }
+      } 
+      else 
+        new RelationOp(tableid+"genId",extentName,tMap.logicalTable.pk)
+        
       
       logger.debug("Created relation: " + relation.extentName)
 
       if (tMap.logicalTable.sqlQuery!=null){
         val cond=SQLParser.selections(tMap.logicalTable.sqlQuery)
-        if (cond.isDefined){
-          val sel=createSelection(cond.get,relation)
-          //sel.setSubOp(relation)
-          sel
-        }
+        if (cond.isDefined)
+          createSelection(cond.get,relation)                 
         else relation
       }        
       else relation

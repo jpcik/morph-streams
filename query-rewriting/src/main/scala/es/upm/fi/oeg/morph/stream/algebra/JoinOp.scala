@@ -7,7 +7,8 @@ import org.slf4j.LoggerFactory
 
 abstract class JoinOp(opname:String,l:AlgebraOp,r:AlgebraOp) extends BinaryOp(null,opname,l,r){
   val conditions=generateConditions
-  
+  override val id=Seq(r,l).filter(_!=null).mkString("-") 
+    
   private val logger= LoggerFactory.getLogger(this.getClass)
 
   def generateConditions={

@@ -4,24 +4,13 @@ PREFIX sb: <http://www.w3.org/2009/SSN-XG/Ontologies/SensorBasis.owl#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
 PREFIX ssn: <http://purl.oclc.org/NET/ssnx/ssn#>  
 SELECT ?wavets ?waveheight ?sensor
-#?Region
-# ?lat ?lon 
-#FROM NAMED STREAM <http://semsorgrid4env.eu/ns#ccometeo.srdf> 
-#[NOW - 10 MINUTE TO NOW - 5 MINUTE SLIDE 3 MINUTE] 
 WHERE 
 { 
-?WaveObs a ssn:Observation.
-{ ?WaveObs ssn:observationResultTime ?wavets;
-  ssn:observedBy ?sensor;
-#cd:cocoLoco ?tata;
- ssn:observationResult ?waveheight. }  
-#{ ?WaveObs  ssn:observationResult ?waveheight.}
-{ ?WaveObs ssn:observedProperty cd:WaveHeight;}
-{ ?WaveObs    ssn:featureOfInterest ?waveFeature. }
-#     cd:observedProperty ?wavets.
-# ?waveFeature a cd:Feature;    
-# cd:locatedInRegion cd:SouthEastEnglandCCO.
-
- 
+  ?WaveObs a ssn:Observation.
+  { ?WaveObs ssn:observationResultTime ?wavets;
+             ssn:observedBy ?sensor;
+             ssn:observationResult ?waveheight. }  
+  { ?WaveObs ssn:observedProperty cd:WaveHeight;}
+  { ?WaveObs ssn:featureOfInterest ?waveFeature. }
 }
 		

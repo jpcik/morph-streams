@@ -112,7 +112,7 @@ class QueryRewritingTest extends JUnitSuite with ShouldMatchersForJUnit with Che
 
   @Test
   def testTranslateQuery() //throws  QueryTranslationException, URISyntaxException
-  {
+  {    
     logger.info(testQuery);
     val trans = new QueryRewriting(props,"mappings/testMapping.r2r");
     trans.translate(testQuery);

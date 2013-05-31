@@ -1,0 +1,1364 @@
+<?xml version="1.0"?>
+
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
+    <!ENTITY dc "http://purl.org/dc/elements/1.1/" >
+    <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
+    <!ENTITY owl2xml "http://www.w3.org/2006/12/owl2-xml#" >
+    <!ENTITY adolena "http://ksg.meraka.co.za/adolena.owl#" >
+    <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+    <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+    <!ENTITY NAP "file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#" >
+]>
+
+
+<rdf:RDF xmlns="http://ksg.meraka.co.za/adolena.owl#"
+     xml:base="http://ksg.meraka.co.za/adolena.owl"
+     xmlns:owl2xml="http://www.w3.org/2006/12/owl2-xml#"
+     xmlns:adolena="http://ksg.meraka.co.za/adolena.owl#"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:dc="http://purl.org/dc/elements/1.1/"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:NAP="file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:owl="http://www.w3.org/2002/07/owl#">
+    <owl:Ontology rdf:about="">
+        <owl:versionInfo rdf:datatype="&xsd;string"
+            >ADOLENA v2 -- the Abilities and Disabilities OntoLogy for ENhancing Accessibility
+This version is a simplified version from the Adolena v1 ontology.</owl:versionInfo>
+        <dc:creator rdf:datatype="&xsd;string"
+            >Ronell Albert and Aurona Gerber</dc:creator>
+        <dc:type rdf:datatype="&xsd;string"
+            >This is an *experimental* ontology to demonstrate the proof-of-concept of OBDA with a real database, being the database behind the National Accessibility Portal; i.e. enhancing the NAP with an additional semantic layer to improve querying (compared to the keyword search now).
+
+This version is a simplified version from the Adolena v1 ontology. The aim is to only include the concepts and properties needed for the OBDA experiment in order to manually simplify the ontology to DL-LiteA.
+ 
+The next release will be a &#39;full&#39; domain ontology mainly about abilities, disabilities, and assistive devices.</dc:type>
+    </owl:Ontology>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Annotation properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    <owl:AnnotationProperty rdf:about="&dc;creator"/>
+    <owl:AnnotationProperty rdf:about="&dc;type"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Object Properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#isAffectedBy -->
+
+    <owl:ObjectProperty rdf:about="&NAP;isAffectedBy"/>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#isAssistedBy -->
+
+    <owl:ObjectProperty rdf:about="&NAP;isAssistedBy">
+        <owl:inverseOf rdf:resource="#assistsWith"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#requiresAbility -->
+
+    <owl:ObjectProperty rdf:about="&NAP;requiresAbility"/>
+    
+
+
+    <!-- http://ksg.meraka.co.za/adolena.owl#AUX0 -->
+
+    <owl:ObjectProperty rdf:about="#AUX0">
+        <rdfs:subPropertyOf rdf:resource="&NAP;isAffectedBy"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://ksg.meraka.co.za/adolena.owl#AUX1 -->
+
+    <owl:ObjectProperty rdf:about="#AUX1">
+        <rdfs:subPropertyOf rdf:resource="&NAP;isAssistedBy"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://ksg.meraka.co.za/adolena.owl#AUX10 -->
+
+    <owl:ObjectProperty rdf:about="#AUX10">
+        <rdfs:subPropertyOf rdf:resource="#assistsWith"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://ksg.meraka.co.za/adolena.owl#AUX11 -->
+
+    <owl:ObjectProperty rdf:about="#AUX11">
+        <rdfs:subPropertyOf rdf:resource="#assistsWith"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://ksg.meraka.co.za/adolena.owl#AUX12 -->
+
+    <owl:ObjectProperty rdf:about="#AUX12">
+        <rdfs:subPropertyOf rdf:resource="#assistsWith"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://ksg.meraka.co.za/adolena.owl#AUX13 -->
+
+    <owl:ObjectProperty rdf:about="#AUX13">
+        <rdfs:subPropertyOf rdf:resource="#assistsWith"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://ksg.meraka.co.za/adolena.owl#AUX14 -->
+
+    <owl:ObjectProperty rdf:about="#AUX14">
+        <rdfs:subPropertyOf rdf:resource="#assistsWith"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://ksg.meraka.co.za/adolena.owl#AUX15 -->
+
+    <owl:ObjectProperty rdf:about="#AUX15">
+        <rdfs:subPropertyOf rdf:resource="&NAP;requiresAbility"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://ksg.meraka.co.za/adolena.owl#AUX16 -->
+
+    <owl:ObjectProperty rdf:about="#AUX16">
+        <rdfs:subPropertyOf rdf:resource="#assistsWith"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://ksg.meraka.co.za/adolena.owl#AUX17 -->
+
+    <owl:ObjectProperty rdf:about="#AUX17">
+        <rdfs:subPropertyOf rdf:resource="#assistsWith"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://ksg.meraka.co.za/adolena.owl#AUX18 -->
+
+    <owl:ObjectProperty rdf:about="#AUX18">
+        <rdfs:subPropertyOf rdf:resource="#affects"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://ksg.meraka.co.za/adolena.owl#AUX19 -->
+
+    <owl:ObjectProperty rdf:about="#AUX19">
+        <rdfs:subPropertyOf rdf:resource="#affects"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://ksg.meraka.co.za/adolena.owl#AUX2 -->
+
+    <owl:ObjectProperty rdf:about="#AUX2">
+        <rdfs:subPropertyOf rdf:resource="#assistsWith"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://ksg.meraka.co.za/adolena.owl#AUX20 -->
+
+    <owl:ObjectProperty rdf:about="#AUX20">
+        <rdfs:subPropertyOf rdf:resource="#affects"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://ksg.meraka.co.za/adolena.owl#AUX21 -->
+
+    <owl:ObjectProperty rdf:about="#AUX21">
+        <rdfs:subPropertyOf rdf:resource="#affects"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://ksg.meraka.co.za/adolena.owl#AUX22 -->
+
+    <owl:ObjectProperty rdf:about="#AUX22">
+        <rdfs:subPropertyOf rdf:resource="#affects"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://ksg.meraka.co.za/adolena.owl#AUX23 -->
+
+    <owl:ObjectProperty rdf:about="#AUX23">
+        <rdfs:subPropertyOf rdf:resource="#affects"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://ksg.meraka.co.za/adolena.owl#AUX24 -->
+
+    <owl:ObjectProperty rdf:about="#AUX24">
+        <rdfs:subPropertyOf rdf:resource="#affects"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://ksg.meraka.co.za/adolena.owl#AUX25 -->
+
+    <owl:ObjectProperty rdf:about="#AUX25">
+        <rdfs:subPropertyOf rdf:resource="#affects"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://ksg.meraka.co.za/adolena.owl#AUX3 -->
+
+    <owl:ObjectProperty rdf:about="#AUX3">
+        <rdfs:subPropertyOf rdf:resource="#assistsWith"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://ksg.meraka.co.za/adolena.owl#AUX4 -->
+
+    <owl:ObjectProperty rdf:about="#AUX4">
+        <rdfs:subPropertyOf rdf:resource="#assistsWith"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://ksg.meraka.co.za/adolena.owl#AUX5 -->
+
+    <owl:ObjectProperty rdf:about="#AUX5">
+        <rdfs:subPropertyOf rdf:resource="#assistsWith"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://ksg.meraka.co.za/adolena.owl#AUX6 -->
+
+    <owl:ObjectProperty rdf:about="#AUX6">
+        <rdfs:subPropertyOf rdf:resource="#assistsWith"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://ksg.meraka.co.za/adolena.owl#AUX7 -->
+
+    <owl:ObjectProperty rdf:about="#AUX7">
+        <rdfs:subPropertyOf rdf:resource="&NAP;requiresAbility"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://ksg.meraka.co.za/adolena.owl#AUX8 -->
+
+    <owl:ObjectProperty rdf:about="#AUX8">
+        <rdfs:subPropertyOf rdf:resource="#assistsWith"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://ksg.meraka.co.za/adolena.owl#AUX9 -->
+
+    <owl:ObjectProperty rdf:about="#AUX9">
+        <rdfs:subPropertyOf rdf:resource="&NAP;requiresAbility"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://ksg.meraka.co.za/adolena.owl#affects -->
+
+    <owl:ObjectProperty rdf:about="#affects">
+        <owl:inverseOf rdf:resource="&NAP;isAffectedBy"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://ksg.meraka.co.za/adolena.owl#assistsWith -->
+
+    <owl:ObjectProperty rdf:about="#assistsWith">
+        <rdfs:comment rdf:datatype="&xsd;string"
+            >MK: the &quot;assistsWith&quot; in the sense of that some person has a disability and then the device assists with realizing some ability</rdfs:comment>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Classes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#Ability -->
+
+    <owl:Class rdf:about="&NAP;Ability">
+        <rdfs:subClassOf rdf:resource="&owl;Thing"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#AUX1"/>
+                <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#AUX0"/>
+                <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <owl:disjointWith rdf:resource="&NAP;Device"/>
+        <owl:disjointWith rdf:resource="&NAP;Disability"/>
+        <rdfs:comment rdf:datatype="&xsd;string"
+            >The Abilities are divided into two main groups: Physical abilities and sensory abilities. Other abilities will be added later such as mental and intellectual abilities.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#Achondroplasia -->
+
+    <owl:Class rdf:about="&NAP;Achondroplasia">
+        <rdfs:subClassOf rdf:resource="&NAP;PhysicalDisability"/>
+        <rdfs:comment rdf:datatype="&xsd;string"
+            >Achondroplasia is a type of autosomal dominant genetic disorder that is a common cause of dwarfism. Achondroplastic dwarfs have short stature, with an average adult height of 131 cm (4 feet 3.8 inches) for males and 123 cm (4 feet 0.6 inches) for females.
+Achondroplasia is a result of an autosomal dominant mutation in the fibroblast growth factor receptor gene 3 (FGFR3), which causes an abnormality of cartilage formation.
+(from Wikipedia)</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#Amputation -->
+
+    <owl:Class rdf:about="&NAP;Amputation">
+        <rdfs:subClassOf rdf:resource="&NAP;PhysicalDisability"/>
+        <rdfs:comment rdf:datatype="&xsd;string"
+            >MK: changed from &quot;Amputee&quot; (which is the person that has something amputated, whereas here we do not focus on the person him/herself)</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#AssistiveDevice -->
+
+    <owl:Class rdf:about="&NAP;AssistiveDevice">
+        <rdfs:subClassOf rdf:resource="&NAP;Device"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#AUX2"/>
+                <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#Autism -->
+
+    <owl:Class rdf:about="&NAP;Autism">
+        <rdfs:subClassOf rdf:resource="&NAP;MentalDisability"/>
+    </owl:Class>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#BatteryPowered_Wheelchair -->
+
+    <owl:Class rdf:about="&NAP;BatteryPowered_Wheelchair">
+        <rdfs:subClassOf rdf:resource="&NAP;Motorised_Wheelchair"/>
+    </owl:Class>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#Blind -->
+
+    <owl:Class rdf:about="&NAP;Blind">
+        <rdfs:subClassOf rdf:resource="&NAP;VisualDisability"/>
+    </owl:Class>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#Cerebral_palsy -->
+
+    <owl:Class rdf:about="&NAP;Cerebral_palsy">
+        <rdfs:subClassOf rdf:resource="&NAP;PhysicalDisability"/>
+    </owl:Class>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#Communication_Device -->
+
+    <owl:Class rdf:about="&NAP;Communication_Device">
+        <rdfs:subClassOf rdf:resource="&NAP;AssistiveDevice"/>
+        <owl:disjointWith rdf:resource="&NAP;MobilityDevice"/>
+    </owl:Class>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#Deaf -->
+
+    <owl:Class rdf:about="&NAP;Deaf">
+        <rdfs:subClassOf rdf:resource="&NAP;HearingDisability"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#AUX20"/>
+                <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#Deafened -->
+
+    <owl:Class rdf:about="&NAP;Deafened">
+        <rdfs:subClassOf rdf:resource="&NAP;HearingDisability"/>
+    </owl:Class>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#Device -->
+
+    <owl:Class rdf:about="&NAP;Device">
+        <owl:disjointWith rdf:resource="&NAP;Disability"/>
+    </owl:Class>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#Disability -->
+
+    <owl:Class rdf:about="&NAP;Disability">
+        <rdfs:subClassOf rdf:resource="&owl;Thing"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#AUX18"/>
+                <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:comment rdf:datatype="&xsd;string"
+            >MK: do these things count as &quot;diseases&quot;, or, say, a certain constellation of physical observables, put differently, as a &quot;system&quot;, in the sense of being composed of endurants [more precisely: physical objects] and perdurants? If the latter, I think we can put &quot;system&quot; under endurant and say it has as parts EDs and POBs, and then Disability under System.
+
+summary of duscussion: a disability is not a disease, but a consequence of a disease (or of other things, like congenital, accident, etc.). So, e.g. &quot;Multiple Sclerosis&quot; in the ontology here is not meant to be the disease as classified in e.g. ICD10 but the debilitating effects of the disease.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#Dystonia -->
+
+    <owl:Class rdf:about="&NAP;Dystonia">
+        <rdfs:subClassOf rdf:resource="&NAP;PhysicalDisability"/>
+    </owl:Class>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#Epilepsy -->
+
+    <owl:Class rdf:about="&NAP;Epilepsy">
+        <rdfs:subClassOf rdf:resource="&NAP;MentalDisability"/>
+    </owl:Class>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#FaceToFaceCommunicationDevice -->
+
+    <owl:Class rdf:about="&NAP;FaceToFaceCommunicationDevice">
+        <rdfs:subClassOf rdf:resource="&NAP;Communication_Device"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#AUX3"/>
+                <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#FaceToFaceCommunicationSoftware -->
+
+    <owl:Class rdf:about="&NAP;FaceToFaceCommunicationSoftware">
+        <rdfs:subClassOf rdf:resource="&NAP;FaceToFaceCommunicationDevice"/>
+    </owl:Class>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#Foldable_Wheelchair -->
+
+    <owl:Class rdf:about="&NAP;Foldable_Wheelchair">
+        <rdfs:subClassOf rdf:resource="&NAP;Manual_Wheelchair"/>
+    </owl:Class>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#Guillaume_Barre -->
+
+    <owl:Class rdf:about="&NAP;Guillaume_Barre">
+        <rdfs:subClassOf rdf:resource="&NAP;PhysicalDisability"/>
+    </owl:Class>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#Hard_of_hearing -->
+
+    <owl:Class rdf:about="&NAP;Hard_of_hearing">
+        <rdfs:subClassOf rdf:resource="&NAP;HearingDisability"/>
+    </owl:Class>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#Hear -->
+
+    <owl:Class rdf:about="&NAP;Hear">
+        <rdfs:subClassOf rdf:resource="&NAP;HearingAbility"/>
+    </owl:Class>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#Hear_partially -->
+
+    <owl:Class rdf:about="&NAP;Hear_partially">
+        <rdfs:subClassOf rdf:resource="&NAP;HearingAbility"/>
+    </owl:Class>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#HearingAbility -->
+
+    <owl:Class rdf:about="&NAP;HearingAbility">
+        <rdfs:subClassOf rdf:resource="&NAP;SensoryAbility"/>
+    </owl:Class>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#HearingDisability -->
+
+    <owl:Class rdf:about="&NAP;HearingDisability">
+        <rdfs:subClassOf rdf:resource="&NAP;Disability"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#AUX19"/>
+                <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <owl:disjointWith rdf:resource="&NAP;MentalDisability"/>
+        <owl:disjointWith rdf:resource="&NAP;PhysicalDisability"/>
+        <owl:disjointWith rdf:resource="&NAP;SpeechDisability"/>
+        <owl:disjointWith rdf:resource="&NAP;VisualDisability"/>
+    </owl:Class>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#Hemiplegia -->
+
+    <owl:Class rdf:about="&NAP;Hemiplegia">
+        <rdfs:subClassOf rdf:resource="&NAP;PhysicalDisability"/>
+    </owl:Class>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#IntellectualDisability -->
+
+    <owl:Class rdf:about="&NAP;IntellectualDisability">
+        <rdfs:subClassOf rdf:resource="&NAP;MentalDisability"/>
+    </owl:Class>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#Kyphosis -->
+
+    <owl:Class rdf:about="&NAP;Kyphosis">
+        <rdfs:subClassOf rdf:resource="&NAP;PhysicalDisability"/>
+    </owl:Class>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#LightweightFoldable_Wheelchair -->
+
+    <owl:Class rdf:about="&NAP;LightweightFoldable_Wheelchair">
+        <rdfs:subClassOf rdf:resource="&NAP;Foldable_Wheelchair"/>
+        <rdfs:subClassOf rdf:resource="&NAP;Lightweight_Wheelchair"/>
+        <rdfs:comment rdf:datatype="&xsd;string"
+            >Light weight rigid foldable manual wheelchair</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#Lightweight_Wheelchair -->
+
+    <owl:Class rdf:about="&NAP;Lightweight_Wheelchair">
+        <rdfs:subClassOf rdf:resource="&NAP;Manual_Wheelchair"/>
+    </owl:Class>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#LimbMobility -->
+
+    <owl:Class rdf:about="&NAP;LimbMobility">
+        <rdfs:subClassOf rdf:resource="&NAP;MovementAbility"/>
+        <rdfs:comment rdf:datatype="&xsd;string"
+            >MK: renamed from &quot;move all limbs&quot; instance</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#Little_or_No_Speech -->
+
+    <owl:Class rdf:about="&NAP;Little_or_No_Speech">
+        <rdfs:subClassOf rdf:resource="&NAP;SpeechDisability"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#AUX25"/>
+                <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#LowVision -->
+
+    <owl:Class rdf:about="&NAP;LowVision">
+        <rdfs:subClassOf rdf:resource="&NAP;VisualDisability"/>
+    </owl:Class>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#LowerLimbMobility -->
+
+    <owl:Class rdf:about="&NAP;LowerLimbMobility">
+        <rdfs:subClassOf rdf:resource="&NAP;LimbMobility"/>
+        <owl:disjointWith rdf:resource="&NAP;UpperLimbMobility"/>
+        <rdfs:comment rdf:datatype="&xsd;string"
+            >MK: renamed from &quot;move only lower limb&quot; instance
+RA: Removed isAssistedBy some NAP:Wheelchair</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#Manual_Wheelchair -->
+
+    <owl:Class rdf:about="&NAP;Manual_Wheelchair">
+        <rdfs:subClassOf rdf:resource="&NAP;Wheelchair"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#AUX14"/>
+                <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#AUX15"/>
+                <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <owl:disjointWith rdf:resource="&NAP;Motorised_Wheelchair"/>
+    </owl:Class>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#MentalDisability -->
+
+    <owl:Class rdf:about="&NAP;MentalDisability">
+        <rdfs:subClassOf rdf:resource="&NAP;Disability"/>
+        <owl:disjointWith rdf:resource="&NAP;PhysicalDisability"/>
+        <owl:disjointWith rdf:resource="&NAP;SpeechDisability"/>
+        <owl:disjointWith rdf:resource="&NAP;VisualDisability"/>
+    </owl:Class>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#MobilityDevice -->
+
+    <owl:Class rdf:about="&NAP;MobilityDevice">
+        <rdfs:subClassOf rdf:resource="&NAP;AssistiveDevice"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#AUX12"/>
+                <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#Motorised_Wheelchair -->
+
+    <owl:Class rdf:about="&NAP;Motorised_Wheelchair">
+        <rdfs:subClassOf rdf:resource="&NAP;Wheelchair"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#AUX17"/>
+                <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#AUX16"/>
+                <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#MovementAbility -->
+
+    <owl:Class rdf:about="&NAP;MovementAbility">
+        <rdfs:subClassOf rdf:resource="&NAP;PhysicalAbility"/>
+    </owl:Class>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#Multiple_sclerosis -->
+
+    <owl:Class rdf:about="&NAP;Multiple_sclerosis">
+        <rdfs:subClassOf rdf:resource="&NAP;PhysicalDisability"/>
+    </owl:Class>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#Muscular_dystrophy -->
+
+    <owl:Class rdf:about="&NAP;Muscular_dystrophy">
+        <rdfs:subClassOf rdf:resource="&NAP;PhysicalDisability"/>
+    </owl:Class>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#Osteogensis_Imperfecta -->
+
+    <owl:Class rdf:about="&NAP;Osteogensis_Imperfecta">
+        <rdfs:subClassOf rdf:resource="&NAP;PhysicalDisability"/>
+    </owl:Class>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#Paraplegia -->
+
+    <owl:Class rdf:about="&NAP;Paraplegia">
+        <rdfs:subClassOf rdf:resource="&NAP;PhysicalDisability"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#AUX22"/>
+                <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#PhysicalAbility -->
+
+    <owl:Class rdf:about="&NAP;PhysicalAbility">
+        <rdfs:subClassOf rdf:resource="&NAP;Ability"/>
+        <owl:disjointWith rdf:resource="&NAP;SensoryAbility"/>
+        <owl:disjointWith rdf:resource="&NAP;SpeechAbility"/>
+    </owl:Class>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#PhysicalDisability -->
+
+    <owl:Class rdf:about="&NAP;PhysicalDisability">
+        <rdfs:subClassOf rdf:resource="&NAP;Disability"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#AUX21"/>
+                <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <owl:disjointWith rdf:resource="&NAP;SpeechDisability"/>
+        <owl:disjointWith rdf:resource="&NAP;VisualDisability"/>
+    </owl:Class>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#Poliomyelitis -->
+
+    <owl:Class rdf:about="&NAP;Poliomyelitis">
+        <rdfs:subClassOf rdf:resource="&NAP;PhysicalDisability"/>
+    </owl:Class>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#Quadriplegia -->
+
+    <owl:Class rdf:about="&NAP;Quadriplegia">
+        <rdfs:subClassOf rdf:resource="&NAP;PhysicalDisability"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#AUX24"/>
+                <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#AUX23"/>
+                <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:comment rdf:datatype="&xsd;string"
+            >MK: it is arguable if quadriplegia is also a type of Muscle_Impairment. Clearly, if the nerves do not work well, then the muscles do not, but from the perspective of subject domain semantics, this may not be a particularly useful logical deduction.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#Reach -->
+
+    <owl:Class rdf:about="&NAP;Reach">
+        <rdfs:subClassOf rdf:resource="&NAP;MovementAbility"/>
+    </owl:Class>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#Scoliosis -->
+
+    <owl:Class rdf:about="&NAP;Scoliosis">
+        <rdfs:subClassOf rdf:resource="&NAP;PhysicalDisability"/>
+    </owl:Class>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#See -->
+
+    <owl:Class rdf:about="&NAP;See">
+        <rdfs:subClassOf rdf:resource="&NAP;SightAbility"/>
+    </owl:Class>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#See_partially -->
+
+    <owl:Class rdf:about="&NAP;See_partially">
+        <rdfs:subClassOf rdf:resource="&NAP;SightAbility"/>
+    </owl:Class>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#SensoryAbility -->
+
+    <owl:Class rdf:about="&NAP;SensoryAbility">
+        <rdfs:subClassOf rdf:resource="&NAP;Ability"/>
+        <owl:disjointWith rdf:resource="&NAP;SpeechAbility"/>
+        <rdfs:comment rdf:datatype="&xsd;string"
+            >RA:Moved from under NAP:PhyscalAbility to under NAP: Ability</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#SightAbility -->
+
+    <owl:Class rdf:about="&NAP;SightAbility">
+        <rdfs:subClassOf rdf:resource="&NAP;SensoryAbility"/>
+    </owl:Class>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#SpeechAbility -->
+
+    <owl:Class rdf:about="&NAP;SpeechAbility">
+        <rdfs:subClassOf rdf:resource="&NAP;Ability"/>
+    </owl:Class>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#SpeechDisability -->
+
+    <owl:Class rdf:about="&NAP;SpeechDisability">
+        <rdfs:subClassOf rdf:resource="&NAP;Disability"/>
+        <owl:disjointWith rdf:resource="&NAP;VisualDisability"/>
+    </owl:Class>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#Spina_Bifida -->
+
+    <owl:Class rdf:about="&NAP;Spina_Bifida">
+        <rdfs:subClassOf rdf:resource="&NAP;PhysicalDisability"/>
+    </owl:Class>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#Stuttering -->
+
+    <owl:Class rdf:about="&NAP;Stuttering">
+        <rdfs:subClassOf rdf:resource="&NAP;SpeechDisability"/>
+    </owl:Class>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#SymbolBoard -->
+
+    <owl:Class rdf:about="&NAP;SymbolBoard">
+        <rdfs:subClassOf rdf:resource="&NAP;FaceToFaceCommunicationDevice"/>
+    </owl:Class>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#TactileAbility -->
+
+    <owl:Class rdf:about="&NAP;TactileAbility">
+        <rdfs:subClassOf rdf:resource="&NAP;SensoryAbility"/>
+    </owl:Class>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#Talking_Thermometer -->
+
+    <owl:Class rdf:about="&NAP;Talking_Thermometer">
+        <rdfs:subClassOf rdf:resource="#TalkingReading"/>
+        <rdfs:comment rdf:datatype="&xsd;string"
+            >Tells indoor / outdoor temperature and alarm time. Gives readings on large LCD display and in voice with volume and on/off control</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#TelephoneAid -->
+
+    <owl:Class rdf:about="&NAP;TelephoneAid">
+        <rdfs:subClassOf rdf:resource="#ListenDevice"/>
+        <rdfs:subClassOf rdf:resource="#SpeechDevice"/>
+    </owl:Class>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#UpperLimbMobility -->
+
+    <owl:Class rdf:about="&NAP;UpperLimbMobility">
+        <rdfs:subClassOf rdf:resource="&NAP;LimbMobility"/>
+        <rdfs:comment rdf:datatype="&xsd;string"
+            >MK: renamed from &quot;move only upper limb&quot; instance</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#VisualDisability -->
+
+    <owl:Class rdf:about="&NAP;VisualDisability">
+        <rdfs:subClassOf rdf:resource="&NAP;Disability"/>
+    </owl:Class>
+    
+
+
+    <!-- file:/home/aurona/0AlleWerk/Navorsing/Ontologies/NAP/NAP#Wheelchair -->
+
+    <owl:Class rdf:about="&NAP;Wheelchair">
+        <rdfs:subClassOf rdf:resource="&NAP;MobilityDevice"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#AUX13"/>
+                <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- http://ksg.meraka.co.za/adolena.owl#BrailleAlarmClock -->
+
+    <owl:Class rdf:about="#BrailleAlarmClock">
+        <rdfs:subClassOf rdf:resource="#TactileReading"/>
+    </owl:Class>
+    
+
+
+    <!-- http://ksg.meraka.co.za/adolena.owl#BraillePillOrganiser -->
+
+    <owl:Class rdf:about="#BraillePillOrganiser">
+        <rdfs:subClassOf rdf:resource="#TactileReading"/>
+    </owl:Class>
+    
+
+
+    <!-- http://ksg.meraka.co.za/adolena.owl#BrailleWatch -->
+
+    <owl:Class rdf:about="#BrailleWatch">
+        <rdfs:subClassOf rdf:resource="#TactileReading"/>
+    </owl:Class>
+    
+
+
+    <!-- http://ksg.meraka.co.za/adolena.owl#BrailleWritingDevice -->
+
+    <owl:Class rdf:about="#BrailleWritingDevice">
+        <rdfs:subClassOf rdf:resource="#WritingDevice"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#AUX11"/>
+                <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- http://ksg.meraka.co.za/adolena.owl#ListenDevice -->
+
+    <owl:Class rdf:about="#ListenDevice">
+        <rdfs:subClassOf rdf:resource="&NAP;Communication_Device"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#AUX4"/>
+                <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- http://ksg.meraka.co.za/adolena.owl#ReadingDevice -->
+
+    <owl:Class rdf:about="#ReadingDevice">
+        <rdfs:subClassOf rdf:resource="&NAP;Communication_Device"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#AUX5"/>
+                <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- http://ksg.meraka.co.za/adolena.owl#SpeechDevice -->
+
+    <owl:Class rdf:about="#SpeechDevice">
+        <rdfs:subClassOf rdf:resource="&NAP;Communication_Device"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#AUX10"/>
+                <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- http://ksg.meraka.co.za/adolena.owl#TactileReading -->
+
+    <owl:Class rdf:about="#TactileReading">
+        <rdfs:subClassOf rdf:resource="#ReadingDevice"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#AUX7"/>
+                <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#AUX6"/>
+                <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- http://ksg.meraka.co.za/adolena.owl#TalkingReading -->
+
+    <owl:Class rdf:about="#TalkingReading">
+        <rdfs:subClassOf rdf:resource="#ReadingDevice"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#AUX8"/>
+                <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#AUX9"/>
+                <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:comment rdf:datatype="&xsd;string"
+            >like books on audio tape</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://ksg.meraka.co.za/adolena.owl#WritingDevice -->
+
+    <owl:Class rdf:about="#WritingDevice">
+        <rdfs:subClassOf rdf:resource="&NAP;Communication_Device"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.w3.org/2002/07/owl#Thing -->
+
+    <owl:Class rdf:about="&owl;Thing"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // General axioms
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    <owl:Restriction>
+        <rdfs:subClassOf rdf:resource="&NAP;UpperLimbMobility"/>
+        <owl:onProperty>
+            <owl:ObjectProperty>
+                <owl:inverseOf rdf:resource="#AUX17"/>
+            </owl:ObjectProperty>
+        </owl:onProperty>
+        <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+    </owl:Restriction>
+    <owl:Restriction>
+        <rdfs:subClassOf rdf:resource="&NAP;Ability"/>
+        <owl:onProperty>
+            <owl:ObjectProperty>
+                <owl:inverseOf rdf:resource="#AUX2"/>
+            </owl:ObjectProperty>
+        </owl:onProperty>
+        <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+    </owl:Restriction>
+    <owl:Restriction>
+        <rdfs:subClassOf rdf:resource="&NAP;SpeechAbility"/>
+        <owl:onProperty>
+            <owl:ObjectProperty>
+                <owl:inverseOf rdf:resource="#AUX10"/>
+            </owl:ObjectProperty>
+        </owl:onProperty>
+        <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+    </owl:Restriction>
+    <owl:Restriction>
+        <rdfs:subClassOf rdf:resource="&NAP;Disability"/>
+        <owl:onProperty>
+            <owl:ObjectProperty>
+                <owl:inverseOf rdf:resource="#AUX0"/>
+            </owl:ObjectProperty>
+        </owl:onProperty>
+        <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+    </owl:Restriction>
+    <owl:Restriction>
+        <rdfs:subClassOf rdf:resource="&NAP;HearingAbility"/>
+        <owl:onProperty>
+            <owl:ObjectProperty>
+                <owl:inverseOf rdf:resource="#AUX9"/>
+            </owl:ObjectProperty>
+        </owl:onProperty>
+        <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+    </owl:Restriction>
+    <owl:Restriction>
+        <rdfs:subClassOf rdf:resource="&NAP;SightAbility"/>
+        <owl:onProperty>
+            <owl:ObjectProperty>
+                <owl:inverseOf rdf:resource="#AUX11"/>
+            </owl:ObjectProperty>
+        </owl:onProperty>
+        <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+    </owl:Restriction>
+    <owl:Restriction>
+        <rdfs:subClassOf rdf:resource="&NAP;UpperLimbMobility"/>
+        <owl:onProperty>
+            <owl:ObjectProperty>
+                <owl:inverseOf rdf:resource="#AUX15"/>
+            </owl:ObjectProperty>
+        </owl:onProperty>
+        <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+    </owl:Restriction>
+    <owl:Restriction>
+        <rdfs:subClassOf rdf:resource="&NAP;LimbMobility"/>
+        <owl:onProperty>
+            <owl:ObjectProperty>
+                <owl:inverseOf rdf:resource="#AUX13"/>
+            </owl:ObjectProperty>
+        </owl:onProperty>
+        <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+    </owl:Restriction>
+    <owl:Restriction>
+        <rdfs:subClassOf rdf:resource="&NAP;Device"/>
+        <owl:onProperty>
+            <owl:ObjectProperty>
+                <owl:inverseOf rdf:resource="#AUX1"/>
+            </owl:ObjectProperty>
+        </owl:onProperty>
+        <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+    </owl:Restriction>
+    <owl:Restriction>
+        <rdfs:subClassOf rdf:resource="&NAP;SpeechAbility"/>
+        <owl:onProperty>
+            <owl:ObjectProperty>
+                <owl:inverseOf rdf:resource="#AUX20"/>
+            </owl:ObjectProperty>
+        </owl:onProperty>
+        <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+    </owl:Restriction>
+    <owl:Restriction>
+        <rdfs:subClassOf rdf:resource="&NAP;SightAbility"/>
+        <owl:onProperty>
+            <owl:ObjectProperty>
+                <owl:inverseOf rdf:resource="#AUX8"/>
+            </owl:ObjectProperty>
+        </owl:onProperty>
+        <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+    </owl:Restriction>
+    <owl:Restriction>
+        <rdfs:subClassOf rdf:resource="&NAP;HearingAbility"/>
+        <owl:onProperty>
+            <owl:ObjectProperty>
+                <owl:inverseOf rdf:resource="#AUX19"/>
+            </owl:ObjectProperty>
+        </owl:onProperty>
+        <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+    </owl:Restriction>
+    <owl:Restriction>
+        <rdfs:subClassOf rdf:resource="&NAP;TactileAbility"/>
+        <owl:onProperty>
+            <owl:ObjectProperty>
+                <owl:inverseOf rdf:resource="#AUX7"/>
+            </owl:ObjectProperty>
+        </owl:onProperty>
+        <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+    </owl:Restriction>
+    <owl:Restriction>
+        <rdfs:subClassOf rdf:resource="&NAP;Ability"/>
+        <owl:onProperty>
+            <owl:ObjectProperty>
+                <owl:inverseOf rdf:resource="#AUX18"/>
+            </owl:ObjectProperty>
+        </owl:onProperty>
+        <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+    </owl:Restriction>
+    <owl:Restriction>
+        <rdfs:subClassOf rdf:resource="&NAP;HearingAbility"/>
+        <owl:onProperty>
+            <owl:ObjectProperty>
+                <owl:inverseOf rdf:resource="#AUX4"/>
+            </owl:ObjectProperty>
+        </owl:onProperty>
+        <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+    </owl:Restriction>
+    <owl:Restriction>
+        <rdfs:subClassOf rdf:resource="&NAP;SpeechAbility"/>
+        <owl:onProperty>
+            <owl:ObjectProperty>
+                <owl:inverseOf rdf:resource="#AUX3"/>
+            </owl:ObjectProperty>
+        </owl:onProperty>
+        <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+    </owl:Restriction>
+    <owl:Restriction>
+        <rdfs:subClassOf rdf:resource="&NAP;PhysicalAbility"/>
+        <owl:onProperty>
+            <owl:ObjectProperty>
+                <owl:inverseOf rdf:resource="#AUX21"/>
+            </owl:ObjectProperty>
+        </owl:onProperty>
+        <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+    </owl:Restriction>
+    <owl:Restriction>
+        <rdfs:subClassOf rdf:resource="&NAP;LowerLimbMobility"/>
+        <owl:onProperty>
+            <owl:ObjectProperty>
+                <owl:inverseOf rdf:resource="#AUX14"/>
+            </owl:ObjectProperty>
+        </owl:onProperty>
+        <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+    </owl:Restriction>
+    <owl:Restriction>
+        <rdfs:subClassOf rdf:resource="&NAP;MovementAbility"/>
+        <owl:onProperty>
+            <owl:ObjectProperty>
+                <owl:inverseOf rdf:resource="#AUX12"/>
+            </owl:ObjectProperty>
+        </owl:onProperty>
+        <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+    </owl:Restriction>
+    <owl:Restriction>
+        <rdfs:subClassOf rdf:resource="&NAP;LowerLimbMobility"/>
+        <owl:onProperty>
+            <owl:ObjectProperty>
+                <owl:inverseOf rdf:resource="#AUX16"/>
+            </owl:ObjectProperty>
+        </owl:onProperty>
+        <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+    </owl:Restriction>
+    <owl:Restriction>
+        <rdfs:subClassOf rdf:resource="&NAP;LowerLimbMobility"/>
+        <owl:onProperty>
+            <owl:ObjectProperty>
+                <owl:inverseOf rdf:resource="#AUX23"/>
+            </owl:ObjectProperty>
+        </owl:onProperty>
+        <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+    </owl:Restriction>
+    <owl:Restriction>
+        <rdfs:subClassOf rdf:resource="&NAP;SightAbility"/>
+        <owl:onProperty>
+            <owl:ObjectProperty>
+                <owl:inverseOf rdf:resource="#AUX5"/>
+            </owl:ObjectProperty>
+        </owl:onProperty>
+        <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+    </owl:Restriction>
+    <owl:Restriction>
+        <rdfs:subClassOf rdf:resource="&NAP;SpeechAbility"/>
+        <owl:onProperty>
+            <owl:ObjectProperty>
+                <owl:inverseOf rdf:resource="#AUX25"/>
+            </owl:ObjectProperty>
+        </owl:onProperty>
+        <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+    </owl:Restriction>
+    <owl:Restriction>
+        <rdfs:subClassOf rdf:resource="&NAP;LowerLimbMobility"/>
+        <owl:onProperty>
+            <owl:ObjectProperty>
+                <owl:inverseOf rdf:resource="#AUX22"/>
+            </owl:ObjectProperty>
+        </owl:onProperty>
+        <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+    </owl:Restriction>
+    <owl:Restriction>
+        <rdfs:subClassOf rdf:resource="&NAP;SightAbility"/>
+        <owl:onProperty>
+            <owl:ObjectProperty>
+                <owl:inverseOf rdf:resource="#AUX6"/>
+            </owl:ObjectProperty>
+        </owl:onProperty>
+        <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+    </owl:Restriction>
+    <owl:Restriction>
+        <rdfs:subClassOf rdf:resource="&NAP;UpperLimbMobility"/>
+        <owl:onProperty>
+            <owl:ObjectProperty>
+                <owl:inverseOf rdf:resource="#AUX24"/>
+            </owl:ObjectProperty>
+        </owl:onProperty>
+        <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+    </owl:Restriction>
+</rdf:RDF>
+
+
+
+<!-- Generated by the OWL API (version 2.2.1.842) http://owlapi.sourceforge.net -->
+
