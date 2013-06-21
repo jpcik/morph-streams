@@ -28,7 +28,7 @@ object HelloBuild extends Build {
   val buildSettings = Defaults.defaultSettings ++ projSettings ++ ideSettings ++ publishSettings 
 
   lazy val root = Project(id = "morph-streams",
-                          base = file("."),settings = buildSettings) aggregate(sparqlstream, queryrewriting,esper,gsn)
+                          base = file("."),settings = buildSettings) aggregate(sparqlstream, queryrewriting,gsn)
 
   lazy val sparqlstream = Project(id = "sparql-stream",
                           base = file("sparql-stream"),settings = buildSettings)
@@ -36,15 +36,9 @@ object HelloBuild extends Build {
   lazy val queryrewriting = Project(id = "query-rewriting",
                               base = file("query-rewriting"),settings = buildSettings ++ scalaOnly) dependsOn(sparqlstream)
 
-  lazy val esper = Project(id = "adapter-esper",
-                              base = file("adapter-esper"),settings = buildSettings ++ scalaOnly) dependsOn(queryrewriting)
-
   lazy val gsn = Project(id = "adapter-gsn",
                               base = file("adapter-gsn"),settings = buildSettings ++ scalaOnly) dependsOn(queryrewriting)
 
-  lazy val esperengine = Project(id = "esper-engine",
-                              base = file("esper-engine"),settings = buildSettings ++ scalaOnly) 
-
   lazy val streamreasoning = Project(id = "stream-reasoning",
-                             base = file("stream-reasoning"),settings= buildSettings ++ scalaOnly) dependsOn(esper)
+                             base = file("stream-reasoning"),settings= buildSettings ++ scalaOnly) dependsOn(queryrewriting)
 }

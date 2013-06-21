@@ -6,7 +6,7 @@ version := "1.0.1"
 
 libraryDependencies ++= Seq(
   //"es.upm.fi.oeg.morph" % "query-rewriting" % "1.0.5",
-  //"es.upm.fi.oeg.morph.streams" % "adapter-esper" % "1.0.5" ,
+  "es.upm.fi.oeg.morph.streams" % "adapter-esper" % "1.0.5" ,
   "es.upm.fi.oeg.morph.streams" % "esper-engine" % "1.0.1",
   "es.upm.fi.oeg.morph" % "kyrie" % "0.15.3",  
   "com.espertech" % "esper" % "4.9.0",
