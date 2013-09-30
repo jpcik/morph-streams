@@ -85,14 +85,24 @@ import com.hp.hpl.jena.sparql.expr.ExprFunction0
 import com.hp.hpl.jena.sparql.expr.NodeValue
 import com.hp.hpl.jena.sparql.algebra.op.OpJoin
 import com.hp.hpl.jena.sparql.algebra.op.OpUnion
+import com.hp.hpl.jena.graph.Node_URI
+import com.typesafe.config.ConfigFactory
+import es.upm.fi.oeg.sparqlstream.StreamAlgebra
+import es.upm.fi.oeg.sparqlstream.OpStreamGraph
+import com.typesafe.config.ConfigException.Missing
 
-class QueryRewriting(props: Properties,mapping:String) {
+class QueryRewriting(mapping:String,systemId:String="default") {
   private val logger= LoggerFactory.getLogger(this.getClass)
+  val config=ConfigFactory.load.getConfig("morph.streams."+systemId)
 
+  //val expanding=try config.getBoolean("rewriter.expanding") catch {case e:Missing=>false}
+  val reasoning=try config.getBoolean("rewriter.reasoning") catch {case e:Missing=>false}
+  val queryClass=try config.getString("adapter.query") catch {case e:Missing=>classOf[SqlQuery].getName}
+  
   logger.debug("mapping is: "+mapping)
   private val reader = R2rmlReader(mapping)
   private var aliasCount=0
-  
+ 
   private def getAlias={
     val value=aliasCount
     aliasCount+=1
@@ -115,11 +125,17 @@ class QueryRewriting(props: Properties,mapping:String) {
     map.toMap
   }
 
-  def translate(queryString: String): SourceQuery =
-    translate(SparqlStream.parse(queryString))  
+  def translate(queryString: String): SourceQuery ={
+    val parsed=SparqlStream.parse(queryString)
+    //logger.debug("reordering query")
+      translate(parsed)  
+  }
 
-  def translate(query:StreamQuery): SourceQuery ={    
-    val opNew = translateToAlgebra(query)
+  def translate(query:StreamQuery): SourceQuery ={   
+    
+    val expanded=if (!reasoning) query
+      else OntologyRewriting.translate(query, config.getString("ontology"))
+    val opNew = translateToAlgebra(QueryReordering.reorder(expanded))
     val pVars=getProjectList(query).map(a=>a._1->a._1).toMap
     transform(opNew,pVars,modifiers(query))      
   }
@@ -135,26 +151,25 @@ class QueryRewriting(props: Properties,mapping:String) {
   
   def transform(algebra: AlgebraOp,projectVars:Map[String,String],
       mods:Array[Modifiers.OutputModifier]):SourceQuery={
-    val adapter = props.getProperty("siq.adapter")
-    val queryClass = props.getProperty("siq.adapter" + "." + adapter + ".query")
-    logger.info("Using query adapter: "+queryClass)
-    val resquery=
-      if (!adapter.equals("sql")) {
+    //val adapter = props.getProperty("siq.adapter")
+      //if (!systemId.equals("default")) {
+            //val queryClass = //config.getString("adapter" + "." + systemId + ".query")
+    //logger.info("Using query adapter: "+queryClass)
         val theClass =try Class.forName(queryClass)
         catch {
           case e: ClassNotFoundException =>throw new QueryRewritingException("Unable to use adapter query "+queryClass, e)
         }
+    val resquery=
         try 
           theClass.getDeclaredConstructor(classOf[AlgebraOp],
-                                          //classOf[Map[String,String]],
                                           classOf[Array[Modifiers.OutputModifier]])
             .newInstance(algebra,mods).asInstanceOf[SourceQuery]
         catch {
           case e: InstantiationException =>throw new QueryRewritingException("Unable to instantiate query", e)
           case e: IllegalAccessException =>throw new QueryRewritingException("Unable to instantiate query", e)
         }
-      } 
-      else new SqlQuery(algebra,mods)
+      //} 
+      //else new SqlQuery(algebra,mods)
         
     //resquery.load(algebra)
     logger.info(resquery.serializeQuery)
@@ -164,7 +179,7 @@ class QueryRewriting(props: Properties,mapping:String) {
   
   def translateToAlgebra(query: StreamQuery):AlgebraOp={
     val ini = System.currentTimeMillis      
-    val op = Algebra.compile(query)
+    val op = StreamAlgebra.compile(query)
     val span1 = System.currentTimeMillis() - ini
     val span2 = System.currentTimeMillis() - ini;
 
@@ -207,6 +222,9 @@ class QueryRewriting(props: Properties,mapping:String) {
 
       optimized.display
 
+      if (optimized.asInstanceOf[UnaryOp].subOp==null)
+        throw new QueryRewritingException("Rewriting resulted in empty query. The query cannot be answered given the speecified mappings.",null)
+      
       //if (opNew.getSubOp==null) throw new Exception("Empty translated query throws no results")
       System.err.println(span1 + "-" + span2 + "-" + span3 + "-" + span4);
       optimized
@@ -222,9 +240,11 @@ class QueryRewriting(props: Properties,mapping:String) {
     val stream = query.getStream(
         if (graphstream!=null) graphstream.constant.asResource.getURI else null)
 
-    val unary = createRelation(tMap, poMap.objectMap, stream)         
+    val unary = createRelation(tMap, poMap.objectMap, stream)           
     if (t.getObject.isURI || t.getObject.isLiteral) {
-      val selection = createSelection(t,poMap.objectMap,t.getObject.toString,unary)
+      val oMap=if (poMap.objectMap==null)  reader.triplesMaps(poMap.refObjectMap.parentTriplesMap).subjectMap
+        else poMap.objectMap
+      val selection = createSelection(t,oMap,t.getObject.toString,unary)
       createProjection(t,tMap,poMap.objectMap,poMap, selection)
     } 
     else if (t.getSubject.isURI){
@@ -316,7 +336,7 @@ class QueryRewriting(props: Properties,mapping:String) {
            logger.debug("Mapping graphs for: " + tMap.uri + " - " + tMap.subjectMap.graphMap)
            createProjection(t, tMap, tMap.subjectMap, null, query)           
          } 
-         new MultiUnionOp(els.map(p=>p.getRelation.id->p).toMap).simplify
+         new MultiUnionOp(els.map(p=>p.id->p).toMap).simplify
        } 
        else {
          val poMaps = reader.filterByPredicate(t.getPredicate.getURI)
@@ -326,7 +346,7 @@ class QueryRewriting(props: Properties,mapping:String) {
              logger.debug("after poMap "+pro)
              pro
          }.filter(_!=null)
-         new MultiUnionOp(els.map{p=>p.getRelation.id->p}.toMap).simplify
+         new MultiUnionOp(els.map{p=>p.id->p}.toMap).simplify
        }
             
       logger debug "Step subpattern: "+oper
@@ -377,7 +397,7 @@ class QueryRewriting(props: Properties,mapping:String) {
             navigate(group.getSubOp,query))          
         case _=> navigate(ext.getSubOp,query)
       }
-    case group:OpGroup=>        
+    case group:OpGroup=>     
       new GroupOp(null,group.getGroupVars.getVars.map(v=>v.getVarName),
             group.getAggregators.map(a=>aggregator(a.getVar.getVarName,a.getAggregator)).toMap,
             navigate(group.getSubOp,query))      
@@ -385,6 +405,8 @@ class QueryRewriting(props: Properties,mapping:String) {
       val l = navigate(union.getLeft, query)
       val r = navigate(union.getRight, query)
       new MultiUnionOp(Seq(l,r).filter(_!=null).map(opr=>opr.id->opr).toMap).simplify
+    case graph:OpStreamGraph=>       
+      navigate(graph.getSubOp,query)
     case graph:OpGraph=>       
       val bgp=graph.getSubOp.asInstanceOf[OpBGP]
       val vars=
@@ -483,7 +505,7 @@ class QueryRewriting(props: Properties,mapping:String) {
         //else 
         projectionXprs(objVar,sMap)
           //(objVar.getName,new VarXpr("identity"))
-        
+      case usi:Node_URI=>null  
       case _=> throw new Exception("Unsupported triple pattern: "+tripleNode)
     }
   }

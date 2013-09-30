@@ -6,42 +6,30 @@ import org.scalatest.junit.ShouldMatchersForJUnit
 import org.scalatest.junit.JUnitSuite
 import org.junit.Before
 import org.junit.Test
-import scala.io.Source
 import com.hp.hpl.jena.query.QueryFactory
 import collection.JavaConversions._
-import com.hp.hpl.jena.query.Query
-import es.upm.fi.dia.oeg.newrqr.DatalogSPARQLConversor
-import org.oxford.comlab.requiem.parser.ELHIOParser
-import org.oxford.comlab.requiem.rewriter.TermFactory
-import org.oxford.comlab.requiem.rewriter.PreprocessRewriter
-import java.util.ArrayList
-import es.upm.fi.dia.oeg.newrqr.ISI2RQRLexer
-import es.upm.fi.dia.oeg.newrqr.ISI2RQRParser
-import org.antlr.runtime.ANTLRStringStream
-import org.oxford.comlab.requiem.rewriter.Clause
-import org.antlr.runtime.CommonTokenStream
-import es.upm.fi.oeg.morph.kyrie.Kyrie
 import es.upm.fi.oeg.siq.tools.ParameterUtils
 import java.net.URI
-import es.upm.fi.oeg.sparqlstream.SparqlStream
-import es.upm.fi.oeg.morph.stream.esper.EsperQuery
+//import es.upm.fi.oeg.morph.stream.esper.EsperQuery
 
 class ReasoningRewritingTest extends JUnitSuite with ShouldMatchersForJUnit with Checkers {
   private val logger= LoggerFactory.getLogger(this.getClass)
-  val onto=Source.fromInputStream(getClass.getResourceAsStream("/casas.owl")).getLines.mkString
-  val props = ParameterUtils.load(getClass.getClassLoader.getResourceAsStream("config/siq.properties"))
+  //val onto=Source.fromInputStream(getClass.getResourceAsStream("/casas.owl")).getLines.mkString
+  //val props = ParameterUtils.load(getClass.getClassLoader.getResourceAsStream("config/siq.properties"))
   
   private def srbench(q:String)=ParameterUtils.loadQuery("queries/srbench/"+q)
   private def ssn(q:String)=ParameterUtils.loadQuery("queries/ssn/"+q)
-  private val srbenchR2rml=new URI("mappings/srbench.ttl")
+  private val srbenchR2rml=new URI("mappings/srbenchkyrie.ttl")
   
   private def rewrite(sparqlstr:String)={    
-    val trans = new ExpansionQueryRewriting(props,srbenchR2rml.toString)
-    trans.translate(SparqlStream.parse(sparqlstr)).asInstanceOf[EsperQuery]
+    val trans = new QueryRewriting(srbenchR2rml.toString,"kyrietest")
+    trans.translate(sparqlstr)//.asInstanceOf[EsperQuery]
   }
   
   @Before def initialize() {}
 
+  
+  
   @Test def testTranslateDatalog() {
     logger.info("")
     val k=new Kyrie("src/test/resources/ontologies/sensordemo.owl")

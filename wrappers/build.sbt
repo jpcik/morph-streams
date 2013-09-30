@@ -1,17 +1,22 @@
-import ScalaxbKeys._
+//import ScalaxbKeys._
 
-name := "gsn-wrappers"
+name := "wrappers"
 
 organization := "es.upm.fi.oeg.morph.streams"
 
-version := "1.0.1"
+version := "1.0.4"
 
 scalaVersion := "2.10.1"
 
 crossPaths := false
 
 libraryDependencies ++= Seq(
+  "es.upm.fi.oeg.morph.streams" % "esper-engine" % "1.0.1",
   "net.databinder.dispatch" %% "dispatch-core" % "0.9.5",
+  "play" %% "play" % "2.1.1" intransitive,
+  "play" %% "play-iteratees" % "2.1.1" intransitive,  
+  "joda-time" % "joda-time" % "2.1",    
+  "org.joda" % "joda-convert" % "1.2",  
   "com.typesafe.akka" %% "akka-actor" % "2.1.2",
   "org.scalatest" %% "scalatest" % "1.9.1" % "test",
   "org.scalacheck" %% "scalacheck" % "1.10.0" % "test",
@@ -29,11 +34,11 @@ resolvers ++= Seq(
   "sonatype-public" at "https://oss.sonatype.org/​content/repositories/public"  
 )
 
-seq(scalaxbSettings: _*)
+//seq(scalaxbSettings: _*)
 
-packageName in scalaxb in Compile := "es.emt.wsdl"
+//packageName in scalaxb in Compile := "es.emt.wsdl"
 
-sourceGenerators in Compile <+= scalaxb in Compile
+//sourceGenerators in Compile <+= scalaxb in Compile
 
 scalacOptions += "-deprecation"
 

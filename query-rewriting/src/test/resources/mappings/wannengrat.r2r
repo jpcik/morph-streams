@@ -8,7 +8,7 @@
 @prefix dul: <http://www.loa-cnr.it/ontologies/DUL.owl#> .
 @prefix time: <http://www.w3.org/2006/time#> .
 @prefix regions: <http://www.semsorgrid4env.eu/ontologies/AdditionalRegions.owl#> .
-@prefix morph: <http://es.upm.fi.dia.oeg/morph#> .
+@prefix morph: <http://oeg-upm.net/ns/morph#> .
 @prefix quantity: <http://data.nasa.gov/qudt/owl/quantity#> .
 @prefix qudt: <http://data.nasa.gov/qudt/owl/qudt#> .
 @prefix void: <http://rdfs.org/ns/void#>.
@@ -16,6 +16,10 @@
 @prefix propTemperature: <http://sweet.jpl.nasa.gov/2.1/propTemperature.owl#> . 
 @prefix : <http://es.upm.fi.dia.oeg/R2RMapping#> .
  
+:wan5 rr:tableName "wan5";morph:pk "timed".
+:wan7 rr:tableName "wan7";morph:pk "timed".
+:sc1054 rr:tableName "sensorscope_1054";morph:pk "timed".
+:sc1058 rr:tableName "sensorscope_1058";morph:pk "timed".
 
 :observedByPred rr:constant ssn:observedBy.
       						
@@ -37,7 +41,7 @@
       		   rr:objectMap    [ rr:parentTriplesMap :Wan5Output2; rr:joinCondition "" ].
       		        	      		       	      		        		        
 :Wan5Output2 a rr:TriplesMap;
-	rr:logicalTable [rr:tableName "wan5"];
+	rr:logicalTable :wan5;
 	rr:subjectMap [ rr:template "http://swiss-experiment.ch/metadata#Observation/AirPres/Wan5/Output/{timed}";
 					rr:class ssn:SensorOutput; rr:graph swissex:WannengratSensors.srdf ];
 	rr:predicateObjectMap [ rr:predicateMap [ rr:constant ssn:hasValue ];
@@ -45,7 +49,7 @@
 .      		   
 
 :Wan5Temp2 a rr:TriplesMap;
-	rr:logicalTable [rr:tableName "wan5"];
+	rr:logicalTable :wan5;
 	rr:subjectMap [ rr:template "http://swiss-experiment.ch/metadata#ObservationValue/AirPressure/Wan5/{timed}";	
 				 rr:class ssn:ObservationValue; rr:graph swissex:WannengratSensors.srdf ];
 	rr:predicateObjectMap [ rr:predicateMap [ rr:constant qudt:numericValue ];
@@ -57,7 +61,7 @@
 :Wan5TempObservation2   a rr:TriplesMap;
     rr:subjectMap [	rr:template "http://swiss-experiment.ch/metadata#Wan5/AirPres/Observation/{timed}";  
     				rr:class ssn:Observation; rr:graph swissex:WannengratSensors.srdf ];
-	rr:logicalTable [rr:tableName "wan5"];
+	rr:logicalTable :wan5;
     rr:predicateObjectMap :wan5Result2;
     rr:predicateObjectMap :foIWan5Air;
     rr:predicateObjectMap :obsProp2;
@@ -75,8 +79,8 @@
     		   rr:objectMap	  [ rr:parentTriplesMap :Wan5Instant2; rr:joinCondition "" ].
 
 :Wan5Instant2 a rr:TriplesMap;
-	rr:logicalTable [rr:tableName "wan5"];
-	rr:subjectMap [ rr:template "http://swiss-experiment.ch/metadata#Observation/AirPressure/Wan5/Instant/{DateTime}";
+	rr:logicalTable :wan5;
+	rr:subjectMap [ rr:template "http://swiss-experiment.ch/metadata#Observation/AirPressure/Wan5/Instant/{timed}";
 					rr:class time:Instant; rr:graph swissex:WannengratSensors.srdf ];
 	rr:predicateObjectMap [ rr:predicateMap [ rr:constant time:xsdDateTime ];
 							rr:objectMap	[ rr:column "timed" ] ];     		   
@@ -87,14 +91,14 @@
       		   rr:objectMap    [ rr:parentTriplesMap :Wan5Output; rr:joinCondition "" ].
       		        	      		       	      		        		        
 :Wan5Output a rr:TriplesMap;
-	rr:logicalTable [rr:tableName "wan5"];
+	rr:logicalTable :wan5;
 	rr:subjectMap [ rr:template "http://swiss-experiment.ch/metadata#Observation/AirTemperature/Wan5/Output/{timed})";
 				  rr:class ssn:SensorOutput; rr:graph swissex:WannengratSensors.srdf ];
 	rr:predicateObjectMap [ rr:predicateMap [ rr:constant ssn:hasValue ];
 							   rr:objectMap	  [ rr:parentTriplesMap :Wan5Temp; rr:joinCondition "" ] ];	   		  
 .      		   
 :Wan5Temp a rr:TriplesMap;
-	rr:logicalTable [rr:tableName "wan5"];
+	rr:logicalTable :wan5;
 	rr:subjectMap [ rr:template "http://swiss-experiment.ch/metadata#ObservationValue/AirTemperature/Wan5/{timed})";	
 					rr:class ssn:ObservationValue; rr:graph swissex:WannengratSensors.srdf ];
 	rr:predicateObjectMap [ rr:predicateMap [ rr:constant qudt:numericValue ];
@@ -105,8 +109,8 @@
     		   rr:objectMap	  [ rr:parentTriplesMap :Wan5Instant; rr:joinCondition "" ].
 
 :Wan5Instant a rr:TriplesMap;
-	rr:logicalTable [rr:tableName "wan5"];
-	rr:subjectMap [ rr:template "http://swiss-experiment.ch/metadata#Observation/AirTemperature/Wan5/Instant/{DateTime}";
+	rr:logicalTable :wan5;
+	rr:subjectMap [ rr:template "http://swiss-experiment.ch/metadata#Observation/AirTemperature/Wan5/Instant/{timed}";
 					rr:class time:Instant; rr:graph swissex:WannengratSensors.srdf ];
 	rr:predicateObjectMap [ rr:predicateMap [ rr:constant time:xsdDateTime ];
 							rr:objectMap	[ rr:column "timed" ] ];     		   
@@ -117,7 +121,7 @@
 :Wan5TempObservation   a rr:TriplesMap;
     rr:subjectMap [	rr:template "http://swiss-experiment.ch/metadata#Wan5/AirTemperature/Observation/{timed}";  
     				rr:class ssn:Observation; rr:graph swissex:WannengratSensors.srdf ];
-	rr:logicalTable [rr:tableName "wan5"];
+	rr:logicalTable :wan5;
     rr:predicateObjectMap :wan5Result;
     rr:predicateObjectMap :foIWan5Air;
     rr:predicateObjectMap :obsProp;
@@ -135,14 +139,14 @@
       		   rr:objectMap    [ rr:parentTriplesMap :Wan7Output; rr:joinCondition "" ].
       		        	      		       	      		        		        
 :Wan7Output a rr:TriplesMap;
-	rr:logicalTable [rr:tableName "wan7"];
+	rr:logicalTable :wan7;
 	rr:subjectMap [ rr:template "http://swiss-experiment.ch/metadata#Observation/AirTemperature/Wan7/Output/{timed})";
 				  rr:class ssn:SensorOutput; rr:graph swissex:WannengratSensors.srdf ];
 	rr:predicateObjectMap [ rr:predicateMap [ rr:constant ssn:hasValue ];
 							   rr:objectMap	  [ rr:parentTriplesMap :Wan7Temp; rr:joinCondition "" ] ];	   		  
 .      		   
 :Wan7Temp a rr:TriplesMap;
-	rr:logicalTable [rr:tableName "wan7"];
+	rr:logicalTable :wan7;
 	rr:subjectMap [ rr:template "http://swiss-experiment.ch/metadata#ObservationValue/AirTemperature/Wan7/{timed})";	
 					rr:class ssn:ObservationValue; rr:graph swissex:WannengratSensors.srdf ];
 	rr:predicateObjectMap [ rr:predicateMap [ rr:constant qudt:numericValue ];
@@ -153,8 +157,8 @@
     		rr:objectMap	  [ rr:parentTriplesMap :Wan7Instant; rr:joinCondition "" ].
 
 :Wan7Instant a rr:TriplesMap;
-	rr:logicalTable [rr:tableName "wan7"];
-	rr:subjectMap [ rr:template "http://swiss-experiment.ch/metadata#Observation/AirTemperature/Wan7/Instant/{DateTime}";
+	rr:logicalTable :wan7;
+	rr:subjectMap [ rr:template "http://swiss-experiment.ch/metadata#Observation/AirTemperature/Wan7/Instant/{timed}";
 					rr:class time:Instant; rr:graph swissex:WannengratSensors.srdf ];
 	rr:predicateObjectMap [ rr:predicateMap [ rr:constant time:xsdDateTime ];
 							rr:objectMap	[ rr:column "timed" ] ];     		   
@@ -165,7 +169,7 @@
 :Wan7TempObservation   a rr:TriplesMap;
     rr:subjectMap [	rr:template "http://swiss-experiment.ch/metadata#Wan7/AirTemperature/Observation/{timed}";  
     				rr:class ssn:Observation; rr:graph swissex:WannengratSensors.srdf ];
-	rr:logicalTable [rr:tableName "wan7"];
+	rr:logicalTable :wan7;
     rr:predicateObjectMap :wan7Result, :wan7Time;
     rr:predicateObjectMap 	:foIWan5Air,:obsProp,    						
     						[ rr:predicateMap :observedByPred;
@@ -178,14 +182,14 @@
       		   rr:objectMap    [ rr:parentTriplesMap :SS1054Output; rr:joinCondition "" ].
 
 :SS1054Output a rr:TriplesMap;
-	rr:logicalTable [rr:tableName "sensorscope_1054"];
+	rr:logicalTable :sc1054;
 	rr:subjectMap [ rr:template "http://swiss-experiment.ch/metadata#Observation/AirTemperature/ss1054/Output{timed}";
 					rr:class ssn:SensorOutput; rr:graph swissex:WannengratSensors.srdf ];
 	rr:predicateObjectMap [ rr:predicateMap [ rr:constant ssn:hasValue ];
 							   rr:objectMap	  [ rr:parentTriplesMap :SS1054Value; rr:joinCondition "" ] ];	   		  
 .      		   
 :SS1054Value a rr:TriplesMap;
-	rr:logicalTable [rr:tableName "sensorscope_1054"];
+	rr:logicalTable :sc1054;
 	rr:subjectMap [ rr:template "http://swiss-experiment.ch/metadata#ObservationValue/AirTemperature/ss1054/{timed}";	
 					rr:class ssn:ObservationValue; rr:graph swissex:WannengratSensors.srdf ];
 	rr:predicateObjectMap [ rr:predicateMap [ rr:constant qudt:numericValue ];
@@ -196,8 +200,8 @@
     		   rr:objectMap	  [ rr:parentTriplesMap :SS1054Instant; rr:joinCondition "" ].
 
 :SS1054Instant a rr:TriplesMap;
-	rr:logicalTable [rr:tableName "sensorscope_1054"];
-	rr:subjectMap [ rr:template "http://swiss-experiment.ch/metadata#Observation/AirTemperature/ss1054/Instant{DateTime}";
+	rr:logicalTable :sc1054;
+	rr:subjectMap [ rr:template "http://swiss-experiment.ch/metadata#Observation/AirTemperature/ss1054/Instant{timed}";
 					rr:class time:Instant; rr:graph swissex:WannengratSensors.srdf ];
 	rr:predicateObjectMap [ rr:predicateMap [ rr:constant time:xsdDateTime ];
 							rr:objectMap	[ rr:column "timed" ] ];     		   
@@ -208,7 +212,7 @@
 :SS1054TempObservation   a rr:TriplesMap;
     rr:subjectMap [	rr:template "http://swiss-experiment.ch/metadata#SS1054/AirTemperature/Observation/{timed}";  
     				 rr:class ssn:Observation; rr:graph swissex:WannengratSensors.srdf ];
-	rr:logicalTable [rr:tableName "sensorscope_1054"];
+	rr:logicalTable :sc1054;
     rr:predicateObjectMap :ss1054Result;
     rr:predicateObjectMap :foISS1054Air;
     rr:predicateObjectMap :obsProp;
@@ -228,14 +232,14 @@
       		   rr:objectMap    [ rr:parentTriplesMap :SS1058Output; rr:joinCondition "" ].
 
 :SS1058Output a rr:TriplesMap;
-	rr:logicalTable [rr:tableName "sensorscope_1058"];
+	rr:logicalTable :sc1058;
 	rr:subjectMap [ rr:template "http://swiss-experiment.ch/metadata#Observation/AirTemperature/ss1058/Output{timed}";
 				 rr:class ssn:SensorOutput; rr:graph swissex:WannengratSensors.srdf ];
 	rr:predicateObjectMap [ rr:predicateMap [ rr:constant ssn:hasValue ];
 							   rr:objectMap	  [ rr:parentTriplesMap :SS1058Value; rr:joinCondition "" ] ];	   		  
 .      		   
 :SS1058Value a rr:TriplesMap;
-	rr:logicalTable [rr:tableName "sensorscope_1058"];
+	rr:logicalTable :sc1058;
 	rr:subjectMap [ rr:template "http://swiss-experiment.ch/metadata#ObservationValue/AirTemperature/ss1058/{timed}";	
 					rr:class ssn:ObservationValue; rr:graph swissex:WannengratSensors.srdf ];
 	rr:predicateObjectMap [ rr:predicateMap [ rr:constant qudt:numericValue ];
@@ -246,8 +250,8 @@
     		   rr:objectMap	  [ rr:parentTriplesMap :SS1058Instant; rr:joinCondition "" ].
 
 :SS1058Instant a rr:TriplesMap;
-	rr:logicalTable [rr:tableName "sensorscope_1058"];
-	rr:subjectMap [ rr:template "http://swiss-experiment.ch/metadata#Observation/AirTemperature/ss1058/Instant{DateTime}";
+	rr:logicalTable :sc1058;
+	rr:subjectMap [ rr:template "http://swiss-experiment.ch/metadata#Observation/AirTemperature/ss1058/Instant{timed}";
 				    rr:class time:Instant; rr:graph swissex:WannengratSensors.srdf ];
 	rr:predicateObjectMap [ rr:predicateMap [ rr:constant time:xsdDateTime ];
 							rr:objectMap	[ rr:column "timed" ] ];     		   
@@ -258,7 +262,7 @@
 :SS1058TempObservation   a rr:TriplesMap;
     rr:subjectMap [	rr:template "http://swiss-experiment.ch/metadata#SS1058/AirTemperature/Observation/{timed}";  
     				rr:class ssn:Observation; rr:graph swissex:WannengratSensors.srdf ];
-	rr:logicalTable [rr:tableName "sensorscope_1058"];
+	rr:logicalTable :sc1058;
     rr:predicateObjectMap :ss1058Result;
     rr:predicateObjectMap :foISS1058Air;
     rr:predicateObjectMap :obsProp;

@@ -11,7 +11,6 @@ import es.upm.fi.oeg.morph.voc.RDF
 import org.oxford.comlab.requiem.rewriter.FunctionalTerm
 import com.hp.hpl.jena.graph.Node
 import org.oxford.comlab.requiem.rewriter.TermFactory
-import es.upm.fi.oeg.sparqlstream.StreamQuery
 import org.oxford.comlab.requiem.rewriter.Clause
 import com.hp.hpl.jena.sparql.core.Var
 import com.hp.hpl.jena.query.Query
@@ -19,6 +18,7 @@ import com.hp.hpl.jena.sparql.syntax.ElementUnion
 import org.oxford.comlab.requiem.rewriter.Variable
 import com.hp.hpl.jena.rdf.model.ResourceFactory
 import com.hp.hpl.jena.graph.Node_URI
+import scala.Array.canBuildFrom
 
 class SparqlClausifier(tf:TermFactory, query:Query) {
   private val logger=LoggerFactory.getLogger(this.getClass)
@@ -29,7 +29,9 @@ class SparqlClausifier(tf:TermFactory, query:Query) {
   lazy val clausifiedQuery={
     val qclauses=clausify(query.getQueryPattern,mappedVars).toArray
     val head=new FunctionalTerm("Q",projVars.map(v=>tf.getVariable(mappedVars(v))).toArray)
-    new Clause(qclauses,head)
+    val cq=new Clause(qclauses,head)
+    logger.debug("Clausified Query: "+cq)
+    cq
   }
   
   def sparqlizeUCQ(fclauses:Seq[Clause])={
@@ -56,7 +58,7 @@ class SparqlClausifier(tf:TermFactory, query:Query) {
     val head=masterClause.getHead
     val vars=head.getArguments.map(v=>v.getName.replace("?","").toInt)
     val termVars=c.getHead.getArguments.map(v=>v.getName.replace("?","").toInt)    
-    val repl=termVars.zip(vars).filter(pair=>pair._1!=pair._2).toMap
+    val repl=termVars.zip(vars).toMap//.filter(pair=>pair._1!=pair._2).toMap
     val vars1=masterClause.getBody.map{t=>
       t.getName->t.getArguments.filter(a=>a.isInstanceOf[Variable])
         .map(v=>v.getName.replace("?","").toInt)      
@@ -66,15 +68,16 @@ class SparqlClausifier(tf:TermFactory, query:Query) {
       val tt2=t.getArguments.filter(a=>a.isInstanceOf[Variable])
       .map(v=>v.getName.replace("?","").toInt)
       tt2.zip(tt)
-    }.flatten.filter(pair=>pair._1!=pair._2).toMap
+    }.flatten.toMap//filter(pair=>pair._1!=pair._2).toMap
       
     
     
     logger.debug("replacing vars: "+replc.mkString(","))
-    new Clause(c.getBody.map(t=>replaceVar(replc,t)),head)
+    new Clause(c.getBody.map(t=>replaceVar(replc++repl,t)),head)
   }
   
   private def replaceVar(vars:Map[Int,Int],t:Term):Term={
+    logger.trace("replace vars in term: "+t)
     val args=t.getArguments.map{arg=> arg match{
       case v:Variable=>
         val vv=v.getName.replace("?","").toInt
@@ -102,6 +105,7 @@ class SparqlClausifier(tf:TermFactory, query:Query) {
   
   private def triplify(t:Term,vocab:Map[String,Node_URI],vars:Map[String,String])={
     //TODO keep original namespaces
+    logger.debug("triplif Term: "+t)
     val pref=""//"http://purl.oclc.org/NET/ssnx/ssn#"
     val predName=if (t.getArity==1) RDF.typeProp 
       else ResourceFactory.createResource(pref+t.getName)

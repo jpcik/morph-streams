@@ -1,4 +1,5 @@
-PREFIX cd: <http://semsorgrid4env.eu/ns#>							
+PREFIX cd: <http://www.semsorgrid4env.eu/ontologies/CoastalDefences.owl#> 
+PREFIX ssn: <http://purl.oclc.org/NET/ssnx/ssn#> 						
 PREFIX sb: <http://www.w3.org/2009/SSN-XG/Ontologies/SensorBasis.owl#> 
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
 SELECT ?wavets ?waveheight ?WaveObs ?sensor 
@@ -8,15 +9,15 @@ SELECT ?wavets ?waveheight ?WaveObs ?sensor
 #[NOW - 10 MINUTE TO NOW - 5 MINUTE SLIDE 3 MINUTE] 
 WHERE 
 { 
-?WaveObs a cd:Observation.
+?WaveObs a ssn:Observation.
 
-{ ?WaveObs cd:observationResultTime ?wavets;
-cd:measuredBy ?sensor;
- cd:observationResult ?waveheight. }  
-{ ?WaveObs cd:observedProperty cd:TideHeight;}
-{ ?WaveObs    cd:featureOfInterest ?waveFeature. }
+{ ?WaveObs ssn:observationResultTime ?wavets;
+ssn:observedBy ?sensor;
+ ssn:observationResult ?waveheight. }  
+{ ?WaveObs ssn:observedProperty cd:TideHeight;}
+{ ?WaveObs    ssn:featureOfInterest ?waveFeature. }
 #     cd:observedProperty ?wavets.
- ?waveFeature a cd:Feature;    
+ ?waveFeature a ssn:FeatureOfInterest;    
  cd:locatedInRegion cd:SouthEastEnglandCCO.
 
  

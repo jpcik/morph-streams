@@ -2,7 +2,7 @@ name := "sparql-stream"
 
 organization := "es.upm.fi.oeg.morph"
 
-version := "1.0.3"
+version := "1.0.4"
 
 libraryDependencies ++= Seq(
   "org.apache.jena" % "jena-core" % "2.10.0" intransitive,

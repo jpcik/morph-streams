@@ -5,7 +5,7 @@ import com.hp.hpl.jena.sparql.syntax.Element
 import scala.reflect.BeanProperty
 
 class ElementStreamGraph(@BeanProperty val uri:String,
-    val window:ElementWindow) extends Element{
+    @BeanProperty val window:ElementWindow) extends Element{
   override def equalTo(el2:Element,isoMap:NodeIsomorphismMap)= {
 		false;
   }

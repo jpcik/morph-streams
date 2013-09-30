@@ -1,4 +1,4 @@
-package es.upm.fi.oeg.morph.kyrie
+package es.upm.fi.oeg.morph.stream.rewriting
 
 import es.upm.fi.dia.oeg.newrqr.DatalogSPARQLConversor
 import org.oxford.comlab.requiem.parser.ELHIOParser

@@ -14,9 +14,9 @@ class SRBenchRewritingTest extends JUnitSuite with ShouldMatchersForJUnit with C
   private val logger= LoggerFactory.getLogger(this.getClass)
 
   //PropertyConfigurator.configure(classOf[SRBenchRewritingTest].getClassLoader().getResource("config/log4j.properties"));
-  val props = load(getClass.getClassLoader.getResourceAsStream("config/config_memoryStore.properties"));
-  val mappingUri=new URI("mappings/srbench.ttl")
-  val trans = new QueryRewriting(props,mappingUri.toString);    
+  //val props = load(getClass.getClassLoader.getResourceAsStream("config/config_memoryStore.properties"));
+  val mappingUri=new URI("mappings/ssn.ttl")
+  val trans = new QueryRewriting(mappingUri.toString,"sql")    
   
   @Before def initialize() {}
  

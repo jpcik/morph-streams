@@ -15,14 +15,91 @@ import java.net.URL
 import java.sql.RowId
 import java.sql.NClob
 import java.sql.SQLXML
+import es.upm.fi.oeg.morph.stream.algebra.xpr.Xpr
+import java.sql.ResultSetMetaData
+import javax.sql.RowSetMetaData
+import javax.sql.rowset.RowSetMetaDataImpl
+import java.sql.Types
+import org.slf4j.LoggerFactory
+import es.upm.fi.oeg.morph.stream.algebra.xpr.ReplaceXpr
+import es.upm.fi.oeg.morph.stream.algebra.xpr.VarXpr
+import es.upm.fi.oeg.morph.stream.algebra.xpr.NullValueXpr
+import es.upm.fi.oeg.morph.stream.algebra.xpr.ConstantXpr
 
 trait StreamResultSet extends ResultSet{
+  private val logger = LoggerFactory.getLogger(this.getClass)
+  val records:Stream[Array[Object]]=Stream()
+  val metadata: Map[String, Xpr]=Map()
+  val queryVars:Seq[String]=Seq()
+  
+  private val it = records.iterator
+  protected var current: Seq[Object] = _
+  
+  override def next:Boolean = {
+    if (it.hasNext) {
+      current = it.next
+      logger.trace(current.mkString("----"))
+      true
+    } else false
+  }
+
+  protected def createMetadata={
+    val md: RowSetMetaData = new RowSetMetaDataImpl
+    md.setColumnCount(metadata.size)
+    var i=1
+    metadata.foreach{e=>
+      logger.trace("metadata "+e._1+"--"+e._2)
+      md.setColumnLabel(i, e._1)
+      md.setColumnType(i, Types.VARCHAR)
+      i+=1
+    }
+    md
+  }
+  protected val metaData: ResultSetMetaData = createMetadata
+  
+  protected lazy val internalLabels=queryVars.zipWithIndex.toMap
+/*
+  private val compoundLabels={
+    val spk=internalLabels.keys.toArray.filter(k=>k.contains('_')).map{k=>
+      val sp=k.split('_')
+      (sp(0),sp(1))      
+    }
+    val grouped=spk.groupBy(_._1).map(v=>(v._1,v._2.map(v2=>v2._2)))
+    grouped
+  }*/
+  
+  private val labelPos=
+    (1 to metaData.getColumnCount).map(i=>metaData.getColumnLabel(i)->i).toMap
+    
+  override def findColumn(columnLabel:String):Int = labelPos(columnLabel)
+  override def getMetaData:ResultSetMetaData=metaData
+  override def getObject(columnIndex:Int):Object=current(columnIndex-1)
+  
+  override def getObject(columnLabel:String):Object={ 
+    logger.debug("labels "+internalLabels.mkString)
+
+    metadata(columnLabel) match{
+      case rep:ReplaceXpr=>
+        val repl=internalLabels.map(l=>l._1.replace(columnLabel+"_","")->current(l._2))
+        rep.evaluate(repl)
+      case v:VarXpr=>
+        //current(internalLabels(columnLabel))
+        current(internalLabels(columnLabel))
+      case NullValueXpr=>null
+      case const:ConstantXpr=>const.evaluate
+      case _=>current(internalLabels(columnLabel))
+    }
+  }
+
+  override def getString(columnLabel:String):String = 
+    getObject(columnLabel:String).toString
+
+  
+  
   override def unwrap[T](iface:Class[T]): T = null.asInstanceOf[T]
   override def isWrapperFor(iface:Class[_]): Boolean = false
-
-  override def close {
-    //records
-  }
+  
+  override def close {}
 
   override def getHoldability(): Int = 0
   override def isClosed(): Boolean = false
@@ -236,4 +313,38 @@ trait StreamResultSet extends ResultSet{
   override def updateNClob(columnIndex: Int, reader: Reader) {}
   override def updateNClob(columnLabel: String, reader: Reader) {}
 
+}
+
+
+class ComposedResultSet(resultsets:Seq[StreamResultSet]) 
+extends {override val metadata=resultsets.head.metadata } with StreamResultSet{
+  private val iter=resultsets.iterator
+  private var currentRs:StreamResultSet=_
+  override def next:Boolean={
+    if (currentRs!=null && currentRs.next)
+      true
+    else if (currentRs==null || iter.hasNext){ 
+      currentRs=iter.next
+      currentRs.next
+    }
+    else false
+  }
+  /*override def next:Boolean = {
+    if (current==null) current=it.next
+    val nxt=current.next
+    if (nxt) nxt
+    else if (it.hasNext){
+      current=it.next
+      current.next
+    }
+    else false       
+  }*/
+  
+  override def findColumn(columnLabel:String):Int =resultsets.head.findColumn(columnLabel)    
+  override def getMetaData:ResultSetMetaData=resultsets.head.getMetaData
+ //  override def getMetaData=if (currentRs!=null)currentRs.getMetaData
+ //                           else super.getMetaData
+  override def getObject(columnIndex:Int):Object=currentRs.getObject(columnIndex)
+  override def getObject(columnLabel:String):Object=currentRs.getObject(columnLabel)  
+  override def getString(columnLabel:String):String = currentRs.getString(columnLabel)
 }

@@ -7,16 +7,17 @@
 @prefix dul: <http://www.loa-cnr.it/ontologies/DUL.owl#> .
 @prefix time: <http://www.w3.org/2006/time#> .
 @prefix regions: <http://www.semsorgrid4env.eu/ontologies/AdditionalRegions.owl#> .
-@prefix morph: <http://es.upm.fi.dia.oeg/morph#> .
+@prefix morph: <http://oeg-upm.net/ns/morph#> .
 @prefix : <http://es.upm.fi.dia.oeg/R2RMapping#> . 
 
+:milford rr:tableName "envdata_milford"; morph:pk "DateTime".
 :waveFoISea	   rr:predicateMap [ rr:constant ssn:featureOfInterest ]; 
       		   rr:objectMap    [ rr:constant ssg:Sea ].
 :waveObsProp   rr:predicateMap [ rr:constant ssn:observedProperty ]; 
       		   rr:objectMap    [ rr:constant cd:WaveHeight ].      		   
       		  
 :MilfordWaveHeight a rr:TriplesMap;
-	rr:logicalTable [rr:tableName "envdata_milford"];
+	rr:logicalTable :milford;
 	rr:subjectMap [ rr:template "http://semsorgrid4env.eu/ns#ObservationValue/WaveHeight/CCO/{DateTime}";	
 					 rr:class ssn:ObservationValue; rr:graph ssg:ccometeo.srdf ];
 	rr:predicateObjectMap [ rr:predicateMap [ rr:constant ssn:hasQuantityValue ];
@@ -26,7 +27,7 @@
 
 
 :MilfordWaveResult a rr:TriplesMap;
-	rr:logicalTable [rr:tableName "envdata_milford"];
+	rr:logicalTable :milford;
 	rr:subjectMap [ rr:template "http://semsorgrid4env.eu/ns#Observation/WaveHeight/CCO/Output/{DateTime}";
 				 rr:class ssn:SensorOutput; rr:graph ssg:ccometeo.srdf ];
 	rr:predicateObjectMap [ rr:predicateMap [ rr:constant ssn:hasValue ];
@@ -34,7 +35,7 @@
 .      		   
 
 :MilfordWaveInstant a rr:TriplesMap;
-		rr:logicalTable [rr:tableName "envdata_milford"];
+		rr:logicalTable :milford;
 		rr:subjectMap [ rr:template "http://semsorgrid4env.eu/ns#Observation/WaveHeight/CCO/Instant/{DateTime}";
 							rr:class time:Instant; rr:graph ssg:ccometeo.srdf ];
 		rr:predicateObjectMap [ rr:predicateMap [ rr:constant time:xsdDateTime ];
@@ -44,7 +45,7 @@
 :MilfordWaveObservation   a rr:TriplesMap;
     rr:subjectMap [	rr:template "http://semsorgrid4env.eu/ns#Observation/WaveHeight/CCO/{DateTime}";  
     				 rr:class ssn:Observation; rr:graph ssg:ccometeo.srdf ];
-	rr:logicalTable [rr:tableName "envdata_milford"];
+	rr:logicalTable :milford;
     rr:predicateObjectMap [ rr:predicateMap [ rr:constant ssn:observationResult ]; 
       		   				   rr:objectMap    [ rr:parentTriplesMap :MilfordWaveResult; rr:joinCondition "" ]];
    
@@ -71,7 +72,7 @@
      
 :CCOSeaFOIMap a rr:TriplesMap;
   	rr:subjectMap [rr:class ssn:FeatureOfInterest;  rr:constant ssg:Sea];
-  	rr:logicalTable [rr:tableName ""];
+  	rr:logicalTable [rr:tableName "const"];
  	rr:predicateObjectMap [ rr:predicateMap [rr:constant cd:locatedInRegion];
    							rr:objectMap 	[rr:constant regions:SouthEastEnglandCCO] ];
 .

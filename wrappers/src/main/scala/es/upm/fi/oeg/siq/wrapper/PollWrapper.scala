@@ -4,31 +4,52 @@ import java.util.Calendar
 import java.util.Date
 import scala.Array.canBuildFrom
 import scala.xml.Elem
-import es.emt.wsdl.ServiceGEOSoap12Bindings
 import gsn.beans.DataField
 import gsn.wrappers.AbstractWrapper
 import akka.actor.ReceiveTimeout
 import akka.actor.Actor
 import concurrent.duration._
+import dispatch._
+import akka.actor.ActorSystem
+import com.typesafe.config.ConfigFactory
+import akka.actor.Props
+import gsn.beans.StreamElement
+import scala.compat.Platform
+import org.slf4j.LoggerFactory
 
 class PollWrapper extends AbstractWrapper {
-  
+  val logger=LoggerFactory.getLogger(this.getClass)
   lazy val params=getActiveAddressBean  
+  lazy val datatype=params.getPredicateValue("type")
   lazy val rate=params.getPredicateValue("rate").toLong
   lazy val liveRate=rate
   lazy val dateTimeFormat=params.getPredicateValue("dateTimeFormat")
   lazy val url=params.getPredicateValue("url")
+  lazy val urlparamvals=params.getPredicateValue("urlparams").split(',')
+  lazy val urlparamnames=params.getPredicateValue("urlparamnames").split(',')
+  lazy val urlparams=urlparamnames zip urlparamvals
+  lazy val servicefields=params.getPredicateValue("servicefields").split(',')
   lazy val user=params.getPredicateValue("user")
   lazy val key=params.getPredicateValue("key")
   lazy val systemids=params.getPredicateValue("systemids").split(',')
-  private lazy val fieldNames=params.getPredicateValue("fields").split(',')
+  private lazy val systemnames=params.getPredicateValue("systemnames")//.split(',')
+  lazy val idkeys={
+    if (systemnames==null) (systemids zip systemids).toMap 
+    else (systemids zip systemnames.split(',')).toMap
+  }
+  
+  protected val actorSystem=ActorSystem("wrap",ConfigFactory.load.getConfig("restapiwrapper"))
+
+  private lazy val fieldNames=params.getPredicateValue("fields").split(',')  
   private lazy val types=params.getPredicateValue("types").split(',')
-  private lazy val dataFields=fieldNames.zip(types).map(a=>new DataField(a._1,a._2,a._1))
+  lazy val dataFields=fieldNames.zip(types).map(a=>new DataField(a._1,a._2,a._1))
       
   def postData(systemid:String,ts:Long,o:Observation){
-    //println("post vals "+o.values.mkString(","))
-    //val ser=o.values.asInstanceOf[Array[java.io.Serializable]]
-    postStreamElement(ts,o.values)
+    logger.trace("post vals "+o.serializable.size)
+    //val ser =o.values.asInstanceOf[Array[java.io.Serializable]]
+    postStreamElement(ts,o.serializable)
+    //postStreamElement(new StreamElement(dataFields,o.serializable),ts)
+    
         //Array[java.io.Serializable](systemid,o.id,o.name,o.timestamp,o.bikes,o.free))
     //println("data posted: "+systemid+"."+o)                       
   }
@@ -44,6 +65,7 @@ class PollWrapper extends AbstractWrapper {
     
   override def run{
     systemids.foreach{systemid=>
+
       val sc=new EmtCaller(this,systemid)
       //sc.start
     }
@@ -54,17 +76,17 @@ class PollWrapper extends AbstractWrapper {
   }
 }
 
+@Deprecated()
 class EmtCaller(who:PollWrapper,stationid:String) extends SystemCaller(who,stationid){ 
-  class EmtGeo extends ServiceGEOSoap12Bindings with scalaxb.SoapClients with scalaxb.DispatchHttpClients{}
-  lazy val emtGeo=new EmtGeo().service
   override def pollData={
-    val data=emtGeo.getArriveStop(Some(who.user),
-          Some(who.key),Some(stationid),Some(""),Some(""))
-    if (data.isRight){
-      //val ee=new es.emt.wsdl.GetArriveStopResult
-      val res=data.right.get.getArriveStopResult.get.mixed.head.value.asInstanceOf[Elem]
+      val svc = url("https://servicios.emtmadrid.es:8443/geo/servicegeo.asmx/getArriveStop")
+      .addQueryParameter("idClient","")
+      .addQueryParameter("passKey", "")
+      .addQueryParameter("idStop", stationid)
+      .addQueryParameter("statistics", " ").addQueryParameter("cultureInfo", " ")    
+    val xml = Http(svc OK as.xml.Elem)
       val date=new Date
-      val dats=(res \ "Arrive").map{arr=>    
+      val dats=(xml() \ "Arrive").map{arr=>    
         val data:Array[java.io.Serializable]=Array(stationid, 
                (arr \ "idLine").head.text,
                (arr \ "TimeLeftBus").head.text.toInt,
@@ -72,43 +94,36 @@ class EmtCaller(who:PollWrapper,stationid:String) extends SystemCaller(who,stati
         new Observation(date,data)
       }
       dats
-    }
-    else null  
+    
+      
   }
 }
 
-class Observation(val timestamp:Date,val values:Array[java.io.Serializable])
+class Observation(val timestamp:Date,val values:Seq[Any]){
+  lazy val serializable=values.toArray.map(_.asInstanceOf[java.io.Serializable])
+}
 
 abstract class SystemCaller(who:PollWrapper,systemid:String) extends Actor{
-  //private lazy val client=Client.create
-  //private lazy val webResource=client.resource(who.url+systemid+".json")
-  private val df=new SimpleDateFormat(who.dateTimeFormat)//"yyyy-MM-dd HH:mm:ss.SSS")
-
+  //private val df=new SimpleDateFormat(who.dateTimeFormat)//"yyyy-MM-dd HH:mm:ss.SSS")
   def pollData:Seq[Observation]
   
   def callRest{
-    try{
-      //val s= webResource.get(classOf[String])
-      val obs=pollData//Array("1","3")//new Gson().fromJson(s,classOf[Array[BikeObservation]])
-      obs.foreach{o=>
-        //println(o.timestamp.dropRight(3))
-        val datetime= try o.timestamp//try df.parse(o.timestamp.toString())
-        catch {case e:Exception=>
-          throw new IllegalArgumentException("Illegal data timestamp: "+o+".",e)}
+    try{  
+      val obs=pollData
+      val start=Platform.currentTime
+      var i=0
+      obs.foreach{o=>        
+        val datetime= o.timestamp
         val c=Calendar.getInstance
         c.setTime(datetime)
-        who.postData(systemid,c.getTimeInMillis,o)                           
+        who.postData(systemid,start+i,o)
+        i+=1
       }
     } catch {case e:Exception=>e.printStackTrace}
   }
   
   context.setReceiveTimeout(who.rate millisecond) 
   def receive={
-    //loop{      
-      //reactWithin(who.rate){
-        //case TIMEOUT=>callRest
-         case ReceiveTimeout=>callRest
-      //}
-    //}
+    case ReceiveTimeout=>callRest
   }
 }

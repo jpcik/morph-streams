@@ -18,27 +18,18 @@ import java.util.Calendar
 import es.upm.fi.oeg.morph.common.TimeUnit
 import java.text.SimpleDateFormat
 import es.upm.fi.oeg.morph.stream.query.Modifiers
+import scala.collection.mutable.ArrayBuffer
+import es.upm.fi.oeg.morph.stream.algebra.xpr.BinaryXpr
+import es.upm.fi.oeg.morph.stream.algebra.xpr.ReplaceXpr
+import es.upm.fi.oeg.morph.stream.algebra.xpr.ConstantXpr
+import es.upm.fi.oeg.morph.stream.algebra.xpr.ValueXpr
 
 class GsnQuery(op:AlgebraOp,mods:Array[Modifiers.OutputModifier]) 
   extends SqlQuery(op,mods){   
   
+  val filters=new ArrayBuffer[Filter[Any]]
   val vars:Map[String,Seq[String]]=varMappings(op)
-  //val expressions:Map[String,Xpr]=_
   val algebra:AlgebraOp=op
-  
-  /*
-  override def load(op:AlgebraOp){
-	super.load(op)
-	this.innerQuery = build(op)
-	algebra=op
-	loadModifiers(op)
-	vars=varMappings(op)
-	expressions=varXprs(op)
-  }*/
-/*
-  override def getProjection:Map[String,String]={
-    projectionVars.map(p=>p._1->null)
-  }*/
   
   override def supportsPostProc=false
   
@@ -48,145 +39,60 @@ class GsnQuery(op:AlgebraOp,mods:Array[Modifiers.OutputModifier])
     case _=>Map[String,Seq[String]]()
   }
   
- 
-  
-  //val gconstants = Maps.newHashMap[String,String]
-  //val gstaticConstants = Maps.newHashMap[String, Template]();
-  //val gtemplates =  Maps.newHashMap[String, Template]
-
-	private def loadModifiers(op:AlgebraOp)
-	{
-		if (op == null)
-		{	}
-		else op match{
-		  case root:RootOp=>
-			loadModifiers(root.subOp)
-		
-		  case proj:ProjectionOp=>
-			val extent = proj.getRelation.extentName.toLowerCase();
-			//int pos =0;
-			
-			proj.expressions.entrySet.foreach{entry=>
-	
-				//select += entry.getValue().toString()+ " AS "+entry.getKey();
-				val lowerkey = entry.getKey().toLowerCase();
-				if (entry.getValue().isInstanceOf[OperationXpr])
-				{
-					val opXpr = entry.getValue().asInstanceOf[OperationXpr]
-					if (opXpr.op.equals("postproc")){
-					//	gconstants.put(entry.getKey().toLowerCase(), opXpr.param.toString());
-					}
-					else if (opXpr.op.equals("constant"))
-					{
-					  /*
-						if (!gstaticConstants.containsKey(extent))
-						{
-							val template= new Template(extent);
-							template.addModifier(lowerkey, opXpr.param.toString());
-							gstaticConstants.put(extent, template);
-						}
-						else
-							gstaticConstants.get(extent).addModifier(lowerkey, opXpr.param.toString());
-						//staticConstants .put(lowerkey+extent, opXpr.getParam().toString());
-						 * 
-						 */
-					}
-				}
-				if (entry.getValue().isInstanceOf[VarXpr])
-				{
-					val vari = entry.getValue().asInstanceOf[VarXpr] 
-					/*
-					if (vari.getModifier()!=null)
-					{	
-						if (!gtemplates.containsKey(extent))
-						{
-							val template = new Template(extent);
-							template.addModifier(lowerkey, vari.getModifier());
-							gtemplates.put(extent,template);
-						}
-						else
-							gtemplates.get(extent).addModifier(lowerkey, vari.getModifier());
-					}*/
-				}
-			}
-			loadModifiers(proj.subOp)
-			//yield(proj);
-			//return "(SELECT "+ select+" FROM "+build(proj.getSubOp())+")";
-		
-		case op:WindowOp=>{
-			//OpWindow win = (OpWindow)op;
-			//return win.getExtentName()+ serializeWindowSpec(win.getWindowSpec());
-		}
-		case op:RelationOp=>
-		{
-			//OpRelation rel = (OpRelation)op;
-			//return rel.getExtentName();
-		}
-		//else if (op.getName().equals("join"))
-		case union:MultiUnionOp=>
-			union.children.values.foreach{child=>
-				loadModifiers(child);
-			}
-		
-		case join:InnerJoinOp=>
-			loadModifiers(join.left)
-			loadModifiers(join.right)
-		case _=>
-		{
-			
-			//return "";
-		}
-		
-		}
-	}
-
-  
-  
-  
-
   override def build(op:AlgebraOp):String={
 	if (op == null)	return "";
 	else op match{
 	  case root:RootOp=>return build(root.subOp)
-	  //case union:OpUnion=>return build(union.getLeft)+" UNION  "+build(union.getRight)			
       case proj:ProjectionOp=>
-        //println("proj vars: "+projVars(proj))
         val projvars=proj.getVarMappings.values.flatten.toSet.filterNot(_.equals("timed"))
         "field[0]="+projvars.mkString(",")+"&"+build(proj.subOp)
 	  case win:WindowOp=> 
 	    val dt= Calendar.getInstance()
 	    val from=win.windowSpec.from
 	    val t=TimeUnit.convertToUnit(from,win.windowSpec.fromUnit,TimeUnit.MILLISECOND).toLong
-	    dt.setTimeInMillis(System.currentTimeMillis() -t )
-	    //dt.getFirstDay
+	    dt.setTimeInMillis(System.currentTimeMillis -t )
 	    val df=new SimpleDateFormat("dd/MM/yyyy+HH:mm:ss")
-        
-	    
-	    //throw new NotImplementedException("NYI Window "+df.format(dt.getTime())+"--"+win.windowSpec.fromUnit)
-	    //return win.getExtentName+ serializeWindowSpec(win.getWindowSpec)+ " "+win.getExtentName
-	    "vs[0]="+win.extentName+"&from="+df.format(dt.getTime)+"&gogog="+t
+        "vs[0]="+win.extentName+"&from="+df.format(dt.getTime)+"&gogog="+t
       case rel:RelationOp=> "vs[0]="+rel.extentName
 	  case sel:SelectionOp=>
-		return build(sel.subOp)+ " WHERE "//+serializeExpressions(sel.expressions.toSeq,null)
-	  case join:LeftOuterJoinOp=>throw new NotImplementedException("NYI Left Join")
-	  /*
-	    var select = "SELECT "+projVars(join)+" FROM "+ get(join).mkString(",") 
-		if (!join.conditions.isEmpty)
-			select+=" WHERE "+joinXprs(join).mkString(" AND ")+" "+conditions(join).mkString(" AND ")
-	    select*/
-	  case join:InnerJoinOp=>throw new NotImplementedException("NYI Join")
-	  /*
-		var select = "SELECT "+projVars(join)+//serializeSelect(opLeft,"",true)+ ", "+serializeSelect(opRight,"2",true) +
-				" FROM "+ get(join).mkString(",") //build(opLeft.getSubOp())+","+build(opRight.getSubOp());
-		if (!join.conditions.isEmpty())
-			select+=" WHERE "+joinXprs(join).mkString(" AND ")+" "+conditions(join).mkString(" AND ");
-			
-	  return "("+select+")";*/
-		
+	    filters++=sel.expressions.toSeq.map(e=>getFilter(e))
+	    build(sel.subOp)
 	  case union:MultiUnionOp=>
 		return union.children.values.map(col=>build(col)).mkString(" UNION ")
+	  case join:LeftOuterJoinOp=>throw new NotImplementedException("NYI Left Join")
+	  case join:InnerJoinOp=>throw new NotImplementedException("NYI Join")		
 	  case _=>throw new Exception("Unsupported operator: "+op)
 	}
   }
 
+  def getFilter(e:Xpr):Filter[Any]=e match{
+    case bin:BinaryXpr=>
+      (bin.left,bin.right) match{
+        case (repl:ReplaceXpr,const:ConstantXpr)=>          
+          var str=const.evaluate
+          repl.templateParts.foreach(t=>str=str.replace(t,"&&&"))          
+          new Filter(bin.op,repl.params.map(_.varNames).flatten,str.split("&&&").filterNot(_.length==0))
+        case (v:VarXpr,vl:ValueXpr)=>
+          new Filter(bin.op,Seq(v.varName),Seq(vl))
+        case _=>throw new NotImplementedError("Filter not available: "+bin)
+      }      
+    case _=>throw new NotImplementedError("Filter not available: "+e)
+  }
+
+}
+  
+class Filter[T](val op:String,val fields:Seq[String],val values:Seq[T]){    
+  def index(fnames:Seq[String]):Seq[Int]={
+    val indexes=fields.map(fn=>fnames.indexOf(fn))
+    println("indexes "+indexes)
+    indexes
+  }
+   
+  def filter(tuple:Array[Object],index:Iterator[Int]):Boolean={
+    op match{
+      case "="=> values.map{t=>tuple(index.next).equals(t) }.reduce(_&&_)
+    }
+     
+  }
+  override def toString=op+ " "+values.mkString(",")
 }

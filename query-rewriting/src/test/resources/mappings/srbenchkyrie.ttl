@@ -1,0 +1,63 @@
+@prefix rr: <http://www.w3.org/ns/r2rml#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix ssn: <http://purl.oclc.org/NET/ssnx/ssn#> . 
+@prefix qu: <http://purl.oclc.org/NET/ssnx/qu/qu#> . 
+@prefix unit: <http://purl.oclc.org/NET/ssnx/qu/unit#> . 
+@prefix cf-property: <http://purl.oclc.org/NET/ssnx/cf/cf-property#> . 
+@prefix dul: <http://www.loa-cnr.it/ontologies/DUL.owl#> .
+@prefix time: <http://www.w3.org/2006/time#> .
+@prefix morph: <http://oeg-upm.net/ns/morph#> .
+@prefix srbench: <http://cwi.nl/SRBench/> .
+@prefix oeg-sen: <http://oeg-upm.net/onto/sensordemo/> .
+@prefix : <http://es.upm.fi.dia.oeg/R2RMapping#> . 
+
+:wundtable rr:tableName "wunderground"; morph:pk "stationId,observationTime".
+:joinstation rr:parent "stationId";rr:child "stationId".
+
+:tempObsValue a rr:TriplesMap; rr:logicalTable :wundtable;
+  rr:subjectMap   [ rr:template "http://meteo.us/{stationId}/temperature/observationvalue/{observationTime}"; 
+                    rr:class ssn:ObservationValue; rr:graph srbench:observations ];
+  rr:predicateObjectMap [ rr:predicate qu:numericalValue; rr:objectMap	[ rr:column "temperature" ] ];     		   		  
+  rr:predicateObjectMap [ rr:predicate qu:unit; rr:object unit:degreeCelsius  ];     		   		  
+.
+
+:tempObsResult a rr:TriplesMap; rr:logicalTable :wundtable;
+  rr:subjectMap   [ rr:template "http://meteo.us/{stationId}/temperature/observationresult/{observationTime}"; 
+                    rr:class ssn:SensorOutput; rr:graph srbench:observations ];
+  rr:predicateObjectMap [ rr:predicate ssn:hasValue; 
+                          rr:objectMap	[ rr:parentTriplesMap :tempObsValue; rr:joinCondition :joinstation ] ];     		   		  
+.
+
+:tempObs a rr:TriplesMap; rr:logicalTable :wundtable;
+  rr:subjectMap   [ rr:template "http://meteo.us/{stationId}/temperature/observation/{observationTime}"; 
+                    rr:class oeg-sen:TemperatureObservation; rr:graph srbench:observations ];
+  rr:predicateObjectMap [ rr:predicate ssn:observationResult;
+                          rr:objectMap [ rr:parentTriplesMap :tempObsResult; rr:joinCondition :joinstation ]];
+  rr:predicateObjectMap [ rr:predicate ssn:observedBy; rr:objectMap [ rr:template "http://meteo.us/sensor/id/{stationId}_sens"] ];
+  rr:predicateObjectMap [ rr:predicate ssn:observedProperty; rr:object cf-property:air_temperature ];
+.   
+
+:humObsValue a rr:TriplesMap; rr:logicalTable :wundtable;
+  rr:subjectMap   [ rr:template "http://meteo.us/{stationId}/humidity/observationvalue/{observationTime}"; 
+                    rr:class ssn:ObservationValue; rr:graph srbench:observations ];
+  rr:predicateObjectMap [ rr:predicate qu:numericalValue; rr:objectMap	[ rr:column "relativeHumidity" ] ];     		   		  
+  rr:predicateObjectMap [ rr:predicate qu:unit; rr:object unit:percent ];     		   		  
+. 
+
+:humObsResult a rr:TriplesMap; rr:logicalTable :wundtable;
+  rr:subjectMap   [ rr:template "http://meteo.us/{stationId}/humidity/observationresult/{observationTime}"; 
+                    rr:class ssn:SensorOutput; rr:graph srbench:observations ];
+  rr:predicateObjectMap [ rr:predicate ssn:hasValue; 
+                          rr:objectMap	[ rr:parentTriplesMap :humObsValue; rr:joinCondition :joinstation ] ];     		   		  
+.
+
+:humObs a rr:TriplesMap; rr:logicalTable :wundtable;
+  rr:subjectMap   [ rr:template "http://meteo.us/{stationId}/humidity/observation/{observationTime}"; 
+                    rr:class oeg-sen:HumidityObservation; rr:graph srbench:observations ];
+  rr:predicateObjectMap [ rr:predicate ssn:observationResult;
+                          rr:objectMap [ rr:parentTriplesMap :humObsResult; rr:joinCondition :joinstation ]];
+  rr:predicateObjectMap [ rr:predicate ssn:observedBy; rr:objectMap [ rr:template "http://meteo.us/sensor/id/{stationId}_sens"] ];
+  rr:predicateObjectMap [ rr:predicate ssn:observedProperty; rr:object cf-property:relative_humidity ];
+.   
+ 

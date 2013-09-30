@@ -39,6 +39,4 @@ object HelloBuild extends Build {
   lazy val gsn = Project(id = "adapter-gsn",
                               base = file("adapter-gsn"),settings = buildSettings ++ scalaOnly) dependsOn(queryrewriting)
 
-  lazy val streamreasoning = Project(id = "stream-reasoning",
-                             base = file("stream-reasoning"),settings= buildSettings ++ scalaOnly) dependsOn(queryrewriting)
 }

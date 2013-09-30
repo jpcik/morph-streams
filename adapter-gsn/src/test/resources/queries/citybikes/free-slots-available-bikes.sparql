@@ -1,7 +1,7 @@
 PREFIX ssn: <http://purl.oclc.org/NET/ssnx/ssn#> 
 PREFIX qudt: <http://data.nasa.gov/qudt/owl/qudt#> 
 PREFIX bicy: <http://citybikes.linkeddata.es/ontology#>  
-SELECT ?avbikes ?freeslots ?fr ?av  
+SELECT ?avbikes ?freeslots ?fr ?av   
 WHERE {
   ?output bicy:hasAvailableBikesValue ?av.
   ?output bicy:hasFreeSlotsValue ?fr.

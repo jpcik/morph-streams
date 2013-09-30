@@ -1,0 +1,19 @@
+PREFIX ssn: <http://purl.oclc.org/NET/ssnx/ssn#> 
+PREFIX qudt: <http://data.nasa.gov/qudt/owl/qudt#> 
+PREFIX bicy: <http://citybikes.linkeddata.es/ontology#>  
+PREFIX time: <http://www.w3.org/2006/time#>
+
+SELECT ?avbikes ?freeslots ?obs ?av  ?tstamp 
+FROM NAMED STREAM <http://citybikes.linkeddata.es/ontology#CityBikes.srdf> [NOW - 300 S]
+WHERE {
+  ?obs a bicy:FreeBikesObservation.
+  ?obs bicy:inStation <http://citybikes.linkeddata.es/id/bikesystem/bicileon/station/1>.
+#  ?obs ssn:observedBy ?dev.
+  ?obs ssn:observationResult ?output.  
+  ?output bicy:hasAvailableBikesValue ?av.
+  ?av qudt:numericValue ?avbikes.
+   ?output bicy:hasFreeSlotsValue ?fs.
+  ?fs qudt:numericValue ?freeslots.
+    ?obs  ssn:observationResultTime ?i .
+  ?i time:inXSDDateTime ?tstamp.
+}

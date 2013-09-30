@@ -40,7 +40,7 @@ class SqlQuery(op:AlgebraOp, val outputMods:Array[Modifiers.OutputModifier])
   val unions=new ArrayBuffer[SqlQuery]
   protected var distinct:Boolean=false
 
-  protected val innerQuery:String=build(op)
+  protected lazy val innerQuery:String=build(op)
   lazy val queryExpressions=varXprs(op)
   lazy val rootVarNames=rootVars(op)
   
@@ -81,7 +81,7 @@ class SqlQuery(op:AlgebraOp, val outputMods:Array[Modifiers.OutputModifier])
           substXpr(varXpr,getAlias(attRelation(op,varXpr.varName)))      
       case bin:BinaryXpr=>BinaryXpr(bin.op,condExpr(bin.left,op),condExpr(bin.right,op))
       case fun:AggXpr=>substXpr(new AggXpr(fun.aggOp,vars(fun.varName).toString),getAlias(attRelation(op,fun.varName)))
-      //case rep:ReplaceXpr=>substReplaceXpr(rep,alias)
+      case rep:ReplaceXpr=>substXpr(rep,getAlias(attRelation(op,rep.varNames.head)))
     
       case _=>xpr
     }
@@ -179,7 +179,14 @@ class SqlQuery(op:AlgebraOp, val outputMods:Array[Modifiers.OutputModifier])
   }
   	  
 	private def unAliasXpr(join:BinaryOp,xpr:BinaryXpr):String=
-	  condExpr(xpr.left,join.left)+xpr.op+unAliasXpr(join.right,xpr.right)
+	  //condExpr(xpr.left,join.left)+xpr.op+unAliasXpr(join.right,xpr.right) //difference condExpr and unalias?
+	  (xpr.op,xpr.left,xpr.right) match{
+	  case ("=",l:VarXpr,r:VarXpr) =>
+	    unAliasXpr(join.left,xpr.left)+xpr.op+unAliasXpr(join.right,xpr.right)
+	  case _  =>	    	    
+	    condExpr(xpr.left,join.left)+xpr.op+condExpr(xpr.right,join.right)
+	}
+	  
 
 	private def unAliasXpr(op:AlgebraOp,xpr:Xpr):String=(op,xpr) match {
 	  case (join:BinaryOp,bi:BinaryXpr)=>unAliasXpr(join,bi)

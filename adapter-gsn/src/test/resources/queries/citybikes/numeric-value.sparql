@@ -5,6 +5,7 @@ SELECT ?avbikes ?av
 WHERE {
   ?output bicy:hasAvailableBikesValue ?av.
   ?av qudt:numericValue ?avbikes.
+    FILTER(?avbikes=5)  
 }
 
 

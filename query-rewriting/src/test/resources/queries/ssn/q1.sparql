@@ -5,4 +5,5 @@ SELECT DISTINCT ?observation
 FROM NAMED STREAM <http://cwi.nl/SRBench/observations> [NOW - 1 HOURS]
 WHERE {
   ?observation ssn:observedBy ?sensor;
+  #?observation a ssn:Observation.
 }

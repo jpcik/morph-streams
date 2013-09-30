@@ -13,8 +13,10 @@
 @prefix morph: <http://oeg-upm.net/ns/morph#> .
 @prefix : <http://es.upm.fi.dia.oeg/R2RMapping#> .
 
+:citybikeTable rr:tableName "citybikes"; morph:pk "systemid,id,timed".
+
 :device a rr:TriplesMap;
-  rr:logicalTable [rr:tableName "citybikes"];
+  rr:logicalTable :citybikeTable;
   rr:subjectMap [rr:template "http://citybikes.linkeddata.es/id/bikesystem/{systemid}/sensingdevice/{id}"; 
                  rr:class bicy:BikeStationSensingDevice; rr:graph bicy:CityBikes.srdf];
   rr:predicateObjectMap [rr:predicate dcterms:identifier;rr:objectMap [rr:column "id"]];
@@ -22,21 +24,21 @@
 .
 
 :freeSlotsValue a rr:TriplesMap;
-  rr:logicalTable [rr:tableName "citybikes"; morph:pk "systemid,id,timed"];
+  rr:logicalTable :citybikeTable;
   rr:subjectMap [ rr:template "http://citybikes.linkeddata.es/id/bikessystem/{systemid}/sensingdevice/{id}/freeslotsvalue/{timed}";	
 		  	      rr:class bicy:FreeSlotsValue; rr:graph bicy:CityBikes.srdf ];
   rr:predicateObjectMap [ rr:predicate qudt:numericValue;rr:objectMap [rr:column "free"]];     		   
 .		   
-
+                                       
 :availableBikesValue a rr:TriplesMap;
-  rr:logicalTable [rr:tableName "citybikes"; morph:pk "systemid,id,timed"];
+  rr:logicalTable :citybikeTable;
   rr:subjectMap [ rr:template "http://citybikes.linkeddata.es/id/bikessystem/{systemid}/sensingdevice/{id}/availablebikesvalue/{timed}";	
 	   		      rr:class bicy:AvailableBikesValue; rr:graph bicy:CityBikes.srdf ];
   rr:predicateObjectMap [ rr:predicate qudt:numericValue;rr:objectMap [rr:column "bikes"]];     		   
 .		   
       		        	      		       	      		        		        
 :bikesOutput a rr:TriplesMap;
-  rr:logicalTable [rr:tableName "citybikes"; morph:pk "systemid,id,timed"];
+  rr:logicalTable :citybikeTable;
   rr:subjectMap [ rr:template "http://citybikes.linkeddata.es/id/bikesystem/{systemid}/sensingdevice/{id}/sensoroutput/{timed}";
 				  rr:class bicy:BikeStationSensorOutput; rr:graph bicy:CityBikes.srdf ];
   rr:predicateObjectMap [ rr:predicate bicy:hasFreeSlotsValue;
@@ -46,20 +48,22 @@
 .      		   
 
 :bikesResultTime a rr:TriplesMap;	
-  rr:logicalTable [rr:tableName "citybikes"; morph:pk "systemid,id,timed"];
+  rr:logicalTable :citybikeTable;
   rr:subjectMap [ rr:template "http://citybikes.linkeddata.es/id/bikesystem/{systemid}/sensingdevice/{id}/bikesresulttime/{timed}";
 	  			  rr:class time:Instant; rr:graph bicy:CityBikes.srdf ];
   rr:predicateObjectMap [ rr:predicate time:inXSDDateTime;rr:objectMap [ rr:column "timestamp" ] ];     		   
 .		   
      
 :bikesObservation a rr:TriplesMap;
-  rr:logicalTable [rr:tableName "citybikes"; morph:pk "systemid,id,timed"];
+  rr:logicalTable :citybikeTable;
   rr:subjectMap   [rr:template "http://citybikes.linkeddata.es/bikesystem/{systemid}/sensingdevice/{id}/observation/{timed}";  
     			   rr:class bicy:FreeBikesObservation; rr:graph bicy:CityBikes.srdf ];
   rr:predicateObjectMap [rr:predicateMap [ rr:constant ssn:observedProperty ]; 
       		             rr:objectMap    [ rr:constant bicy:free-slots ]];      		   
   rr:predicateObjectMap [rr:predicateMap [ rr:constant ssn:observedBy ];
     					 rr:objectMap    [ rr:parentTriplesMap :device; rr:joinCondition "" ]];
+  rr:predicateObjectMap [rr:predicateMap [ rr:constant bicy:inStation ];
+    					 rr:objectMap    [ rr:template "http://citybikes.linkeddata.es/id/bikesystem/{systemid}/station/{id}"]];
   rr:predicateObjectMap [rr:predicateMap [ rr:constant ssn:observationResult ]; 
       		             rr:objectMap    [ rr:parentTriplesMap :bikesOutput; rr:joinCondition "" ]];
   rr:predicateObjectMap [rr:predicateMap [ rr:constant ssn:observationResultTime ];

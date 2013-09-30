@@ -4,7 +4,7 @@ import java.util.Properties
 import es.upm.fi.oeg.sparqlstream.SparqlStream
 import es.upm.fi.oeg.sparqlstream.StreamQuery
 import org.slf4j.LoggerFactory
-import es.upm.fi.oeg.morph.kyrie.Kyrie
+import es.upm.fi.oeg.morph.stream.rewriting.Kyrie
 import com.hp.hpl.jena.sparql.syntax.ElementGroup
 import collection.JavaConversions._
 import com.hp.hpl.jena.sparql.syntax.Element
@@ -24,6 +24,7 @@ import es.upm.fi.oeg.morph.voc.RDF
 import com.hp.hpl.jena.rdf.model.Resource
 import com.hp.hpl.jena.graph.Node_URI
 import com.hp.hpl.jena.rdf.model.ResourceFactory
+import es.upm.fi.oeg.morph.stream.rewriting.SparqlClausifier
 
 class ExpansionQueryRewriting(props:Properties,mapping:String) 
   extends QueryRewriting(props,mapping){
@@ -31,7 +32,7 @@ class ExpansionQueryRewriting(props:Properties,mapping:String)
   private val tf=new TermFactory
   
   override def translate(query:StreamQuery)={
-    val k=new Kyrie("src/test/resources/ontologies/sensordemo.owl")
+    val k=new Kyrie(props("morph.ontology"))
     //val mappedVars=vars(query.getQueryPattern).toSet.zipWithIndex.toMap
     //val inverseVars=mappedVars.map(m=>"?"+m._2.toString->m._1)
     //val mappedVocab=vocab(query.getQueryPattern).map(v=>v.getLocalName->v).toMap
@@ -47,7 +48,11 @@ class ExpansionQueryRewriting(props:Properties,mapping:String)
     val fclauses=k.rewriteDatalogClauses(Seq(clauseQuery))
     clausifier.sparqlizeUCQ(fclauses)
  
-    super.translate(query)
+    logger.debug("Expanded query: "+query.toString)
+    val reordered=QueryReordering.reorder(query)
+        logger.debug("reordered query: "+reordered.toString)
+
+    super.translate(reordered)
   }
   
   /*

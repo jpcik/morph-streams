@@ -1,4 +1,5 @@
 @prefix rr: <http://www.w3.org/ns/r2rml#> .
+@prefix morph: <http://oeg-upm.net/ns/morph#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix ssg: <http://semsorgrid4env.eu/ns#> .
 @prefix dept: <http://www.example.com/dept#> .
@@ -16,7 +17,7 @@
       		   rr:objectMap    [ rr:constant ssg:WaveHeight ].      		   
       		   
 :MilfordWaveObservation   a rr:TriplesMap;
-    rr:logicalTable [rr:sqlQuery "SELECT Hs,timestamp, CONCAT('http://ssg4env/',DateTime) AS uri FROM envdata_milford"];
+    rr:logicalTable [rr:sqlQuery "SELECT Hs,timestamp, CONCAT('http://ssg4env/',DateTime) AS uri FROM envdata_milford"; morph:pk "DateTime"];
     rr:subjectMap [ rr:column "uri";  rr:class ssg:Observation; rr:graph ssg:ccometeo.srdf ];
  # rr:tableName "envdata_milford";
     rr:predicateObjectMap :waveObsResult;
@@ -29,8 +30,8 @@
 
  
  :FolkestoneWaveObservation   a rr:TriplesMap;
-    rr:subjectMap [ rr:column "envdata_folkestone.DateTime";  rr:class ssg:Observation; rr:graph ssg:ccometeo.srdf ];
-	rr:logicalTable [rr:tableName "envdata_folkestone"];
+    rr:subjectMap [ rr:column "DateTime";  rr:class ssg:Observation; rr:graph ssg:ccometeo.srdf ];
+	rr:logicalTable [rr:tableName "envdata_folkestone" ; morph:pk "DateTime"];
     rr:predicateObjectMap :waveObsResult;
     rr:predicateObjectMap :waveObsTime;
     rr:predicateObjectMap :waveFoISea;
@@ -39,8 +40,8 @@
  
 
  :HernebayWaveObservation   a rr:TriplesMap;
-    rr:subjectMap [ rr:column "envdata_hernebay.DateTime";  rr:class ssg:Observation; rr:graph ssg:ccometeo.srdf ];
-	rr:logicalTable [rr:tableName "envdata_hernebay"];
+    rr:subjectMap [ rr:column "DateTime";  rr:class ssg:Observation; rr:graph ssg:ccometeo.srdf ];
+	rr:logicalTable [rr:tableName "envdata_hernebay"; morph:pk "DateTime"];
     rr:predicateObjectMap :waveObsResult;
     rr:predicateObjectMap :waveObsTime;
     rr:predicateObjectMap :waveFoISea;

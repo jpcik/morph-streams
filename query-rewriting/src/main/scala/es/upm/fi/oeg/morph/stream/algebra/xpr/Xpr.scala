@@ -65,6 +65,12 @@ class ReplaceXpr(val template:String,val vars:Seq[FunctionXpr])
     split.foreach(v=>res=res.replace("{"+v._1+"}",v._2.evaluate(values).toString))
     res
   }
+  val templateParts={
+    var reptemplate=template
+    split.foreach(s=>reptemplate=reptemplate.replace("{"+s._1+"}","&&&"))
+    reptemplate.split("&&&")
+  }
+  
 }
 
 class PercentEncodeXpr(val vari:VarXpr) extends FunctionXpr("pencode",Seq(vari)){
@@ -99,7 +105,18 @@ object XprUtils{
   def canbeEqual(x1:Xpr,x2:Xpr)= (x1,x2) match {
     case (rep1:ReplaceXpr,rep2:ReplaceXpr)=>
       R2rmlUtils.removeTemplateVars(rep1.template).equals(R2rmlUtils.removeTemplateVars(rep2.template))
+    //case (rep:ReplaceXpr,const:ConstantXpr)=>
+    case (c1:ConstantXpr,c2:ConstantXpr) => c1.evaluate == c2.evaluate        
     case (var1:VarXpr,var2:VarXpr)=> true
     case _=>true
   }
+  
+  def simplifyCompare(repl:ReplaceXpr,xpr:Xpr)= xpr match {
+    case const:ConstantXpr=>     
+      const.evaluate
+      repl
+    case _ => throw new NotImplementedError("Xpr simplify compre not implemented "+xpr)
+  }
+  
+  
 }

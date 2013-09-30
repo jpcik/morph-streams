@@ -25,6 +25,8 @@ import es.upm.fi.oeg.morph.stream.algebra.GroupOp
 import es.upm.fi.oeg.morph.stream.algebra.xpr.AggXpr
 import org.slf4j.LoggerFactory
 import es.upm.fi.oeg.morph.stream.algebra.xpr.Xpr
+import scala.compat.Platform
+import scala.util.Random
 
 class QueryOptimizer{
   private val logger= LoggerFactory.getLogger(this.getClass)
@@ -64,10 +66,17 @@ class QueryOptimizer{
   }
   
   def staticOptimize(union:MultiUnionOp):AlgebraOp={
-	logger.trace("optimize: "+union.toString)			
+	logger.trace("optimize union: "+union.toString)		
+	if (logger.isTraceEnabled)
+	  union.display
 	val newChildren=union.children.values.map(op=>staticOptimize(op)).filter(_!=null).zipWithIndex
 	val newUnion=new MultiUnionOp(newChildren.map(c=>c._1.id+c._2->c._1).toMap)
-	newUnion.simplify
+	val u=newUnion.simplify
+	if (logger.isTraceEnabled){
+	  logger.trace("after union optim")
+	  u.display
+	}
+	u
   }
 	
   def optimizeLeftJoin(join:LeftOuterJoinOp):AlgebraOp={
@@ -87,8 +96,8 @@ class QueryOptimizer{
   def pushDownJoin(join:InnerJoinOp):AlgebraOp={
     (join.left,join.right) match{
       case (op1:ProjectionOp,op2:ProjectionOp)=>
-        logger.debug("push down join "+ join.conditions.mkString("--")+" ")
-        logger.debug(join.hasEqualConditions+ join.isCompatible.toString+op1.getRelation)
+        logger.trace("push down join "+ join.conditions.mkString("--")+" ")
+        logger.trace(join.hasEqualConditions+ join.isCompatible.toString+op1.getRelation)
         if (join.hasEqualConditions && join.isCompatible && 
             op1.getRelation.extentName.equals(op2.getRelation.extentName) &&
             //op1.subOp.isInstanceOf[RelationOp] && op2.subOp.isInstanceOf[RelationOp] &&
@@ -105,14 +114,18 @@ class QueryOptimizer{
         MultiUnionOp(op2.children.map(c=>c._1->optimizeJoin(new InnerJoinOp(c._2,op1))))
 
       case (op1:AlgebraOp,op2:JoinOp)=>
+        
         val optim=optimizeJoin(new InnerJoinOp(op1,op2.left))
-        if (optim.isInstanceOf[JoinOp]) join
-        else optimizeJoin(new InnerJoinOp(optim,op2.right))
-      
+        val optim2=optimizeJoin(new InnerJoinOp(op1,op2.right))
+        if (!optim.isInstanceOf[JoinOp]) optimizeJoin(new InnerJoinOp(optim,op2.right))
+        else if (!optim2.isInstanceOf[JoinOp]) optimizeJoin(new InnerJoinOp(optim2,op2.left))
+        else join
       case (op1:JoinOp,op2:AlgebraOp)=>
         val optim=optimizeJoin(new InnerJoinOp(op2,op1.left))
-        if (optim.isInstanceOf[JoinOp]) join
-        else optimizeJoin(new InnerJoinOp(optim,op1.right))
+        val optim2=optimizeJoin(new InnerJoinOp(op2,op1.right))
+        if (!optim.isInstanceOf[JoinOp]) optimizeJoin(new InnerJoinOp(optim,op1.right))
+        else if (!optim2.isInstanceOf[JoinOp]) optimizeJoin(new InnerJoinOp(optim2,op1.left))
+        else join
       case _=>join
     }
   }
@@ -148,10 +161,10 @@ class QueryOptimizer{
   }*/
   
   def optimizeJoin(join:InnerJoinOp):AlgebraOp={
-    
+    //join.display
     if (join.left == null || join.right == null)
 	  return null  //join with empty relations is empty
-	if (join.conditions.isEmpty){
+	if (join.conditions.isEmpty && false){
 	  logger.debug("Cross product")
 	  return join
 	}		
@@ -189,13 +202,20 @@ class QueryOptimizer{
 		//should simplify here!!!!
 		new ProjectionOp(proj.expressions,newBin,proj.distinct)
 	  case union:MultiUnionOp=>	
+	    println("befooooore ")
+	    
+	    union.display
 		val newChildren = 
 		  union.children.entrySet.map{col=>
-				  val copy= new ProjectionOp(proj.expressions, col.getValue,proj.distinct)
-				  val newOp=staticOptimize(copy)
-				  col.getKey->newOp
-				}.toMap
-		new MultiUnionOp(newChildren).simplify
+		    println(col.getKey())
+		    col.getKey+Random.nextDouble->staticOptimize(new ProjectionOp(proj.expressions, col.getValue,proj.distinct))
+		  }.toMap
+		  println(newChildren.size)
+		val mu=new MultiUnionOp(newChildren)//.simplify
+		println("pibibi")
+		mu.display
+		mu
+		//throw new Exception("got here")
 	  case group:GroupOp=>
 		val newExpr=proj.expressions.map{e=>
 		  if (group.aggs.contains(e._1)) 

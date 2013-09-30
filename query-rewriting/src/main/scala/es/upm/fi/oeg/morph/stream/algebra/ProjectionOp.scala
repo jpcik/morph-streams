@@ -60,6 +60,7 @@ class ProjectionOp(val expressions:Map[String,Xpr], subOp:AlgebraOp, val distinc
   }
 
   def merge(proj:ProjectionOp,xprs:Seq[Xpr]):AlgebraOp={
+    throw new Exception("this should be erased")
 	logger.debug("Merging projection: "+this +" and "+proj)
 	xprs.foreach{xpr=>
 	  val bixpr = xpr.asInstanceOf[BinaryXpr]

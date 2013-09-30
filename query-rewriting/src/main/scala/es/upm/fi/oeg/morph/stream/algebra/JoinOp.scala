@@ -26,7 +26,7 @@ abstract class JoinOp(opname:String,l:AlgebraOp,r:AlgebraOp) extends BinaryOp(nu
     
   override def toString:String={
     val cond=conditions.map(x=>x.toString).mkString(" ")
-	return super.toString+" ("+cond+")"
+	return name+" ("+cond+")"
   }
     
   def hasEqualConditions:Boolean={
@@ -39,7 +39,7 @@ abstract class JoinOp(opname:String,l:AlgebraOp,r:AlgebraOp) extends BinaryOp(nu
   def isCompatible=(left,right) match{
     case (p1:ProjectionOp,p2:ProjectionOp)=>
       val varnames=conditions.map(c=>c.varNames).flatten
-      logger.debug("compatible: "+varnames)
+      logger.trace("compatible: "+varnames)
       
       varnames.forall{v=>
         //println(p1.expressions(v));  
@@ -56,7 +56,8 @@ abstract class JoinOp(opname:String,l:AlgebraOp,r:AlgebraOp) extends BinaryOp(nu
           cond.varNames.map(v=>varMaps(v)).flatten
         }.flatten.toSet
         println("condition vars "+condVars+ "--"+pks+"--"+(pks==condVars))
-        pks==condVars
+        condVars.containsAll(pks)
+        //pks==condVars
         //true
       case _ => false
     }

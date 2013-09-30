@@ -11,7 +11,7 @@ class MultiUnionOp(childrenOps:Map[String,AlgebraOp])
 
   private val logger= LoggerFactory.getLogger(this.getClass)
   override val name="multiunion"
-  val nodups=childrenOps.filter(_._2!=null).map(c=>c._2.id->c._2).toMap
+  private val nodups=childrenOps//.filter(_._2!=null).map(c=>c._2.id->c._2).toMap
   val children=nodups.filter(_._2!=null)
   
   override val id={
@@ -35,7 +35,7 @@ class MultiUnionOp(childrenOps:Map[String,AlgebraOp])
   private def tab(level:Int)=(0 until level).map(_=>"\t").mkString  
 	
   override def display(level:Int)	{
-	logger.warn(tab(level)+name+" "+id+" ")//+index.keySet.mkString)
+	logger.warn(tab(level)+name)//+" "+id+" ")//+index.keySet.mkString)
 	children.values.take(30).foreach(op=>op.display(level+1))
   }
 
@@ -69,8 +69,8 @@ class MultiUnionOp(childrenOps:Map[String,AlgebraOp])
   }
   
   def simplify={
-    if (logger.isDebugEnabled)
-      this.display
+    //if (logger.isDebugEnabled)
+      //this.display
     if (children.isEmpty) null
     else if (children.size==1) children.head._2
     else if (children.exists(c=>c._2.isInstanceOf[MultiUnionOp]))

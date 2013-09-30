@@ -15,13 +15,14 @@ import java.util.Calendar
 import es.upm.fi.oeg.morph.stream.evaluate.QueryEvaluator
 import org.junit.Ignore
 import org.slf4j.LoggerFactory
+import es.upm.fi.oeg.siq.sparql.SparqlResults
+import es.upm.fi.oeg.morph.stream.evaluate.EvaluatorUtils
 
 class CityBikesQueryTest extends JUnitSuite with ShouldMatchersForJUnit with Checkers {
-  //PropertyConfigurator.configure(getClass.getClassLoader().getResource("config/log4j.properties"));
   private val df=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS")
   private val logger= LoggerFactory.getLogger(this.getClass)
   val mappingUri=new URI("mappings/citybikes.ttl")
-  val gsn=new QueryEvaluator(null)
+  val gsn=new QueryEvaluator("gsn")
   
   @Before def initialize() {}
  
@@ -52,7 +53,8 @@ class CityBikesQueryTest extends JUnitSuite with ShouldMatchersForJUnit with Che
   @Test def testFreeBikesAvSlots() {     
     val query = loadQuery("queries/citybikes/free-slots-available-bikes.sparql")
     logger.info(query)        
-    gsn.executeQuery(query,mappingUri)
+    val sp=gsn.executeQuery(query,mappingUri).asInstanceOf[SparqlResults]
+    logger.debug(EvaluatorUtils.serialize(sp))
   }
 
   @Test def testAvailableBikeObservations() {     
@@ -61,6 +63,14 @@ class CityBikesQueryTest extends JUnitSuite with ShouldMatchersForJUnit with Che
     gsn.executeQuery(query,mappingUri)
   }
 
+  @Test def testAvailableBikeOnseStation() {     
+    val query = loadQuery("queries/citybikes/availablebike-onestation.sparql")
+    logger.info(query)        
+    val sp=gsn.executeQuery(query,mappingUri).asInstanceOf[SparqlResults]
+    logger.debug(EvaluatorUtils.serialize(sp))
+  }
+  
+  
   @Test def testLatestAvailableBikeObservations() {     
     val query = loadQuery("queries/citybikes/latest-availablebike-observations.sparql")
     logger.info(query)        
