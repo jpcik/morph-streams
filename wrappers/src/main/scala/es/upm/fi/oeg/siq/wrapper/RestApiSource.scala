@@ -46,7 +46,7 @@ class RestApiSource (who:PollWrapper,id:String) extends SystemCaller(who,id){
      xml.child.map{e=>
       var i=0
       who.servicefields.map{key=>
-        val str= (e \ key)
+        val str= (e \ key).head
         i+=1
         fieldTypes(i)(str.text)         
        }
