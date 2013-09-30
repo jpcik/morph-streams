@@ -30,6 +30,7 @@ resolvers ++= Seq(
   DefaultMavenRepository,
   "Local Maven Repository" at "file://"+Path.userHome.absolutePath+"/.m2/repository",
   "aldebaran-releases" at "http://aldebaran.dia.fi.upm.es/artifactory/sstreams-releases-local",
+  "aldebaran-external" at "http://aldebaran.dia.fi.upm.es/artifactory/sstreams-external-libs-local",
   "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/",
   "sonatype-public" at "https://oss.sonatype.org/​content/repositories/public"  
 )
