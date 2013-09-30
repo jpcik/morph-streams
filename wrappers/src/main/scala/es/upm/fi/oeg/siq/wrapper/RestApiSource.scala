@@ -43,7 +43,7 @@ class RestApiSource (who:PollWrapper,id:String) extends SystemCaller(who,id){
     }
     
    def extract(xml:Elem) ={
-     xml.child.map{e=>
+     xml.child.filter(_.isInstanceOf[Elem]).map{e=>
       var i=0
       who.servicefields.map{key=>
         val str= (e \ key).head
