@@ -22,7 +22,7 @@ class GsnAdapter(systemId:String="gsn") extends QueryEvaluator(systemId) {
   private val logger=LoggerFactory.getLogger(this.getClass)
   private val timeAttribute="timed"  
   //private val c = Client.create
-  private val config=ConfigFactory.load.getConfig("morph.streams.adapter."+systemId)
+  private val config=ConfigFactory.load.getConfig("morph.streams."+systemId+".adapter")
 
   val gsnUrl=config.getString("endpoint")
   
@@ -34,18 +34,7 @@ class GsnAdapter(systemId:String="gsn") extends QueryEvaluator(systemId) {
     val res = Http(svc OK as.String)     
     if (logger.isTraceEnabled)
       logger.debug(res())
-    /*
-    val webResource = c.resource(gsnUrl+"/multidata?"+query.serializeQuery)
-    val queryParams = new MultivaluedMapImpl
-    //queryParams.add("download_mode","inline")    
-    queryParams.add("nb","SPECIFIED")
-    queryParams.add("nb_value","10000")
-
-    val wr = webResource.queryParams(queryParams)
-	logger.debug(wr.getURI.toString)
-	val res=try wr.get(classOf[String])
-	catch {case e:UniformInterfaceException=> throw e}*/
-
+    
     val it= Source.fromString(res()).getLines
     val (vsname,q)=(it.next,it.next)
     val fields=it.next

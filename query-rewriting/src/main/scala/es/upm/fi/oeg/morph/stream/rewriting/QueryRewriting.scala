@@ -90,8 +90,9 @@ import com.typesafe.config.ConfigFactory
 import es.upm.fi.oeg.sparqlstream.StreamAlgebra
 import es.upm.fi.oeg.sparqlstream.OpStreamGraph
 import com.typesafe.config.ConfigException.Missing
+import java.io.InputStream
 
-class QueryRewriting(mapping:String,systemId:String="default") {
+class QueryRewriting(reader:R2rmlReader,systemId:String="default") {
   private val logger= LoggerFactory.getLogger(this.getClass)
   val config=ConfigFactory.load.getConfig("morph.streams."+systemId)
 
@@ -99,8 +100,10 @@ class QueryRewriting(mapping:String,systemId:String="default") {
   val reasoning=try config.getBoolean("rewriter.reasoning") catch {case e:Missing=>false}
   val queryClass=try config.getString("adapter.query") catch {case e:Missing=>classOf[SqlQuery].getName}
   
-  logger.debug("mapping is: "+mapping)
-  private val reader = R2rmlReader(mapping)
+  def this(mappingFile:String,systemId:String)=this(R2rmlReader(mappingFile),systemId)
+  def this(mapping:InputStream,systemId:String)=this(new R2rmlReader(mapping),systemId)
+  //logger.debug("mapping is: "+mapping)
+  //private val reader = R2rmlReader(mapping)
   private var aliasCount=0
  
   private def getAlias={

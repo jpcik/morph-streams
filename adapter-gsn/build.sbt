@@ -3,14 +3,12 @@ name := "adapter-gsn"
 
 organization := "es.upm.fi.oeg.morph.streams"
 
-version := "1.0.5"
+version := "1.0.6"
 
 libraryDependencies ++= Seq(
   "com.sun.jersey" % "jersey-client" % "1.8",
   "com.sun.jersey" % "jersey-core" % "1.8",
   "com.google.code.gson" % "gson" % "1.7.1",
-//  "es.upm.fi.oeg.morph" % "query-rewriting" % "1.0.5",
-//  "es.upm.fi.oeg.morph.streams" % "esper-engine" % "1.0.1",
   "junit" % "junit" % "4.7" % "test",
   "org.scalatest" % "scalatest_2.10" % "1.9.1" % "test",
   "org.scalacheck" % "scalacheck_2.10" % "1.10.0" % "test",

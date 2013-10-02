@@ -17,11 +17,12 @@ import org.junit.Ignore
 import org.slf4j.LoggerFactory
 import es.upm.fi.oeg.siq.sparql.SparqlResults
 import es.upm.fi.oeg.morph.stream.evaluate.EvaluatorUtils
+import es.upm.fi.oeg.morph.stream.evaluate.Mapping
 
 class CityBikesQueryTest extends JUnitSuite with ShouldMatchersForJUnit with Checkers {
   private val df=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS")
   private val logger= LoggerFactory.getLogger(this.getClass)
-  val mappingUri=new URI("mappings/citybikes.ttl")
+  val mappingUri=Mapping(new URI("mappings/citybikes.ttl"))
   val gsn=new QueryEvaluator("gsn")
   
   @Before def initialize() {}

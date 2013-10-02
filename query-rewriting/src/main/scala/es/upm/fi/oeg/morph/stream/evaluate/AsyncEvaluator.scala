@@ -12,9 +12,9 @@ abstract class AsyncEvaluator(systemId:String) extends QueryEvaluator(systemId)
   def receive = specificMessageHandler orElse genericMessageHandler
   def genericMessageHandler: Receive = {
     case ExecuteQuery(sparqlstr,mappingUri)=>
-      sender ! Data(executeQuery(sparqlstr,mappingUri))
+      sender ! Data(executeQuery(sparqlstr,Mapping(mappingUri)))
     case RegisterQuery(sparqlstr,mappingUri)=>
-      sender ! QueryId(registerQuery(sparqlstr, mappingUri))
+      sender ! QueryId(registerQuery(sparqlstr, Mapping(mappingUri)))
     case PullData(id)=>
       sender ! Data(pull(id))
     case ListenToQuery(sparqlstr,mappingUri)=>

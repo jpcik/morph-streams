@@ -19,6 +19,7 @@ import akka.util.Timeout
 import concurrent.duration._
 import es.upm.fi.oeg.siq.sparql.SparqlResults
 import es.upm.fi.oeg.morph.stream.evaluate.EvaluatorUtils
+import es.upm.fi.oeg.morph.stream.evaluate.Mapping
 
 
 class SwissExQueryTest extends JUnitSuite with ShouldMatchersForJUnit with Checkers {
@@ -26,7 +27,7 @@ class SwissExQueryTest extends JUnitSuite with ShouldMatchersForJUnit with Check
   //val actorSystem=ActorSystem("swissex",ConfigFactory.load.getConfig("gsnakka"))
   val gsn=new GsnAdapter("gsn1")
   //private val df=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
-  val mappingUri=new URI("mappings/swissex.ttl")
+  val mappingUri=Mapping(new URI("mappings/swissex.ttl"))
   //implicit val timeout = Timeout(5 second)
   
   @Before def initialize() {}

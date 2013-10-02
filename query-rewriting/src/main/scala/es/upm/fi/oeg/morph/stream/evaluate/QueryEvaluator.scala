@@ -26,6 +26,9 @@ import es.upm.fi.oeg.morph.stream.rewriting.QueryReordering
 import com.typesafe.config.ConfigException.Missing
 import es.upm.fi.oeg.morph.stream.rewriting.QueryRewriting
 import es.upm.fi.oeg.morph.stream.rewriting.OntologyRewriting
+import es.upm.fi.oeg.morph.r2rml.R2rmlReader
+import scala.io.Source
+import java.io.ByteArrayInputStream
 
 /*
 trait StreamEvaluatorAdapter {
@@ -72,39 +75,35 @@ class QueryEvaluator(systemId:String)  {
   protected def i_pull(id:String,q:SourceQuery):StreamResultSet=null
 
   
-  private def rewriter(mappingUri:URI)={
-    //rewriterClass.getDeclaredConstructor(classOf[String],classOf[String])
-    //  .newInstance(mappingUri.toString,systemId).asInstanceOf[QueryRewriting]
+  private def rewriter(mappingUri:URI)=
+    new QueryRewriting(R2rmlReader(mappingUri.toString),systemId)      
+
+  private def rewriter(mapping:String)=
+    new QueryRewriting(new R2rmlReader(new ByteArrayInputStream(mapping.getBytes)),systemId)      
+
+
+  private def rewrite(sparqlstr:String,mapping:Mapping)={
     
-      new QueryRewriting(mappingUri.toString,systemId)
-     
-      
-  }
-  
-  private def rewrite(sparqlstr:String,mappingUri:URI)={
-    def parseAndRewrite(q:String,mapping:URI)={      
+    def parseAndRewrite(q:String,mapping:Mapping)={      
       //val reordered=QueryReordering.reorder(SparqlStream.parse(q))
-      val reordered=SparqlStream.parse(q)
-      //logger.debug("reordered: "+reordered.toString)
-      /*if (expanding){
-        val expanded=OntologyRewriting.translate(reordered, config.getString("morph.ontology"))
-        rewriter(mapping).translate(expanded)
+      val parsed=SparqlStream.parse(q)
+      mapping.uri match{
+        case Some(uri) =>rewriter(uri).translate(parsed)
+        case None =>rewriter(mapping.data.get).translate(parsed)
       }
-      else*/        
-        rewriter(mapping).translate(reordered)
     }
     if (caching){
       logger.info("caching activated")
       val queryhash=sparqlstr.hashCode
-      cacheQueries.getOrElseUpdate(queryhash,parseAndRewrite(sparqlstr, mappingUri))
+      cacheQueries.getOrElseUpdate(queryhash,parseAndRewrite(sparqlstr, mapping))
     }
     else 
-      parseAndRewrite(sparqlstr, mappingUri)    
+      parseAndRewrite(sparqlstr, mapping)    
 
   }
   
-   def executeQuery(sparqlstr:String,mappingUri:URI)={
-    val qt=rewrite(sparqlstr,mappingUri)
+   def executeQuery(sparqlstr:String,mapping:Mapping)={
+    val qt=rewrite(sparqlstr,mapping)
     val parsed=SparqlStream.parse(sparqlstr)
     //val rs=adapter.executeQuery(qt)
     val rs=i_executeQuery(qt)
@@ -114,15 +113,15 @@ class QueryEvaluator(systemId:String)  {
     else 
       dt.translateToModel(parsed.getConstructTemplate)  
   }
-   def registerQuery(sparqlstr:String,mappingUri:URI)={
-    val qt=rewrite(sparqlstr,mappingUri)
+   def registerQuery(sparqlstr:String,mapping:Mapping)={
+    val qt=rewrite(sparqlstr,mapping)
     //val id=adapter.registerQuery(qt)
     val id=i_registerQuery(qt)
     queryids.put(id,qt)
     id
   }
-   def listenToQuery(sparqlstr:String,mappingUri:URI,receiver:StreamReceiver)={
-    val qt=rewrite(sparqlstr,mappingUri)
+   def listenToQuery(sparqlstr:String,mapping:Mapping,receiver:StreamReceiver)={
+    val qt=rewrite(sparqlstr,mapping)
     i_listenToQuery(qt,receiver)
     //adapter.listenQuery(qt,receiver)
   }
@@ -171,3 +170,4 @@ object EvaluatorUtils{
     ResultSetFormatter.outputAsCSV(sparql.getResultSet)
 
 }  
+
