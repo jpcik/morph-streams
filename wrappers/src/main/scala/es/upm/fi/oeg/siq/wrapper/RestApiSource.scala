@@ -12,7 +12,6 @@ import scala.xml.Elem
 import com.ning.http.client.RequestBuilder
 
 
-
 class RestApiSource (who:PollWrapper,id:String) extends SystemCaller(who,id){    
     //val funs = values.map{v=>v.instantiate}
   val transf=who.datatype match{
@@ -20,10 +19,7 @@ class RestApiSource (who:PollWrapper,id:String) extends SystemCaller(who,id){
     case "json"=>svc:RequestBuilder=>extract(Http(svc OK as.String)())
   }
   val idname=who.idkeys(id)
-    val fieldTypes=who.dataFields.map{ _.getType match{
-      case "int"=>vl:String=>vl.toInt
-      case _=>vl:String=>vl
-    }}
+  
     val theurl=who.url.replace("{id}",id)
     val svc = url(theurl)
     who.urlparams.foldLeft(svc){(a,k)=>
@@ -32,9 +28,8 @@ class RestApiSource (who:PollWrapper,id:String) extends SystemCaller(who,id){
     }
     override def pollData={
       val date=new Date
-                      
+println(svc.url)
       val res = transf(svc)     
-
       res.map{data=>
         new Observation(date,Seq(idname)++data)
       }
@@ -70,7 +65,7 @@ class RestApiSource (who:PollWrapper,id:String) extends SystemCaller(who,id){
   }
 }
 
-
+/*
 class RestApiPollWrapper extends PollWrapper{
   
   override def initialize={
@@ -88,4 +83,4 @@ class RestApiPollWrapper extends PollWrapper{
       Thread.sleep(liveRate)
     }
   }
-}
+}*/

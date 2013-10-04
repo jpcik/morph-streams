@@ -8,18 +8,12 @@ import org.joda.time.format.DateTimeFormat
 import java.text.SimpleDateFormat
 import java.util.Calendar
 
+/*
 class RandomWrapper extends PollWrapper{
   
-  lazy val gen=params.getPredicateValue("generator").split(',').map(_.toInt)
-  lazy val values=params.getPredicateValue("values").split(',').map{v=>new Func(v)}
-  override def initialize={
-    setName("Random")
-    setUsingRemoteTimestamp(true)
-    true
-  }
-  override def getOutputFormat=dataFields 
-  override def getWrapperName="RandomWrapper"
-    
+  lazy val gen=configvals("generator").split(',').map(_.toInt)
+  lazy val values=configvals("values").split(',').map{v=>new Func(v)}
+ 
   override def run{
     systemids.foreach{systemid=>
       val actor = actorSystem.actorOf(Props(new SyntheticDatasource(this,systemid))) }
@@ -29,7 +23,24 @@ class RandomWrapper extends PollWrapper{
     }
   }
 
-  case class Func(name:String,values:String){
+  
+}
+*/
+
+  class SyntheticDatasource(who:PollWrapper,id:String) extends SystemCaller(who,id){
+     
+    lazy val gen=who.configvals("generator").split(',').map(_.toInt)
+    lazy val values=who.configvals("values").split(',').map{v=>new Func(v)}
+ 
+    val ids=(gen(0) until gen(1))//.map(i=>i.asInstanceOf[Integer])    
+    val funs = values.map{v=>v.instantiate}
+           
+    override def pollData={
+      val date=new Date
+      ids.map(id=>new Observation(date,funs.map(f=>f(id))))            
+    }    
+
+    case class Func(name:String,values:String){
     def this(v:String)=this(v.substring(0,v.indexOf("(")),
            v.substring(v.indexOf("(")+1).replace(")", ""))
     
@@ -44,16 +55,6 @@ class RandomWrapper extends PollWrapper{
         par:Any=>dtFormat.format(Calendar.getInstance.getTime)
     }
   }
-  
-  class SyntheticDatasource(who:PollWrapper,id:String) extends SystemCaller(who,id){    
-    val ids=(gen(0) until gen(1))//.map(i=>i.asInstanceOf[Integer])    
-    val funs = values.map{v=>v.instantiate}
-           
-    override def pollData={
-      val date=new Date
-      ids.map(id=>new Observation(date,funs.map(f=>f(id))))            
-    }    
-  }
 
-}
+  }
 

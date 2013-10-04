@@ -4,8 +4,6 @@ import java.util.Calendar
 import java.util.Date
 import scala.Array.canBuildFrom
 import scala.xml.Elem
-import gsn.beans.DataField
-import gsn.wrappers.AbstractWrapper
 import akka.actor.ReceiveTimeout
 import akka.actor.Actor
 import concurrent.duration._
@@ -13,67 +11,41 @@ import dispatch._
 import akka.actor.ActorSystem
 import com.typesafe.config.ConfigFactory
 import akka.actor.Props
-import gsn.beans.StreamElement
 import scala.compat.Platform
 import org.slf4j.LoggerFactory
+import _root_.gsn.beans.DataField
 
-class PollWrapper extends AbstractWrapper {
+
+trait PollWrapper {
   val logger=LoggerFactory.getLogger(this.getClass)
-  lazy val params=getActiveAddressBean  
-  lazy val datatype=params.getPredicateValue("type")
-  lazy val rate=params.getPredicateValue("rate").toLong
+  //lazy val params=getActiveAddressBean  
+  def configvals(key:String):String
+ lazy val datasourcetype=configvals("sourcetype")
+ lazy val datatype=configvals("type")
+  lazy val rate=configvals("rate").toLong
   lazy val liveRate=rate
-  lazy val dateTimeFormat=params.getPredicateValue("dateTimeFormat")
-  lazy val url=params.getPredicateValue("url")
-  lazy val urlparamvals=params.getPredicateValue("urlparams").split(',')
-  lazy val urlparamnames=params.getPredicateValue("urlparamnames").split(',')
+  lazy val dateTimeFormat=configvals("dateTimeFormat")
+ lazy val url=configvals("url")
+  lazy val urlparamvals=configvals("urlparams").split(',')
+  lazy val urlparamnames=configvals("urlparamnames").split(',')
   lazy val urlparams=urlparamnames zip urlparamvals
-  lazy val servicefields=params.getPredicateValue("servicefields").split(',')
-  lazy val user=params.getPredicateValue("user")
-  lazy val key=params.getPredicateValue("key")
-  lazy val systemids=params.getPredicateValue("systemids").split(',')
-  private lazy val systemnames=params.getPredicateValue("systemnames")//.split(',')
+  lazy val servicefields=configvals("servicefields").split(',')
+  lazy val systemids=configvals("systemids").split(',')
+  private lazy val systemnames=configvals("systemnames")//.split(',')
   lazy val idkeys={
-    if (systemnames==null) (systemids zip systemids).toMap 
+    if (systemnames==null || systemnames.isEmpty) (systemids zip systemids).toMap 
     else (systemids zip systemnames.split(',')).toMap
   }
   
-  protected val actorSystem=ActorSystem("wrap",ConfigFactory.load.getConfig("restapiwrapper"))
+  def actorSystem:ActorSystem
 
-  private lazy val fieldNames=params.getPredicateValue("fields").split(',')  
-  private lazy val types=params.getPredicateValue("types").split(',')
+  protected lazy val fieldNames=configvals("fields").split(',')  
+  protected lazy val types=configvals("types").split(',')
   lazy val dataFields=fieldNames.zip(types).map(a=>new DataField(a._1,a._2,a._1))
-      
-  def postData(systemid:String,ts:Long,o:Observation){
-    logger.trace("post vals "+o.serializable.size)
-    //val ser =o.values.asInstanceOf[Array[java.io.Serializable]]
-    postStreamElement(ts,o.serializable)
-    //postStreamElement(new StreamElement(dataFields,o.serializable),ts)
-    
-        //Array[java.io.Serializable](systemid,o.id,o.name,o.timestamp,o.bikes,o.free))
-    //println("data posted: "+systemid+"."+o)                       
-  }
-  
-  override def initialize={
-    setName("PollWrapper")
-    setUsingRemoteTimestamp(true)
-    true
-  }
-  override def getOutputFormat=dataFields 
-  override def dispose {}
-  override def getWrapperName="PollWrapper"
-    
-  override def run{
-    systemids.foreach{systemid=>
 
-      val sc=new EmtCaller(this,systemid)
-      //sc.start
-    }
-    while (isActive){
-      Thread.sleep(liveRate)
-      println("still alive")
-    }
-  }
+      
+  def postData(systemid:String,ts:Long,o:Observation):Unit
+  
 }
 
 @Deprecated()
@@ -126,4 +98,10 @@ abstract class SystemCaller(who:PollWrapper,systemid:String) extends Actor{
   def receive={
     case ReceiveTimeout=>callRest
   }
+  
+  protected val fieldTypes=who.dataFields.map{ _.getType match{
+      case "int"=>vl:String=>vl.toInt
+      case _=>vl:String=>vl
+    }}
+
 }

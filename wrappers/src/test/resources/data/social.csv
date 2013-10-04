@@ -1,0 +1,9 @@
+r1;bob;alice
+r1;carl;alice
+r2;alice;bob
+r2;bob;alice
+r2;carl;alice
+r1;alice;bob
+r1;bob;alice
+r1;carl;bob
+r2;bob;carl

@@ -15,7 +15,7 @@ object Runner {
      //esper.startup
      
      
-     val caller=actorSystem.actorOf(Props(new ApiWrapper("emt")),"EmtWrapper")
+     new ApiWrapper("emt",actorSystem)
      
      Thread.sleep(10000)
      //esper.shutdown

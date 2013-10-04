@@ -12,13 +12,20 @@ import org.joda.time.DateTime
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
 import es.upm.fi.oeg.morph.esper.Event
+import akka.actor.ActorSystem
 
-class ApiWrapper(systemid:String) extends Actor{
+class ApiWrapper(systemid:String,override val actorSystem:ActorSystem) extends PollWrapper{
   val conf=ConfigFactory.load getConfig(systemid)
-  val ids=conf.getStringList("ids")
-  ids.foreach(id=>context.actorOf(Props(new ApiCaller(systemid,id,conf)), "wrapper-"+systemid+"-"+id))
-  def receive={
-    case _=>
+  override def configvals(key:String)=conf.getString(key)
+  systemids.foreach(id=>datasourcetype match{
+    case "random" =>actorSystem.actorOf(Props(new SyntheticDatasource(this,id)), "wrapper-"+systemid+"-"+id)
+    case "restapi" =>actorSystem.actorOf(Props(new RestApiSource(this,id)), "wrapper-"+systemid+"-"+id)
+    case "csv" =>actorSystem.actorOf(Props(new CsvSource(this,id)), "wrapper-"+systemid+"-"+id)
+  })
+  val engine=actorSystem.actorFor(conf.getString("engineurl"))
+  val outputstream=conf.getString("outputstream")
+  override def postData(systemid:String,ts:Long,o:Observation):Unit={
+     engine ! Event(outputstream,(fieldNames zip o.serializable).toMap)   
   }
 }
 
