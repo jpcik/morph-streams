@@ -7,7 +7,7 @@ version := "1.0.9"
 libraryDependencies ++= Seq(
   "net.sf" % "jsqlparser" % "0.0.1",
   "ch.qos.logback" % "logback-classic" % "1.0.9",  
-  "es.upm.fi.oeg.morph" % "morph-core" % "1.0.3",
+  "es.upm.fi.oeg.morph" % "morph-core" % "1.0.5",
   "es.upm.fi.oeg.morph" % "morph-querygen" % "1.0.4",
   "com.typesafe.akka" %% "akka-actor" % "2.1.2",
   "es.upm.fi.oeg.morph" % "kyrie" % "0.18.1",    

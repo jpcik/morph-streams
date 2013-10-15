@@ -65,4 +65,7 @@ class ReasoningRewritingTest extends JUnitSuite with ShouldMatchersForJUnit with
   @Test def testQ7(){
      val q=rewrite(ssn("q7.sparql"))
   }
+  @Test def testQ8(){
+     val q=rewrite(ssn("q8.sparql"))
+  }
 }

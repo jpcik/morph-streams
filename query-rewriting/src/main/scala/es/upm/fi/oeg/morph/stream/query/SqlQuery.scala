@@ -68,7 +68,8 @@ class SqlQuery(op:AlgebraOp, val outputMods:Array[Modifiers.OutputModifier])
   override def construct=null
 
   protected def condExpr(xpr:Xpr,op:AlgebraOp):Xpr={
-    val vars=varXprs(op)
+    //hack for count *
+    val vars=varXprs(op)++Map("*"->VarXpr("*"))
     xpr match {
       case varXpr:VarXpr=>
         if (vars.contains(varXpr.varName)) 
@@ -230,14 +231,15 @@ class SqlQuery(op:AlgebraOp, val outputMods:Array[Modifiers.OutputModifier])
     case proj:ProjectionOp=>
       if (proj.expressions.contains(varName) && proj.getRelation!=null) 
         proj.getRelation.id
-      else if (proj.getVarMappings.map(vars=>vars._2).flatten.contains(varName))
+      else if (proj.getVarMappings.map(vars=>vars._2).flatten.contains(varName) && proj.getRelation!=null)
         proj.getRelation.id
       else null
     case sel:SelectionOp=>
       if (sel.getRelation!=null) sel.getRelation.id
       else attRelation(sel.subOp,varName)
     case group:GroupOp=>
-      group.getRelation.id
+      if (group.getRelation!=null) group.getRelation.id
+      null
         //attRelation(group.subOp,varName)
   }   
   

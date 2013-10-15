@@ -16,6 +16,8 @@ class SelectionOp(selectionId:String,subOp:AlgebraOp,val expressions:Set[Xpr])
 	new SelectionOp(id, sub,expressions)
   }
 	
+  override def clone(sub:AlgebraOp)=new SelectionOp(selectionId,sub,expressions)
+  
   override def build(newOp:AlgebraOp)=
 	new SelectionOp(id,subOp.build(newOp),expressions)
 	

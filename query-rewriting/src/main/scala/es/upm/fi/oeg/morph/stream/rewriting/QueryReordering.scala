@@ -38,7 +38,8 @@ object QueryReordering {
     
 
     val group=new ElementGroup
-    roots.foreach{root=>
+    roots.sortBy(_.getSubject.toString)
+    .foreach{root=>
       val g=groupTriples(root,triples.filterNot(t=>t.equals(root) || roots.contains(t)))
       group.addElement(g)
     }

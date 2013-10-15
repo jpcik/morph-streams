@@ -30,36 +30,13 @@ import es.upm.fi.oeg.morph.r2rml.R2rmlReader
 import scala.io.Source
 import java.io.ByteArrayInputStream
 
-/*
-trait StreamEvaluatorAdapter {
-  
-  def executeQuery(abstractQuery:SourceQuery):ResultSet
-  def registerQuery(abstractQuery:SourceQuery):String
-  def pull(id:String,query:SourceQuery):ResultSet
-  def listenQuery(abstractQuery:SourceQuery,receiver:ActorRef):Unit  
-}
-*/
 trait StreamReceiver {
   def receiveData(s:SparqlResults):Unit
 }
 class QueryEvaluator(systemId:String)  {
   private val logger= LoggerFactory.getLogger(this.getClass)  
-  //val system=if (actorSystem!=null) actorSystem
-  //  else null//ActorSystem("MorphStreams", ConfigFactory.load.getConfig("morphstreams")) 
-  //val defaultprops = ParameterUtils.load(getClass.getClassLoader.getResourceAsStream("config/siq.properties"));
+  
   private val config=ConfigFactory.load.getConfig("morph.streams."+systemId)
-  
-  
-  //val adapterClass = config.getString("adapter."+systemId+".evaluator")
-  /*val rewriterClass = try Class.forName(config.getString("rewriter")) catch {
-    case e:Missing =>classOf[QueryRewriting]
-    case e:Exception =>throw new IllegalArgumentException("Unable to initialize rewriter class ", e)}
-  */
-  //val theClass=try Class.forName(adapterClass)
-  //	catch {case e:ClassNotFoundException =>
-  //	  throw new IllegalArgumentException("Unable to initialize adapter class "+adapterClass, e)}
-  //val adapter=theClass.getDeclaredConstructor(classOf[String])
-    //          .newInstance(systemId).asInstanceOf[StreamEvaluatorAdapter]
   
   private val queryids=new collection.mutable.HashMap[String,SourceQuery]
     
@@ -71,9 +48,10 @@ class QueryEvaluator(systemId:String)  {
 
   protected def i_executeQuery(q:SourceQuery):StreamResultSet=null
   protected def i_registerQuery(q:SourceQuery):String=null
-  protected def i_listenToQuery(q:SourceQuery,receiver:StreamReceiver):Unit={}  
+  protected def i_listenToQuery(q:SourceQuery,receiver:StreamReceiver):String=null  
   protected def i_pull(id:String,q:SourceQuery):StreamResultSet=null
-
+  protected def i_removeQuery(id:String):Unit={}
+  protected def i_rewriteSerialize(q:SourceQuery):Option[String]=None
   
   private def rewriter(mappingUri:URI)=
     new QueryRewriting(R2rmlReader(mappingUri.toString),systemId)      
@@ -102,7 +80,7 @@ class QueryEvaluator(systemId:String)  {
 
   }
   
-   def executeQuery(sparqlstr:String,mapping:Mapping)={
+  def executeQuery(sparqlstr:String,mapping:Mapping)={
     val qt=rewrite(sparqlstr,mapping)
     val parsed=SparqlStream.parse(sparqlstr)
     //val rs=adapter.executeQuery(qt)
@@ -113,34 +91,43 @@ class QueryEvaluator(systemId:String)  {
     else 
       dt.translateToModel(parsed.getConstructTemplate)  
   }
-   def registerQuery(sparqlstr:String,mapping:Mapping)={
+  
+  def rewriteSerialize(sparqlstr:String,mapping:Mapping)={
+    val qt=rewrite(sparqlstr,mapping)
+    i_rewriteSerialize(qt)    
+  }
+  
+  def registerQuery(sparqlstr:String,mapping:Mapping)={
     val qt=rewrite(sparqlstr,mapping)
     //val id=adapter.registerQuery(qt)
     val id=i_registerQuery(qt)
     queryids.put(id,qt)
     id
   }
-   def listenToQuery(sparqlstr:String,mapping:Mapping,receiver:StreamReceiver)={
+  
+  def listenToQuery(sparqlstr:String,mapping:Mapping,receiver:StreamReceiver)={
     val qt=rewrite(sparqlstr,mapping)
     i_listenToQuery(qt,receiver)
     //adapter.listenQuery(qt,receiver)
   }
   
-   def pull(id:String)={
+  def pull(id:String)={
     val qt=queryids(id)
     //val rs=adapter.pull(id,qt)
     val rs=i_pull(id,qt)
     val dt=new DataTranslator(List(rs),qt)
     dt.transform             
   }
+  
+  def removeQuery(id:String)={
+    i_removeQuery(id)
+  }
      
- 
+ /*
   def printSparqlResult(sparql:SparqlResults )	{		   
     logger.info(EvaluatorUtils.serialize(sparql))
   }
-
-  
-
+*/
   
 }
 
@@ -150,12 +137,12 @@ abstract class DataReceiver(rec:StreamReceiver,query:SourceQuery) extends Actor{
   def resultSet(data:Stream[Array[Object]],query:SourceQuery):StreamResultSet
   def receive={
     case data:Array[Array[Object]]=>
-        logger.trace("Array intercepted")
-        val rs=resultSet(data.toStream,query)
-        val dt=new DataTranslator(List(rs),query)
-        rec.receiveData(dt.transform)        
+      logger.trace("Array intercepted")
+      val rs=resultSet(data.toStream,query)
+      val dt=new DataTranslator(List(rs),query)
+      rec.receiveData(dt.transform)        
     case m=>logger.debug("got "+m)
-        throw new IllegalArgumentException("Stream data receiver got: "+m)
+      throw new IllegalArgumentException("Stream data receiver got: "+m)
   }
 }
 

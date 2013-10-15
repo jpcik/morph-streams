@@ -6,6 +6,7 @@ import es.upm.fi.oeg.morph.stream.algebra.xpr.BinaryXpr
 import es.upm.fi.oeg.morph.stream.algebra.xpr.OperationXpr
 import es.upm.fi.oeg.morph.stream.algebra.xpr.FunctionXpr
 import org.slf4j.LoggerFactory
+import es.upm.fi.oeg.morph.stream.rewriting.QueryRewritingException
 
 class ProjectionOp(val expressions:Map[String,Xpr], subOp:AlgebraOp, val distinct:Boolean) 
   extends UnaryOp(null,"projection",subOp) {
@@ -52,11 +53,23 @@ class ProjectionOp(val expressions:Map[String,Xpr], subOp:AlgebraOp, val distinc
 	}
   }
   
+  override def clone(sub:AlgebraOp)=new ProjectionOp(expressions,sub,distinct)
+  
+  private def replaceLeaf(unary:UnaryOp,replacement:UnaryOp):UnaryOp=unary.subOp match {
+    case rel:RelationOp=>unary.clone(replacement) 
+    case un:UnaryOp=>unary.clone(replaceLeaf(un,replacement))
+    case _=>unary.clone(replacement)
+  }
+  
   def merge(proj:ProjectionOp)={
-    // Use the more complex subop
-    val sub=if (!proj.subOp.isInstanceOf[RelationOp]) proj.subOp
-      else subOp
-    new ProjectionOp(expressions++proj.expressions,sub,distinct)
+    // Use the more complex subop //this is wrong, it can eliminate selections in both projs!
+    //val sub=if (!proj.subOp.isInstanceOf[RelationOp]) proj.subOp
+    //  else subOp
+    proj.subOp match{
+      case un:UnaryOp=>replaceLeaf(new ProjectionOp(expressions++proj.expressions,this.subOp,distinct),un)
+      case _=>throw new QueryRewritingException("Cannot merge projections: invalid operator: "+proj.subOp)
+    }    	    
+    //new ProjectionOp(expressions++proj.expressions,sub,distinct)
   }
 
   def merge(proj:ProjectionOp,xprs:Seq[Xpr]):AlgebraOp={

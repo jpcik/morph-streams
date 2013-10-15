@@ -74,7 +74,20 @@ class GsnAdapter(systemId:String="gsn") extends QueryEvaluator(systemId) {
     }
   }  
   
-  override def i_listenToQuery(query:SourceQuery,receiver:StreamReceiver){
+  override def i_rewriteSerialize(query:SourceQuery)={
+    val gsnQuery=query.asInstanceOf[GsnQuery]
+    gsnQuery.algebra match {
+      case root:RootOp=>root.subOp match {
+        case proj:ProjectionOp=>Some(gsnQuery.serializeQuery)
+        case union:MultiUnionOp=>
+          Some(union.children.values.map{op=>                    
+            new GsnQuery(op,gsnQuery.outputMods).serializeQuery            
+          }.mkString(" UNION\n "))
+      }
+      case _=>None
+    }
+  }
+  override def i_listenToQuery(query:SourceQuery,receiver:StreamReceiver)={
     throw new NotImplementedException
   }
   

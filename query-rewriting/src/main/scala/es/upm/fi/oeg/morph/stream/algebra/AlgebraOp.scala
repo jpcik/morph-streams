@@ -40,6 +40,8 @@ class UnaryOp(val id:String,val name:String,val subOp:AlgebraOp) extends Algebra
   override def copyOp=
 	new UnaryOp(id,name,null)
 	
+  def clone(sub:AlgebraOp)=new UnaryOp(id,name,sub) 
+  
   override def build(op:AlgebraOp):AlgebraOp=
 	throw new IllegalArgumentException("Never build an untyped operation")
 

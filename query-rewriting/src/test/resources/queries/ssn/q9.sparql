@@ -1,0 +1,18 @@
+PREFIX oeg-sen: <http://oeg-upm.net/onto/sensordemo/>
+PREFIX ssn: <http://purl.oclc.org/NET/ssnx/ssn#>
+PREFIX qu: <http://purl.oclc.org/NET/ssnx/qu/qu#>
+PREFIX quantity: <http://purl.oclc.org/NET/ssnx/qu/quantity#>
+PREFIX dim: <http://purl.oclc.org/NET/ssnx/qu/dim#>
+PREFIX unit: <http://purl.oclc.org/NET/ssnx/qu/unit#>
+PREFIX cf-feature: <http://purl.oclc.org/NET/ssnx/cf/cf-feature#>
+PREFIX cf-property: <http://purl.oclc.org/NET/ssnx/cf/cf-property#>
+
+SELECT (COUNT(*) AS ?cnt)
+FROM NAMED STREAM <http://cwi.nl/SRBench/observations> [NOW - 1 HOURS]
+WHERE {
+ ?obs1 ssn:observedProperty cf-property:air_temperature.
+ ?obs ssn:observedProperty cf-property:relative_humidity.
+ ?obs1 ssn:observedBy oeg-sen:sen1.  
+ ?obs  ssn:observedBy oeg-sen:sen1.
+}
+GROUP BY ?obs

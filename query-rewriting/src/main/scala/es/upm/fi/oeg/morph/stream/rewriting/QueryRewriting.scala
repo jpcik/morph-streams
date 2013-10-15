@@ -452,9 +452,12 @@ class QueryRewriting(reader:R2rmlReader,systemId:String="default") {
       case min:AggMin=>MinXpr
       case avg:AggAvg=>AvgXpr
       case count:AggCount=>CountXpr
+      case count:AggCountVar=>CountXpr
       case sum:AggSum=>SumXpr
     }
-    (varName,new AggXpr(op,agg.getExpr.getVarName))
+    if (agg.getExpr!=null)
+      (varName,new AggXpr(op,agg.getExpr.getVarName))
+    else (varName,new AggXpr(op,"*"))
   }
   
   private def union(left: AlgebraOp, right: AlgebraOp): AlgebraOp ={
@@ -643,4 +646,5 @@ class QueryCompilerException(msg:String,e:Throwable) extends Exception(msg,e)
 
 class QueryRewritingException(msg:String,e:Throwable) extends QueryCompilerException(msg,e){
   def this(e:Throwable)=this(null,e)
+  def this(msg:String)=this(msg,null)
 }
