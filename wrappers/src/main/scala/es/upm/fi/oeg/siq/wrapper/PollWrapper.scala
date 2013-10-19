@@ -14,7 +14,8 @@ import akka.actor.Props
 import scala.compat.Platform
 import org.slf4j.LoggerFactory
 import _root_.gsn.beans.DataField
-
+import scala.util.Random
+import java.util.UUID
 
 trait PollWrapper {
   val logger=LoggerFactory.getLogger(this.getClass)
@@ -49,7 +50,7 @@ trait PollWrapper {
 }
 
 @Deprecated()
-class EmtCaller(who:PollWrapper,stationid:String) extends SystemCaller(who,stationid){ 
+class EmtCaller(who:PollWrapper,stationid:String) extends Datasource(who,stationid){ 
   override def pollData={
       val svc = url("https://servicios.emtmadrid.es:8443/geo/servicegeo.asmx/getArriveStop")
       .addQueryParameter("idClient","")
@@ -75,33 +76,3 @@ class Observation(val timestamp:Date,val values:Seq[Any]){
   lazy val serializable=values.toArray.map(_.asInstanceOf[java.io.Serializable])
 }
 
-abstract class SystemCaller(who:PollWrapper,systemid:String) extends Actor{
-  //private val df=new SimpleDateFormat(who.dateTimeFormat)//"yyyy-MM-dd HH:mm:ss.SSS")
-  def pollData:Seq[Observation]
-  
-  def callRest{
-    try{  
-      val obs=pollData
-      val start=Platform.currentTime
-      var i=0
-      obs.foreach{o=>        
-        val datetime= o.timestamp
-        val c=Calendar.getInstance
-        c.setTime(datetime)
-        who.postData(systemid,start+i,o)
-        i+=1
-      }
-    } catch {case e:Exception=>e.printStackTrace}
-  }
-  
-  context.setReceiveTimeout(who.rate millisecond) 
-  def receive={
-    case ReceiveTimeout=>callRest
-  }
-  
-  protected val fieldTypes=who.dataFields.map{ _.getType match{
-      case "int"=>vl:String=>vl.toInt
-      case _=>vl:String=>vl
-    }}
-
-}

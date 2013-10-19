@@ -4,7 +4,7 @@ name := "wrappers"
 
 organization := "es.upm.fi.oeg.morph.streams"
 
-version := "1.0.5"
+version := "1.0.6"
 
 scalaVersion := "2.10.1"
 
