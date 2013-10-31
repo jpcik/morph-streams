@@ -4,19 +4,21 @@ name := "wrappers"
 
 organization := "es.upm.fi.oeg.morph.streams"
 
-version := "1.0.6"
+version := "1.0.7"
 
 scalaVersion := "2.10.1"
 
 crossPaths := false
 
 libraryDependencies ++= Seq(
-  "es.upm.fi.oeg.morph.streams" % "esper-engine" % "1.0.1",
+  "es.upm.fi.oeg.morph.streams" % "esper-engine" % "1.0.3",
   "net.databinder.dispatch" %% "dispatch-core" % "0.9.5",
   "play" %% "play" % "2.1.1" intransitive,
   "play" %% "play-iteratees" % "2.1.1" intransitive,  
   "joda-time" % "joda-time" % "2.1",    
   "org.joda" % "joda-convert" % "1.2",  
+  "org.codehaus.jackson" % "jackson-core-asl" % "1.9.10",
+  "org.codehaus.jackson" % "jackson-mapper-asl" % "1.9.10",
   "com.typesafe.akka" %% "akka-actor" % "2.1.2",
   "org.scalatest" %% "scalatest" % "1.9.1" % "test",
   "org.scalacheck" %% "scalacheck" % "1.10.0" % "test",

@@ -9,12 +9,15 @@ import collection.JavaConversions._
 import play.api.libs.json.JsString
 import scala.xml.Elem
 import com.ning.http.client.RequestBuilder
+import play.api.libs.json.JsValue
 
 
 class RestApiSource (who:PollWrapper,id:String) extends Datasource(who,id){    
   val transf=who.datatype match{
     case "xml"=>svc:RequestBuilder=>extract(Http(svc OK as.xml.Elem)())
-    case "json"=>svc:RequestBuilder=>extract(Http(svc OK as.String)())
+    case "json"=>svc:RequestBuilder=>
+      val str=Http(svc OK as.String).apply
+      extract(str)
   }
   val idname=who.idkeys(id)
   
@@ -24,13 +27,16 @@ class RestApiSource (who:PollWrapper,id:String) extends Datasource(who,id){
     if (k._2 == "{id}") svc.addQueryParameter(k._1, id)
     else svc.addQueryParameter(k._1, k._2)      
   }
-  
+  val root=who.configvals("serviceroot")
+  lazy val values=who.configvals("values").split(',').filterNot(_=="").map{v=>new Func(v)}
+  val funs = values.map{v=>v.instantiate}
+
   override def pollData={
     val date=new Date
-    println(svc.url)
+    //println(svc.url)
     val res = transf(svc)     
     res.map{data=>
-      new Observation(date,Seq(idname)++data)
+      new Observation(date,Seq(idname)++data++funs.map(f=>f(id)))
     }            
   }
     
@@ -46,17 +52,23 @@ class RestApiSource (who:PollWrapper,id:String) extends Datasource(who,id){
   }
     
   def extract(string:String)={
-    val json=Json.parse(string).as[JsArray]
-    json.value.map{js=>
+    val json=Json.parse(string)
+    val jsonlist=if (root!="") (json \ root).as[JsArray] else json.as[JsArray]
+    
+    jsonlist.value.map{js=>
       var i=0
       who.servicefields.map{key=>
-        val str=(js \ key) match{
+        val str=navigate(js,key) match{
           case st:JsString=>st.value
-          case p =>p.toString          
+          case p =>p.toString   
         }        
         i+=1
         fieldTypes(i)(str)
       }
     }    
+  }
+  
+  private def navigate(json:JsValue,path:String)={
+    path.split("/").foldLeft(json)((jsval,subpath)=>jsval \ subpath)    
   }
 }

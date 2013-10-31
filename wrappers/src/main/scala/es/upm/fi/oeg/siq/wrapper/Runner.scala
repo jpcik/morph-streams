@@ -10,7 +10,7 @@ import es.upm.fi.oeg.morph.esper.EsperServer
 object Runner {
   def main(args:Array[String]):Unit={
      val actorSystem=ActorSystem("demorunner",ConfigFactory.load.getConfig("demosystem"))
-     val engine=actorSystem.actorOf(Props[DemoEngine],"EsperEngine")
+     //val engine=actorSystem.actorOf(Props[DemoEngine],"EsperEngine")
      //val esper= new EsperServer
      //esper.startup
      
@@ -22,10 +22,6 @@ object Runner {
      
   }
   
-  class DemoEngine extends Actor{
-    def receive={
-      case e:Event=>println(e)
-    }
-  }
+  
 }
 
