@@ -3,7 +3,7 @@ name := "adapter-gsn"
 
 organization := "es.upm.fi.oeg.morph.streams"
 
-version := "1.0.6"
+version := "1.0.7"
 
 libraryDependencies ++= Seq(
   "com.sun.jersey" % "jersey-client" % "1.8",

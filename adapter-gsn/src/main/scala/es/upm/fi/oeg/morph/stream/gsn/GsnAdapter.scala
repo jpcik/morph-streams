@@ -46,7 +46,7 @@ class GsnAdapter(systemId:String="gsn") extends QueryEvaluator(systemId) {
     
     logger.debug("fnames"+fieldNames)
     
-	val stream:Stream[Array[Object]] = Stream.continually(it.next).takeWhile(_=>it.hasNext).map(l=>l.split(',').map(_.asInstanceOf[Object]))
+	val stream:Stream[Array[Object]] = it.toStream.map(l=>l.split(',').map(_.asInstanceOf[Object]))
 	
 	logger.debug("filters in  query: "+query.filters.mkString(","))
     val idxs=query.filters.map(f=>(f,f.index(fieldNames)))
