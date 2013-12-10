@@ -19,6 +19,7 @@ libraryDependencies ++= Seq(
 resolvers ++= Seq(
   DefaultMavenRepository,
   "aldebaran-releases" at "http://aldebaran.dia.fi.upm.es/artifactory/sstreams-releases-local",
+    "plord" at "http://homepages.cs.ncl.ac.uk/phillip.lord/maven",
   "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/"
 )
 
