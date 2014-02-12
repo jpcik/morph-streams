@@ -12,8 +12,7 @@ class ElementTimeValue(val time:Long,@BeanProperty val unit:TimeUnit) extends El
 	  case _=> false
     }
   
-  override def hashCode() =0;
- 
+  override def hashCode() =0
   override def visit(v:ElementVisitor) {
 		// TODO Auto-generated method stub
   }	

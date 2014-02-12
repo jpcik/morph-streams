@@ -5,6 +5,5 @@ import com.hp.hpl.jena.sparql.syntax.Element
 import com.hp.hpl.jena.graph.Node
 
 class ElementNamedStream(val node:Node,val element:Element,val window:ElementWindow) 
-  extends ElementNamedGraph(node,element){
-  
+  extends ElementNamedGraph(node,element){  
 }

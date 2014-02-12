@@ -24,14 +24,12 @@
 							rr:objectMap	[ rr:column "Hs" ] ];     		   
 .		   
 
-
-
 :MilfordWaveResult a rr:TriplesMap;
 	rr:logicalTable :milford;
 	rr:subjectMap [ rr:template "http://semsorgrid4env.eu/ns#Observation/WaveHeight/CCO/Output/{DateTime}";
 				 rr:class ssn:SensorOutput; rr:graph ssg:ccometeo.srdf ];
 	rr:predicateObjectMap [ rr:predicateMap [ rr:constant ssn:hasValue ];
-							   rr:objectMap	  [ rr:parentTriplesMap :MilfordWaveHeight; rr:joinCondition "" ] ];	   		  
+							rr:objectMap	[ rr:parentTriplesMap :MilfordWaveHeight; rr:joinCondition "" ] ];	   		  
 .      		   
 
 :MilfordWaveInstant a rr:TriplesMap;
@@ -47,7 +45,7 @@
     				 rr:class ssn:Observation; rr:graph ssg:ccometeo.srdf ];
 	rr:logicalTable :milford;
     rr:predicateObjectMap [ rr:predicateMap [ rr:constant ssn:observationResult ]; 
-      		   				   rr:objectMap    [ rr:parentTriplesMap :MilfordWaveResult; rr:joinCondition "" ]];
+      		   				   rr:objectMap [ rr:parentTriplesMap :MilfordWaveResult; rr:joinCondition "" ]];
    
     rr:predicateObjectMap :waveFoISea;
     rr:predicateObjectMap :waveObsProp;
@@ -59,7 +57,7 @@
       						rr:objectMap    [ rr:column "Lon" ]];
       						
     rr:predicateObjectMap[ rr:predicateMap [ rr:constant ssn:observationResultTime ];
-    		   				  rr:objectMap	 [ rr:parentTriplesMap :MilfordWaveInstant; rr:joinCondition "" ]]; 
+    		   			   rr:objectMap    [ rr:parentTriplesMap :MilfordWaveInstant; rr:joinCondition "" ]]; 
  .
 
 

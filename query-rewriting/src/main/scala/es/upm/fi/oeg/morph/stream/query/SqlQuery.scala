@@ -32,12 +32,14 @@ import org.slf4j.LoggerFactory
 class SqlQuery(op:AlgebraOp, val outputMods:Array[Modifiers.OutputModifier]) 
   extends SourceQuery(op){
   private val logger = LoggerFactory.getLogger(this.getClass)
+
+  val selectXprs=new collection.mutable.HashMap[String,Xpr]  
+  val unions=new ArrayBuffer[SqlQuery]
+  
   private val niceAlias=new collection.mutable.HashMap[String,String]
   private var aliasGen=0
-  val selectXprs=new collection.mutable.HashMap[String,Xpr]  
   protected val from=new ArrayBuffer[String]
   protected val where=new ArrayBuffer[String]
-  val unions=new ArrayBuffer[SqlQuery]
   protected var distinct:Boolean=false
 
   protected lazy val innerQuery:String=build(op)
@@ -60,7 +62,11 @@ class SqlQuery(op:AlgebraOp, val outputMods:Array[Modifiers.OutputModifier])
   lazy val isDstream:Boolean=outputMods.exists(_==Modifiers.Dstream)
   
   override def build(op:AlgebraOp)=""
-
+  override def create={
+    val sqf=new SourceQueryFactory
+    sqf.create(op)
+  }
+    
   override def serializeQuery:String=innerQuery
   override def supportsPostProc=true
     
@@ -141,28 +147,6 @@ class SqlQuery(op:AlgebraOp, val outputMods:Array[Modifiers.OutputModifier])
   }
 
   private def getNotNull(p1:String,p2:String)=if (p1==null) p2 else p1
-
-	/*
-	protected def get(op:AlgebraOp):Seq[String]=op match{
-	  case join:InnerJoinOp=>get(join)
-	  case outerJoin:LeftOuterJoinOp=>get(outerJoin)
-	  case _=>List()
-	}
-	
-	
-	protected def get(join:LeftOuterJoinOp):Seq[String]= (join.left,join.right) match {
-	  case (lp:ProjectionOp,rp:ProjectionOp)=>
-	    List(projExtentAlias(lp)+" LEFT OUTER JOIN "+ projExtentAlias(rp) +" ON "+joinConditions(join))
-	  case (lp:ProjectionOp,a) =>List(projExtentAlias(lp))++get(a)
-	  case (a,rp:ProjectionOp) =>List(projExtentAlias(rp))++get(a)
-	}
-	
-	private def get(join:InnerJoinOp):Seq[String]=(join.left,join.right) match{
-	  case (lp:ProjectionOp,rp:ProjectionOp)=>List(projExtentAlias(lp),projExtentAlias(rp))
-	  case (lp:ProjectionOp,a) =>List(projExtentAlias(lp))++get(a)
-	  case (a,rp:ProjectionOp) =>List(projExtentAlias(rp))++get(a)
-	}
-	*/
   protected def varXprs(op:AlgebraOp):Map[String,Xpr]=op match{
     case root:RootOp=>varXprs(root.subOp)
     case proj:ProjectionOp=>proj.expressions++varXprs(proj.subOp)
@@ -198,29 +182,6 @@ class SqlQuery(op:AlgebraOp, val outputMods:Array[Modifiers.OutputModifier])
 	  case _=>throw new Exception("Not supported "+op.toString + xpr.toString)
 	}
 	
-	/*
-	protected def serializeExpressions(join:InnerJoinOp):String={
-		val varMappings = new HashMap[String,Seq[String]]();
-		if (join.left.isInstanceOf[ProjectionOp])
-			 varMappings.putAll(join.left.asInstanceOf[ProjectionOp].getVarMappings);
-		if (join.right.isInstanceOf[ProjectionOp])
-			 varMappings.putAll(join.right.asInstanceOf[ProjectionOp].getVarMappings)
-		
-		return serializeExpressions(join.conditions, varMappings.toMap);
-	}
-	*/
-	
-	/*
-	protected def serializeExpressions(xprs:Seq[Xpr],varMappings:Map[String,Seq[String]]):String={
-		var exprs = "";
-		//var i=0;
-		xprs.map{xpr=>
-		  xpr.toString
-			//exprs+=unAlias(xpr,varMappings) + (if ((i+1) < xprs.size) " AND " else "")
-			//i+=1;
-		}.mkString("AND")
-		//return exprs;
-	}*/
 					
   protected def attRelation(op:AlgebraOp,varName:String):String=op match{    
     case root:RootOp=>attRelation(root.subOp,varName)
@@ -244,3 +205,4 @@ class SqlQuery(op:AlgebraOp, val outputMods:Array[Modifiers.OutputModifier])
   }   
   
 }
+

@@ -66,7 +66,7 @@ import com.hp.hpl.jena.graph.Node
 import es.upm.fi.oeg.morph.stream.algebra.xpr.ReplaceXpr
 import es.upm.fi.oeg.morph.stream.algebra.WindowSpec
 import es.upm.fi.oeg.sparqlstream.StreamQuery
-import es.upm.fi.oeg.sparqlstream.StreamQueryFactory
+import es.upm.fi.oeg.sparqlstream.SparqlStreamQueryFactory
 import es.upm.fi.oeg.morph.common.TimeUnit
 import es.upm.fi.oeg.sparqlstream.syntax.ElementTimeWindow
 import es.upm.fi.oeg.sparqlstream.syntax.ElementStreamGraph
@@ -96,14 +96,11 @@ class QueryRewriting(reader:R2rmlReader,systemId:String="default") {
   private val logger= LoggerFactory.getLogger(this.getClass)
   val config=ConfigFactory.load.getConfig("morph.streams."+systemId)
 
-  //val expanding=try config.getBoolean("rewriter.expanding") catch {case e:Missing=>false}
   val reasoning=try config.getBoolean("rewriter.reasoning") catch {case e:Missing=>false}
   val queryClass=try config.getString("adapter.query") catch {case e:Missing=>classOf[SqlQuery].getName}
   
   def this(mappingFile:String,systemId:String)=this(R2rmlReader(mappingFile),systemId)
   def this(mapping:InputStream,systemId:String)=this(new R2rmlReader(mapping),systemId)
-  //logger.debug("mapping is: "+mapping)
-  //private val reader = R2rmlReader(mapping)
   private var aliasCount=0
  
   private def getAlias={
@@ -128,14 +125,10 @@ class QueryRewriting(reader:R2rmlReader,systemId:String="default") {
     map.toMap
   }
 
-  def translate(queryString: String): SourceQuery ={
-    val parsed=SparqlStream.parse(queryString)
-    //logger.debug("reordering query")
-      translate(parsed)  
-  }
+  def translate(queryString: String): SourceQuery =    
+    translate(SparqlStream.parse(queryString))  
 
-  def translate(query:StreamQuery): SourceQuery ={   
-    
+  def translate(query:StreamQuery): SourceQuery ={       
     val expanded=if (!reasoning) query
       else OntologyRewriting.translate(query, config.getString("ontology"))
     val opNew = translateToAlgebra(QueryReordering.reorder(expanded))
@@ -154,46 +147,27 @@ class QueryRewriting(reader:R2rmlReader,systemId:String="default") {
   
   def transform(algebra: AlgebraOp,projectVars:Map[String,String],
       mods:Array[Modifiers.OutputModifier]):SourceQuery={
-    //val adapter = props.getProperty("siq.adapter")
-      //if (!systemId.equals("default")) {
-            //val queryClass = //config.getString("adapter" + "." + systemId + ".query")
-    //logger.info("Using query adapter: "+queryClass)
-        val theClass =try Class.forName(queryClass)
-        catch {
-          case e: ClassNotFoundException =>throw new QueryRewritingException("Unable to use adapter query "+queryClass, e)
-        }
+    val theClass =try Class.forName(queryClass)
+    catch {
+      case e: ClassNotFoundException=>
+      throw new QueryRewritingException("Unable to use adapter query "+queryClass, e)}
     val resquery=
-        try 
-          theClass.getDeclaredConstructor(classOf[AlgebraOp],
-                                          classOf[Array[Modifiers.OutputModifier]])
+      try theClass.getDeclaredConstructor(classOf[AlgebraOp],classOf[Array[Modifiers.OutputModifier]])
             .newInstance(algebra,mods).asInstanceOf[SourceQuery]
-        catch {
-          case e: InstantiationException =>throw new QueryRewritingException("Unable to instantiate query", e)
-          case e: IllegalAccessException =>throw new QueryRewritingException("Unable to instantiate query", e)
-        }
-      //} 
-      //else new SqlQuery(algebra,mods)
-        
-    //resquery.load(algebra)
-    logger.info(resquery.serializeQuery)
-    return resquery
+      catch {
+        case e: InstantiationException =>throw new QueryRewritingException("Unable to instantiate query", e)
+        case e: IllegalAccessException =>throw new QueryRewritingException("Unable to instantiate query", e)
+      }          
+    resquery
   }
-  
-  
+    
   def translateToAlgebra(query: StreamQuery):AlgebraOp={
     val ini = System.currentTimeMillis      
     val op = StreamAlgebra.compile(query)
     val span1 = System.currentTimeMillis() - ini
-    val span2 = System.currentTimeMillis() - ini;
+    val span2 = System.currentTimeMillis() - ini
 
-    //val binds = null //partition(op).asInstanceOf[OpProjection]
-    //this.bindings = binds;
-    val opo = navigate(op, query);
-      /*
-      if (binds != null) {
-        val mainPro = opo.asInstanceOf[ProjectionOp];
-        mainPro.setSubOp(opo.build(binds));
-      }*/
+    val opo = navigate(op, query,null)
     val opNew=
       if (query.getConstructTemplate != null) { //TODO ugliest code ever, please refactor
         val tg = query.getConstructTemplate
@@ -240,8 +214,10 @@ class QueryRewriting(reader:R2rmlReader,systemId:String="default") {
       tMap.subjectMap.graphMap 
       else poMap.graphMap
       
-    val stream = query.getStream(
-        if (graphstream!=null) graphstream.constant.asResource.getURI else null)
+    val stream = 
+      if (graphstream!=null)
+        query.streams.getOrElse(graphstream.constant.asResource.getURI, null)
+      else null        
 
     val unary = createRelation(tMap, poMap.objectMap, stream)           
     if (t.getObject.isURI || t.getObject.isLiteral) {
@@ -258,71 +234,7 @@ class QueryRewriting(reader:R2rmlReader,systemId:String="default") {
     
   }
   
-  @deprecated("Use processBgp","1.0.6")
-  private def processOldBgp(bgp:OpBGP,query:StreamQuery):AlgebraOp={
-      var opCurrent: AlgebraOp = null
-      var pra: AlgebraOp = null
-      val triples = bgp.getPattern.getList
-      var skip = false
-      triples.foreach { t =>
-        skip = false
-        if (t.getPredicate.isVariable){
-          val poMaps=reader.allPredicates
-          val children=poMaps.map{case (poMap, tMap) =>
-            processPOMap(t,poMap,tMap,query)
-          } 
-          val ch=children.map{case proj:ProjectionOp=>proj.getRelation.id->proj}.toMap          
-          opCurrent=new MultiUnionOp(ch)
-        }
-        else if (t.getPredicate.getURI.equals(RDF.typeProp.getURI)) {
-          val tMaps = reader.filterBySubject(t.getObject.getURI) 
-          skip = tMaps.isEmpty
-          if (!skip) {
-            opCurrent = null
-            tMaps.foreach { tMap => //TODO adapt for multiple graphs
-              logger.debug("Mapping graphs for: " + tMap.uri + " - " + tMap.subjectMap.graphMap)
-              val projection = createProjection(t, tMap, tMap.subjectMap, null, query)
-              if (opCurrent != null) opCurrent = union(opCurrent, projection)
-              else opCurrent = projection
-            }
-          }
-        } 
-        else {
-          val poMaps = reader.filterByPredicate(t.getPredicate.getURI)
-          logger.debug("Tmaps for "+t.getPredicate+" "+poMaps.size )
-          skip = poMaps.isEmpty
-          if (!skip) {
-            var pro: AlgebraOp = null
-            opCurrent = null
-            poMaps.foreach {
-              case (poMap, tMap) =>
-                pro=processPOMap(t,poMap,tMap,query)
-                logger.debug("after poMap "+pro)
-                if (opCurrent != null) opCurrent = union(opCurrent, pro)
-                else opCurrent = pro
-            }
-          }
-        }
-        if (!skip) {
-          if (opCurrent == null) {
-            throw new Exception("too bad")
-            return null
-          }
-          if (pra != null) pra = pra.build(opCurrent)
-          else pra = opCurrent
-        } 
-        else {
-          throw new Exception("bad")
-          return null
-        }
-
-      }
-      logger.debug("We get this "+pra)
-      pra
-
-  }
-
-  private def processBgp(bgp:OpBGP,query:StreamQuery):AlgebraOp={       
+  private def processBgp(bgp:OpBGP,query:StreamQuery,graph:OpGraph):AlgebraOp={       
     val ops=bgp.getPattern.getList.map { t =>
       val oper=
        if (t.getPredicate.isVariable){
@@ -365,51 +277,51 @@ class QueryRewriting(reader:R2rmlReader,systemId:String="default") {
     else op1.build(op2)
   }
   
-  def navigate(op:Op, query:StreamQuery):AlgebraOp=op match{ 
-    case bgp:OpBGP=>      
-      processBgp(bgp, query)
+  def navigate(op:Op, query:StreamQuery, graph:OpGraph):AlgebraOp=op match{ 
+    case bgp:OpBGP=>    
+      processBgp(bgp, query,graph)
     case project:OpProject=>        
-      val opo = navigate(project.getSubOp, query)
+      val opo = navigate(project.getSubOp, query,graph)
       val xprs=project.getVars.map(vari=> (vari.getVarName, UnassignedVarXpr)).toMap
       new ProjectionOp(xprs,opo,query.isDistinct)
       
     case opJoin:OpJoin=>     
-      val l = navigate(opJoin.getLeft, query)
-      val r = navigate(opJoin.getRight, query)
+      val l = navigate(opJoin.getLeft, query,graph)
+      val r = navigate(opJoin.getRight, query,graph)
       new InnerJoinOp(l, r)        
         
     case opJoin:OpLeftJoin=>        
-      val l = navigate(opJoin.getLeft, query)
-      val r = navigate(opJoin.getRight, query)
+      val l = navigate(opJoin.getLeft, query,graph)
+      val r = navigate(opJoin.getRight, query,graph)
       new LeftOuterJoinOp(l, r)
               
     case filter:OpFilter=>        
-      val inner = navigate(filter.getSubOp,query)
+      val inner = navigate(filter.getSubOp,query,graph)
       val selXprs:Set[Xpr]=filter.getExprs.iterator.map(ex=>decodeXpr(ex)).toSet
       new SelectionOp("selec", inner,selXprs).simplify      
     case service:OpService=>
       throw new NotImplementedException("Query processing for SPARQL operation not supported: " + op.getClass.getName)
     case distinct:OpDistinct=>
-      navigate(distinct.getSubOp,query)
+      navigate(distinct.getSubOp,query,graph)
     case ext:OpExtend=>  
       logger.debug("Extend "+ext.getVarExprList.getExprs+" "+ext.getSubOp)
       ext.getSubOp match {
         case group:OpGroup=>
           new GroupOp(null,group.getGroupVars.getVars.map(v=>v.getVarName),
             group.getAggregators.map(a=>aggregator(extendReplace(ext,a.getVar.getVarName),a.getAggregator)).toMap,
-            navigate(group.getSubOp,query))          
-        case _=> navigate(ext.getSubOp,query)
+            navigate(group.getSubOp,query,graph))          
+        case _=> navigate(ext.getSubOp,query,graph)
       }
     case group:OpGroup=>     
       new GroupOp(null,group.getGroupVars.getVars.map(v=>v.getVarName),
             group.getAggregators.map(a=>aggregator(a.getVar.getVarName,a.getAggregator)).toMap,
-            navigate(group.getSubOp,query))      
+            navigate(group.getSubOp,query,graph))      
     case union:OpUnion=> 
-      val l = navigate(union.getLeft, query)
-      val r = navigate(union.getRight, query)
+      val l = navigate(union.getLeft,query,graph)
+      val r = navigate(union.getRight,query,graph)
       new MultiUnionOp(Seq(l,r).filter(_!=null).map(opr=>opr.id->opr).toMap).simplify
-    case graph:OpStreamGraph=>       
-      navigate(graph.getSubOp,query)
+    case graph:OpStreamGraph=>   
+      navigate(graph.getSubOp,query,graph)
     case graph:OpGraph=>       
       val bgp=graph.getSubOp.asInstanceOf[OpBGP]
       val vars=
@@ -549,7 +461,7 @@ class QueryRewriting(reader:R2rmlReader,systemId:String="default") {
   private def createProjection(t:Triple,tMap:TriplesMap,nMap:TermMap,poMap:PredicateObjectMap,query:StreamQuery):ProjectionOp ={
     val graphs = tMap.subjectMap.graphMap
     val stream = 
-      if (graphs != null) query.getStream(tMap.subjectMap.graphMap.constant.asResource.getURI) 
+      if (graphs != null) query.streams.getOrElse(tMap.subjectMap.graphMap.constant.asResource.getURI,null) 
       else null
     val unary = createRelation(tMap, nMap, stream)           
     createProjection(t, tMap, nMap, poMap, unary)
@@ -622,7 +534,8 @@ class QueryRewriting(reader:R2rmlReader,systemId:String="default") {
             new WindowSpec("",sw.from.time,sw.from.unit,0,null,slide,slunit)                                   
           } 
           else null        
-          new WindowOp(tableid+getAlias+uri, extentName,tMap.logicalTable.pk,wn)
+          //new WindowOp(tableid+getAlias+uri, extentName,tMap.logicalTable.pk,wn)
+          new WindowOp(tableid+uri, extentName,tMap.logicalTable.pk,wn)
       } 
       else 
         new RelationOp(tableid+"genId",extentName,tMap.logicalTable.pk)

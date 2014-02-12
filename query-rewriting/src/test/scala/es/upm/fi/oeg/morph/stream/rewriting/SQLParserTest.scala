@@ -1,23 +1,24 @@
 package es.upm.fi.oeg.morph.stream.rewriting
-import org.scalatest.prop.Checkers
-import org.scalatest.junit.ShouldMatchersForJUnit
-import org.scalatest.junit.JUnitSuite
-import org.junit.Test
 import org.slf4j.LoggerFactory
+import org.scalatest.Matchers
+import org.scalatest.FlatSpec
 
-class SQLParserTest  extends JUnitSuite with ShouldMatchersForJUnit with Checkers {
+class SQLParserTest  extends FlatSpec with Matchers  {
   private val logger= LoggerFactory.getLogger(this.getClass)
 
-  @Test def parseProjections{
+  "sql query" should "parse projection attributes" in{
     val p=SQLParser.projections("SELECT s,p,o FROM datacell.srbin WHERE o=RainfallObservation")
     p.foreach(println)
+    p.size shouldBe 3
   }
-  @Test def parseSelections{
-    val p=SQLParser.selections("SELECT s,p,o FROM datacell.srbin WHERE o=RainfallObservation and p=type and t=rat")
-    p.get.foreach(println)
+  "sql query" should "parse selection operators" in{
+    val s=SQLParser.selections("SELECT s,p,o FROM datacell.srbin WHERE o=RainfallObservation and p=type and t=rat")
+    s.get.foreach(println)
+    s.get.size shouldBe 3
   }
-  @Test def parseNoSelections{
-    val p=SQLParser.selections("SELECT s,p,o FROM datacell.srbin")
-    println(p)
+  "sql query without selections" should "parse no selections" in{
+    val s=SQLParser.selections("SELECT s,p,o FROM datacell.srbin")
+    println(s)
+    s.size shouldBe 0
   }
 }

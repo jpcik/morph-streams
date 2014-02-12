@@ -17,6 +17,7 @@ object OntologyRewriting {
     val clauseQuery=clausifier.clausifiedQuery
     logger.debug("The clausified query: "+clauseQuery)
     val fclauses=k.rewriteDatalogClauses(Seq(clauseQuery))
+    logger.debug("datalog result"+fclauses.mkString("\n"))
     clausifier.sparqlizeUCQ(fclauses)
  
     logger.debug("Expanded query: "+query.toString)

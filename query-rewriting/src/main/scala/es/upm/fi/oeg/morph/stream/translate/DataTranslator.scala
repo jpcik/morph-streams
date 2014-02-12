@@ -127,7 +127,7 @@ class DataTranslator(results:Seq[ResultSet],query:SourceQuery) {
 				var valo= rs.getObject(tt.getObject.getName.toLowerCase)
 							
 				if (valo.toString().startsWith("http://"))
-				  obj = m.createResource(valo.toString)
+				  obj = m.createResource(URLTools.encode(valo.toString))
 				else
 				  obj = m.createLiteral(valo.toString)				
 			  }

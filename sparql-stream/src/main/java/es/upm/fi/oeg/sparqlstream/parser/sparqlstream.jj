@@ -48,6 +48,7 @@ import es.upm.fi.oeg.sparqlstream.syntax.ElementTripleWindow;
 import es.upm.fi.oeg.sparqlstream.syntax.ElementWindow;
 import es.upm.fi.oeg.sparqlstream.syntax.ElementTimeValue;
 import es.upm.fi.oeg.sparqlstream.syntax.ElementNamedStream;
+import es.upm.fi.oeg.sparqlstream.StreamQuery;
 import es.upm.fi.oeg.morph.common.TimeUnit;
 
 @SuppressWarnings({"unused","serial"})
@@ -121,9 +122,9 @@ void SelectClause() : { Var v ; Expr expr ; Node n ; }
 {
   <SELECT>
     { getQuery().setQuerySelectType() ; }
-  ( <RSTREAM> { getStreamQuery().setRstream(true);}
-  | <DSTREAM> { getStreamQuery().setDstream(true);}
-  | <ISTREAM> { getStreamQuery().setIstream(true);}
+  ( <RSTREAM> { getStreamQuery().r2s().$plus$eq("rstream");}
+  | <DSTREAM> { getStreamQuery().r2s().$plus$eq("dstream");}
+  | <ISTREAM> { getStreamQuery().r2s().$plus$eq("istream");}
   )?
   ( <DISTINCT> { getQuery().setDistinct(true);}
   | <REDUCED> { getQuery().setReduced(true); }
@@ -240,7 +241,7 @@ void NamedStreamClause() :
     ds = new ElementStreamGraph(n,w);
     //ds.setUri(n);
     //ds.setWindow(w);
-    getStreamQuery().addStream(ds);
+    getStreamQuery().streams().put(ds.getUri(),ds);
   }
 }
 
@@ -436,7 +437,7 @@ ElementTimeValue TimeExpression() :
 }
 {
 //try{
-  (LOOKAHEAD(2) <NOW> <MINUS> t = <INTEGER> [timeunit = GetUnit()]
+  (LOOKAHEAD(2) <NOW><MINUS>t = <INTEGER> [timeunit = GetUnit()]
   | <NOW>)
 //  }
 //  catch (TokenMgrError e)
@@ -459,7 +460,9 @@ TimeUnit GetUnit(): {TimeUnit timeunit;}
   | <S>  	 {timeunit = TimeUnit.SECOND();}  
   | <SECONDS> {timeunit = TimeUnit.SECOND();}  
   | <MINUTES> {timeunit = TimeUnit.MINUTE();}
+  | <MIN>    {timeunit = TimeUnit.MINUTE();}
   | <HOURS> 	 {timeunit = TimeUnit.HOUR();} 
+  | <HR> 	 {timeunit = TimeUnit.HOUR();} 
   | <DAY> 	 {timeunit = TimeUnit.DAY();}
   | <MONTH>  {timeunit = TimeUnit.MONTH();}
   | <YEAR> 	 {timeunit = TimeUnit.YEAR();}
@@ -1787,6 +1790,7 @@ TOKEN [IGNORE_CASE] :
 // Timeunit
 | < MS: "MS" >
 | < S: "S" >
+| < HR: "HR" >
 //| < SECOND: "second" >
 //| < MINUTE: "minute" >
 //| < HOUR: "hour" >

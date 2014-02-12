@@ -13,6 +13,5 @@ class ElementTimeWindow(val from:ElementTimeValue,
     val to:ElementTimeValue,val slide:ElementTimeValue) extends ElementWindow {
 }
 
-
 class ElementTripleWindow(val range:Int,val delta:Int) extends ElementWindow {  
 }

@@ -5,15 +5,12 @@ organization := "es.upm.fi.oeg.morph"
 version := "1.0.9"
 
 libraryDependencies ++= Seq(
-  "net.sf" % "jsqlparser" % "0.0.1",
-  "ch.qos.logback" % "logback-classic" % "1.0.9",  
-  "es.upm.fi.oeg.morph" % "morph-core" % "1.0.5",
-  "es.upm.fi.oeg.morph" % "morph-querygen" % "1.0.4",
-  "com.typesafe.akka" %% "akka-actor" % "2.1.2",
-  "es.upm.fi.oeg.morph" % "kyrie" % "0.18.1",    
-  "junit" % "junit" % "4.7" % "test",
-  "org.scalatest" % "scalatest_2.10" % "1.9.1" % "test",
-  "org.scalacheck" % "scalacheck_2.10" % "1.10.0" % "test"
+  "net.sf" % "jsqlparser" % "0.0.1" intransitive,
+  "ch.qos.logback" % "logback-classic" % "1.0.13" intransitive,  
+  "es.upm.fi.oeg.morph" % "morph-querygen" % "1.0.6" ,
+  "com.typesafe.akka" %% "akka-actor" % "2.2.0" intransitive,
+  "es.upm.fi.oeg.morph" % "kyrie" % "0.18.2",    
+  "org.scalatest" % "scalatest_2.10" % "2.0.RC1" % "test"
 )
 
 resolvers ++= Seq(

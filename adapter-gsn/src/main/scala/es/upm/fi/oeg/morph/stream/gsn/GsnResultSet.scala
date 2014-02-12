@@ -37,6 +37,7 @@ class GsnResultSet(override val records: Stream[Array[Object]], override val met
     
     metadata(columnLabel) match{
       case rep:ReplaceXpr=>
+        println(internalLabels)
         rep.evaluate(internalLabels.map(l=>l._1->current(l._2)).toMap)
       case v:VarXpr=>current(internalLabels(v.varName))
       case c:ConstantXpr=>c.evaluate

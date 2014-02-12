@@ -2,6 +2,7 @@ PREFIX ssn: <http://purl.oclc.org/NET/ssnx/ssn#>
 PREFIX qudt: <http://data.nasa.gov/qudt/owl/qudt#> 
 PREFIX bicy: <http://citybikes.linkeddata.es/ontology#>  
 SELECT ?obs ?val 
+FROM NAMED STREAM <http://swiss-experiment.ch/data#wannengrat.srdf> [NOW - 30 S]
 WHERE {
   ?obs a ssn:Observation;
        ssn:observationResult ?output.

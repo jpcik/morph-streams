@@ -12,13 +12,15 @@ import es.upm.fi.oeg.morph.esper.Event
 
 class WrappersTest extends JUnitSuite with ShouldMatchersForJUnit {
   val actorSystem=ActorSystem("demorunner",ConfigFactory.load.getConfig("demosystem"))
+  val engineEmt=actorSystem.actorOf(Props[DemoEngine],"EsperEngineEmt")
   val engineWM=actorSystem.actorOf(Props[DemoEngine],"EsperEngineWeatherMap")
   val engineCB=actorSystem.actorOf(Props[DemoEngine],"EsperEngineCitybikes")
+  val engineHL7=actorSystem.actorOf(Props[DemoEngine],"EsperEngineHL7")
      
   @Test def randomWrapper:Unit={
     new ApiWrapper("hl7",actorSystem)
     
-    Thread.sleep(10000)
+    Thread.sleep(11000)
   }
   
   @Test def csvWrapper:Unit={
@@ -34,6 +36,11 @@ class WrappersTest extends JUnitSuite with ShouldMatchersForJUnit {
   @Test def citybikesWrapper:Unit={
     new ApiWrapper("citybikes",actorSystem)
     Thread.sleep(5000)
+  }      
+
+  @Test def xmlrestWrapper:Unit={
+    new ApiWrapper("emt",actorSystem)
+    Thread.sleep(10000)
   }      
 
 }

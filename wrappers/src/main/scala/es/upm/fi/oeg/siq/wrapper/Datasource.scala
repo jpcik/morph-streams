@@ -29,6 +29,10 @@ abstract class Datasource(who:PollWrapper,systemid:String) extends Actor{
     } catch {case e:Exception=>e.printStackTrace}
   }
   
+  override def preStart(){
+    callRest
+  }
+  
   context.setReceiveTimeout(who.rate millisecond) 
   def receive={
     case ReceiveTimeout=>callRest

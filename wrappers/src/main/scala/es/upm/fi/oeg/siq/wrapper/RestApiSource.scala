@@ -10,9 +10,11 @@ import play.api.libs.json.JsString
 import scala.xml.Elem
 import com.ning.http.client.RequestBuilder
 import play.api.libs.json.JsValue
+import org.slf4j.LoggerFactory
 
 
-class RestApiSource (who:PollWrapper,id:String) extends Datasource(who,id){    
+class RestApiSource (who:PollWrapper,id:String) extends Datasource(who,id){
+  val logger = LoggerFactory.getLogger(this.getClass)
   val transf=who.datatype match{
     case "xml"=>svc:RequestBuilder=>extract(Http(svc OK as.xml.Elem)())
     case "json"=>svc:RequestBuilder=>
@@ -27,6 +29,9 @@ class RestApiSource (who:PollWrapper,id:String) extends Datasource(who,id){
     if (k._2 == "{id}") svc.addQueryParameter(k._1, id)
     else svc.addQueryParameter(k._1, k._2)      
   }
+  if (logger.isTraceEnabled)
+    logger.trace("Service to call: "+svc.url)
+  
   val root=who.configvals("serviceroot")
   lazy val values=who.configvals("values").split(',').filterNot(_=="").map{v=>new Func(v)}
   val funs = values.map{v=>v.instantiate}

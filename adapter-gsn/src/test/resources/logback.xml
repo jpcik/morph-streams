@@ -6,7 +6,7 @@
 		</encoder>
 	</appender>	
 	
-	<logger name="es.upm.fi.oeg.morph" level="DEBUG" />
+	<logger name="es.upm.fi.oeg.morph" level="TRACE" />
 	<logger name="es.upm.fi.oeg.morph.stream.gsn.GsnResultSet" level="DEBUG" />
 	<logger name="eu.planetdata.srbench" level="TRACE" />
 	

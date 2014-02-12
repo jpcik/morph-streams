@@ -3,6 +3,7 @@ PREFIX qudt: <http://data.nasa.gov/qudt/owl/qudt#>
 PREFIX bicy: <http://citybikes.linkeddata.es/ontology#>  
 PREFIX cf-property: <http://purl.oclc.org/NET/ssnx/cf/cf-property#>
 SELECT ?obs   
+FROM NAMED STREAM <http://swiss-experiment.ch/data#wannengrat.srdf> [NOW - 30 S]
 WHERE {
   ?obs a ssn:Observation;
        ssn:observedProperty cf-property:relative_humidity.  

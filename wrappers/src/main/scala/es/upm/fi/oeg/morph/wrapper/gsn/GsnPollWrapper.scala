@@ -1,4 +1,4 @@
-package es.upm.fi.oeg.siq.wrapper.gsn
+package es.upm.fi.oeg.morph.wrapper.gsn
 
 import gsn.wrappers.AbstractWrapper
 import org.slf4j.LoggerFactory
@@ -19,11 +19,10 @@ class GsnPollWrapper extends AbstractWrapper with PollWrapper {
   override val actorSystem=ActorSystem("wrap",ConfigFactory.load.getConfig("restapiwrapper"))
   
   override def postData(systemid:String,ts:Long,o:Observation){
-    logger.trace("post vals "+o.serializable.size)
+    logger.trace("post vals "+o.serializable.size)    
     //val ser =o.values.asInstanceOf[Array[java.io.Serializable]]
     postStreamElement(ts,o.serializable)
-    //postStreamElement(new StreamElement(dataFields,o.serializable),ts)
-    
+    //postStreamElement(new StreamElement(dataFields,o.serializable),ts)    
     //Array[java.io.Serializable](systemid,o.id,o.name,o.timestamp,o.bikes,o.free))              
   }
   
