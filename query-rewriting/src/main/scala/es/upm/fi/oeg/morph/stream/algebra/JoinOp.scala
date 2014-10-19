@@ -26,11 +26,11 @@ abstract class JoinOp(opname:String,l:AlgebraOp,r:AlgebraOp) extends BinaryOp(nu
     
   override def toString:String={
     val cond=conditions.map(x=>x.toString).mkString(" ")
-	return name+" ("+cond+")"
+	name+" ("+cond+")"+id
   }
     
   def hasEqualConditions:Boolean={
-	if (conditions.isEmpty) return false
+	if (conditions.isEmpty) false
 	else
 	  conditions.filter(_.isInstanceOf[BinaryXpr]).forall(bi=>
 		bi.op.equals("=") && bi.left.isEqual(bi.right))		
@@ -42,7 +42,6 @@ abstract class JoinOp(opname:String,l:AlgebraOp,r:AlgebraOp) extends BinaryOp(nu
       logger.trace("compatible: "+varnames)
       
       varnames.forall{v=>
-        //println(p1.expressions(v));  
         XprUtils.canbeEqual(p1.expressions(v),p2.expressions(v))}
     case (_,_)=>true
   }
@@ -55,10 +54,8 @@ abstract class JoinOp(opname:String,l:AlgebraOp,r:AlgebraOp) extends BinaryOp(nu
         val condVars=this.conditions.map{cond=>
           cond.varNames.map(v=>varMaps(v)).flatten
         }.flatten.toSet
-        println("condition vars "+condVars+ "--"+pks+"--"+(pks==condVars))
+        logger.trace("condition vars "+condVars+ "--"+pks+"--"+(pks==condVars))
         condVars.containsAll(pks)
-        //pks==condVars
-        //true
       case _ => false
     }
   }

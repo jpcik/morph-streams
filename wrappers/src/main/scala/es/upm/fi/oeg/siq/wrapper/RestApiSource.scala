@@ -1,6 +1,6 @@
 package es.upm.fi.oeg.siq.wrapper
 
-import dispatch._
+import dispatch._, Defaults._
 import java.util.Date
 import play.api.libs.json.Json._
 import play.api.libs.json.Json
@@ -8,23 +8,25 @@ import play.api.libs.json.JsArray
 import collection.JavaConversions._
 import play.api.libs.json.JsString
 import scala.xml.Elem
-import com.ning.http.client.RequestBuilder
+//import com.ning.http.client.RequestBuilder
 import play.api.libs.json.JsValue
 import org.slf4j.LoggerFactory
 
 
 class RestApiSource (who:PollWrapper,id:String) extends Datasource(who,id){
   val logger = LoggerFactory.getLogger(this.getClass)
+  val theurl=who.url.replace("{id}",id)
+  val svc = url(theurl)
   val transf=who.datatype match{
-    case "xml"=>svc:RequestBuilder=>extract(Http(svc OK as.xml.Elem)())
-    case "json"=>svc:RequestBuilder=>
+    case "xml"=>svc:dispatch.Req=>extract(Http(svc OK as.xml.Elem).apply)
+    case "json"=>
+      println(theurl)
       val str=Http(svc OK as.String).apply
-      extract(str)
+      println(str)
+      svc:dispatch.Req=>extract(str)
   }
   val idname=who.idkeys(id)
   
-  val theurl=who.url.replace("{id}",id)
-  val svc = url(theurl)
   who.urlparams.foldLeft(svc){(a,k)=>
     if (k._2 == "{id}") svc.addQueryParameter(k._1, id)
     else svc.addQueryParameter(k._1, k._2)      

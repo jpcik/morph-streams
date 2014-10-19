@@ -56,24 +56,25 @@ class SparqlClausifier(tf:TermFactory, query:Query) {
 
   private def replaceVars(c:Clause,masterClause:Clause)={
     val head=masterClause.getHead
-    val vars=head.getArguments.map(v=>v.getName.replace("?","").toInt)
-    val termVars=c.getHead.getArguments.map(v=>v.getName.replace("?","").toInt)    
-    val repl=termVars.zip(vars).toMap//.filter(pair=>pair._1!=pair._2).toMap
-    val vars1=masterClause.getBody.map{t=>
+    val headVars:Array[Int]=head.getArguments.map(v=>v.getName.replace("?","").toInt)
+    val clauseHeadVars=c.getHead.getArguments.map(v=>v.getName.replace("?","").toInt)    
+    println((clauseHeadVars zip headVars).mkString("--"))
+    val replaceHead=clauseHeadVars.zip(headVars).toMap//.filter(pair=>pair._1!=pair._2).toMap
+    val bodyVars=masterClause.getBody.map{t=>
       t.getName->t.getArguments.filter(a=>a.isInstanceOf[Variable])
         .map(v=>v.getName.replace("?","").toInt)      
     }.toMap
-    val replc=c.getBody.map{t=>
-      val tt=vars1.getOrElse(t.getName, Array())
+    val replaceBody=c.getBody.map{t=>
+      val tt=bodyVars.getOrElse(t.getName, Array())
       val tt2=t.getArguments.filter(a=>a.isInstanceOf[Variable])
       .map(v=>v.getName.replace("?","").toInt)
-      tt2.zip(tt)
+      tt2.zip(tt).filter{case (k,v)=> !replaceHead.contains(k)}
     }.flatten.toMap//filter(pair=>pair._1!=pair._2).toMap
       
     
     
-    logger.debug("replacing vars: "+replc.mkString(","))
-    new Clause(c.getBody.map(t=>replaceVar(replc++repl,t)),head)
+    logger.debug("replacing vars: "+(replaceHead++replaceBody).mkString(","))
+    new Clause(c.getBody.map(t=>replaceVar(replaceHead++replaceBody,t)),head)
   }
   
   private def replaceVar(vars:Map[Int,Int],t:Term):Term={
@@ -83,7 +84,7 @@ class SparqlClausifier(tf:TermFactory, query:Query) {
         val vv=v.getName.replace("?","").toInt
         logger.debug("Now replacing var: "+ vv)
         if (vars.contains(vv)) tf.getVariable(vars(vv))
-        else v
+        else tf.getVariable(vv+1000)
       case fTerm:FunctionalTerm=>replaceVar(vars,fTerm)
       case _=>arg
     }}
@@ -111,12 +112,14 @@ class SparqlClausifier(tf:TermFactory, query:Query) {
       else ResourceFactory.createResource(pref+t.getName)
     val subj=t.getArgument(0).getName
     val obj= if (t.getArity==1) ResourceFactory.createResource(pref+t.getName).asNode
-      else if (t.getArgument(1).getName.startsWith("?")) 
-        Var.alloc(vars(t.getArgument(1).getName))
+      else if (t.getArgument(1).getName.startsWith("?")){
+        val varname=t.getArgument(1).getName
+        Var.alloc(vars.getOrElse(varname,varname))
+      }
       else ResourceFactory.createResource(pref+t.getArgument(1).getName).asNode
     logger.debug("trubila "+subj+ " "+predName+" "+obj)
     
-    new com.hp.hpl.jena.graph.Triple( Var.alloc(vars(subj)),predName.asNode, obj)        
+    new com.hp.hpl.jena.graph.Triple( Var.alloc(vars.getOrElse(subj,subj)),predName.asNode, obj)        
   }
 
   

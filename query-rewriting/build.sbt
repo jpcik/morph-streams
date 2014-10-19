@@ -2,15 +2,15 @@ name := "query-rewriting"
 
 organization := "es.upm.fi.oeg.morph"
 
-version := "1.0.10"
+version := "1.0.11"
 
 libraryDependencies ++= Seq(
   "net.sf" % "jsqlparser" % "0.0.1" intransitive,
-  "ch.qos.logback" % "logback-classic" % "1.0.13" intransitive,  
-  "es.upm.fi.oeg.morph" % "morph-querygen" % "1.0.6" ,
-  "com.typesafe.akka" %% "akka-actor" % "2.2.0" intransitive,
+  "ch.qos.logback" % "logback-classic" % "1.0.13" ,  
+  "es.upm.fi.oeg.morph" % "morph-querygen" % "1.0.8" ,
+  "com.typesafe.akka" %% "akka-actor" % "2.3.4" ,
   "es.upm.fi.oeg.morph" % "kyrie" % "0.18.2",    
-  "org.scalatest" % "scalatest_2.10" % "2.0.RC1" % "test"
+  "org.scalatest" %% "scalatest" % "2.2.1" % "test"
 )
 
 resolvers ++= Seq(

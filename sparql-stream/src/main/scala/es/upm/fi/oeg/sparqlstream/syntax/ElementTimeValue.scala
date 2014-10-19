@@ -2,7 +2,7 @@ package es.upm.fi.oeg.sparqlstream.syntax
 import com.hp.hpl.jena.sparql.syntax.Element
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap
 import com.hp.hpl.jena.sparql.syntax.ElementVisitor
-import scala.reflect.BeanProperty
+import scala.beans.BeanProperty
 import es.upm.fi.oeg.morph.common.TimeUnit
 
 class ElementTimeValue(val time:Long,@BeanProperty val unit:TimeUnit) extends Element{

@@ -20,6 +20,8 @@ class QueryRewritingTest  extends FlatSpec with Matchers  {
   val transSQL = new QueryRewriting("mappings/testMappingSQL.ttl","default")
   val transWann = new QueryRewriting("mappings/wannengrat.ttl","default");
   val transSRBench = new QueryRewriting("mappings/srbench.ttl","default");
+  val transSRBenchKyrie = new QueryRewriting("mappings/srbenchkyrie.ttl","default");
+
   
   def query(q:String)=loadQuery("queries/"+q+".sparql")
 
@@ -113,6 +115,10 @@ class QueryRewritingTest  extends FlatSpec with Matchers  {
     transWann.translate(query("wannengrat/queryTemp"))
   }
 
+  "Wannengrat ordered Query" should "be translated" in {    
+    transWann.translate(query("wannengrat/queryTempOrdered"))
+  }
+
   "Wannengrat metadata Query" should "be translated" in {
     transWann.translate(query("wannengrat/queryMetadataTemp"))
   }
@@ -122,5 +128,9 @@ class QueryRewritingTest  extends FlatSpec with Matchers  {
     println(q.serializeQuery)
   }
 
+  "Query with repeated obsprop" should "be translated" in {
+    val q=transSRBenchKyrie translate query("ssn/q10")
+    println(q serializeQuery)
+  }  
 
 }

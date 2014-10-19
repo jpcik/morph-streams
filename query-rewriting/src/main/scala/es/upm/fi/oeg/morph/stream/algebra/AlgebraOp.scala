@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory
 trait AlgebraOp {
   val id:String
   val name:String
-  def build(op:AlgebraOp):AlgebraOp
+  def join(op:AlgebraOp):AlgebraOp
   def display(level:Int)
   def display
   def copyOp:AlgebraOp
@@ -20,11 +20,11 @@ class UnaryOp(val id:String,val name:String,val subOp:AlgebraOp) extends Algebra
   protected def tab(level:Int):String=
 	(0 until level).map(_=>"\t").mkString	
 	
-  override def display{
+  override def display={
     display(0)
   }
 	
-  override def display(level:Int){
+  override def display(level:Int)={
 	logger.warn(tab(level)+toString)
 	if (subOp!= null)
 	  subOp.display(level+1)						
@@ -42,8 +42,8 @@ class UnaryOp(val id:String,val name:String,val subOp:AlgebraOp) extends Algebra
 	
   def clone(sub:AlgebraOp)=new UnaryOp(id,name,sub) 
   
-  override def build(op:AlgebraOp):AlgebraOp=
-	throw new IllegalArgumentException("Never build an untyped operation")
+  override def join(op:AlgebraOp):AlgebraOp=
+	throw new IllegalArgumentException("Cannot join an untyped operation")
 
   override def merge(op:AlgebraOp,xprs:Seq[Xpr]):AlgebraOp=
 	throw new NotImplementedException("Merge operation not implemented for this operator "+this.name)
@@ -63,11 +63,11 @@ class BinaryOp(val id:String,val name:String,val left:AlgebraOp,val right:Algebr
   private def tab(level:Int)=
 	(0 until level).map(_=>"\t").mkString	      	
 	
-  override def display{
+  override def display={
 	display(0)
   }
 
-  override def display(level:Int){
+  override def display(level:Int)={
 	logger.warn(tab(level)+toString)
 	if (left!= null)
 	  left.display(level+1)
@@ -95,25 +95,13 @@ class BinaryOp(val id:String,val name:String,val left:AlgebraOp,val right:Algebr
 	  k->leftvars(k)//fix: only taking left var for intersection
 	}.toMap
 	lMap++rMap++iMap
-	
   }
 		
-/*
-	public OpInterface simplify()
-	{
-		if (this.getLeft()==null)
-			return this.getRight();
-		else if (this.getRight()==null)
-			return this.getLeft();
-		return this;
-	}
-*/
-	
   override def copyOp=
 	new BinaryOp(id, name, null, null)
 	
-  override def build(op:AlgebraOp):AlgebraOp=
-	throw new IllegalArgumentException("never build a binary unnamed operation")
+  override def join(op:AlgebraOp):AlgebraOp=
+	throw new IllegalArgumentException("CAnnot join a binary unnamed operation")
 	
   override def merge(op:AlgebraOp, xprs:Seq[Xpr])=
 	throw new NotImplementedException("No implementation for OpBinary "+this.name)
@@ -121,9 +109,9 @@ class BinaryOp(val id:String,val name:String,val left:AlgebraOp,val right:Algebr
 
 
 class RootOp(rootId:String,subOp:AlgebraOp) extends UnaryOp(rootId,"root",subOp){
-  override def build(newOp:AlgebraOp)={
+  override def join(newOp:AlgebraOp)={
 	val sub=if (subOp==null) newOp
-	else subOp.build(newOp)
+	  else subOp join newOp
 	new RootOp(id,sub)
   }
 }	

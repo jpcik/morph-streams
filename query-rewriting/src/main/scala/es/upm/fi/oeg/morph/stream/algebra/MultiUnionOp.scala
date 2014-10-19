@@ -11,21 +11,19 @@ class MultiUnionOp(childrenOps:Map[String,AlgebraOp])
 
   private val logger= LoggerFactory.getLogger(this.getClass)
   override val name="multiunion"
-  private val nodups=childrenOps//.filter(_._2!=null).map(c=>c._2.id->c._2).toMap
+  private val nodups=childrenOps
   val children=nodups.filter(_._2!=null)
   
   override val id={
     children.map(c=>c._2.id).mkString("-")
   }
   
-  override def build(op:AlgebraOp):AlgebraOp=op match{
+  override def join(op:AlgebraOp):AlgebraOp=op match{
 	case multi:MultiUnionOp=>
-	  val join = new InnerJoinOp(this, multi)
-	  return join
+	  new InnerJoinOp(this, multi)	  
 	case proj:ProjectionOp=>
-	  val join = new InnerJoinOp(this, proj)
-	  return join
-	case _=> throw new NotImplementedException("Build for: "+op.toString)
+	  new InnerJoinOp(this, proj)
+	case _=> throw new NotImplementedException("Join for: "+op.toString)
   }
 
   override def copyOp:AlgebraOp={
@@ -35,20 +33,19 @@ class MultiUnionOp(childrenOps:Map[String,AlgebraOp])
   private def tab(level:Int)=(0 until level).map(_=>"\t").mkString  
 	
   override def display(level:Int)	{
-	logger.warn(tab(level)+name)//+" "+id+" ")//+index.keySet.mkString)
+	logger.warn(tab(level)+name)
 	children.values.take(30).foreach(op=>op.display(level+1))
   }
 
-  override def display(){
+  override def display()={
 	display(0)
   }
 	
   override def vars=
 	children.values.map(child=>child.vars).reduceLeft(_++_)
 	
-  override def merge(op:AlgebraOp,xprs:Seq[Xpr]):AlgebraOp={
-	if (op.isInstanceOf[MultiUnionOp]){
-	  val union = op.asInstanceOf[MultiUnionOp];	
+  override def merge(op:AlgebraOp,xprs:Seq[Xpr]):AlgebraOp=op match {
+    case union:MultiUnionOp=>
 	  logger.debug("merge unions: "+children.keySet+"--"+union.children.keySet)
 		
 	  val set =  this.children.keySet 			
@@ -60,10 +57,8 @@ class MultiUnionOp(childrenOps:Map[String,AlgebraOp])
 		  key+key2->opnew
 		}.filter(_._2!=null)
 	  }.flatten.toMap	
-	  return new MultiUnionOp(ops)
-					
-    }
-	else
+	  new MultiUnionOp(ops)					
+    case _ =>
 		throw new NotImplementedException("Merge implementation missing: "+op.toString());
 		
   }
@@ -80,13 +75,6 @@ class MultiUnionOp(childrenOps:Map[String,AlgebraOp])
         case _=> Seq(c)
       }
       }.flatten.toMap) 
-    /*
-    else if (children.forall(c=>c._2.isInstanceOf[MultiUnionOp]))
-      MultiUnionOp(id,children.map{c=>
-        val u=c._2.asInstanceOf[MultiUnionOp]
-        u.children.map(ch=>(c._1+ch._1,ch._2))
-      }.flatten.toMap )*/
-      
 	else this
   }
 }

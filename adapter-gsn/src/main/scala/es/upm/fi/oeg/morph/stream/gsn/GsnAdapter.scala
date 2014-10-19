@@ -31,6 +31,7 @@ class GsnAdapter(systemId:String="gsn") extends QueryEvaluator(systemId) {
     svc.addQueryParameter("nb","SPECIFIED")
     svc.addQueryParameter("nb_value","100000")
     logger.debug("Request to Gsn "+svc.url)
+    import scala.concurrent.ExecutionContext.Implicits.global 
     val res = Http(svc OK as.String)     
     if (logger.isTraceEnabled)
       logger.debug(res())

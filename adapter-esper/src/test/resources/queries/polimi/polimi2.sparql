@@ -1,0 +1,11 @@
+PREFIX om-owl: <http://knoesis.wright.edu/ssw/ont/sensor-observation.owl#>
+PREFIX weather: <http://knoesis.wright.edu/ssw/ont/weather.owl#>
+PREFIX st: <http://ex.org/>
+
+SELECT ?room ?p1 ?p2 
+FROM NAMED STREAM <http://myexample.org/polimistream> [NOW - 10S SLIDE 10S]
+WHERE {
+	?p1 st:detectedAt ?room.
+	?p2 st:detectedAt ?room.
+	FILTER (?p1 != ?p2)
+}

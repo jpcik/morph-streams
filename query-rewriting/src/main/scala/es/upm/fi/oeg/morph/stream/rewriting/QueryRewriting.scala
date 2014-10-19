@@ -95,7 +95,7 @@ import java.io.InputStream
 class QueryRewriting(reader:R2rmlReader,systemId:String="default") {
   private val logger= LoggerFactory.getLogger(this.getClass)
   val config=ConfigFactory.load.getConfig("morph.streams."+systemId)
-
+var pik=0
   val reasoning=try config.getBoolean("rewriter.reasoning") catch {case e:Missing=>false}
   val queryClass=try config.getString("adapter.query") catch {case e:Missing=>classOf[SqlQuery].getName}
   
@@ -164,40 +164,32 @@ class QueryRewriting(reader:R2rmlReader,systemId:String="default") {
   def translateToAlgebra(query: StreamQuery):AlgebraOp={
     val ini = System.currentTimeMillis      
     val op = StreamAlgebra.compile(query)
-    val span1 = System.currentTimeMillis() - ini
-    val span2 = System.currentTimeMillis() - ini
+    val span1 = System.currentTimeMillis - ini
+    val span2 = System.currentTimeMillis - ini
 
     val opo = navigate(op, query,null)
     val opNew=
-      if (query.getConstructTemplate != null) { //TODO ugliest code ever, please refactor
-        val tg = query.getConstructTemplate
+      if (query.getConstructTemplate != null) { 
+        val tg = query getConstructTemplate
         val xprs=tg.getTriples.map { tt =>
-          var vari = ""
-          if (tt.getSubject.isVariable) 
-            vari = tt.getSubject.getName          
-          if (tt.getObject.isVariable) 
-            vari = tt.getObject.getName
-          
-          val exp = new VarXpr(vari)
-          (vari, exp)
-        }.toMap
+          Seq(tt.getSubject,tt.getObject).filter(_.isVariable)
+        }.flatten.map(v=>(v.getName,new VarXpr(v.getName))).toMap
         val cProj = new ProjectionOp(xprs, opo,query.isDistinct)
-
-        //opNew.setSubOp(cProj)
         new RootOp(null,cProj)
-      } else {
-        new RootOp(null,null).build(opo)
+      } 
+      else {
+        new RootOp(null,null).join(opo)
       }
       val span3 = System.currentTimeMillis() - ini;
 
-      logger.debug("before optimization")
-      opNew.display
+      logger debug "before optimization"
+      opNew display
 
       val opt = new QueryOptimizer
-      val optimized=opt.staticOptimize(opNew)
+      val optimized=opt staticOptimize opNew
       val span4 = System.currentTimeMillis() - ini;
 
-      optimized.display
+      optimized display
 
       if (optimized.asInstanceOf[UnaryOp].subOp==null)
         throw new QueryRewritingException("Rewriting resulted in empty query. The query cannot be answered given the speecified mappings.",null)
@@ -224,6 +216,7 @@ class QueryRewriting(reader:R2rmlReader,systemId:String="default") {
       val oMap=if (poMap.objectMap==null)  reader.triplesMaps(poMap.refObjectMap.parentTriplesMap).subjectMap
         else poMap.objectMap
       val selection = createSelection(t,oMap,t.getObject.toString,unary)
+      logger.debug("created sel")
       createProjection(t,tMap,poMap.objectMap,poMap, selection)
     } 
     else if (t.getSubject.isURI){
@@ -246,6 +239,7 @@ class QueryRewriting(reader:R2rmlReader,systemId:String="default") {
          new MultiUnionOp(ch)
        }
        else if (t.getPredicate.getURI.equals(RDF.typeProp.getURI)) {
+         logger.debug("processing Type triple "+t)
          val tMaps = reader.filterBySubject(t.getObject.getURI) 
          val els=  tMaps.map { tMap => //TODO adapt for multiple graphs
            logger.debug("Mapping graphs for: " + tMap.uri + " - " + tMap.subjectMap.graphMap)
@@ -257,11 +251,9 @@ class QueryRewriting(reader:R2rmlReader,systemId:String="default") {
          val poMaps = reader.filterByPredicate(t.getPredicate.getURI)
          val els=poMaps.map {
            case (poMap, tMap) =>
-             val pro=processPOMap(t,poMap,tMap,query)
-             logger.debug("after poMap "+pro)
-             pro
+             processPOMap(t,poMap,tMap,query)             
          }.filter(_!=null)
-         new MultiUnionOp(els.map{p=>p.id->p}.toMap).simplify
+         new MultiUnionOp(els.map{p=>p.id->p}.toMap).simplify         
        }
             
       logger debug "Step subpattern: "+oper
@@ -274,12 +266,12 @@ class QueryRewriting(reader:R2rmlReader,systemId:String="default") {
 
   private def conjunction(op1:AlgebraOp,op2:AlgebraOp)={
     if (op1==null || op2==null) null
-    else op1.build(op2)
+    else op1.join(op2)
   }
   
   def navigate(op:Op, query:StreamQuery, graph:OpGraph):AlgebraOp=op match{ 
     case bgp:OpBGP=>    
-      processBgp(bgp, query,graph)
+      processBgp(bgp,query,graph)
     case project:OpProject=>        
       val opo = navigate(project.getSubOp, query,graph)
       val xprs=project.getVars.map(vari=> (vari.getVarName, UnassignedVarXpr)).toMap
@@ -288,7 +280,7 @@ class QueryRewriting(reader:R2rmlReader,systemId:String="default") {
     case opJoin:OpJoin=>     
       val l = navigate(opJoin.getLeft, query,graph)
       val r = navigate(opJoin.getRight, query,graph)
-      new InnerJoinOp(l, r)        
+      new InnerJoinOp(l, r).simplify        
         
     case opJoin:OpLeftJoin=>        
       val l = navigate(opJoin.getLeft, query,graph)
@@ -319,7 +311,11 @@ class QueryRewriting(reader:R2rmlReader,systemId:String="default") {
     case union:OpUnion=> 
       val l = navigate(union.getLeft,query,graph)
       val r = navigate(union.getRight,query,graph)
-      new MultiUnionOp(Seq(l,r).filter(_!=null).map(opr=>opr.id->opr).toMap).simplify
+      
+      val bop=new MultiUnionOp(Seq(l,r).filter(_!=null).map(opr=>opr.id+getAlias->opr).toMap)
+      
+      logger debug "number of "+bop.children.size+""
+      bop simplify
     case graph:OpStreamGraph=>   
       navigate(graph.getSubOp,query,graph)
     case graph:OpGraph=>       
@@ -455,9 +451,7 @@ class QueryRewriting(reader:R2rmlReader,systemId:String="default") {
         else IRIType
     }
     else term.termType
-  
-    
-    
+          
   private def createProjection(t:Triple,tMap:TriplesMap,nMap:TermMap,poMap:PredicateObjectMap,query:StreamQuery):ProjectionOp ={
     val graphs = tMap.subjectMap.graphMap
     val stream = 
@@ -499,9 +493,9 @@ class QueryRewriting(reader:R2rmlReader,systemId:String="default") {
     logger.debug("projection Xprs: "+xprs)
     
     
-    val relation = if (sub.isInstanceOf[RelationOp]) sub else sub.getRelation
+    //val relation = if (sub.isInstanceOf[RelationOp]) sub else sub.getRelation
     val projection = new ProjectionOp(xprs.filter(_!=null).toMap, sub,false)
-  
+    sub.display
     //logger.debug("Created projection: "+projection.toString());
     projection
     }
@@ -550,9 +544,7 @@ class QueryRewriting(reader:R2rmlReader,systemId:String="default") {
         else relation
       }        
       else relation
-    }
-    
-
+    }    
 }
 
 class QueryCompilerException(msg:String,e:Throwable) extends Exception(msg,e)

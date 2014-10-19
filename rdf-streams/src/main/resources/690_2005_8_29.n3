@@ -1,0 +1,30 @@
+@prefix om-owl:  <http://knoesis.wright.edu/ssw/ont/sensor-observation.owl#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sens-obs:  <http://knoesis.wright.edu/ssw/> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix weather:  <http://knoesis.wright.edu/ssw/ont/weather.owl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix wgs84:   <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+
+sens-obs:System_690
+      a       om-owl:System ;
+      om-owl:ID "690" ;
+      om-owl:hasLocatedNearRel
+              sens-obs:LocatedNearRel690 ;
+      om-owl:hasSourceURI <http://mesowest.utah.edu/cgi-bin/droman/meso_base.cgi?stn=690> ;
+      om-owl:parameter weather:_WindDirection , weather:_RelativeHumidity , weather:_AirTemperature , weather:_DewPoint , weather:_WindSpeed , weather:_WindGust ;
+      om-owl:processLocation
+              sens-obs:point_690 .
+
+sens-obs:LocatedNearRel690
+      a       om-owl:LocatedNearRel ;
+      om-owl:distance "6.8906"^^xsd:float ;
+      om-owl:hasLocation <http://sws.geonames.org/5606064/> ;
+      om-owl:uom weather:miles .
+
+sens-obs:point_690
+      a       wgs84:Point ;
+      wgs84:alt "4950"^^xsd:float ;
+      wgs84:lat "43.53260"^^xsd:float ;
+      wgs84:long "-112.94775"^^xsd:float .

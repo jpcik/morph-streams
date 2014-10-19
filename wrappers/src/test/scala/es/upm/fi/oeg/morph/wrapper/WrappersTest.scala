@@ -2,43 +2,44 @@ package es.upm.fi.oeg.morph.wrapper
 
 import org.scalatest.junit.JUnitSuite
 import org.scalatest.junit.ShouldMatchersForJUnit
-import org.junit.Test
 import akka.actor.ActorSystem
 import com.typesafe.config.ConfigFactory
 import akka.actor.Props
 import es.upm.fi.oeg.siq.wrapper.ApiWrapper
 import akka.actor.Actor
 import es.upm.fi.oeg.morph.esper.Event
+import org.scalatest.FlatSpec
+import org.scalatest.Matchers
 
-class WrappersTest extends JUnitSuite with ShouldMatchersForJUnit {
+class WrappersTest  extends FlatSpec with Matchers  {
   val actorSystem=ActorSystem("demorunner",ConfigFactory.load.getConfig("demosystem"))
   val engineEmt=actorSystem.actorOf(Props[DemoEngine],"EsperEngineEmt")
   val engineWM=actorSystem.actorOf(Props[DemoEngine],"EsperEngineWeatherMap")
   val engineCB=actorSystem.actorOf(Props[DemoEngine],"EsperEngineCitybikes")
   val engineHL7=actorSystem.actorOf(Props[DemoEngine],"EsperEngineHL7")
      
-  @Test def randomWrapper:Unit={
+  "randomWrapper" should "wrap" in{
     new ApiWrapper("hl7",actorSystem)
     
     Thread.sleep(11000)
   }
   
-  @Test def csvWrapper:Unit={
+  "csvWrapper" should "wrap" in{
     new ApiWrapper("social",actorSystem)
     Thread.sleep(15000)
   }      
 
-  @Test def jsonWrapper:Unit={
+  "jsonWrapper" should "wrap" in{
     new ApiWrapper("weathermap",actorSystem)
     Thread.sleep(5000)
   }      
 
-  @Test def citybikesWrapper:Unit={
+  "citybikesWrapper" should "wrap" in{
     new ApiWrapper("citybikes",actorSystem)
     Thread.sleep(5000)
   }      
 
-  @Test def xmlrestWrapper:Unit={
+  "xmlrestWrapper" should "wrap" in{
     new ApiWrapper("emt",actorSystem)
     Thread.sleep(10000)
   }      

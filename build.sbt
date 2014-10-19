@@ -2,9 +2,9 @@ name := "morph-streams"
 
 organization := "es.upm.fi.oeg.morph"
 
-version := "1.0.7"
+version := "1.0.8"
 
-scalaVersion := "2.10.3"
+scalaVersion := "2.11.2"
 
 crossPaths := false
 

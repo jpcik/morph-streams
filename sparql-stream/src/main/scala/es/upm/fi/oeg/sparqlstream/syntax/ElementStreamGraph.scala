@@ -2,7 +2,7 @@ package es.upm.fi.oeg.sparqlstream.syntax
 import com.hp.hpl.jena.sparql.syntax.ElementVisitor
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap
 import com.hp.hpl.jena.sparql.syntax.Element
-import scala.reflect.BeanProperty
+import scala.beans.BeanProperty
 
 class ElementStreamGraph(@BeanProperty val uri:String,
     @BeanProperty val window:ElementWindow) extends Element{

@@ -7,7 +7,7 @@ import scala.xml.Elem
 import akka.actor.ReceiveTimeout
 import akka.actor.Actor
 import concurrent.duration._
-import dispatch._
+import dispatch._,Defaults._
 import akka.actor.ActorSystem
 import com.typesafe.config.ConfigFactory
 import akka.actor.Props

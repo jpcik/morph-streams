@@ -1,27 +1,23 @@
-//import ScalaxbKeys._
-
 name := "wrappers"
 
 organization := "es.upm.fi.oeg.morph.streams"
 
-version := "1.0.9"
+version := "1.0.10"
 
-scalaVersion := "2.10.1"
+scalaVersion := "2.11.2"
 
 crossPaths := false
 
 libraryDependencies ++= Seq(
-  "es.upm.fi.oeg.morph.streams" % "esper-engine" % "1.0.3",
-  "net.databinder.dispatch" %% "dispatch-core" % "0.9.5",
-  "play" %% "play" % "2.1.1" intransitive,
-  "play" %% "play-iteratees" % "2.1.1" intransitive,  
+  "es.upm.fi.oeg.morph.streams" % "esper-engine" % "1.0.4",
+  "net.databinder.dispatch" %% "dispatch-core" % "0.11.2",
+  "com.typesafe.play" %% "play" % "2.3.4",
   "joda-time" % "joda-time" % "2.1",    
   "org.joda" % "joda-convert" % "1.2",  
   "org.codehaus.jackson" % "jackson-core-asl" % "1.9.10",
   "org.codehaus.jackson" % "jackson-mapper-asl" % "1.9.10",
-  "com.typesafe.akka" %% "akka-actor" % "2.1.2",
-  "org.scalatest" %% "scalatest" % "1.9.1" % "test",
-  "org.scalacheck" %% "scalacheck" % "1.10.0" % "test",
+  "com.typesafe.akka" %% "akka-actor" % "2.3.4",
+  "org.scalatest" %% "scalatest" % "2.2.1" % "test",
   "log4j" % "log4j" % "1.2.17",
   "org.jibx" % "jibx-bind" % "1.2.2",
   "commons-collections" % "commons-collections" % "3.2.1",  
@@ -53,7 +49,7 @@ unmanagedSourceDirectories in Test <<= (scalaSource in Test)(Seq(_))
 
 parallelExecution in Test := false
 
-publishTo := Some("Artifactory Realm" at "http://aldebaran.dia.fi.upm.es/artifactory/sstreams-releases-local")
+publishTo := Some("Artifactory Realm" at "http://planetdata.epfl.ch:8081/artifactory/gsn-release")
 
 credentials += Credentials(Path.userHome / ".ivy2" / ".credentials")
 

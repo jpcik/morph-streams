@@ -1,0 +1,14 @@
+PREFIX om-owl: <http://knoesis.wright.edu/ssw/ont/sensor-observation.owl#>
+PREFIX weather: <http://knoesis.wright.edu/ssw/ont/weather.owl#>
+
+SELECT (COUNT(*) AS ?cnt) 
+FROM NAMED STREAM <http://cwi.nl/SRBench/observations> [NOW - 1 HOURS SLIDE 1 HOURS]
+WHERE {
+  ?observation om-owl:result ?result;
+#               om-owl:observedProperty ?prop;
+               om-owl:observedProperty weather:AirTemperature. 
+  ?result om-owl:floatValue ?value.
+  FILTER (?value < 0.3)
+  ?obs1 om-owl:result ?result1;        
+               om-owl:observedProperty weather:RelativeHumidity. 
+}

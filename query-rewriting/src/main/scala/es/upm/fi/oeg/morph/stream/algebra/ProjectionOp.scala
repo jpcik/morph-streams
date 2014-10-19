@@ -41,7 +41,9 @@ class ProjectionOp(val expressions:Map[String,Xpr], subOp:AlgebraOp, val distinc
 	new ProjectionOp(expressions, op,distinct)		
   }
 
+  @deprecated("merge deprecated","")
   override def merge(op:AlgebraOp,xprs:Seq[Xpr]):AlgebraOp={
+    throw new Exception ("biban")
 	if (op==null) this
 	else op match{
 	  case proj:ProjectionOp=>
@@ -63,15 +65,13 @@ class ProjectionOp(val expressions:Map[String,Xpr], subOp:AlgebraOp, val distinc
   
   def merge(proj:ProjectionOp)={
     // Use the more complex subop //this is wrong, it can eliminate selections in both projs!
-    //val sub=if (!proj.subOp.isInstanceOf[RelationOp]) proj.subOp
-    //  else subOp
     proj.subOp match{
       case un:UnaryOp=>replaceLeaf(new ProjectionOp(expressions++proj.expressions,this.subOp,distinct),un)
       case _=>throw new QueryRewritingException("Cannot merge projections: invalid operator: "+proj.subOp)
     }    	    
-    //new ProjectionOp(expressions++proj.expressions,sub,distinct)
   }
 
+  @deprecated("Not used anymore","")
   def merge(proj:ProjectionOp,xprs:Seq[Xpr]):AlgebraOp={
     throw new Exception("this should be erased")
 	logger.debug("Merging projection: "+this +" and "+proj)
@@ -112,78 +112,51 @@ class ProjectionOp(val expressions:Map[String,Xpr], subOp:AlgebraOp, val distinc
 		return this;
 	}
 
-	private def removeColumn(template:String):String={
-	    val (i,j)=(template.indexOf('{'),template.indexOf('}'))
-        template.substring(0,i)+template.substring(j+1,template.length)
-	}
-	
+    @deprecated("not used anymore","")
 	private def add(proj: ProjectionOp)={
+      throw new Exception("deprecated")
 	  val newXprs=expressions++proj.vars.entrySet.filter(e=> !expressions.contains(e.getKey)).map{e=>
 			    e.getKey->e.getValue}.toMap
 	 new ProjectionOp(newXprs,subOp.copyOp,distinct)
 	}
 	
-	override def build(newOp:AlgebraOp):AlgebraOp=
+	override def join(newOp:AlgebraOp):AlgebraOp={
 	  if (newOp==null) null
-	  else if (this.id.equals("mainProjection"))//TODO this is hacky
-	  {
-		if (subOp==null)	return newOp
-		else return subOp.build(newOp)			
-	  }
-	  else newOp match{		
+	  else newOp match {		
 	  case projection:ProjectionOp=>				
-		return new InnerJoinOp(this,projection)
+		new InnerJoinOp(this,projection)
 	  case union:MultiUnionOp=>
-	    return new InnerJoinOp(this,union)
+	    new InnerJoinOp(this,union)
 	  case sel:SelectionOp=>
-		if (sel.subOp == null) //only for empty selections!
-		{
+		if (sel.subOp == null) /*only for empty selections!*/{
 		  val newSel=new SelectionOp(sel.id,subOp,sel.expressions)
-		  return new ProjectionOp(expressions,newSel,distinct)
+		  new ProjectionOp(expressions,newSel,distinct)
 		}
-		return this
+		else this
 	  case join:InnerJoinOp=>
+	    throw new IllegalArgumentException("Not implemented")
 		if (this.id.equals(join.left.id)){
-		  if (join.left.isInstanceOf[ProjectionOp]
-				&& (join.left.asInstanceOf[ProjectionOp]).expressions.containsKey("placeholder"))
-		  {
-		    logger.info(join.id);
-			val joinCopy = new InnerJoinOp(this,join.right)
-			return joinCopy;
+		  if (join.left.isInstanceOf[ProjectionOp] 
+				&& this.includes(join.left.asInstanceOf[ProjectionOp])) {
+			new InnerJoinOp(this,join.right)//join.copyOp			
 		  }
-		  else if (join.left.isInstanceOf[ProjectionOp] 
-				&& this.includes(join.left.asInstanceOf[ProjectionOp]))
-		  {
-			val copy =new InnerJoinOp(this,join.right)//join.copyOp
-			return copy;
-		  }
-		  else
-		  {
-			logger.info("what happened here: "+this.toString());
-			logger.info("bap: "+join.right.id);	
-			return null
+		  else  {
+			logger.info("what happened here: "+this.toString)
+			null
 		  }			
 		}
-		else if (this.id.equals(join.right.id))
-			{
-				if (join.right.isInstanceOf[ProjectionOp] 
-							&& this.includes(join.right.asInstanceOf[ProjectionOp]))
-				{	
-					val copy = new InnerJoinOp(join.left,this)
-					//copy.setRight(this);
-					return copy;
-				}
-				else				
-				{	
-					logger.info("what happened here2: "+this.toString());
-					logger.info("bap2: "+join.right.id);
-					return null
-				}
-			}									
-										
-		
-		
-		return this;
+		else if (this.id.equals(join.right.id)){
+		  if (join.right.isInstanceOf[ProjectionOp] 
+				&& this.includes(join.right.asInstanceOf[ProjectionOp])){	
+			new InnerJoinOp(join.left,this)					
+		  }
+		  else {	
+			logger.info("what happened here2: "+this.toString)
+			null
+		  }
+		}																				
+		this
+	  }
 	}
 
 

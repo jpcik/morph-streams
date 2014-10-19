@@ -1,0 +1,22 @@
+@prefix rr: <http://www.w3.org/ns/r2rml#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix ssn: <http://purl.oclc.org/NET/ssnx/ssn#> . 
+@prefix dul: <http://www.loa-cnr.it/ontologies/DUL.owl#> .
+@prefix time: <http://www.w3.org/2006/time#> .
+@prefix morph: <http://es.upm.fi.dia.oeg/morph#> .
+@prefix om-owl: <http://knoesis.wright.edu/ssw/ont/sensor-observation.owl#> .
+@prefix weather: <http://knoesis.wright.edu/ssw/ont/weather.owl#> .
+@prefix srbench: <http://cwi.nl/SRBench/> .
+@prefix st: <http://ex.org/> .
+@prefix : <http://es.upm.fi.dia.oeg/R2RMapping#> . 
+
+:individual a rr:TriplesMap;
+  rr:logicalTable [ rr:tableName "polimi"];
+  rr:subjectMap   [ rr:template "http://ex.org/p{individualId}" ;
+  					rr:class st:Individual ;
+  					rr:graph <http://myexample.org/polimistream> ; ];
+  rr:predicateObjectMap [ rr:predicate st:detectedAt;
+						  rr:objectMap	[rr:template "http://ex.org/r{roomId}" ;
+						  				 rr:joinCondition [rr:parent "roomId"; rr:child "roomId"] ] ];  		   		  
+.

@@ -59,7 +59,7 @@ class ApiCaller (systemid:String,id:String,conf:Config) extends Actor{
       case _=>op   
   }
   
-  
+  import scala.concurrent.ExecutionContext.Implicits.global 
   def pollData={
     val svc = url(theurl)
     params.foldLeft(svc)((a,k)=>svc.addQueryParameter(k._1, k._2))
