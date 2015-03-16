@@ -7,10 +7,21 @@ version := "0.0.1"
 
 scalaVersion := "2.11.2"
 
+lazy val ldp = (project in file("webapp")).enablePlugins(PlayScala).dependsOn(rsp)
+
+lazy val rsp = (project in file("."))
+
+lazy val root = project.
+  aggregate(rsp,ldp).
+  settings(
+    aggregate in update := false
+  )
+  
 libraryDependencies ++= Seq(
   "es.upm.fi.oeg.morph" % "query-rewriting" % "1.0.11",
   "eu.trowl" % "trowl-core" % "1.4",
-  "org.scalatest" %% "scalatest" % "2.2.1" % "test"
+  "org.scalatest" %% "scalatest" % "2.2.1" % "test",
+  "org.apache.jena" % "apache-jena-libs" % "2.12.1"
 )
 
 resolvers ++= Seq(

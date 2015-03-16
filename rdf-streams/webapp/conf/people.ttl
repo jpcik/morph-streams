@@ -1,0 +1,18 @@
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix foaf:    <http://xmlns.com/foaf/> .
+@prefix :        <http://example.org/> .
+@prefix dcterms: <http://purl.org/dc/terms/>.
+@prefix ldp: <http://www.w3.org/ns/ldp#>.
+
+<http://example.org/c1/>
+   a ldp:BasicContainer;
+   dcterms:title "A very simple container";
+   ldp:contains :r1, :r2, :r3.
+   
+<http://example.org/c2/>
+   a ldp:BasicContainer;
+   dcterms:title "Another simple container";
+   ldp:contains :r6.

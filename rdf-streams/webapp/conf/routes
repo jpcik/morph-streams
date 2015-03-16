@@ -1,0 +1,3 @@
+GET  /assets/*file        	  controllers.Assets.at(path="/public", file)
+GET /containers/:containerid/   org.rsp.ldp.ContainerApp.retrieve(containerid:String)
+POST /containers/:containerid/  org.rsp.ldp.ContainerApp.add(containerid:String)

@@ -24,14 +24,16 @@ object OwlApiTips{
   }
   
   implicit def str2Iri(s:String):IRI=IRI.create(s)
-  object Class{
+  object clazz{
     def apply(iri:String)(implicit fac:OWLDataFactory)=
       fac.getOWLClass(iri)
 
   }
-  object Indiv{
-    def apply(iri:String)(implicit fac:OWLDataFactory)=
+  object ind{
+    def apply(iri:String)(implicit fac:OWLDataFactory)=      
       fac.getOWLNamedIndividual(iri)
+       
   }
+  
 }
 
