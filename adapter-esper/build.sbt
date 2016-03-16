@@ -12,7 +12,7 @@ libraryDependencies ++= Seq(
 
 resolvers ++= Seq(
   "Local Maven Repository" at "file://"+Path.userHome.absolutePath+"/.m2/repository",
-  "aldebaran-releases" at "http://aldebaran.dia.fi.upm.es/artifactory/sstreams-releases-local",
+  "aldebaran-releases" at "http://osper.epfl.ch:8081/artifactory/gsn-release",
   "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/"  
 )
 

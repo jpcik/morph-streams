@@ -8,8 +8,8 @@ version := "1.0.10"
 libraryDependencies ++= Seq(
   "org.scalatest" %% "scalatest" % "2.2.1" % "test",
   "org.jibx" % "jibx-bind" % "1.2.2",
-  "commons-collections" % "commons-collections" % "3.2.1",
-  "ch.epfl.lsir" % "gsn" % "1.1.2"
+  "commons-collections" % "commons-collections" % "3.2.1"
+//  "ch.epfl.lsir" % "gsn" % "1.1.2"
 )
 
 resolvers ++= Seq(
