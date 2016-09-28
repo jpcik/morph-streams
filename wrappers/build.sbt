@@ -2,7 +2,7 @@ name := "wrappers"
 
 organization := "es.upm.fi.oeg.morph.streams"
 
-version := "1.0.10"
+version := "1.0.11"
 
 scalaVersion := "2.11.2"
 
@@ -20,15 +20,14 @@ libraryDependencies ++= Seq(
   "org.scalatest" %% "scalatest" % "2.2.1" % "test",
   "log4j" % "log4j" % "1.2.17",
   "org.jibx" % "jibx-bind" % "1.2.2",
-  "commons-collections" % "commons-collections" % "3.2.1",  
-  "ch.epfl.lsir" % "gsn" % "1.1.2"  
+  "commons-collections" % "commons-collections" % "3.2.1",
+  "gsn" % "gsn-core" % "2.0.0-SNAPSHOT" intransitive()  
 )
 
 resolvers ++= Seq(
   DefaultMavenRepository,
   "Local Maven Repository" at "file://"+Path.userHome.absolutePath+"/.m2/repository",
-  "aldebaran-releases" at "http://aldebaran.dia.fi.upm.es/artifactory/sstreams-releases-local",
-  "aldebaran-external" at "http://aldebaran.dia.fi.upm.es/artifactory/sstreams-external-libs-local",
+  "lsir-releases" at "http://osper.epfl.ch:8081/artifactory/gsn-release/",
   "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/",
   "sonatype-public" at "https://oss.sonatype.org/​content/repositories/public"  
 )
@@ -49,7 +48,7 @@ unmanagedSourceDirectories in Test <<= (scalaSource in Test)(Seq(_))
 
 parallelExecution in Test := false
 
-publishTo := Some("Artifactory Realm" at "http://planetdata.epfl.ch:8081/artifactory/gsn-release")
+publishTo := Some("Artifactory Realm" at "http://osper.epfl.ch:8081/artifactory/gsn-release")
 
 credentials += Credentials(Path.userHome / ".ivy2" / ".credentials")
 

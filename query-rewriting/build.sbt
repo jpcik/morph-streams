@@ -2,7 +2,7 @@ name := "query-rewriting"
 
 organization := "es.upm.fi.oeg.morph"
 
-version := "1.0.11"
+version := "1.0.12"
 
 libraryDependencies ++= Seq(
   "net.sf.jsqlparser" % "jsqlparser" % "0.7.0" intransitive,
@@ -17,7 +17,7 @@ libraryDependencies ++= Seq(
 
 resolvers ++= Seq(
   DefaultMavenRepository,
-  "aldebaran-releases" at "http://osper.epfl.ch:8081/artifactory/gsn-release",
+  "lsir-releases" at "http://osper.epfl.ch:8081/artifactory/gsn-release",
     "plord" at "http://homepages.cs.ncl.ac.uk/phillip.lord/maven",
   "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/"
 )

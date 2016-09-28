@@ -11,7 +11,7 @@ libraryDependencies ++= Seq(
   "org.scalatest" %% "scalatest" % "2.2.1" % "test")
 
 resolvers ++= Seq(
-  "aldebaran-releases" at "http://osper.epfl.ch:8081/artifactory/gsn-release"
+  "lsir-releases" at "http://osper.epfl.ch:8081/artifactory/gsn-release"
 )
 
 javacOptions ++= Seq("-source", "1.7", "-target", "1.7")
